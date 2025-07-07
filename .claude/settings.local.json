@@ -29,7 +29,9 @@
       "Bash(git rm:*)",
       "Bash(git checkout:*)",
       "Bash(git ls-tree:*)",
-      "Bash(./mvnw clean compile)"
+      "Bash(./mvnw clean compile)",
+      "Bash(./scripts/test-rule-management.sh:*)",
+      "Bash(./scripts/test-integrated.sh:*)"
     ],
     "deny": []
   }
