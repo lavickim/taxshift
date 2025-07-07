@@ -84,7 +84,7 @@ export function RegexRulesManagement() {
   const [testInput, setTestInput] = useState('');
   const [testResult, setTestResult] = useState<TestResult | null>(null);
   const [testLoading, setTestLoading] = useState(false);
-  const [testCategory, setTestCategory] = useState('');
+  const [testCategory, setTestCategory] = useState('all');
 
   const [formData, setFormData] = useState<RegexRule>({
     pattern: '',
@@ -236,7 +236,7 @@ export function RegexRulesManagement() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           text: testInput,
-          category: testCategory || undefined
+          category: testCategory && testCategory !== 'all' ? testCategory : undefined
         }),
       });
 
@@ -729,7 +729,7 @@ function APITestPanel({
                   <SelectValue placeholder="전체 카테고리" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">전체</SelectItem>
+                  <SelectItem value="all">전체</SelectItem>
                   {CATEGORIES.map(cat => (
                     <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                   ))}
