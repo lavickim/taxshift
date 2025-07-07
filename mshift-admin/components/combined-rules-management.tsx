@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   Trash2, Edit, Plus, Search, BarChart3, Settings, Play, AlertCircle, 
-  Database, HardDrive, FileText, Code, Table, BookOpen 
+  Database, HardDrive, FileText, Code, Table, BookOpen, CheckCircle
 } from 'lucide-react';
 import { RegexRulesManagement } from '@/components/regex-rules-management';
 import ReactMarkdown from 'react-markdown';
