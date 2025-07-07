@@ -31,7 +31,8 @@
       "Bash(git ls-tree:*)",
       "Bash(./mvnw clean compile)",
       "Bash(./scripts/test-rule-management.sh:*)",
-      "Bash(./scripts/test-integrated.sh:*)"
+      "Bash(./scripts/test-integrated.sh:*)",
+      "Bash(git pull:*)"
     ],
     "deny": []
   }
