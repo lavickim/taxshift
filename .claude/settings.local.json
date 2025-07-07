@@ -32,7 +32,10 @@
       "Bash(./mvnw clean compile)",
       "Bash(./scripts/test-rule-management.sh:*)",
       "Bash(./scripts/test-integrated.sh:*)",
-      "Bash(git pull:*)"
+      "Bash(git pull:*)",
+      "Bash(yarn --version)",
+      "Bash(yarn install)",
+      "Bash(yarn dev)"
     ],
     "deny": []
   }

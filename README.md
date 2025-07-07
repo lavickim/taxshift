@@ -94,36 +94,50 @@ moneyshift_be/
 - Docker 및 Docker Compose
 - Maven 3.8 이상
 
-### 1. 저장소 클론
+### 🎯 빠른 시작 (권장)
 
 ```bash
 git clone <repository-url>
 cd moneyshift_be
+
+# 전체 시스템 한 번에 시작
+./start-all.sh
+
+# 또는 개별 실행
+./start-db.sh      # 데이터베이스만
+./start-backend.sh # Java API 서버만  
+./start-frontend.sh # NextJS 프론트엔드만
+
+# 테스트 실행
+./test.sh
+
+# 전체 시스템 중지
+./stop-all.sh
 ```
 
-### 2. 데이터베이스 서비스 시작
+### 📋 개별 실행 방법
+
+#### 1. 데이터베이스 서비스 시작
 
 ```bash
-# PostgreSQL 및 Redis 시작
-docker-compose up -d postgres redis
+./start-db.sh
+# 또는: docker-compose up -d postgres redis
 ```
 
-### 3. 백엔드 API 서버 실행
+#### 2. 백엔드 API 서버 실행
 
 ```bash
-cd mshift-api
-mvn clean install
-mvn spring-boot:run
+./start-backend.sh
+# 또는: cd mshift-api && mvn spring-boot:run
 ```
 
 서버가 `http://localhost:8080`에서 실행됩니다.
 
-### 4. 프론트엔드 관리자 패널 실행
+#### 3. 프론트엔드 관리자 패널 실행
 
 ```bash
-cd mshift-admin
-npm install
-npm run dev
+./start-frontend.sh  
+# 또는: cd mshift-admin && yarn dev
 ```
 
 관리자 패널이 `http://localhost:3000`에서 실행됩니다.
