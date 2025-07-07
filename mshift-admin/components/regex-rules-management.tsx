@@ -74,7 +74,7 @@ export function RegexRulesManagement() {
   const [rules, setRules] = useState<RegexRule[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterCategory, setFilterCategory] = useState('');
+  const [filterCategory, setFilterCategory] = useState('all');
   const [filterEnabled, setFilterEnabled] = useState<boolean | null>(null);
   const [editingRule, setEditingRule] = useState<RegexRule | null>(null);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
@@ -102,7 +102,7 @@ export function RegexRulesManagement() {
     setLoading(true);
     try {
       const params = new URLSearchParams();
-      if (filterCategory) params.append('category', filterCategory);
+      if (filterCategory && filterCategory !== 'all') params.append('category', filterCategory);
       
       const response = await fetch(`/api/regex-rules?${params}`);
       const data = await response.json();
@@ -364,7 +364,7 @@ export function RegexRulesManagement() {
                       <SelectValue placeholder="전체 카테고리" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">전체</SelectItem>
+                      <SelectItem value="all">전체</SelectItem>
                       {CATEGORIES.map(cat => (
                         <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                       ))}
@@ -381,7 +381,7 @@ export function RegexRulesManagement() {
                       <SelectValue placeholder="전체 상태" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">전체</SelectItem>
+                      <SelectItem value="all">전체</SelectItem>
                       <SelectItem value="true">활성</SelectItem>
                       <SelectItem value="false">비활성</SelectItem>
                     </SelectContent>

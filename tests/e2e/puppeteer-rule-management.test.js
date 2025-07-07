@@ -5,9 +5,9 @@ const path = require('path');
 const TEST_CONFIG = {
   baseUrl: 'http://localhost:3000',
   timeout: 30000,
-  headless: false, // 디버깅을 위해 false로 설정
-  slowMo: 500,     // 더 천천히
-  devtools: true,  // 개발도구 열기
+  headless: true,  // 자동 테스트를 위해 headless 모드
+  slowMo: 100,     
+  devtools: false, 
   viewport: {
     width: 1920,
     height: 1080
