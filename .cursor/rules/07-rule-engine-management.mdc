@@ -1,0 +1,60 @@
+---
+alwaysApply: false
+description: 룰 엔진 관리 및 개발 가이드라인
+---
+
+# 룰 엔진 관리 가이드라인
+
+## 프로젝트 구조
+
+MoneyShift 프로젝트의 룰 엔진은 4가지 알고리즘으로 구성됩니다:
+
+1. **정규식 기반 룰 엔진** - [lib/services/regex-rule-engine.ts](mdc:lib/services/regex-rule-engine.ts)
+2. **CSV 정규식 룰 엔진** - [lib/services/csv-regex-rule-engine.ts](mdc:lib/services/csv-regex-rule-engine.ts) 
+3. **키워드 기반 룰 엔진** - [components/combined-rules-management.tsx](mdc:components/combined-rules-management.tsx)
+4. **하이브리드 룰 엔진** - [project-design/runleendgine.md](mdc:project-design/runleendgine.md)
+
+## 룰 엔진 관리 페이지
+
+메인 관리 페이지는 [components/combined-rules-management.tsx](mdc:components/combined-rules-management.tsx)에 있으며, 다음 탭들로 구성됩니다:
+
+- **개요**: 정규식 사용 가이드 ([public/docs/regex-usage-guide.md](mdc:public/docs/regex-usage-guide.md))
+- **키워드 룰**: DB 기반 키워드 룰 관리
+- **정규식 룰**: 하드코딩된 정규식 패턴 관리
+- **CSV 정규식**: 동적 CSV 파일 기반 정규식 ([data/regex-rules.csv](mdc:data/regex-rules.csv))
+- **하이브리드**: 룰 DB + LLM 조합 알고리즘
+- **룰 엔진 테스트**: 각 알고리즘 테스트 기능
+- **신규 룰 후보**: 자동 생성된 룰 후보 관리
+- **캐시 데이터**: 처리된 거래 데이터 캐시 관리
+- **분석 대시보드**: 성능 통계 및 분석
+
+## 알고리즘 우선순위
+
+처리 순서는 다음과 같습니다:
+1. 정규식 엔진 (0.1ms, 95-99% 정확도)
+2. CSV 정규식 엔진 (0.5ms, 관리 편의성)
+3. 키워드 DB 엔진 (5-20ms, 학습 기능)
+4. LLM 추론 (500-2000ms, 높은 비용)
+
+## 개발 규칙
+
+### 새로운 룰 엔진 추가 시
+1. 인터페이스 정의 ([components/combined-rules-management.tsx](mdc:components/combined-rules-management.tsx))
+2. 로딩 함수 구현
+3. 탭 컨텐츠 추가
+4. useEffect에 로딩 로직 추가
+
+### CSV 파일 관리
+- [data/regex-rules.csv](mdc:data/regex-rules.csv) 파일 구조 유지
+- 새로운 패턴 추가 시 CSV 형식 준수
+- 웹 UI를 통한 관리 기능 제공
+
+### 성능 최적화
+- 정규식 우선 사용 (빠른 처리)
+- 키워드 매칭 중간 단계
+- LLM 호출 최소화 (비용 절약)
+
+### 문서화
+- 알고리즘 변경 시 [룰엔진알고리즘.md](mdc:룰엔진알고리즘.md) 업데이트
+- 가이드라인 변경 시 [public/docs/regex-usage-guide.md](mdc:public/docs/regex-usage-guide.md) 업데이트
+- 새로운 패턴 추가 시 문서에 예시 추가

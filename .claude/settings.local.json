@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:docs.anthropic.com)",
+      "Bash(npx prisma generate:*)",
+      "Bash(pkill:*)",
+      "Bash(node:*)",
+      "Bash(curl:*)",
+      "Bash(npm run dev:*)",
+      "Bash(docker exec:*)",
+      "Bash(PGPASSWORD=postgres psql -h localhost -p 5432 -U postgres -d moneyshift -c \"SELECT COUNT(*) FROM franchise_brands;\")",
+      "Bash(brew services stop:*)",
+      "Bash(true)",
+      "Bash(brew uninstall:*)",
+      "Bash(sudo rm:*)",
+      "Bash(lsof:*)",
+      "Bash(PGPASSWORD=postgres psql -h localhost -p 5432 -U postgres -d moneyshift -c \"SELECT COUNT(*) FROM franchise_brands;\")",
+      "Bash(iconv:*)",
+      "Bash(npx prisma:*)",
+      "Bash(mkdir:*)",
+      "Bash(docker cp:*)",
+      "Bash(ls:*)",
+      "Bash(docker cp \"/Users/lavickim/_Dev/moneyshift_be/data/source/national_pension_utf8.csv\" moneyshift-postgres:/tmp/national_pension_full.csv)",
+      "Bash(python3:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run type-check:*)",
+      "Bash(npm run:*)",
+      "Bash(npx eslint:*)",
+      "Bash(git rm:*)",
+      "Bash(git checkout:*)",
+      "Bash(git ls-tree:*)",
+      "Bash(./mvnw clean compile)"
+    ],
+    "deny": []
+  }
+}
