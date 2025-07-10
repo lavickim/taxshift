@@ -1,0 +1,394 @@
+[
+  {
+    "pattern": "(중식|중국집|중화요리|중국요리|중국음식|차이나푸드)",
+    "replacement": "중식당",
+    "description": "중식당 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(짜장면|자장면|짜장|자장|炸醬麵|JJAJANGMYEON)",
+    "replacement": "중식당",
+    "description": "짜장면 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(짬뽕|챰뽕|짬봉|짬뽕밥|JJAMPPONG|炒碼麵)",
+    "replacement": "중식당",
+    "description": "짬뽕 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(탕수육|탕슉|糖醋肉|TANGSUYUK|꿔바로우|锅包肉)",
+    "replacement": "중식당",
+    "description": "탕수육 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(마라탕|麻辣燙|MALATANG|마라샹궈|마라훠궈)",
+    "replacement": "중식당",
+    "description": "마라탕/마라 요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(탕화쿵푸|미스터짬뽕|홍콩반점|북경|베이징)",
+    "replacement": "중식당",
+    "description": "중식 프랜차이즈 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(진짜루|백짬뽕|역전우동0410중화|만리성|대만왕)",
+    "replacement": "중식당",
+    "description": "국내 중식 체인점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(간짜장|쟁반짜장|유니짜장|삼선짜장|사천짜장)",
+    "replacement": "중식당",
+    "description": "짜장면 종류별 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(백짬뽕|삼선짬뽕|차돌짬뽕|해물짬뽕|고추짬뽕)",
+    "replacement": "중식당",
+    "description": "짬뽕 종류별 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(볶음밥|炒飯|FRIEDRICE|새우볶음밥|짬뽕밥|짜장밥)",
+    "replacement": "중식당",
+    "description": "볶음밥 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(군만두|물만두|찐만두|교자|딤섬|点心)",
+    "replacement": "중식당",
+    "description": "만두/딤섬 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(춘권|春卷|스프링롤|SPRINGROLL|하르방)",
+    "replacement": "중식당",
+    "description": "춘권 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(훠궈|火鍋|HOTPOT|샤브샤브|중국식전골)",
+    "replacement": "중식당",
+    "description": "훠궈/중국 전골 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(하이디라오|海底撈|HAIDILAO|샤오룽칸|小龙坎)",
+    "replacement": "중식당",
+    "description": "훠궈 전문 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(양꼬치|양고기|羊肉串|양갈비|연태|칭다오)",
+    "replacement": "중식당",
+    "description": "양꼬치/양고기 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(마파두부|麻婆豆腐|MAPOTOFU|사천요리|四川)",
+    "replacement": "중식당",
+    "description": "사천요리 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(깐풍기|깐풍육|乾烹|간풍|깐풍새우)",
+    "replacement": "중식당",
+    "description": "깐풍 요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(팔보채|八宝菜|잡채밥|중화잡채|해물잡채)",
+    "replacement": "중식당",
+    "description": "팔보채/잡채 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(유산슬|油三絲|중화냉채|겨자냉채|냉채)",
+    "replacement": "중식당",
+    "description": "중화 냉채 요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(난자완스|南煎丸子|동파육|東坡肉|중국식미트볼)",
+    "replacement": "중식당",
+    "description": "중국 육류 요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(샤오마이|소룡포|小籠包|XIAOLONGBAO|만두전문)",
+    "replacement": "중식당",
+    "description": "소룡포/만두 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(딘타이펑|鼎泰豊|DINTAIFUNG|남상창|南翔)",
+    "replacement": "중식당",
+    "description": "딤섬 전문 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(북경오리|베이징덕|北京烤鴨|PEKINGDUCK|오리구이)",
+    "replacement": "중식당",
+    "description": "북경오리 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(크리스피덕|취영루|全聚德|쥐안쥐더)",
+    "replacement": "중식당",
+    "description": "북경오리 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(중식뷔페|중국뷔페|중화뷔페|무한리필중식)",
+    "replacement": "중식당",
+    "description": "중식 뷔페 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(칠리새우|깐쇼새우|중화새우|왕새우요리)",
+    "replacement": "중식당",
+    "description": "새우 요리 전문 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(멘보샤|面包虾|토스트새우|새우토스트)",
+    "replacement": "중식당",
+    "description": "멘보샤 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(라조기|라조육|辣椒|고추잡채|사천식고추)",
+    "replacement": "중식당",
+    "description": "라조 요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(중국냉면|중화냉면|비빔냉면|사천냉면)",
+    "replacement": "중식당",
+    "description": "중국식 냉면 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(울면|기스면|간짜면|짜장라면|중화라면)",
+    "replacement": "중식당",
+    "description": "특수 면요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(동북|둥베이|東北|연변|조선족)",
+    "replacement": "중식당",
+    "description": "동북/연변 요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(꿔티에|鍋貼|군만두|구운만두|팬프라이만두)",
+    "replacement": "중식당",
+    "description": "꿔티에/구운만두 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(가지튀김|어향가지|魚香茄子|중화가지)",
+    "replacement": "중식당",
+    "description": "가지 요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(중국식볶음|웍|WOK|불맛|화구)",
+    "replacement": "중식당",
+    "description": "중식 볶음 요리 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(월병|月餅|중국과자|중국떡|중화디저트)",
+    "replacement": "중식당",
+    "description": "중국 디저트 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(중국차|중차|茶|우롱차|보이차|철관음)",
+    "replacement": "중식당",
+    "description": "중국차 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(광동요리|広東|광둥|딤섬전문|얌차)",
+    "replacement": "중식당",
+    "description": "광동요리 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(상해요리|上海|샹하이|상하이|강남요리)",
+    "replacement": "중식당",
+    "description": "상해요리 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(산동요리|山東|산둥|교동반점|만물상)",
+    "replacement": "중식당",
+    "description": "산동요리 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(쿵파오치킨|宮保鶏丁|궁보계정|땅콩닭)",
+    "replacement": "중식당",
+    "description": "쿵파오치킨 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(중국술|백주|白酒|마오타이|연태고량주)",
+    "replacement": "중식당",
+    "description": "중국술 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(중화비빔밥|중국덮밥|마파덮밥|짜사이덮밥)",
+    "replacement": "중식당",
+    "description": "중국식 덮밥 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(탄탄면|担担麺|DANDAN|중국비빔면|사천비빔면)",
+    "replacement": "중식당",
+    "description": "탄탄면 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(전가복|全家福|중화모듬|스페셜요리|중화특선)",
+    "replacement": "중식당",
+    "description": "중화 특선요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(게살스프|계란탕|중국스프|상어지느러미)",
+    "replacement": "중식당",
+    "description": "중국식 스프 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(중화오믈렛|계란요리|중국식계란|푸용하이)",
+    "replacement": "중식당",
+    "description": "중국식 계란요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(중국가정식|중화가정식|집밥중식|중국엄마)",
+    "replacement": "중식당",
+    "description": "중국 가정식 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(우육면|牛肉麺|중국우육면|란저우라면)",
+    "replacement": "중식당",
+    "description": "우육면 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(중화포차|중국포차|마라포차|중국야시장)",
+    "replacement": "중식당",
+    "description": "중국식 포차/야시장 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  }
+]

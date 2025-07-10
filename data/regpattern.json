@@ -1,0 +1,3939 @@
+[
+  {
+    "pattern": "(스시|초밥|회전초밥|SUSHI|すし|寿司)",
+    "replacement": "일식당",
+    "description": "스시/초밥 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(스시로|스시잔마이|스시노미도리|스시효|스시쿠이네)",
+    "replacement": "일식당",
+    "description": "스시 전문 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(갓덴스시|상무초밥|초밥천국|스시웨이|스시박스)",
+    "replacement": "일식당",
+    "description": "국내 스시 프랜차이즈 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(오마카세|おまかせ|OMAKASE|셰프스초이스)",
+    "replacement": "일식당",
+    "description": "오마카세 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(사시미|さしみ|刺身|생선회|활어회)",
+    "replacement": "일식당",
+    "description": "사시미/회 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(라멘|라면|ラーメン|拉麺|RAMEN)",
+    "replacement": "일식당",
+    "description": "라멘 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(이치란|잇푸도|멘야산다이메|킷카타|하카타분코)",
+    "replacement": "일식당",
+    "description": "라멘 전문 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(돈코츠|돈코쓰|豚骨|미소|된장|시오|소금|쇼유|간장)",
+    "replacement": "일식당",
+    "description": "라멘 종류별 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(츠케멘|つけ麺|마제소바|아부라소바|탄탄멘)",
+    "replacement": "일식당",
+    "description": "특수 라멘 종류 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(우동|うどん|UDON|사누키우동|가케우동)",
+    "replacement": "일식당",
+    "description": "우동 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(마루가메제면|니쿠우동|역전우동|우동신|우동마루)",
+    "replacement": "일식당",
+    "description": "우동 프랜차이즈 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(소바|そば|蕎麦|SOBA|메밀국수|자루소바)",
+    "replacement": "일식당",
+    "description": "소바 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(돈까스|돈카츠|とんかつ|TONKATSU|돈가스)",
+    "replacement": "일식당",
+    "description": "돈까스 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(사보텐|카츠야|마이센|기소야|카츠&)",
+    "replacement": "일식당",
+    "description": "돈까스 전문 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(경양식|일본식돈까스|왕돈까스|치즈돈까스|카레돈까스)",
+    "replacement": "일식당",
+    "description": "돈까스 변형 메뉴 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(카츠동|카츠돈|かつ丼|가츠동|돈까스덮밥)",
+    "replacement": "일식당",
+    "description": "카츠동 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(규동|규돈|牛丼|GYUDON|소고기덮밥)",
+    "replacement": "일식당",
+    "description": "규동 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(요시노야|스키야|마츠야|나카우|규동전문)",
+    "replacement": "일식당",
+    "description": "규동 체인점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(덮밥|돈부리|どんぶり|DONBURI|일본덮밥)",
+    "replacement": "일식당",
+    "description": "덮밥 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(오야코동|親子丼|텐동|天丼|우나동|うな丼)",
+    "replacement": "일식당",
+    "description": "특수 덮밥 종류 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(이자카야|居酒屋|IZAKAYA|일본술집|일본선술집)",
+    "replacement": "일식당",
+    "description": "이자카야 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(와라와라|츠보하치|토리돈|야키토리|꼬치구이)",
+    "replacement": "일식당",
+    "description": "이자카야 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(사케|日本酒|니혼슈|청주|일본술)",
+    "replacement": "일식당",
+    "description": "일본술 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(야키니쿠|焼肉|YAKINIKU|일본식구이|화로구이)",
+    "replacement": "일식당",
+    "description": "야키니쿠 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(규카츠|규가츠|牛カツ|소고기카츠|비프카츠)",
+    "replacement": "일식당",
+    "description": "규카츠 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(텐푸라|덴뿌라|天ぷら|TEMPURA|튀김정식)",
+    "replacement": "일식당",
+    "description": "텐푸라 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(장어|우나기|うなぎ|UNAGI|장어구이|장어덮밥)",
+    "replacement": "일식당",
+    "description": "장어 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(스키야키|すき焼き|SUKIYAKI|일본식전골|샤브샤브)",
+    "replacement": "일식당",
+    "description": "스키야키/샤브샤브 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(나베|鍋|NABE|일본전골|일본식찌개)",
+    "replacement": "일식당",
+    "description": "나베 요리 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(벤토|弁当|BENTO|도시락|일본도시락)",
+    "replacement": "일식당",
+    "description": "일본식 도시락 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(오코노미야키|お好み焼き|타코야키|たこ焼き|일본전)",
+    "replacement": "일식당",
+    "description": "오코노미야키/타코야키 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(카레|카레라이스|カレー|CURRY|일본카레)",
+    "replacement": "일식당",
+    "description": "일본 카레 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(코코이찌방야|CoCo壱番屋|아비꼬|카레신)",
+    "replacement": "일식당",
+    "description": "카레 전문 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(미소시루|味噌汁|일본국|일본된장국)",
+    "replacement": "일식당",
+    "description": "일본 국/찌개 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(정식|定食|TEISHOKU|일본정식|일식정식)",
+    "replacement": "일식당",
+    "description": "일본 정식 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(야마야|오오토야|혼케츠루하시|후라토식당)",
+    "replacement": "일식당",
+    "description": "일본 정식당 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(모찌|떡|もち|MOCHI|일본떡)",
+    "replacement": "일식당",
+    "description": "일본 떡/디저트 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(와규|和牛|WAGYU|일본소|일본한우)",
+    "replacement": "일식당",
+    "description": "와규 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(참치|마구로|まぐろ|TUNA|참치전문)",
+    "replacement": "일식당",
+    "description": "참치 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(연어|사케|サケ|SALMON|연어전문)",
+    "replacement": "일식당",
+    "description": "연어 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(카이센동|海鮮丼|해산물덮밥|회덮밥)",
+    "replacement": "일식당",
+    "description": "카이센동 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(치라시|ちらし|CHIRASHI|치라시스시|흩뿌림초밥)",
+    "replacement": "일식당",
+    "description": "치라시 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(마키|巻き|MAKI|김밥초밥|롤초밥)",
+    "replacement": "일식당",
+    "description": "마키/롤 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(니기리|握り|NIGIRI|쥔초밥|손초밥)",
+    "replacement": "일식당",
+    "description": "니기리 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(가이세키|懐石|KAISEKI|일본코스요리|고급일식)",
+    "replacement": "일식당",
+    "description": "가이세키 요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(로바타야키|炉端焼|화로구이|일본숯불구이)",
+    "replacement": "일식당",
+    "description": "로바타야키 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(멘타이코|明太子|명란|명란젓|멘타이)",
+    "replacement": "일식당",
+    "description": "멘타이코 요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(에비|海老|새우튀김|새우카츠|에비후라이)",
+    "replacement": "일식당",
+    "description": "새우 요리 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(일본가정식|일본집밥|오카상|엄마손맛|일본홈쿠킹)",
+    "replacement": "일식당",
+    "description": "일본 가정식 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  }, 
+  {
+    "pattern": "(중식|중국집|중화요리|중국요리|중국음식|차이나푸드)",
+    "replacement": "중식당",
+    "description": "중식당 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(짜장면|자장면|짜장|자장|炸醬麵|JJAJANGMYEON)",
+    "replacement": "중식당",
+    "description": "짜장면 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(짬뽕|챰뽕|짬봉|짬뽕밥|JJAMPPONG|炒碼麵)",
+    "replacement": "중식당",
+    "description": "짬뽕 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(탕수육|탕슉|糖醋肉|TANGSUYUK|꿔바로우|锅包肉)",
+    "replacement": "중식당",
+    "description": "탕수육 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(마라탕|麻辣燙|MALATANG|마라샹궈|마라훠궈)",
+    "replacement": "중식당",
+    "description": "마라탕/마라 요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(탕화쿵푸|미스터짬뽕|홍콩반점|북경|베이징)",
+    "replacement": "중식당",
+    "description": "중식 프랜차이즈 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(진짜루|백짬뽕|역전우동0410중화|만리성|대만왕)",
+    "replacement": "중식당",
+    "description": "국내 중식 체인점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(간짜장|쟁반짜장|유니짜장|삼선짜장|사천짜장)",
+    "replacement": "중식당",
+    "description": "짜장면 종류별 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(백짬뽕|삼선짬뽕|차돌짬뽕|해물짬뽕|고추짬뽕)",
+    "replacement": "중식당",
+    "description": "짬뽕 종류별 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(볶음밥|炒飯|FRIEDRICE|새우볶음밥|짬뽕밥|짜장밥)",
+    "replacement": "중식당",
+    "description": "볶음밥 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(군만두|물만두|찐만두|교자|딤섬|点心)",
+    "replacement": "중식당",
+    "description": "만두/딤섬 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(춘권|春卷|스프링롤|SPRINGROLL|하르방)",
+    "replacement": "중식당",
+    "description": "춘권 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(훠궈|火鍋|HOTPOT|샤브샤브|중국식전골)",
+    "replacement": "중식당",
+    "description": "훠궈/중국 전골 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(하이디라오|海底撈|HAIDILAO|샤오룽칸|小龙坎)",
+    "replacement": "중식당",
+    "description": "훠궈 전문 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(양꼬치|양고기|羊肉串|양갈비|연태|칭다오)",
+    "replacement": "중식당",
+    "description": "양꼬치/양고기 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(마파두부|麻婆豆腐|MAPOTOFU|사천요리|四川)",
+    "replacement": "중식당",
+    "description": "사천요리 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(깐풍기|깐풍육|乾烹|간풍|깐풍새우)",
+    "replacement": "중식당",
+    "description": "깐풍 요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(팔보채|八宝菜|잡채밥|중화잡채|해물잡채)",
+    "replacement": "중식당",
+    "description": "팔보채/잡채 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(유산슬|油三絲|중화냉채|겨자냉채|냉채)",
+    "replacement": "중식당",
+    "description": "중화 냉채 요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(난자완스|南煎丸子|동파육|東坡肉|중국식미트볼)",
+    "replacement": "중식당",
+    "description": "중국 육류 요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(샤오마이|소룡포|小籠包|XIAOLONGBAO|만두전문)",
+    "replacement": "중식당",
+    "description": "소룡포/만두 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(딘타이펑|鼎泰豊|DINTAIFUNG|남상창|南翔)",
+    "replacement": "중식당",
+    "description": "딤섬 전문 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(북경오리|베이징덕|北京烤鴨|PEKINGDUCK|오리구이)",
+    "replacement": "중식당",
+    "description": "북경오리 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(크리스피덕|취영루|全聚德|쥐안쥐더)",
+    "replacement": "중식당",
+    "description": "북경오리 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(중식뷔페|중국뷔페|중화뷔페|무한리필중식)",
+    "replacement": "중식당",
+    "description": "중식 뷔페 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(칠리새우|깐쇼새우|중화새우|왕새우요리)",
+    "replacement": "중식당",
+    "description": "새우 요리 전문 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(멘보샤|面包虾|토스트새우|새우토스트)",
+    "replacement": "중식당",
+    "description": "멘보샤 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(라조기|라조육|辣椒|고추잡채|사천식고추)",
+    "replacement": "중식당",
+    "description": "라조 요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(중국냉면|중화냉면|비빔냉면|사천냉면)",
+    "replacement": "중식당",
+    "description": "중국식 냉면 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(울면|기스면|간짜면|짜장라면|중화라면)",
+    "replacement": "중식당",
+    "description": "특수 면요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(동북|둥베이|東北|연변|조선족)",
+    "replacement": "중식당",
+    "description": "동북/연변 요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(꿔티에|鍋貼|군만두|구운만두|팬프라이만두)",
+    "replacement": "중식당",
+    "description": "꿔티에/구운만두 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(가지튀김|어향가지|魚香茄子|중화가지)",
+    "replacement": "중식당",
+    "description": "가지 요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(중국식볶음|웍|WOK|불맛|화구)",
+    "replacement": "중식당",
+    "description": "중식 볶음 요리 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(월병|月餅|중국과자|중국떡|중화디저트)",
+    "replacement": "중식당",
+    "description": "중국 디저트 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(중국차|중차|茶|우롱차|보이차|철관음)",
+    "replacement": "중식당",
+    "description": "중국차 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(광동요리|広東|광둥|딤섬전문|얌차)",
+    "replacement": "중식당",
+    "description": "광동요리 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(상해요리|上海|샹하이|상하이|강남요리)",
+    "replacement": "중식당",
+    "description": "상해요리 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(산동요리|山東|산둥|교동반점|만물상)",
+    "replacement": "중식당",
+    "description": "산동요리 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(쿵파오치킨|宮保鶏丁|궁보계정|땅콩닭)",
+    "replacement": "중식당",
+    "description": "쿵파오치킨 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(중국술|백주|白酒|마오타이|연태고량주)",
+    "replacement": "중식당",
+    "description": "중국술 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(중화비빔밥|중국덮밥|마파덮밥|짜사이덮밥)",
+    "replacement": "중식당",
+    "description": "중국식 덮밥 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(탄탄면|担担麺|DANDAN|중국비빔면|사천비빔면)",
+    "replacement": "중식당",
+    "description": "탄탄면 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(전가복|全家福|중화모듬|스페셜요리|중화특선)",
+    "replacement": "중식당",
+    "description": "중화 특선요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(게살스프|계란탕|중국스프|상어지느러미)",
+    "replacement": "중식당",
+    "description": "중국식 스프 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(중화오믈렛|계란요리|중국식계란|푸용하이)",
+    "replacement": "중식당",
+    "description": "중국식 계란요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(중국가정식|중화가정식|집밥중식|중국엄마)",
+    "replacement": "중식당",
+    "description": "중국 가정식 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(우육면|牛肉麺|중국우육면|란저우라면)",
+    "replacement": "중식당",
+    "description": "우육면 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(중화포차|중국포차|마라포차|중국야시장)",
+    "replacement": "중식당",
+    "description": "중국식 포차/야시장 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(한식|한식당|한식집|한국음식|한국요리|KOREAN)",
+    "replacement": "한식당",
+    "description": "한식당 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(국밥|국밥집|순대국|돼지국밥|소머리국밥|뼈해장국)",
+    "replacement": "한식당",
+    "description": "국밥류 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(하동관|신선설농탕|명동교자|을밀대|진주회관)",
+    "replacement": "한식당",
+    "description": "전통 한식당 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(본죽|죽이야기|팥죽|호박죽|전복죽|야채죽)",
+    "replacement": "한식당",
+    "description": "죽 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(찌개|김치찌개|된장찌개|순두부찌개|부대찌개|찌개백반)",
+    "replacement": "한식당",
+    "description": "찌개 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(백반|정식|한정식|백반집|가정식백반|집밥)",
+    "replacement": "한식당",
+    "description": "백반/정식 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(비빔밥|전주비빔밥|돌솥비빔밥|육회비빔밥|산채비빔밥)",
+    "replacement": "한식당",
+    "description": "비빔밥 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(한식뷔페|한정식뷔페|뷔페식당|무한리필한식)",
+    "replacement": "한식당",
+    "description": "한식 뷔페 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(삼계탕|백숙|토종닭|닭백숙|인삼삼계탕|영계백숙)",
+    "replacement": "한식당",
+    "description": "삼계탕/백숙 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(곰탕|설렁탕|갈비탕|우거지탕|사골국|꼬리곰탕)",
+    "replacement": "한식당",
+    "description": "탕류 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(감자탕|뼈해장국|뼈다귀|감자국|등뼈찜)",
+    "replacement": "한식당",
+    "description": "감자탕 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(24시|이십사시|24시간|새벽식당|올나잇)",
+    "replacement": "한식당",
+    "description": "24시 한식당 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(콩나물국밥|콩나물해장국|전주콩나물|남원추어탕|추어탕)",
+    "replacement": "한식당",
+    "description": "해장국 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(보쌈정식|수육백반|보쌈백반|김치보쌈|막국수보쌈)",
+    "replacement": "한식당",
+    "description": "보쌈정식 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(쌈밥|쌈밥정식|쌈채소|야채쌈밥|고기쌈밥)",
+    "replacement": "한식당",
+    "description": "쌈밥 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(제육볶음|제육백반|두루치기|김치제육|매운제육)",
+    "replacement": "한식당",
+    "description": "제육볶음 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(불고기|불고기백반|불고기정식|한우불고기|돼지불고기)",
+    "replacement": "한식당",
+    "description": "불고기 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(생선구이|고등어구이|갈치구이|조기구이|생선백반)",
+    "replacement": "한식당",
+    "description": "생선구이 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(냉면|물냉면|비빔냉면|평양냉면|함흥냉면|막국수)",
+    "replacement": "한식당",
+    "description": "냉면 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(육개장|육계장|대구탕|매운탕|알탕|알찌개)",
+    "replacement": "한식당",
+    "description": "매운탕류 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(청국장|청국장찌개|낫토찌개|구수한집)",
+    "replacement": "한식당",
+    "description": "청국장 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(갈비찜|찜갈비|소갈비찜|돼지갈비찜|매운갈비찜)",
+    "replacement": "한식당",
+    "description": "갈비찜 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(아구찜|아귀찜|해물찜|꽃게찜|대게찜)",
+    "replacement": "한식당",
+    "description": "해물찜 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(닭갈비|춘천닭갈비|철판닭갈비|닭갈비볶음밥)",
+    "replacement": "한식당",
+    "description": "닭갈비 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(찜닭|안동찜닭|간장찜닭|매운찜닭|치즈찜닭)",
+    "replacement": "한식당",
+    "description": "찜닭 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(닭볶음탕|닭도리탕|매운닭|춘천통닭|닭한마리)",
+    "replacement": "한식당",
+    "description": "닭볶음탕 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(오리탕|오리주물럭|오리로스|훈제오리|오리백숙)",
+    "replacement": "한식당",
+    "description": "오리 요리 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(전골|김치전골|부대전골|곱창전골|버섯전골)",
+    "replacement": "한식당",
+    "description": "전골 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(순대|순댓국|순대볶음|순대정식|암뽕순대)",
+    "replacement": "한식당",
+    "description": "순대 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(해장국|선지해장국|우거지해장국|북어해장국|황태해장국)",
+    "replacement": "한식당",
+    "description": "해장국 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(칼국수|손칼국수|바지락칼국수|들깨칼국수|김치칼국수)",
+    "replacement": "한식당",
+    "description": "칼국수 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(수제비|감자수제비|김치수제비|해물수제비|옹심이)",
+    "replacement": "한식당",
+    "description": "수제비 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(보리밥|산채비빔밥|나물밥|영양돌솥밥|곤드레밥)",
+    "replacement": "한식당",
+    "description": "건강식 한식당 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(떡갈비|떡갈비정식|화양떡갈비|담양떡갈비|한우떡갈비)",
+    "replacement": "한식당",
+    "description": "떡갈비 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(편육|수육|돼지수육|보쌈수육|막걸리집)",
+    "replacement": "한식당",
+    "description": "편육/수육 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(두부|두부전골|두부김치|순두부|모두부)",
+    "replacement": "한식당",
+    "description": "두부 요리 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(장어구이|민물장어|풍천장어|장어정식|장어탕)",
+    "replacement": "한식당",
+    "description": "장어구이 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(막창|곱창구이|대창구이|양구이|특양구이)",
+    "replacement": "한식당",
+    "description": "곱창구이 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(전|파전|김치전|해물파전|동그랑땡|전집)",
+    "replacement": "한식당",
+    "description": "전 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(묵|도토리묵|메밀묵|묵밥|묵사발|묵무침)",
+    "replacement": "한식당",
+    "description": "묵 요리 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(나물|산나물|나물정식|산채정식|약선요리)",
+    "replacement": "한식당",
+    "description": "나물/산채 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(궁중요리|한정식|고급한정식|전통한정식|코스요리)",
+    "replacement": "한식당",
+    "description": "궁중/고급 한정식 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(사찰음식|절밥|템플푸드|비건한식|채식한정식)",
+    "replacement": "한식당",
+    "description": "사찰/채식 한식 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(반찬가게|반찬전문|밑반찬|김치전문|젓갈전문)",
+    "replacement": "한식당",
+    "description": "반찬 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(돌솥밥|영양밥|솥밥|가마솥밥|돌솥정식)",
+    "replacement": "한식당",
+    "description": "돌솥밥 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(막걸리|동동주|전통주|전통주점|민속주점)",
+    "replacement": "한식당",
+    "description": "전통주점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(도가니|도가니탕|꼬리탕|사골탕|진국)",
+    "replacement": "한식당",
+    "description": "도가니/사골 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(육회|육사시미|한우육회|육회비빔밥|뭉티기)",
+    "replacement": "한식당",
+    "description": "육회 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(곰국시|곰국|할매국밥|할매집|시골밥상)",
+    "replacement": "한식당",
+    "description": "시골/전통 한식당 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+   {
+    "pattern": "(파리바게뜨|파리바게트|PARIS\\s*BAGUETTE|PB|파바)",
+    "replacement": "베이커리",
+    "description": "파리바게뜨 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(뚜레쥬르|뚜레주르|TOUS\\s*LES\\s*JOURS|뚜레)",
+    "replacement": "베이커리",
+    "description": "뚜레쥬르 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(던킨도너츠|던킨|DUNKIN\\s*DONUTS|DUNKIN|DD)",
+    "replacement": "베이커리",
+    "description": "던킨도너츠 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(크리스피크림|크리스피|KRISPY\\s*KREME|KK|크크)",
+    "replacement": "베이커리",
+    "description": "크리스피크림 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(성심당|대전성심당|튀김소보로|부추빵)",
+    "replacement": "베이커리",
+    "description": "성심당 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(빵집|베이커리|BAKERY|제과점|제빵소)",
+    "replacement": "베이커리",
+    "description": "베이커리 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(브레드|BREAD|브래드|홈메이드|수제빵)",
+    "replacement": "베이커리",
+    "description": "빵 전문점 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(케이크|케익|CAKE|생일케이크|웨딩케이크)",
+    "replacement": "베이커리",
+    "description": "케이크 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(도넛|도너츠|DONUT|DOUGHNUT|꽈배기)",
+    "replacement": "베이커리",
+    "description": "도넛 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(크로와상|크루아상|CROISSANT|페이스트리|PASTRY)",
+    "replacement": "베이커리",
+    "description": "프랑스 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(바게트|바게뜨|BAGUETTE|프랑스빵|불란서빵)",
+    "replacement": "베이커리",
+    "description": "프랑스빵 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(마카롱|마카롱전문|MACARON|프렌치마카롱)",
+    "replacement": "베이커리",
+    "description": "마카롱 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(타르트|타르트전문|TART|에그타르트|과일타르트)",
+    "replacement": "베이커리",
+    "description": "타르트 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(머핀|MUFFIN|컵케이크|CUPCAKE|미니케이크)",
+    "replacement": "베이커리",
+    "description": "머핀/컵케이크 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(브라우니|BROWNIE|초콜릿케이크|초코케이크)",
+    "replacement": "베이커리",
+    "description": "브라우니/초콜릿 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(티라미수|TIRAMISU|이탈리안디저트|젤라또)",
+    "replacement": "베이커리",
+    "description": "이탈리안 디저트 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(치아바타|포카치아|FOCACCIA|이탈리안브레드)",
+    "replacement": "베이커리",
+    "description": "이탈리안 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(베이글|BAGEL|뉴욕베이글|크림치즈베이글)",
+    "replacement": "베이커리",
+    "description": "베이글 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(프레첼|프레즐|PRETZEL|독일빵|호밀빵)",
+    "replacement": "베이커리",
+    "description": "독일식 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(스콘|SCONE|잉글리시머핀|브리티시베이커리)",
+    "replacement": "베이커리",
+    "description": "영국식 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(에클레어|ECLAIR|슈크림|크림빵|슈)",
+    "replacement": "베이커리",
+    "description": "에클레어/슈 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(카스테라|카스텔라|CASTELLA|대만카스테라|촉촉한카스테라)",
+    "replacement": "베이커리",
+    "description": "카스테라 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(소금빵|시오빵|버터롤|우유빵|크림빵)",
+    "replacement": "베이커리",
+    "description": "일본식 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(앙버터|앙금빵|팥빵|단팥빵|찐빵)",
+    "replacement": "베이커리",
+    "description": "앙금빵 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(소보로|소보루|소보로빵|단팥소보로|땅콩소보로)",
+    "replacement": "베이커리",
+    "description": "소보로빵 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(멜론빵|메론빵|MELON\\s*PAN|메론판)",
+    "replacement": "베이커리",
+    "description": "멜론빵 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(식빵|토스트|TOAST|식빵전문|생식빵)",
+    "replacement": "베이커리",
+    "description": "식빵 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(크로플|크로와상와플|CROFFLE|와플)",
+    "replacement": "베이커리",
+    "description": "크로플/와플 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(파이|PIE|애플파이|호두파이|피칸파이)",
+    "replacement": "베이커리",
+    "description": "파이 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(쿠키|COOKIE|수제쿠키|마들렌|휘낭시에)",
+    "replacement": "베이커리",
+    "description": "쿠키 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(치즈케이크|CHEESECAKE|뉴욕치즈케이크|바스크치즈케이크)",
+    "replacement": "베이커리",
+    "description": "치즈케이크 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(롤케이크|ROLL\\s*CAKE|스위스롤|생크림롤)",
+    "replacement": "베이커리",
+    "description": "롤케이크 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(파운드케이크|POUND\\s*CAKE|버터케이크|마드레느)",
+    "replacement": "베이커리",
+    "description": "파운드케이크 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(샌드위치|SANDWICH|샌드|토스트샌드위치)",
+    "replacement": "베이커리",
+    "description": "샌드위치 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(브런치베이커리|브런치카페|올데이브런치|BRUNCH)",
+    "replacement": "베이커리",
+    "description": "브런치 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(디저트|DESSERT|수제디저트|프리미엄디저트)",
+    "replacement": "베이커리",
+    "description": "디저트 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(글루텐프리|무글루텐|비건베이커리|VEGAN)",
+    "replacement": "베이커리",
+    "description": "건강/특수 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(통밀빵|호밀빵|잡곡빵|건강빵|유기농빵)",
+    "replacement": "베이커리",
+    "description": "건강빵 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(천연발효|사워도우|SOURDOUGH|르방|천연효모)",
+    "replacement": "베이커리",
+    "description": "천연발효빵 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(공방|아틀리에|ATELIER|수제과자|쁘띠가또)",
+    "replacement": "베이커리",
+    "description": "프리미엄 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(델리|DELI|베이커리카페|카페베이커리)",
+    "replacement": "베이커리",
+    "description": "델리/카페형 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(모닝빵|아침빵|조식빵|모닝롤|브렉퍼스트)",
+    "replacement": "베이커리",
+    "description": "아침식사 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(붕어빵|팥붕어빵|슈크림붕어빵|미니붕어빵)",
+    "replacement": "베이커리",
+    "description": "붕어빵 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(호떡|호빵|찐빵|왕만두|고로케)",
+    "replacement": "베이커리",
+    "description": "길거리 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(꽃빵|마늘빵|모카빵|야채빵|양파빵)",
+    "replacement": "베이커리",
+    "description": "특수빵 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(피자빵|핫도그빵|소시지빵|햄치즈빵)",
+    "replacement": "베이커리",
+    "description": "조리빵 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(만쥬|MANJU|도라야키|찹쌀떡|떡빵)",
+    "replacement": "베이커리",
+    "description": "일본식 전통과자 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(에그타르트전문|포르투갈에그타르트|마카오에그타르트)",
+    "replacement": "베이커리",
+    "description": "에그타르트 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(24시베이커리|새벽베이커리|심야베이커리|올나잇)",
+    "replacement": "베이커리",
+    "description": "24시간 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(파리바게뜨|파리바게트|PARIS\\s*BAGUETTE|PB|파바)",
+    "replacement": "베이커리",
+    "description": "파리바게뜨 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(뚜레쥬르|뚜레주르|TOUS\\s*LES\\s*JOURS|뚜레)",
+    "replacement": "베이커리",
+    "description": "뚜레쥬르 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(던킨도너츠|던킨|DUNKIN\\s*DONUTS|DUNKIN|DD)",
+    "replacement": "베이커리",
+    "description": "던킨도너츠 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(크리스피크림|크리스피|KRISPY\\s*KREME|KK|크크)",
+    "replacement": "베이커리",
+    "description": "크리스피크림 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(성심당|대전성심당|튀김소보로|부추빵)",
+    "replacement": "베이커리",
+    "description": "성심당 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(이성당|군산이성당|야채빵|팥빵명가)",
+    "replacement": "베이커리",
+    "description": "이성당 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(삼송빵집|전주삼송빵집|PNB|풍년제과)",
+    "replacement": "베이커리",
+    "description": "지역 명물 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(태극당|서울태극당|몽블랑|나폴레옹)",
+    "replacement": "베이커리",
+    "description": "태극당 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(나폴레옹과자점|나폴레옹베이커리|황남빵|경주빵)",
+    "replacement": "베이커리",
+    "description": "지역 특산 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(안스베이커리|앤스베이커리|옵스|OPS|브레댄코)",
+    "replacement": "베이커리",
+    "description": "프리미엄 베이커리 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(빵집|베이커리|BAKERY|제과점|제빵소|빵가게)",
+    "replacement": "베이커리",
+    "description": "베이커리 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(동네빵집|마을빵집|우리동네빵집|로컬베이커리)",
+    "replacement": "베이커리",
+    "description": "동네 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(수제빵|홈메이드|홈베이킹|핸드메이드|아티산)",
+    "replacement": "베이커리",
+    "description": "수제 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(빵공장|대량생산빵|공장빵|양산빵집)",
+    "replacement": "베이커리",
+    "description": "대량생산 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(식빵전문|생식빵|고급식빵|프리미엄식빵|식빵맛집)",
+    "replacement": "베이커리",
+    "description": "식빵 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(노가다빵|일용직빵|현장빵|공사장빵|막노동빵)",
+    "replacement": "베이커리",
+    "description": "현장 노동자 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(크로와상전문|크루아상|CROISSANT|버터크로와상)",
+    "replacement": "베이커리",
+    "description": "크로와상 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(바게트전문|바게뜨|BAGUETTE|프랑스빵|불란서빵)",
+    "replacement": "베이커리",
+    "description": "바게트 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(치아바타|포카치아|CIABATTA|FOCACCIA|이탈리안빵)",
+    "replacement": "베이커리",
+    "description": "이탈리안 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(베이글전문|BAGEL|뉴욕베이글|몬트리올베이글)",
+    "replacement": "베이커리",
+    "description": "베이글 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(도넛전문|도너츠|DONUT|DOUGHNUT|올드패션도넛)",
+    "replacement": "베이커리",
+    "description": "도넛 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(소금빵|시오빵|버터롤|밀크브레드|생크림빵)",
+    "replacement": "베이커리",
+    "description": "일본식 빵 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(카스테라|카스텔라|CASTELLA|대만카스테라|촉촉이)",
+    "replacement": "베이커리",
+    "description": "카스테라 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(소보로빵|소보루|단팥빵|크림빵|야채빵)",
+    "replacement": "베이커리",
+    "description": "한국식 단팥빵 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(마늘빵|갈릭브레드|GARLIC\\s*BREAD|양파빵|치즈빵)",
+    "replacement": "베이커리",
+    "description": "조리빵 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(케이크전문|케익|CAKE|생일케이크|커스텀케이크)",
+    "replacement": "베이커리",
+    "description": "케이크 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(티라미수|TIRAMISU|몽블랑|오페라케이크|무스케이크)",
+    "replacement": "베이커리",
+    "description": "프리미엄 케이크 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(치즈케이크|CHEESECAKE|뉴욕치즈|바스크치즈케이크)",
+    "replacement": "베이커리",
+    "description": "치즈케이크 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(롤케이크|ROLL\\s*CAKE|스위스롤|젤리롤|크림롤)",
+    "replacement": "베이커리",
+    "description": "롤케이크 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(타르트|TART|에그타르트|과일타르트|레몬타르트)",
+    "replacement": "베이커리",
+    "description": "타르트 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(마카롱|MACARON|프렌치마카롱|뚱카롱|마카롱전문)",
+    "replacement": "베이커리",
+    "description": "마카롱 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(쿠키전문|COOKIE|수제쿠키|버터쿠키|초코칩쿠키)",
+    "replacement": "베이커리",
+    "description": "쿠키 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(마들렌|휘낭시에|까눌레|CANELE|프렌치페이스트리)",
+    "replacement": "베이커리",
+    "description": "프랑스 과자 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(에클레어|ECLAIR|슈크림|프로피테롤|크림퍼프)",
+    "replacement": "베이커리",
+    "description": "슈 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(크로플|크로와상와플|CROFFLE|크로넛|하이브리드)",
+    "replacement": "베이커리",
+    "description": "하이브리드 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(파이전문|PIE|애플파이|호두파이|페칸파이)",
+    "replacement": "베이커리",
+    "description": "파이 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(샌드위치|SANDWICH|크로크무슈|파니니|PANINI)",
+    "replacement": "베이커리",
+    "description": "샌드위치 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(브런치카페|브런치베이커리|올데이브런치|BRUNCH)",
+    "replacement": "베이커리",
+    "description": "브런치 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(천연발효빵|사워도우|SOURDOUGH|르방|천연효모)",
+    "replacement": "베이커리",
+    "description": "천연발효 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(글루텐프리|무글루텐|GLUTEN\\s*FREE|알러지프리)",
+    "replacement": "베이커리",
+    "description": "글루텐프리 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(비건베이커리|VEGAN|채식빵|무유제품|식물성)",
+    "replacement": "베이커리",
+    "description": "비건 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(통밀빵|호밀빵|잡곡빵|현미빵|건강빵)",
+    "replacement": "베이커리",
+    "description": "건강빵 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(붕어빵|팥붕어빵|슈크림붕어빵|미니붕어빵|잉어빵)",
+    "replacement": "베이커리",
+    "description": "붕어빵 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(호떡|꿀호떡|씨앗호떡|찹쌀호떡|미니호떡)",
+    "replacement": "베이커리",
+    "description": "호떡 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(찐빵|왕만두|호빵|고로케|군고구마)",
+    "replacement": "베이커리",
+    "description": "길거리 간식 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(와플|WAFFLE|벨기에와플|리에주와플|아메리칸와플)",
+    "replacement": "베이커리",
+    "description": "와플 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(프레첼|프레즐|PRETZEL|독일빵|브레첸)",
+    "replacement": "베이커리",
+    "description": "독일식 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(딸기케이크|생크림케이크|초코케이크|레드벨벳)",
+    "replacement": "베이커리",
+    "description": "생크림케이크 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(24시베이커리|새벽빵집|심야베이커리|올나잇베이커리)",
+    "replacement": "베이커리",
+    "description": "24시간 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(탐앤탐스|TOM\\s*N\\s*TOMS|탐탐|토망토망스|탐앤톰스)",
+    "replacement": "프랜차이즈카페",
+    "description": "탐앤탐스 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(폴바셋|PAUL\\s*BASSETT|폴바셋커피|폴베이셋)",
+    "replacement": "프랜차이즈카페",
+    "description": "폴바셋 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(빽다방|백다방|PAIK'S\\s*COFFEE|빽스커피|빽커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "빽다방 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(커피빈|COFFEE\\s*BEAN|더커피빈|커피빈앤티리프)",
+    "replacement": "프랜차이즈카페",
+    "description": "커피빈 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(할리스|HOLLYS|할리스커피|홀리스)",
+    "replacement": "프랜차이즈카페",
+    "description": "할리스 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(파스쿠찌|PASCUCCI|파스쿠치|카페파스쿠찌)",
+    "replacement": "프랜차이즈카페",
+    "description": "파스쿠찌 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(드롭탑|DROP\\s*TOP|카페드롭탑|드롭탑커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "드롭탑 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(커피베이|COFFEE\\s*BAY|커피베이24|커베)",
+    "replacement": "프랜차이즈카페",
+    "description": "커피베이 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(요거프레소|YOGERPRESSO|요거프레쏘|요프)",
+    "replacement": "프랜차이즈카페",
+    "description": "요거프레소 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(커피명가|COFFEE\\s*MYUNGGA|커피명가에스프레소)",
+    "replacement": "프랜차이즈카페",
+    "description": "커피명가 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(카페띠아모|CAFFE\\s*TI\\s*AMO|띠아모|티아모)",
+    "replacement": "프랜차이즈카페",
+    "description": "카페띠아모 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(달콤커피|DAL\\.KOMM|달콤|달컴커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "달콤커피 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(커피스미스|COFFEE\\s*SMITH|커피스미쓰|스미스커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "커피스미스 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(셀렉토커피|SELECTO|셀렉토|셀렉토커피숍)",
+    "replacement": "프랜차이즈카페",
+    "description": "셀렉토커피 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(커피나무|COFFEE\\s*NAMU|커피나무로스터스)",
+    "replacement": "프랜차이즈카페",
+    "description": "커피나무 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(망고식스|MANGO\\s*SIX|망고6|망식)",
+    "replacement": "프랜차이즈카페",
+    "description": "망고식스 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(카페드파리|CAFE\\s*DE\\s*PARIS|카드파|파리카페)",
+    "replacement": "프랜차이즈카페",
+    "description": "카페드파리 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(그라찌에|GRAZIE|그라찌에커피|그라제)",
+    "replacement": "프랜차이즈카페",
+    "description": "그라찌에 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(카페보니또|BONITO|보니또|보니토커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "카페보니또 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(커피에반하다|반하다|에반하다|BANHADA)",
+    "replacement": "프랜차이즈카페",
+    "description": "커피에반하다 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(더착한커피|착한커피|THE착한|착커)",
+    "replacement": "프랜차이즈카페",
+    "description": "더착한커피 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(카페마마스|CAFE\\s*MAMAS|마마스|카페마마)",
+    "replacement": "프랜차이즈카페",
+    "description": "카페마마스 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(하삼동커피|HASAMDONG|하삼동|삼동커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "하삼동커피 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(카페봄봄|CAFE\\s*BOMBOM|봄봄|봄봄커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "카페봄봄 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(더리터|THE\\s*LITER|더리터커피|리터커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "더리터 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(매머드커피|MAMMOTH|매머드|맘모스커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "매머드커피 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(커피온리|COFFEE\\s*ONLY|커피온니|온리커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "커피온리 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(감성커피|GAMSUNG|감성|감커)",
+    "replacement": "프랜차이즈카페",
+    "description": "감성커피 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(커피볶는집|볶는집|ROASTING\\s*HOUSE|로스팅하우스)",
+    "replacement": "프랜차이즈카페",
+    "description": "커피볶는집 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(빈스빈스|BEANS\\s*BINS|빈스빈즈|빈빈)",
+    "replacement": "프랜차이즈카페",
+    "description": "빈스빈스 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(카페아띠|CAFE\\s*ATTI|아띠|아티커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "카페아띠 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(토프레소|TOPRESSO|토프|탑프레소)",
+    "replacement": "프랜차이즈카페",
+    "description": "토프레소 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(카페세나|SENA|세나커피|카페쎄나)",
+    "replacement": "프랜차이즈카페",
+    "description": "카페세나 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(카페라떼아트|LATTE\\s*ART|라떼아트|라떼아트커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "카페라떼아트 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(드립앤드립|DRIP\\s*&\\s*DRIP|드립드립|드앤드)",
+    "replacement": "프랜차이즈카페",
+    "description": "드립앤드립 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(커피플레이스|COFFEE\\s*PLACE|커플|플레이스커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "커피플레이스 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(카페7그램|7GRAM|세븐그램|7그램커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "카페7그램 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(카페노티드|NOTED|노티드|노티드커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "카페노티드 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(커피팩토리|COFFEE\\s*FACTORY|팩토리|팩토리커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "커피팩토리 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(카페리브레|LIBRE|리브레|리브레커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "카페리브레 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(모카블렌드|MOCA\\s*BLEND|모카|블렌드커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "모카블렌드 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(카페코지|COZY|코지|코지커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "카페코지 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(커피타임|COFFEE\\s*TIME|타임|타임커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "커피타임 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(카페클라우드|CLOUD|클라우드|클라우드커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "카페클라우드 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(카페포레|FORE|포레|포레커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "카페포레 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(더센터커피|THE\\s*CENTER|센터커피|더센터)",
+    "replacement": "프랜차이즈카페",
+    "description": "더센터커피 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(블루포트|BLUE\\s*POT|블루팟|블포)",
+    "replacement": "프랜차이즈카페",
+    "description": "블루포트 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(카페베네치아|VENEZIA|베네치아|베네치아커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "카페베네치아 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(카페인중독|CAFFEINE|인중독|카페인커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "카페인중독 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(스타벅스|STARBUCKS|스벅|별다방|SBUX)",
+    "replacement": "커피전문점",
+    "description": "스타벅스 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 95
+  },
+  {
+    "pattern": "(투썸플레이스|A\\s*TWOSOME\\s*PLACE|투썸|TWOSOME)",
+    "replacement": "커피전문점",
+    "description": "투썸플레이스 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(엔젤리너스|ANGEL\\s*IN\\s*US|엔제리너스|엔젤인어스)",
+    "replacement": "커피전문점",
+    "description": "엔젤리너스 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(카페베네|CAFFE\\s*BENE|CAFFEBENE|베네)",
+    "replacement": "커피전문점",
+    "description": "카페베네 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(이디야|EDIYA|이디야커피|에디야)",
+    "replacement": "커피전문점",
+    "description": "이디야 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(메가커피|MEGA\\s*COFFEE|메가MGC커피|메가)",
+    "replacement": "커피전문점",
+    "description": "메가커피 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(컴포즈커피|COMPOSE\\s*COFFEE|컴포즈|COMPOSE)",
+    "replacement": "커피전문점",
+    "description": "컴포즈커피 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(커피빈앤티리프|COFFEE\\s*BEAN\\s*&\\s*TEA\\s*LEAF|CBTL)",
+    "replacement": "커피전문점",
+    "description": "커피빈앤티리프 풀네임 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(더벤티|THE\\s*VENTI|더벤티커피|벤티)",
+    "replacement": "커피전문점",
+    "description": "더벤티 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(블루보틀|BLUE\\s*BOTTLE|블루보틀커피|블보)",
+    "replacement": "커피전문점",
+    "description": "블루보틀 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(테라로사|TERAROSA|테라로사커피|테라)",
+    "replacement": "커피전문점",
+    "description": "테라로사 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(커피리브레|COFFEE\\s*LIBRE|리브레|커리브)",
+    "replacement": "커피전문점",
+    "description": "커피리브레 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(모모스커피|MOMOS|모모스|모모스테이블)",
+    "replacement": "커피전문점",
+    "description": "모모스커피 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(앤트러사이트|ANTHRACITE|앤트러|안트라사이트)",
+    "replacement": "커피전문점",
+    "description": "앤트러사이트 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(프릳츠|FRITZ|프릳츠커피|프리츠)",
+    "replacement": "커피전문점",
+    "description": "프릳츠 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(커피몽타주|COFFEE\\s*MONTAGE|몽타주|몽타주커피)",
+    "replacement": "커피전문점",
+    "description": "커피몽타주 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(카페꼼마|CAFE\\s*COMMA|꼼마|콤마커피)",
+    "replacement": "커피전문점",
+    "description": "카페꼼마 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(헬카페|HELL\\s*CAFE|헬커피|HELL\\s*COFFEE)",
+    "replacement": "커피전문점",
+    "description": "헬카페 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(스페셜티커피|SPECIALTY|스페셜티|로스터리)",
+    "replacement": "커피전문점",
+    "description": "스페셜티 커피전문점 일반 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(핸드드립|HAND\\s*DRIP|드립커피|브루잉)",
+    "replacement": "커피전문점",
+    "description": "핸드드립 전문점 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(로스터리카페|ROASTERY|로스팅|커피로스터리)",
+    "replacement": "커피전문점",
+    "description": "로스터리 카페 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(에스프레소바|ESPRESSO\\s*BAR|에스프레소전문|바리스타)",
+    "replacement": "커피전문점",
+    "description": "에스프레소바 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(콜드브루|COLD\\s*BREW|더치커피|DUTCH\\s*COFFEE)",
+    "replacement": "커피전문점",
+    "description": "콜드브루 전문점 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(커피공방|COFFEE\\s*WORKSHOP|커피작업실|커피아뜰리에)",
+    "replacement": "커피전문점",
+    "description": "커피공방 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(커피전문점|커피숍|COFFEE\\s*SHOP|카페|CAFE)",
+    "replacement": "커피전문점",
+    "description": "커피전문점 일반 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(24시커피|24시간커피|무인카페|무인커피)",
+    "replacement": "커피전문점",
+    "description": "24시/무인 커피전문점 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(커피하우스|COFFEE\\s*HOUSE|커피홀|커피라운지)",
+    "replacement": "커피전문점",
+    "description": "커피하우스 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(디저트카페|DESSERT\\s*CAFE|케이크카페|브런치카페)",
+    "replacement": "커피전문점",
+    "description": "디저트/브런치 카페 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(북카페|BOOK\\s*CAFE|스터디카페|공부카페)",
+    "replacement": "커피전문점",
+    "description": "북카페/스터디카페 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(루프탑카페|ROOFTOP|옥상카페|테라스카페)",
+    "replacement": "커피전문점",
+    "description": "루프탑/테라스 카페 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(펫카페|PET\\s*CAFE|애견카페|강아지카페|고양이카페)",
+    "replacement": "커피전문점",
+    "description": "펫카페 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(드라이브스루|DRIVE\\s*THRU|DT점|차안에서)",
+    "replacement": "커피전문점",
+    "description": "드라이브스루 전문점 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(커피앤베이커리|COFFEE\\s*&\\s*BAKERY|카페베이커리)",
+    "replacement": "커피전문점",
+    "description": "커피&베이커리 복합점 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(아메리카노전문|라떼전문|카푸치노|플랫화이트)",
+    "replacement": "커피전문점",
+    "description": "특정 메뉴 전문점 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(테이크아웃전문|TAKEOUT|TO\\s*GO|포장전문)",
+    "replacement": "커피전문점",
+    "description": "테이크아웃 전문점 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(커피트럭|COFFEE\\s*TRUCK|이동카페|푸드트럭)",
+    "replacement": "커피전문점",
+    "description": "커피트럭 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(프리미엄커피|PREMIUM|고급커피|수입커피)",
+    "replacement": "커피전문점",
+    "description": "프리미엄 커피전문점 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(싱글오리진|SINGLE\\s*ORIGIN|원두전문|생두)",
+    "replacement": "커피전문점",
+    "description": "싱글오리진 전문점 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(아라비카|ARABICA|로부스타|ROBUSTA|커피품종)",
+    "replacement": "커피전문점",
+    "description": "커피품종 전문점 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(큐그레이더|Q\\s*GRADER|커피감정사|바리스타인증)",
+    "replacement": "커피전문점",
+    "description": "전문가 운영 커피전문점 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(라떼아트|LATTE\\s*ART|로제타|하트|튤립)",
+    "replacement": "커피전문점",
+    "description": "라떼아트 전문점 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(사이폰커피|SIPHON|모카포트|MOKA\\s*POT|케멕스)",
+    "replacement": "커피전문점",
+    "description": "특수추출 커피전문점 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(브루어리카페|BREWERY|맥주카페|커피맥주)",
+    "replacement": "커피전문점",
+    "description": "브루어리 카페 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(코워킹카페|CO\\s*WORKING|업무카페|비즈니스카페)",
+    "replacement": "커피전문점",
+    "description": "코워킹 카페 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(시그니처커피|SIGNATURE|시그니처메뉴|대표메뉴)",
+    "replacement": "커피전문점",
+    "description": "시그니처 메뉴 전문점 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(친환경카페|ECO\\s*CAFE|제로웨이스트|텀블러)",
+    "replacement": "커피전문점",
+    "description": "친환경 카페 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(스마트오더|SMART\\s*ORDER|앱주문|키오스크)",
+    "replacement": "커피전문점",
+    "description": "스마트오더 전문점 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(구독커피|SUBSCRIPTION|정기배송|커피구독)",
+    "replacement": "커피전문점",
+    "description": "구독형 커피전문점 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(갤러리카페|GALLERY\\s*CAFE|전시카페|아트카페)",
+    "replacement": "커피전문점",
+    "description": "갤러리 카페 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(BBQ|비비큐|BBQ치킨|BBQ올리브치킨|비비큐치킨)",
+    "replacement": "치킨전문점",
+    "description": "BBQ 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 95
+  },
+  {
+    "pattern": "(교촌치킨|KYOCHON|교촌|교촌에프앤비|KyoChon)",
+    "replacement": "치킨전문점",
+    "description": "교촌치킨 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 95
+  },
+  {
+    "pattern": "(BHC|BHC치킨|비에이치씨|뿌링클|맛초킹)",
+    "replacement": "치킨전문점",
+    "description": "BHC 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(네네치킨|NENE|네네|NeNe|네네치킨파닭)",
+    "replacement": "치킨전문점",
+    "description": "네네치킨 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(굽네치킨|GOOBNE|굽네|굽네갈비천왕|고추바사삭)",
+    "replacement": "치킨전문점",
+    "description": "굽네치킨 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(푸라닭|PURADAK|푸라닭치킨|블랙알리오)",
+    "replacement": "치킨전문점",
+    "description": "푸라닭 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(페리카나|PELICANA|페리카나치킨|양념통닭)",
+    "replacement": "치킨전문점",
+    "description": "페리카나 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(호식이두마리치킨|호식이|두마리치킨|호치킨)",
+    "replacement": "치킨전문점",
+    "description": "호식이두마리치킨 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(멕시카나|MEXICANA|멕시카나치킨|땡초치킨)",
+    "replacement": "치킨전문점",
+    "description": "멕시카나 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(또래오래|또래오래치킨|또오치|신호등치킨)",
+    "replacement": "치킨전문점",
+    "description": "또래오래 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(처갓집양념치킨|처갓집|처갓집슈프림|슈프림양념)",
+    "replacement": "치킨전문점",
+    "description": "처갓집양념치킨 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(맘스터치|MOM'S\\s*TOUCH|맘터|싸이버거세트)",
+    "replacement": "치킨전문점",
+    "description": "맘스터치 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(60계치킨|육공계|60계|60계스파이시)",
+    "replacement": "치킨전문점",
+    "description": "60계치킨 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(치킨플러스|CHICKEN\\s*PLUS|치플|깐풍치킨)",
+    "replacement": "치킨전문점",
+    "description": "치킨플러스 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(자담치킨|JADAM|자담|숯불치킨)",
+    "replacement": "치킨전문점",
+    "description": "자담치킨 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(노랑통닭|노랑|노랑치킨|압구정노랑통닭)",
+    "replacement": "치킨전문점",
+    "description": "노랑통닭 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(티바두마리치킨|티바|TIBA|두마리)",
+    "replacement": "치킨전문점",
+    "description": "티바두마리치킨 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(후라이드참잘하는집|후참|참잘|후라이드전문)",
+    "replacement": "치킨전문점",
+    "description": "후라이드참잘하는집 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(치킨매니아|CHICKEN\\s*MANIA|치매|매니아)",
+    "replacement": "치킨전문점",
+    "description": "치킨매니아 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(신통치킨|신통|통닭|옛날통닭)",
+    "replacement": "치킨전문점",
+    "description": "신통치킨 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(부어치킨|BOOR|부어|맥주치킨)",
+    "replacement": "치킨전문점",
+    "description": "부어치킨 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(가마로강정|가마로|강정치킨|간장강정)",
+    "replacement": "치킨전문점",
+    "description": "가마로강정 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(피자나라치킨공주|피자나라|치킨공주|피치공)",
+    "replacement": "치킨전문점",
+    "description": "피자나라치킨공주 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(돈치킨|DON|돈까스치킨|치킨까스)",
+    "replacement": "치킨전문점",
+    "description": "돈치킨 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(오븐마루|OVEN\\s*MARU|오븐마루치킨|오븐구이)",
+    "replacement": "치킨전문점",
+    "description": "오븐마루 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(구구치킨|99|구구|숯불바베큐)",
+    "replacement": "치킨전문점",
+    "description": "구구치킨 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(치킨|CHICKEN|통닭|닭튀김|프라이드치킨)",
+    "replacement": "치킨전문점",
+    "description": "치킨 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(후라이드|프라이드|FRIED|후치|크리스피)",
+    "replacement": "치킨전문점",
+    "description": "후라이드치킨 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(양념치킨|양념통닭|간장치킨|매운치킨|순한치킨)",
+    "replacement": "치킨전문점",
+    "description": "양념치킨 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(파닭|파치킨|대파치킨|파닭치킨)",
+    "replacement": "치킨전문점",
+    "description": "파닭 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(닭강정|강정|순살강정|매운강정|간장강정)",
+    "replacement": "치킨전문점",
+    "description": "닭강정 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(순살치킨|순살|뼈없는치킨|순살텐더)",
+    "replacement": "치킨전문점",
+    "description": "순살치킨 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(전기구이치킨|전기구이통닭|로티세리|구이치킨)",
+    "replacement": "치킨전문점",
+    "description": "전기구이치킨 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(숯불치킨|숯불구이|바베큐치킨|BBQ구이)",
+    "replacement": "치킨전문점",
+    "description": "숯불치킨 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(오븐치킨|오븐구이|베이크치킨|구운치킨)",
+    "replacement": "치킨전문점",
+    "description": "오븐치킨 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(반반치킨|반반|하프앤하프|믹스치킨)",
+    "replacement": "치킨전문점",
+    "description": "반반치킨 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(치킨너겟|너겟|텐더|치킨텐더|닭가슴살)",
+    "replacement": "치킨전문점",
+    "description": "치킨너겟/텐더 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(윙|봉|날개|닭날개|윙봉)",
+    "replacement": "치킨전문점",
+    "description": "윙/봉 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(24시치킨|새벽치킨|심야치킨|올나잇치킨)",
+    "replacement": "치킨전문점",
+    "description": "24시 치킨 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(치킨배달|배달치킨|치킨딜리버리|퀵치킨)",
+    "replacement": "치킨전문점",
+    "description": "치킨배달 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(치맥|치킨맥주|호프치킨|비어치킨)",
+    "replacement": "치킨전문점",
+    "description": "치맥 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(옛날치킨|전통치킨|시장치킨|재래식치킨)",
+    "replacement": "치킨전문점",
+    "description": "옛날치킨 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(신선치킨|생치킨|당일치킨|냉동안함)",
+    "replacement": "치킨전문점",
+    "description": "신선치킨 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(프리미엄치킨|수제치킨|장인치킨|명품치킨)",
+    "replacement": "치킨전문점",
+    "description": "프리미엄치킨 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(1인치킨|혼술치킨|혼밥치킨|소량치킨)",
+    "replacement": "치킨전문점",
+    "description": "1인 치킨 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(치킨버거|치킨샌드위치|치킨랩|치킨또띠아)",
+    "replacement": "치킨전문점",
+    "description": "치킨버거 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(치킨무|무|치킨소스|양념소스|딥소스)",
+    "replacement": "치킨전문점",
+    "description": "치킨 부가메뉴 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(치킨세트|세트메뉴|콜라세트|맥주세트)",
+    "replacement": "치킨전문점",
+    "description": "치킨세트 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(치킨테이크아웃|포장치킨|TO\\s*GO|픽업치킨)",
+    "replacement": "치킨전문점",
+    "description": "테이크아웃 치킨 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(아웃백|OUTBACK|아웃백스테이크하우스|OUTBACK\\s*STEAKHOUSE)",
+    "replacement": "양식당",
+    "description": "아웃백 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(티지아이프라이데이|TGIF|TGI\\s*FRIDAY'S|티지아이)",
+    "replacement": "양식당",
+    "description": "TGIF 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(빕스|VIPS|빕스프리미어|VIPS\\s*PREMIER)",
+    "replacement": "양식당",
+    "description": "빕스 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(애슐리|ASHLEY|애슐리퀸즈|애슐리W)",
+    "replacement": "양식당",
+    "description": "애슐리 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(토니로마스|TONY\\s*ROMA'S|토니|토로마)",
+    "replacement": "양식당",
+    "description": "토니로마스 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(매드포갈릭|MAD\\s*FOR\\s*GARLIC|매드갈릭|매포갈)",
+    "replacement": "양식당",
+    "description": "매드포갈릭 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(온더보더|ON\\s*THE\\s*BORDER|온더보더멕시칸)",
+    "replacement": "양식당",
+    "description": "온더보더 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(베니건스|BENNIGAN'S|베니건|베니건스그릴)",
+    "replacement": "양식당",
+    "description": "베니건스 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(스테이크|STEAK|스테이크하우스|STEAKHOUSE)",
+    "replacement": "양식당",
+    "description": "스테이크 전문점 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(티본|T-BONE|티본스테이크|립아이|RIB\\s*EYE)",
+    "replacement": "양식당",
+    "description": "스테이크 부위별 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(안심|등심|채끝|꽃등심|부채살)",
+    "replacement": "양식당",
+    "description": "한국식 스테이크 부위 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(파스타|PASTA|스파게티|SPAGHETTI|페투치니|FETTUCCINE)",
+    "replacement": "양식당",
+    "description": "파스타 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(까르보나라|CARBONARA|알리오올리오|AGLIO\\s*OLIO)",
+    "replacement": "양식당",
+    "description": "파스타 종류별 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(로제파스타|크림파스타|토마토파스타|오일파스타)",
+    "replacement": "양식당",
+    "description": "파스타 소스별 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(봉골레|VONGOLE|아라비아타|ARRABBIATA|푸타네스카)",
+    "replacement": "양식당",
+    "description": "이탈리안 파스타 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(리조또|RISOTTO|리조토|필라프|PILAF)",
+    "replacement": "양식당",
+    "description": "리조또/필라프 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(그라탕|GRATIN|라자냐|LASAGNA|뇨끼|GNOCCHI)",
+    "replacement": "양식당",
+    "description": "오븐 요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(이탈리안|ITALIAN|이태리|이탈리아)",
+    "replacement": "양식당",
+    "description": "이탈리안 레스토랑 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(프렌치|FRENCH|프랑스요리|불란서요리)",
+    "replacement": "양식당",
+    "description": "프렌치 레스토랑 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(브런치|BRUNCH|브런치카페|올데이브런치)",
+    "replacement": "양식당",
+    "description": "브런치 레스토랑 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(에그베네딕트|팬케이크|PANCAKE|프렌치토스트)",
+    "replacement": "양식당",
+    "description": "브런치 메뉴 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(오믈렛|OMELET|스크램블|에그스크램블)",
+    "replacement": "양식당",
+    "description": "계란 요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(피자|PIZZA|화덕피자|씬피자|시카고피자)",
+    "replacement": "양식당",
+    "description": "피자 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(샐러드바|SALAD\\s*BAR|셀러드바|뷔페)",
+    "replacement": "양식당",
+    "description": "샐러드바 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(시저샐러드|CAESAR|코브샐러드|그릭샐러드)",
+    "replacement": "양식당",
+    "description": "샐러드 종류별 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(수프|SOUP|스프|양송이수프|호박수프)",
+    "replacement": "양식당",
+    "description": "수프 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(클램차우더|민네스트로네|비스크|콘소메)",
+    "replacement": "양식당",
+    "description": "수프 종류별 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(돈까스|DONKATSU|일본식돈까스|경양식)",
+    "replacement": "양식당",
+    "description": "경양식 돈까스 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(함박스테이크|HAMBURG\\s*STEAK|햄버그스테이크)",
+    "replacement": "양식당",
+    "description": "함박스테이크 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(오므라이스|OMURICE|오무라이스|볶음밥오믈렛)",
+    "replacement": "양식당",
+    "description": "오므라이스 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(포크커틀릿|PORK\\s*CUTLET|치킨커틀릿|코르동블루)",
+    "replacement": "양식당",
+    "description": "커틀릿 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(그릴|GRILL|바베큐|BBQ|숯불구이)",
+    "replacement": "양식당",
+    "description": "그릴 요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(립|RIBS|폭립|바비큐립|베이비백립)",
+    "replacement": "양식당",
+    "description": "립 요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(치킨|로티세리치킨|그릴드치킨|허브치킨)",
+    "replacement": "양식당",
+    "description": "양식 치킨 요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(해산물|SEAFOOD|씨푸드|랍스터|LOBSTER)",
+    "replacement": "양식당",
+    "description": "해산물 요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(새우|쉬림프|SHRIMP|감바스|GAMBAS)",
+    "replacement": "양식당",
+    "description": "새우 요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(연어|SALMON|연어스테이크|그릴드연어)",
+    "replacement": "양식당",
+    "description": "연어 요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(와인|WINE|와인바|WINE\\s*BAR|와인레스토랑)",
+    "replacement": "양식당",
+    "description": "와인바/레스토랑 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(타파스|TAPAS|스페인요리|스패니시)",
+    "replacement": "양식당",
+    "description": "스페인 요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(멕시칸|MEXICAN|타코|부리또|퀘사디아)",
+    "replacement": "양식당",
+    "description": "멕시칸 요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(파인다이닝|FINE\\s*DINING|고급양식|코스요리)",
+    "replacement": "양식당",
+    "description": "파인다이닝 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(비스트로|BISTRO|캐주얼다이닝|브라스리)",
+    "replacement": "양식당",
+    "description": "비스트로/캐주얼 다이닝 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(뷔페|BUFFET|부페|양식뷔페|씨푸드뷔페)",
+    "replacement": "양식당",
+    "description": "양식 뷔페 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(런치세트|LUNCH\\s*SET|런치코스|비즈니스런치)",
+    "replacement": "양식당",
+    "description": "런치세트 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(디너코스|DINNER\\s*COURSE|정찬|풀코스)",
+    "replacement": "양식당",
+    "description": "디너코스 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(애피타이저|APPETIZER|전채요리|스타터)",
+    "replacement": "양식당",
+    "description": "전채요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(디저트|DESSERT|티라미수|판나코타|크렘브륄레)",
+    "replacement": "양식당",
+    "description": "양식 디저트 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(바|BAR|펍|PUB|가스트로펍|GASTROPUB)",
+    "replacement": "양식당",
+    "description": "바/펍 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(양식|서양요리|웨스턴|WESTERN|유럽요리)",
+    "replacement": "양식당",
+    "description": "양식 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(김밥천국|김천|KIMBAB\\s*HEAVEN|김밥천국분식)",
+    "replacement": "분식점",
+    "description": "김밥천국 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(김밥나라|김밥나루|KIMBAB\\s*NARA|김나)",
+    "replacement": "분식점",
+    "description": "김밥나라 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(신전떡볶이|신전|SINJEON|신전떡볶이본점)",
+    "replacement": "분식점",
+    "description": "신전떡볶이 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(엽기떡볶이|엽떡|YUPDDUK|엽기)",
+    "replacement": "분식점",
+    "description": "엽기떡볶이 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(죠스떡볶이|죠스|JAWS|죠떡)",
+    "replacement": "분식점",
+    "description": "죠스떡볶이 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(떡참|떡참떡볶이|DDUK\\s*CHAM|떡참본점)",
+    "replacement": "분식점",
+    "description": "떡참 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(국대떡볶이|국대|국떡|GUKDAE)",
+    "replacement": "분식점",
+    "description": "국대떡볶이 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(아딸|아딸떡볶이|ADDAL|아딸본점)",
+    "replacement": "분식점",
+    "description": "아딸 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(김밥|KIMBAB|GIMBAP|김밥집|김밥전문)",
+    "replacement": "분식점",
+    "description": "김밥 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(참치김밥|야채김밥|충무김밥|누드김밥|꼬마김밥)",
+    "replacement": "분식점",
+    "description": "김밥 종류별 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(떡볶이|떡볶기|떡뽀끼|TTEOKBOKKI|DDUKBOKKI)",
+    "replacement": "분식점",
+    "description": "떡볶이 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(로제떡볶이|짜장떡볶이|궁중떡볶이|국물떡볶이)",
+    "replacement": "분식점",
+    "description": "떡볶이 종류별 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(라면|라멘|RAMEN|RAMYEON|컵라면)",
+    "replacement": "분식점",
+    "description": "라면 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(신라면|진라면|너구리|안성탕면|짜파게티)",
+    "replacement": "분식점",
+    "description": "라면 브랜드별 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(라볶이|라볶기|라면떡볶이|짜파구리|짜파게티라면)",
+    "replacement": "분식점",
+    "description": "라면 응용 메뉴 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(튀김|TWIGIM|야채튀김|오징어튀김|고구마튀김)",
+    "replacement": "분식점",
+    "description": "튀김 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(김말이|춘권|깻잎튀김|새우튀김|만두튀김)",
+    "replacement": "분식점",
+    "description": "튀김 종류별 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(순대|SUNDAE|순댓국|찰순대|당면순대)",
+    "replacement": "분식점",
+    "description": "순대 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(순대볶음|순대꼬치|순대정식|모듬순대)",
+    "replacement": "분식점",
+    "description": "순대 메뉴 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(어묵|오뎅|EOMUK|ODEN|어묵탕)",
+    "replacement": "분식점",
+    "description": "어묵 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(꼬치어묵|어묵국물|어묵바|매운어묵)",
+    "replacement": "분식점",
+    "description": "어묵 종류별 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(만두|MANDU|군만두|물만두|찐만두)",
+    "replacement": "분식점",
+    "description": "만두 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(왕만두|고기만두|김치만두|야채만두|새우만두)",
+    "replacement": "분식점",
+    "description": "만두 종류별 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(쫄면|쫄면무침|비빔쫄면|매운쫄면)",
+    "replacement": "분식점",
+    "description": "쫄면 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(국수|잔치국수|비빔국수|멸치국수|소면)",
+    "replacement": "분식점",
+    "description": "국수 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(우동|UDON|가락우동|어묵우동|김치우동)",
+    "replacement": "분식점",
+    "description": "우동 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(비빔밥|돌솥비빔밥|야채비빔밥|참치비빔밥)",
+    "replacement": "분식점",
+    "description": "분식점 비빔밥 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(볶음밥|김치볶음밥|새우볶음밥|햄볶음밥)",
+    "replacement": "분식점",
+    "description": "볶음밥 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(덮밥|제육덮밥|오징어덮밥|참치덮밥)",
+    "replacement": "분식점",
+    "description": "덮밥 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(주먹밥|삼각김밥|충무김밥세트|김밥정식)",
+    "replacement": "분식점",
+    "description": "주먹밥/세트 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(분식|분식집|분식점|BUNSIK|한식분식)",
+    "replacement": "분식점",
+    "description": "분식점 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(즉석떡볶이|즉떡|컵떡볶이|포장떡볶이)",
+    "replacement": "분식점",
+    "description": "즉석떡볶이 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(떡강정|떡꼬치|떡튀김|매운떡강정)",
+    "replacement": "분식점",
+    "description": "떡 응용메뉴 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(핫도그|소세지|햄치즈스틱|모짜핫도그)",
+    "replacement": "분식점",
+    "description": "핫도그 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(토스트|햄치즈토스트|계란토스트|야채토스트)",
+    "replacement": "분식점",
+    "description": "토스트 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(떡라면|떡만둣국|라면김밥|라면정식)",
+    "replacement": "분식점",
+    "description": "라면 세트메뉴 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(분식세트|떡튀순|라볶이세트|김떡순)",
+    "replacement": "분식점",
+    "description": "분식 세트메뉴 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(학교앞분식|학교분식|대학분식|캠퍼스분식)",
+    "replacement": "분식점",
+    "description": "학교 분식점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(시장분식|재래시장분식|전통시장분식)",
+    "replacement": "분식점",
+    "description": "시장 분식점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(24시분식|24시간분식|새벽분식|심야분식)",
+    "replacement": "분식점",
+    "description": "24시간 분식점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(포장마차|노점|길거리분식|트럭분식)",
+    "replacement": "분식점",
+    "description": "포장마차/노점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(떡볶이뷔페|분식뷔페|무한리필떡볶이)",
+    "replacement": "분식점",
+    "description": "분식 뷔페 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(매운맛|중간맛|순한맛|신라면맛|짜장맛)",
+    "replacement": "분식점",
+    "description": "맵기/맛 단계 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(치즈떡볶이|치즈김밥|치즈라면|치즈추가)",
+    "replacement": "분식점",
+    "description": "치즈 토핑 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(계란추가|햄추가|김치추가|토핑추가)",
+    "replacement": "분식점",
+    "description": "토핑 추가 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(단무지|깍두기|김치|반찬|무료반찬)",
+    "replacement": "분식점",
+    "description": "분식점 반찬 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(분식체인|분식프랜차이즈|가맹점분식)",
+    "replacement": "분식점",
+    "description": "분식 체인점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(혼밥분식|1인분식|소량분식|미니세트)",
+    "replacement": "분식점",
+    "description": "1인 분식 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(배달분식|분식배달|떡볶이배달|포장분식)",
+    "replacement": "분식점",
+    "description": "분식 배달/포장 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+]
