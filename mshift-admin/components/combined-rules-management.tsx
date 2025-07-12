@@ -115,10 +115,6 @@ export function CombinedRulesManagement() {
   const [loadingAiFeedback, setLoadingAiFeedback] = useState(false);
   const [selectedFeedback, setSelectedFeedback] = useState<string | null>(null);
   
-  // 캐시 데이터 상태
-  const [cacheData, setCacheData] = useState<CacheData[]>([]);
-  const [cacheLoading, setCacheLoading] = useState(false);
-  const [cacheSearch, setCacheSearch] = useState("");
 
   // 정규식 룰 상태
   const [regexRules, setRegexRules] = useState<RegexRule[]>([]);
@@ -178,23 +174,6 @@ export function CombinedRulesManagement() {
     }
   };
 
-  // 캐시 데이터 로드
-  const loadCacheData = async () => {
-    setCacheLoading(true);
-    try {
-      const response = await fetch('/api/cache/all');
-      if (response.ok) {
-        const data = await response.json();
-        setCacheData(data.data || []);
-      } else {
-        console.error('캐시 데이터 로드 실패:', response.statusText);
-      }
-    } catch (error) {
-      console.error('캐시 데이터 로드 에러:', error);
-    } finally {
-      setCacheLoading(false);
-    }
-  };
 
   // 정규식 룰 로드
   const loadRegexRules = async () => {
@@ -387,10 +366,16 @@ export function CombinedRulesManagement() {
       
       const data = await response.json();
       
-      if (data.success) {
-        setTestResult(data);
+      if (response.ok && data.success) {
+        setTestResult({
+          success: true,
+          matched: data.matched || false,
+          matches: data.matches || [],
+          normalized: data.normalized,
+          originalText: transaction
+        });
       } else {
-        setTestResult({ error: '룰 매칭 실패: ' + data.error });
+        setTestResult({ error: '룰 매칭 실패: ' + (data.error || response.statusText) });
       }
     } catch (error) {
       console.error('룰 테스트 오류:', error);
@@ -556,9 +541,6 @@ export function CombinedRulesManagement() {
 
   useEffect(() => {
     loadRules();
-    if (currentTab === 'cache') {
-      loadCacheData();
-    }
     if (currentTab === 'regex-db') {
       loadRegexRules();
     }
@@ -576,7 +558,7 @@ export function CombinedRulesManagement() {
         <div>
           <h2 className="text-3xl font-bold tracking-tight">통합 룰 관리</h2>
           <p className="text-muted-foreground">
-            AI 거래 분류를 위한 규칙을 생성하고 관리합니다
+            AI 거래 분류를 위한 규칙을 생성, 관리
           </p>
         </div>
         <div className="flex gap-2">
@@ -614,11 +596,8 @@ export function CombinedRulesManagement() {
       <Tabs defaultValue="overview" className="space-y-4" onValueChange={setCurrentTab}>
         <TabsList>
           <TabsTrigger value="overview">개요</TabsTrigger>
-          <TabsTrigger value="rules">키워드 룰</TabsTrigger>
-          <TabsTrigger value="regex-hardcoded">정규식 룰</TabsTrigger>
           <TabsTrigger value="regex-db">DB 정규식</TabsTrigger>
-          <TabsTrigger value="test">룰 엔진 테스트</TabsTrigger>
-          <TabsTrigger value="cache">캐시 데이터</TabsTrigger>
+          <TabsTrigger value="rules">키워드 룰</TabsTrigger>
           <TabsTrigger value="analytics">분석 대시보드</TabsTrigger>
         </TabsList>
 
@@ -650,104 +629,7 @@ export function CombinedRulesManagement() {
           </Card>
         </TabsContent>
 
-        {/* 정규식 룰 엔진 탭 */}
-        <TabsContent value="regex-hardcoded" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <Code className="h-5 w-5" />
-                <CardTitle>정규식 기반 룰 엔진 (하드코딩)</CardTitle>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <Card>
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-sm">성능 특성</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span>처리 속도:</span>
-                          <Badge variant="secondary">~0.1ms</Badge>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>정확도:</span>
-                          <Badge variant="secondary">95-99%</Badge>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>유지보수:</span>
-                          <Badge variant="destructive">어려움</Badge>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                  
-                  <Card>
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-sm">지원 카테고리</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-1 text-sm">
-                        <div className="flex justify-between">
-                          <span>주유소:</span>
-                          <Badge variant="outline">95%</Badge>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>편의점:</span>
-                          <Badge variant="outline">95%</Badge>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>카센터:</span>
-                          <Badge variant="outline">90%</Badge>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>온라인:</span>
-                          <Badge variant="outline">95%</Badge>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                  
-                  <Card>
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-sm">파일 위치</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-1 text-xs font-mono">
-                        <div>lib/services/regex-rule-engine.ts</div>
-                        <div>__tests__/services/regex-rule-engine.test.ts</div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-                
-                <div className="bg-muted/50 p-4 rounded-lg">
-                  <h4 className="font-medium mb-2">주요 패턴 예시</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm font-mono">
-                    <div>
-                      <div className="font-medium text-muted-foreground">주유소 패턴</div>
-                      <div className="bg-background p-2 rounded border">
-                        /(.+?)\(상\)주/i<br/>
-                        /(.+?)\(하\)주/i
-                      </div>
-                    </div>
-                    <div>
-                      <div className="font-medium text-muted-foreground">편의점 패턴</div>
-                      <div className="bg-background p-2 rounded border">
-                        /GS25/i<br/>
-                        /\bCU\b/i
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* CSV 정규식 룰 엔진 탭 */}
+        {/* DB 정규식 룰 엔진 탭 */}
         <TabsContent value="regex-db" className="space-y-4">
           <RegexRulesManagement />
         </TabsContent>
@@ -784,11 +666,18 @@ export function CombinedRulesManagement() {
             </CardContent>
           </Card>
 
+        <div>
+          <h2 className="text-2xl font-bold">키워드 기반 규칙 관리</h2>
+          <p> NextJS API → PostgreSQL(table : rule_engine)</p>
+        </div>
+
           {/* 통계 카드 */}
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
+                  
                   <div>
                     <p className="text-sm font-medium text-muted-foreground">총 룰 개수</p>
                     <p className="text-2xl font-bold">{stats.total}</p>
@@ -859,6 +748,115 @@ export function CombinedRulesManagement() {
             </Card>
 
           </div>
+
+          {/* 키워드 룰 테스트 섹션 */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Play className="h-5 w-5" />
+                키워드 룰 테스트
+              </CardTitle>
+              <p className="text-sm text-muted-foreground">
+                NextJS API → PostgreSQL (rule_engine 테이블)
+              </p>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="keyword-test-input">거래 내역 입력</Label>
+                  <Textarea
+                    id="keyword-test-input"
+                    placeholder="테스트할 거래 내역을 입력하세요... (예: 스타벅스 강남점)"
+                    value={testInput}
+                    onChange={(e) => setTestInput(e.target.value)}
+                    rows={3}
+                  />
+                </div>
+                
+                <Button onClick={() => testRule(testInput)} disabled={!testInput.trim()}>
+                  <Play className="h-4 w-4 mr-2" />
+                  키워드 룰 테스트 실행
+                </Button>
+                
+                {testResult && !testResult.error && (
+                  <div className="space-y-4">
+                    {/* 5단계 처리 과정 표시 */}
+                    <div className="flex items-center justify-between p-4 bg-muted rounded">
+                      {['키워드 검색', '신뢰도 계산', '정렬', '결과 반환'].map((step, idx) => (
+                        <div key={step} className="flex items-center">
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm ${testResult.success ? 'bg-green-500' : 'bg-gray-400'}`}>
+                            {testResult.success ? <CheckCircle className="h-4 w-4" /> : idx + 1}
+                          </div>
+                          <span className="ml-2 text-sm">{step}</span>
+                          {idx < 3 && <span className="mx-2">→</span>}
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* 결과 표시 */}
+                    {testResult.matches && testResult.matches.length > 0 ? (
+                      <div className="space-y-2">
+                        <h4 className="font-medium text-green-600">✓ 매칭된 키워드 룰 (신뢰도 순)</h4>
+                        {testResult.matches.map((match: any, idx: number) => (
+                          <Card key={idx} className={idx === 0 ? 'border-green-500' : 'border-gray-200'}>
+                            <CardContent className="p-4">
+                              <div className="flex justify-between items-start">
+                                <div className="flex-1">
+                                  <div className="flex items-center gap-2 mb-2">
+                                    <h5 className="font-medium">{match.keyword}</h5>
+                                    <Badge variant="outline">신뢰도: {match.confidence}</Badge>
+                                    {idx === 0 && <Badge className="bg-green-100 text-green-800">최고 매칭</Badge>}
+                                  </div>
+                                  <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-sm">
+                                    <div>
+                                      <span className="font-medium">태그:</span>
+                                      <span className="ml-2 text-purple-600">{match.tag || match.primary_tag || '-'}</span>
+                                    </div>
+                                    <div>
+                                      <span className="font-medium">계정:</span>
+                                      <span className="ml-2 text-blue-600">{match.account || match.primary_account || '-'}</span>
+                                    </div>
+                                    <div>
+                                      <span className="font-medium">사용횟수:</span>
+                                      <span className="ml-2 text-gray-600">{match.usage_count || 0}회</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    ) : (
+                      <Card className="border-orange-200">
+                        <CardContent className="p-4">
+                          <div className="flex items-center gap-2 text-orange-600">
+                            <AlertCircle className="h-4 w-4" />
+                            <span className="font-medium">매칭되는 키워드 룰이 없습니다.</span>
+                          </div>
+                          <p className="text-sm text-muted-foreground mt-2">
+                            "{testInput}"에 대한 키워드를 찾을 수 없습니다. 새로운 키워드 룰을 생성하거나 기존 룰을 수정해보세요.
+                          </p>
+                        </CardContent>
+                      </Card>
+                    )}
+                  </div>
+                )}
+                
+                {testResult && testResult.error && (
+                  <Card className="border-red-500">
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-2 text-red-600">
+                        <AlertCircle className="h-4 w-4" />
+                        <span className="font-medium">테스트 실패</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground mt-2">{testResult.error}</p>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            </CardContent>
+          </Card>
 
           {/* 룰 목록 */}
           <div className="space-y-4">
@@ -1000,320 +998,8 @@ export function CombinedRulesManagement() {
           </div>
         </TabsContent>
 
-        {/* 룰 테스트 탭 */}
-        <TabsContent value="test" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>룰 엔진 테스트</CardTitle>
-              <p className="text-sm text-muted-foreground">
-                거래 내역을 입력하여 룰 엔진의 분류 결과를 테스트해보세요
-              </p>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div>
-                  <Label>거래 내역 입력</Label>
-                  <Textarea
-                    placeholder="테스트할 거래 내역을 입력하세요... (예: 스타벅스 강남점)"
-                    value={testInput}
-                    onChange={(e) => setTestInput(e.target.value)}
-                    rows={3}
-                  />
-                </div>
-                
-                <Button onClick={() => testRule(testInput)} disabled={!testInput.trim()}>
-                  <Play className="h-4 w-4 mr-2" />
-                  테스트 실행
-                </Button>
-                
-                {testResult && !testResult.error && (
-                  <div className="space-y-4">
-                    {/* 5단계 처리 과정 표시 */}
-                    <div className="flex items-center justify-between p-4 bg-muted rounded">
-                      {['전처리', '정규화', '룰 매칭', '결과 조합', '출력'].map((step, idx) => (
-                        <div key={step} className="flex items-center">
-                          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm ${idx <= 2 ? 'bg-green-500' : 'bg-gray-400'}`}>
-                            {idx + 1}
-                          </div>
-                          <span className="ml-2 text-sm">{step}</span>
-                          {idx < 4 && <span className="mx-2">→</span>}
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* 결과 표시 */}
-                    {testResult.matches && testResult.matches.length > 0 ? (
-                      <div className="space-y-2">
-                        <h4 className="font-medium">매칭된 룰 (신뢰도 순)</h4>
-                        {testResult.matches.map((match: any, idx: number) => (
-                          <Card key={idx} className={idx === 0 ? 'border-green-500' : ''}>
-                            <CardContent className="p-4">
-                              <div className="flex justify-between items-start">
-                                <div>
-                                  <p className="font-medium">{match.keyword}</p>
-                                  <p className="text-sm text-muted-foreground">태그: {match.tag}</p>
-                                  <p className="text-sm text-muted-foreground">계정: {match.account}</p>
-                                </div>
-                                <Badge variant="outline">신뢰도: {match.confidence}</Badge>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        ))}
-                      </div>
-                    ) : (
-                      <Card className="border-red-500">
-                        <CardContent className="p-4">
-                          <p className="text-red-600">매칭되는 룰이 없습니다.</p>
-                          <p className="text-sm text-muted-foreground mt-2">
-                            새로운 룰을 생성하거나 기존 룰을 수정해보세요.
-                          </p>
-                        </CardContent>
-                      </Card>
-                    )}
-                  </div>
-                )}
-                
-                {testResult && testResult.error && (
-                  <Card className="border-red-500">
-                    <CardContent className="p-4">
-                      <p className="text-red-600">{testResult.error}</p>
-                    </CardContent>
-                  </Card>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
 
 
-        {/* 캐시 데이터 탭 */}
-        <TabsContent value="cache" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <HardDrive className="h-5 w-5" />
-                  <CardTitle>캐시 데이터 관리</CardTitle>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Badge variant="outline" className="text-sm">
-                    총 {cacheData.filter(item => 
-                      item.rawText.toLowerCase().includes(cacheSearch.toLowerCase()) ||
-                      item.uniqueKey.toLowerCase().includes(cacheSearch.toLowerCase()) ||
-                      item.rawTextHash.toLowerCase().includes(cacheSearch.toLowerCase())
-                    ).length}개 항목
-                  </Badge>
-                  <Button 
-                    onClick={loadCacheData}
-                    disabled={cacheLoading}
-                    variant="outline"
-                    size="sm"
-                  >
-                    {cacheLoading ? '🔄 로딩...' : '🔄 새로고침'}
-                  </Button>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {/* 통계 카드들 */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <Card className="border-l-4 border-l-blue-500">
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-muted-foreground">총 캐시 레코드</p>
-                        <p className="text-2xl font-bold text-blue-600">{cacheData.length.toLocaleString()}</p>
-                        <p className="text-xs text-muted-foreground mt-1">전체 캐시 데이터</p>
-                      </div>
-                      <div className="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-950/20 flex items-center justify-center">
-                        <Database className="h-5 w-5 text-blue-600" />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="border-l-4 border-l-green-500">
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-muted-foreground">검색 결과</p>
-                        <p className="text-2xl font-bold text-green-600">
-                          {cacheData.filter(item => 
-                            item.rawText.toLowerCase().includes(cacheSearch.toLowerCase()) ||
-                            item.uniqueKey.toLowerCase().includes(cacheSearch.toLowerCase()) ||
-                            item.rawTextHash.toLowerCase().includes(cacheSearch.toLowerCase())
-                          ).length.toLocaleString()}
-                        </p>
-                        <p className="text-xs text-muted-foreground mt-1">필터링된 결과</p>
-                      </div>
-                      <div className="h-10 w-10 rounded-full bg-green-100 dark:bg-green-950/20 flex items-center justify-center">
-                        <Search className="h-5 w-5 text-green-600" />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="border-l-4 border-l-purple-500">
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-muted-foreground">캐시 상태</p>
-                        <p className="text-2xl font-bold text-purple-600">
-                          {cacheLoading ? (
-                            <span className="text-orange-600">로딩중</span>
-                          ) : (
-                            <span className="text-green-600">정상</span>
-                          )}
-                        </p>
-                        <p className="text-xs text-muted-foreground mt-1">시스템 상태</p>
-                      </div>
-                      <div className="h-10 w-10 rounded-full bg-purple-100 dark:bg-purple-950/20 flex items-center justify-center">
-                        {cacheLoading ? (
-                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-purple-600" />
-                        ) : (
-                          <CheckCircle className="h-5 w-5 text-purple-600" />
-                        )}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="border-l-4 border-l-orange-500">
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-muted-foreground">마지막 업데이트</p>
-                        <p className="text-lg font-bold text-orange-600">
-                          {cacheData.length > 0 ? '방금 전' : 'N/A'}
-                        </p>
-                        <p className="text-xs text-muted-foreground mt-1">최근 갱신</p>
-                      </div>
-                      <div className="h-10 w-10 rounded-full bg-orange-100 dark:bg-orange-950/20 flex items-center justify-center">
-                        <Settings className="h-5 w-5 text-orange-600" />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* 검색 입력 */}
-              <div className="flex gap-4">
-                <div className="flex-1">
-                  <div className="relative">
-                    <Search className="h-4 w-4 absolute left-3 top-3 text-muted-foreground" />
-                    <Input
-                      placeholder="원본 텍스트, 고유 키, 해시로 검색..."
-                      value={cacheSearch}
-                      onChange={(e) => setCacheSearch(e.target.value)}
-                      className="pl-10"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* 캐시 데이터 테이블 */}
-              <div className="border rounded-lg">
-                <div className="max-h-96 overflow-y-auto">
-                  <table className="w-full">
-                    <thead className="bg-muted/50 sticky top-0">
-                      <tr>
-                        <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                          순번
-                        </th>
-                        <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                          해시
-                        </th>
-                        <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                          원본 텍스트
-                        </th>
-                        <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                          고유 키
-                        </th>
-                        <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                          생성일시
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {cacheLoading ? (
-                        <tr>
-                          <td colSpan={5} className="text-center py-8">
-                            <div className="flex items-center justify-center gap-2">
-                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary" />
-                              <span>데이터 로딩 중...</span>
-                            </div>
-                          </td>
-                        </tr>
-                      ) : (
-                        cacheData
-                          .filter(item => 
-                            item.rawText.toLowerCase().includes(cacheSearch.toLowerCase()) ||
-                            item.uniqueKey.toLowerCase().includes(cacheSearch.toLowerCase()) ||
-                            item.rawTextHash.toLowerCase().includes(cacheSearch.toLowerCase())
-                          )
-                          .length === 0 ? (
-                          <tr>
-                            <td colSpan={5} className="text-center py-8 text-muted-foreground">
-                              {cacheSearch ? '검색 결과가 없습니다.' : '캐시 데이터가 없습니다.'}
-                            </td>
-                          </tr>
-                        ) : (
-                          cacheData
-                            .filter(item => 
-                              item.rawText.toLowerCase().includes(cacheSearch.toLowerCase()) ||
-                              item.uniqueKey.toLowerCase().includes(cacheSearch.toLowerCase()) ||
-                              item.rawTextHash.toLowerCase().includes(cacheSearch.toLowerCase())
-                            )
-                            .map((item, index) => (
-                              <tr key={item.rawTextHash} className="hover:bg-muted/50">
-                                <td className="px-4 py-2">
-                                  <Badge variant="outline" className="text-xs">
-                                    {index + 1}
-                                  </Badge>
-                                </td>
-                                <td className="px-4 py-2">
-                                  <div className="flex items-center gap-2">
-                                    <Badge variant="secondary" className="font-mono text-xs">
-                                      {item.rawTextHash.substring(0, 8)}...
-                                    </Badge>
-                                    <span className="text-xs text-muted-foreground">64자 해시</span>
-                                  </div>
-                                </td>
-                                <td className="px-4 py-2 max-w-xs">
-                                  <div className="truncate font-medium">
-                                    {item.rawText}
-                                  </div>
-                                  <div className="text-xs text-muted-foreground">
-                                    {item.rawText.length}자
-                                  </div>
-                                </td>
-                                <td className="px-4 py-2 max-w-xs">
-                                  <div className="truncate">
-                                    {item.uniqueKey}
-                                  </div>
-                                  <Badge variant="outline" className="text-xs mt-1">
-                                    고유키
-                                  </Badge>
-                                </td>
-                                <td className="px-4 py-2">
-                                  <div className="text-sm font-medium">
-                                    {new Date(item.createdAt).toLocaleDateString('ko-KR')}
-                                  </div>
-                                  <div className="text-xs text-muted-foreground">
-                                    {new Date(item.createdAt).toLocaleTimeString('ko-KR')}
-                                  </div>
-                                </td>
-                              </tr>
-                            ))
-                        )
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
       </Tabs>
 
       {/* 룰 편집 다이얼로그 */}

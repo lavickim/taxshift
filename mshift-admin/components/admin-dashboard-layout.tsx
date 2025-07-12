@@ -7,6 +7,7 @@ import { AdminTestDashboard } from "@/components/admin-test-dashboard";
 import { DataAnalysisContent } from "@/components/data-analysis-content";
 import { CombinedRulesManagement } from "@/components/combined-rules-management";
 import { LLMManagement } from "@/components/llm-management";
+import { RuleTestManagement } from "@/components/rule-test-management";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -51,7 +52,7 @@ export function AdminDashboardLayout() {
               onClick={() => setActiveTab("data-analysis")}
             >
               <BarChart3 className="mr-2 h-4 w-4" />
-              데이터 분석
+              수집 데이터 현황
             </Button>
 
             <Button
@@ -61,6 +62,14 @@ export function AdminDashboardLayout() {
             >
               <Cpu className="mr-2 h-4 w-4" />
               규칙 관리
+            </Button>
+            <Button
+              variant={activeTab === "rule-test" ? "secondary" : "ghost"}
+              className="w-full justify-start"
+              onClick={() => setActiveTab("rule-test")}
+            >
+              <CheckCircle className="mr-2 h-4 w-4" />
+              규칙 테스트
             </Button>
             <Button
               variant={activeTab === "llm" ? "secondary" : "ghost"}
@@ -97,7 +106,7 @@ export function AdminDashboardLayout() {
 
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">데이터 분석</CardTitle>
+                    <CardTitle className="text-sm font-medium">수집 데이터 현황</CardTitle>
                     <BarChart3 className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
@@ -175,6 +184,8 @@ export function AdminDashboardLayout() {
           {activeTab === "llm" && <LLMManagement />}
           
           {activeTab === "admin-test" && <AdminTestDashboard />}
+          
+          {activeTab === "rule-test" && <RuleTestManagement />}
         </main>
       </div>
     </main>

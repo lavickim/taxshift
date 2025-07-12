@@ -12,11 +12,43 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // DB에서 룰 검색 - 키워드가 포함된 룰 찾기
+    // DB에서 룰 검색
     const normalizedText = transaction.toLowerCase();
     
-    // 모든 활성 룰을 가져와서 클라이언트에서 필터링
-    const allRules = await prisma.ruleEngine.findMany({
+    // 1. 먼저 정규식 룰 검색
+    const regexRules = await prisma.regex_rules.findMany({
+      where: {
+        enabled: true
+      },
+      orderBy: {
+        priority: 'desc'
+      }
+    });
+
+    // 정규식 매칭 시도
+    let regexMatches = [];
+    for (const rule of regexRules) {
+      try {
+        const regex = new RegExp(rule.pattern, 'i');
+        const match = transaction.match(regex);
+        if (match) {
+          regexMatches.push({
+            id: `regex_${rule.id}`,
+            pattern: rule.pattern,
+            category: rule.category,
+            description: rule.description,
+            confidence: rule.confidence,
+            matchedText: match[0],
+            type: 'regex'
+          });
+        }
+      } catch (error) {
+        console.error(`Invalid regex pattern: ${rule.pattern}`, error);
+      }
+    }
+
+    // 2. 키워드 룰 검색
+    const keywordRules = await prisma.ruleEngine.findMany({
       where: {
         isActive: true
       },
@@ -27,46 +59,55 @@ export async function POST(req: NextRequest) {
     });
 
     // 키워드가 포함된 룰 필터링
-    const rules = allRules.filter(rule => 
+    const keywordMatches = keywordRules.filter(rule => 
+      normalizedText.includes(rule.keyword.toLowerCase())
+    ).map(rule => ({
+      id: rule.id,
+      keyword: rule.keyword,
+      confidence: rule.confidence,
+      tag: rule.primaryTag,
+      account: rule.primaryAccount,
+      type: 'keyword'
+    }));
+
+    // 모든 매칭 결과 결합
+    const allMatches = [...regexMatches, ...keywordMatches];
+    const rules = keywordRules.filter(rule => 
       normalizedText.includes(rule.keyword.toLowerCase())
     );
 
-    if (rules.length > 0) {
-      const bestMatch = rules[0]; // 신뢰도가 가장 높은 룰 선택
+    if (allMatches.length > 0) {
+      // 신뢰도 순으로 정렬
+      allMatches.sort((a, b) => (b.confidence || 0) - (a.confidence || 0));
       
-      // 사용 횟수 증가
-      await prisma.ruleEngine.update({
-        where: { id: bestMatch.id },
-        data: {
-          usageCount: { increment: 1 },
-          lastUsed: new Date()
+      // 키워드 룰 사용 횟수 증가 (정규식 룰은 제외)
+      const keywordMatch = allMatches.find(match => match.type === 'keyword');
+      if (keywordMatch && keywordMatch.id) {
+        try {
+          await prisma.ruleEngine.update({
+            where: { id: keywordMatch.id },
+            data: {
+              usageCount: { increment: 1 },
+              lastUsed: new Date()
+            }
+          });
+        } catch (error) {
+          console.error('Error updating usage count:', error);
         }
-      });
-
-      // 옵션 생성
-      const options = bestMatch.secondaryTag && bestMatch.secondaryAccount ? [
-        { text: '1순위', tag: bestMatch.primaryTag, account: bestMatch.primaryAccount },
-        { text: '2순위', tag: bestMatch.secondaryTag, account: bestMatch.secondaryAccount }
-      ] : undefined;
+      }
       
       return NextResponse.json({
         success: true,
-        matches: [{
-          id: bestMatch.id,
-          keyword: bestMatch.keyword,
-          confidence: bestMatch.confidence,
-          question: bestMatch.question,
-          tag: bestMatch.primaryTag,
-          account: bestMatch.primaryAccount,
-          options: options
-        }],
-        normalized: transaction // 정규화된 텍스트 추가
+        matches: allMatches,
+        normalized: transaction,
+        matched: true
       });
     }
 
     return NextResponse.json({
       success: true,
-      matches: []
+      matches: [],
+      matched: false
     });
 
   } catch (error) {

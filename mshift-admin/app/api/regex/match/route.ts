@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { text } = body;
+    const { text, category } = body;
 
     // Java API로 요청 전송
     try {
@@ -79,6 +79,7 @@ export async function POST(request: NextRequest) {
         },
         body: JSON.stringify({
           inputText: text,
+          category: category,
           returnAllMatches: true
         }),
       });
@@ -89,23 +90,11 @@ export async function POST(request: NextRequest) {
 
       const javaResult = await response.json();
 
-      // Java API 응답을 기존 형식으로 변환
-      const matchResult = {
-        matched: javaResult.matched,
-        category: javaResult.matchedRules.length > 0 ? javaResult.matchedRules[0].category : null,
-        pattern: javaResult.matchedRules.length > 0 ? javaResult.matchedRules[0].pattern : null,
-        confidence: javaResult.matchedRules.length > 0 ? (javaResult.matchedRules[0].priority / 100) : 0,
-        normalizedName: javaResult.processedText,
-        description: javaResult.matchedRules.length > 0 ? javaResult.matchedRules[0].description : null,
-        originalText: text,
-        allMatches: javaResult.matchedRules
-      };
-
-      // 성공 응답
+      // 성공 응답 - 원본 Java API 응답을 그대로 전달
       return NextResponse.json(
         {
           success: true,
-          data: matchResult
+          response: javaResult
         },
         { 
           status: 200,

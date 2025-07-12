@@ -73,6 +73,11 @@ export type FranchiseBrands = $Result.DefaultSelection<Prisma.$FranchiseBrandsPa
  * 
  */
 export type NationalPensionWorkplaces = $Result.DefaultSelection<Prisma.$NationalPensionWorkplacesPayload>
+/**
+ * Model regex_rules
+ * 
+ */
+export type regex_rules = $Result.DefaultSelection<Prisma.$regex_rulesPayload>
 
 /**
  * Enums
@@ -391,6 +396,16 @@ export class PrismaClient<
     * ```
     */
   get nationalPensionWorkplaces(): Prisma.NationalPensionWorkplacesDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.regex_rules`: Exposes CRUD operations for the **regex_rules** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Regex_rules
+    * const regex_rules = await prisma.regex_rules.findMany()
+    * ```
+    */
+  get regex_rules(): Prisma.regex_rulesDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -842,7 +857,8 @@ export namespace Prisma {
     RuleEngineCandidate: 'RuleEngineCandidate',
     RuleEngineFeedback: 'RuleEngineFeedback',
     FranchiseBrands: 'FranchiseBrands',
-    NationalPensionWorkplaces: 'NationalPensionWorkplaces'
+    NationalPensionWorkplaces: 'NationalPensionWorkplaces',
+    regex_rules: 'regex_rules'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -861,7 +877,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "company" | "transactionCache" | "rule" | "ruleCandidate" | "transaction" | "datacollectionGyeonggiDelivery" | "datacollectionSeoulRestaurants" | "ruleEngine" | "ruleEngineCandidate" | "ruleEngineFeedback" | "franchiseBrands" | "nationalPensionWorkplaces"
+      modelProps: "company" | "transactionCache" | "rule" | "ruleCandidate" | "transaction" | "datacollectionGyeonggiDelivery" | "datacollectionSeoulRestaurants" | "ruleEngine" | "ruleEngineCandidate" | "ruleEngineFeedback" | "franchiseBrands" | "nationalPensionWorkplaces" | "regex_rules"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1753,6 +1769,80 @@ export namespace Prisma {
           }
         }
       }
+      regex_rules: {
+        payload: Prisma.$regex_rulesPayload<ExtArgs>
+        fields: Prisma.regex_rulesFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.regex_rulesFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$regex_rulesPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.regex_rulesFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$regex_rulesPayload>
+          }
+          findFirst: {
+            args: Prisma.regex_rulesFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$regex_rulesPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.regex_rulesFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$regex_rulesPayload>
+          }
+          findMany: {
+            args: Prisma.regex_rulesFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$regex_rulesPayload>[]
+          }
+          create: {
+            args: Prisma.regex_rulesCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$regex_rulesPayload>
+          }
+          createMany: {
+            args: Prisma.regex_rulesCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.regex_rulesCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$regex_rulesPayload>[]
+          }
+          delete: {
+            args: Prisma.regex_rulesDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$regex_rulesPayload>
+          }
+          update: {
+            args: Prisma.regex_rulesUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$regex_rulesPayload>
+          }
+          deleteMany: {
+            args: Prisma.regex_rulesDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.regex_rulesUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.regex_rulesUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$regex_rulesPayload>[]
+          }
+          upsert: {
+            args: Prisma.regex_rulesUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$regex_rulesPayload>
+          }
+          aggregate: {
+            args: Prisma.Regex_rulesAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRegex_rules>
+          }
+          groupBy: {
+            args: Prisma.regex_rulesGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Regex_rulesGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.regex_rulesCountArgs<ExtArgs>
+            result: $Utils.Optional<Regex_rulesCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1849,6 +1939,7 @@ export namespace Prisma {
     ruleEngineFeedback?: RuleEngineFeedbackOmit
     franchiseBrands?: FranchiseBrandsOmit
     nationalPensionWorkplaces?: NationalPensionWorkplacesOmit
+    regex_rules?: regex_rulesOmit
   }
 
   /* Types for Logging */
@@ -15982,6 +16073,1121 @@ export namespace Prisma {
 
 
   /**
+   * Model regex_rules
+   */
+
+  export type AggregateRegex_rules = {
+    _count: Regex_rulesCountAggregateOutputType | null
+    _avg: Regex_rulesAvgAggregateOutputType | null
+    _sum: Regex_rulesSumAggregateOutputType | null
+    _min: Regex_rulesMinAggregateOutputType | null
+    _max: Regex_rulesMaxAggregateOutputType | null
+  }
+
+  export type Regex_rulesAvgAggregateOutputType = {
+    id: number | null
+    priority: number | null
+    confidence: Decimal | null
+  }
+
+  export type Regex_rulesSumAggregateOutputType = {
+    id: bigint | null
+    priority: number | null
+    confidence: Decimal | null
+  }
+
+  export type Regex_rulesMinAggregateOutputType = {
+    id: bigint | null
+    pattern: string | null
+    replacement: string | null
+    description: string | null
+    category: string | null
+    enabled: boolean | null
+    priority: number | null
+    created_at: Date | null
+    updated_at: Date | null
+    confidence: Decimal | null
+    normalizer_type: string | null
+  }
+
+  export type Regex_rulesMaxAggregateOutputType = {
+    id: bigint | null
+    pattern: string | null
+    replacement: string | null
+    description: string | null
+    category: string | null
+    enabled: boolean | null
+    priority: number | null
+    created_at: Date | null
+    updated_at: Date | null
+    confidence: Decimal | null
+    normalizer_type: string | null
+  }
+
+  export type Regex_rulesCountAggregateOutputType = {
+    id: number
+    pattern: number
+    replacement: number
+    description: number
+    category: number
+    enabled: number
+    priority: number
+    created_at: number
+    updated_at: number
+    confidence: number
+    normalizer_type: number
+    _all: number
+  }
+
+
+  export type Regex_rulesAvgAggregateInputType = {
+    id?: true
+    priority?: true
+    confidence?: true
+  }
+
+  export type Regex_rulesSumAggregateInputType = {
+    id?: true
+    priority?: true
+    confidence?: true
+  }
+
+  export type Regex_rulesMinAggregateInputType = {
+    id?: true
+    pattern?: true
+    replacement?: true
+    description?: true
+    category?: true
+    enabled?: true
+    priority?: true
+    created_at?: true
+    updated_at?: true
+    confidence?: true
+    normalizer_type?: true
+  }
+
+  export type Regex_rulesMaxAggregateInputType = {
+    id?: true
+    pattern?: true
+    replacement?: true
+    description?: true
+    category?: true
+    enabled?: true
+    priority?: true
+    created_at?: true
+    updated_at?: true
+    confidence?: true
+    normalizer_type?: true
+  }
+
+  export type Regex_rulesCountAggregateInputType = {
+    id?: true
+    pattern?: true
+    replacement?: true
+    description?: true
+    category?: true
+    enabled?: true
+    priority?: true
+    created_at?: true
+    updated_at?: true
+    confidence?: true
+    normalizer_type?: true
+    _all?: true
+  }
+
+  export type Regex_rulesAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which regex_rules to aggregate.
+     */
+    where?: regex_rulesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of regex_rules to fetch.
+     */
+    orderBy?: regex_rulesOrderByWithRelationInput | regex_rulesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: regex_rulesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` regex_rules from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` regex_rules.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned regex_rules
+    **/
+    _count?: true | Regex_rulesCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Regex_rulesAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Regex_rulesSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Regex_rulesMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Regex_rulesMaxAggregateInputType
+  }
+
+  export type GetRegex_rulesAggregateType<T extends Regex_rulesAggregateArgs> = {
+        [P in keyof T & keyof AggregateRegex_rules]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRegex_rules[P]>
+      : GetScalarType<T[P], AggregateRegex_rules[P]>
+  }
+
+
+
+
+  export type regex_rulesGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: regex_rulesWhereInput
+    orderBy?: regex_rulesOrderByWithAggregationInput | regex_rulesOrderByWithAggregationInput[]
+    by: Regex_rulesScalarFieldEnum[] | Regex_rulesScalarFieldEnum
+    having?: regex_rulesScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Regex_rulesCountAggregateInputType | true
+    _avg?: Regex_rulesAvgAggregateInputType
+    _sum?: Regex_rulesSumAggregateInputType
+    _min?: Regex_rulesMinAggregateInputType
+    _max?: Regex_rulesMaxAggregateInputType
+  }
+
+  export type Regex_rulesGroupByOutputType = {
+    id: bigint
+    pattern: string
+    replacement: string | null
+    description: string | null
+    category: string | null
+    enabled: boolean | null
+    priority: number | null
+    created_at: Date | null
+    updated_at: Date | null
+    confidence: Decimal | null
+    normalizer_type: string | null
+    _count: Regex_rulesCountAggregateOutputType | null
+    _avg: Regex_rulesAvgAggregateOutputType | null
+    _sum: Regex_rulesSumAggregateOutputType | null
+    _min: Regex_rulesMinAggregateOutputType | null
+    _max: Regex_rulesMaxAggregateOutputType | null
+  }
+
+  type GetRegex_rulesGroupByPayload<T extends regex_rulesGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Regex_rulesGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Regex_rulesGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Regex_rulesGroupByOutputType[P]>
+            : GetScalarType<T[P], Regex_rulesGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type regex_rulesSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    pattern?: boolean
+    replacement?: boolean
+    description?: boolean
+    category?: boolean
+    enabled?: boolean
+    priority?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    confidence?: boolean
+    normalizer_type?: boolean
+  }, ExtArgs["result"]["regex_rules"]>
+
+  export type regex_rulesSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    pattern?: boolean
+    replacement?: boolean
+    description?: boolean
+    category?: boolean
+    enabled?: boolean
+    priority?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    confidence?: boolean
+    normalizer_type?: boolean
+  }, ExtArgs["result"]["regex_rules"]>
+
+  export type regex_rulesSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    pattern?: boolean
+    replacement?: boolean
+    description?: boolean
+    category?: boolean
+    enabled?: boolean
+    priority?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    confidence?: boolean
+    normalizer_type?: boolean
+  }, ExtArgs["result"]["regex_rules"]>
+
+  export type regex_rulesSelectScalar = {
+    id?: boolean
+    pattern?: boolean
+    replacement?: boolean
+    description?: boolean
+    category?: boolean
+    enabled?: boolean
+    priority?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    confidence?: boolean
+    normalizer_type?: boolean
+  }
+
+  export type regex_rulesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pattern" | "replacement" | "description" | "category" | "enabled" | "priority" | "created_at" | "updated_at" | "confidence" | "normalizer_type", ExtArgs["result"]["regex_rules"]>
+
+  export type $regex_rulesPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "regex_rules"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: bigint
+      pattern: string
+      replacement: string | null
+      description: string | null
+      category: string | null
+      enabled: boolean | null
+      priority: number | null
+      created_at: Date | null
+      updated_at: Date | null
+      confidence: Prisma.Decimal | null
+      normalizer_type: string | null
+    }, ExtArgs["result"]["regex_rules"]>
+    composites: {}
+  }
+
+  type regex_rulesGetPayload<S extends boolean | null | undefined | regex_rulesDefaultArgs> = $Result.GetResult<Prisma.$regex_rulesPayload, S>
+
+  type regex_rulesCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<regex_rulesFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Regex_rulesCountAggregateInputType | true
+    }
+
+  export interface regex_rulesDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['regex_rules'], meta: { name: 'regex_rules' } }
+    /**
+     * Find zero or one Regex_rules that matches the filter.
+     * @param {regex_rulesFindUniqueArgs} args - Arguments to find a Regex_rules
+     * @example
+     * // Get one Regex_rules
+     * const regex_rules = await prisma.regex_rules.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends regex_rulesFindUniqueArgs>(args: SelectSubset<T, regex_rulesFindUniqueArgs<ExtArgs>>): Prisma__regex_rulesClient<$Result.GetResult<Prisma.$regex_rulesPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Regex_rules that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {regex_rulesFindUniqueOrThrowArgs} args - Arguments to find a Regex_rules
+     * @example
+     * // Get one Regex_rules
+     * const regex_rules = await prisma.regex_rules.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends regex_rulesFindUniqueOrThrowArgs>(args: SelectSubset<T, regex_rulesFindUniqueOrThrowArgs<ExtArgs>>): Prisma__regex_rulesClient<$Result.GetResult<Prisma.$regex_rulesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Regex_rules that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {regex_rulesFindFirstArgs} args - Arguments to find a Regex_rules
+     * @example
+     * // Get one Regex_rules
+     * const regex_rules = await prisma.regex_rules.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends regex_rulesFindFirstArgs>(args?: SelectSubset<T, regex_rulesFindFirstArgs<ExtArgs>>): Prisma__regex_rulesClient<$Result.GetResult<Prisma.$regex_rulesPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Regex_rules that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {regex_rulesFindFirstOrThrowArgs} args - Arguments to find a Regex_rules
+     * @example
+     * // Get one Regex_rules
+     * const regex_rules = await prisma.regex_rules.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends regex_rulesFindFirstOrThrowArgs>(args?: SelectSubset<T, regex_rulesFindFirstOrThrowArgs<ExtArgs>>): Prisma__regex_rulesClient<$Result.GetResult<Prisma.$regex_rulesPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Regex_rules that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {regex_rulesFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Regex_rules
+     * const regex_rules = await prisma.regex_rules.findMany()
+     * 
+     * // Get first 10 Regex_rules
+     * const regex_rules = await prisma.regex_rules.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const regex_rulesWithIdOnly = await prisma.regex_rules.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends regex_rulesFindManyArgs>(args?: SelectSubset<T, regex_rulesFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$regex_rulesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Regex_rules.
+     * @param {regex_rulesCreateArgs} args - Arguments to create a Regex_rules.
+     * @example
+     * // Create one Regex_rules
+     * const Regex_rules = await prisma.regex_rules.create({
+     *   data: {
+     *     // ... data to create a Regex_rules
+     *   }
+     * })
+     * 
+     */
+    create<T extends regex_rulesCreateArgs>(args: SelectSubset<T, regex_rulesCreateArgs<ExtArgs>>): Prisma__regex_rulesClient<$Result.GetResult<Prisma.$regex_rulesPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Regex_rules.
+     * @param {regex_rulesCreateManyArgs} args - Arguments to create many Regex_rules.
+     * @example
+     * // Create many Regex_rules
+     * const regex_rules = await prisma.regex_rules.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends regex_rulesCreateManyArgs>(args?: SelectSubset<T, regex_rulesCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Regex_rules and returns the data saved in the database.
+     * @param {regex_rulesCreateManyAndReturnArgs} args - Arguments to create many Regex_rules.
+     * @example
+     * // Create many Regex_rules
+     * const regex_rules = await prisma.regex_rules.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Regex_rules and only return the `id`
+     * const regex_rulesWithIdOnly = await prisma.regex_rules.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends regex_rulesCreateManyAndReturnArgs>(args?: SelectSubset<T, regex_rulesCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$regex_rulesPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Regex_rules.
+     * @param {regex_rulesDeleteArgs} args - Arguments to delete one Regex_rules.
+     * @example
+     * // Delete one Regex_rules
+     * const Regex_rules = await prisma.regex_rules.delete({
+     *   where: {
+     *     // ... filter to delete one Regex_rules
+     *   }
+     * })
+     * 
+     */
+    delete<T extends regex_rulesDeleteArgs>(args: SelectSubset<T, regex_rulesDeleteArgs<ExtArgs>>): Prisma__regex_rulesClient<$Result.GetResult<Prisma.$regex_rulesPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Regex_rules.
+     * @param {regex_rulesUpdateArgs} args - Arguments to update one Regex_rules.
+     * @example
+     * // Update one Regex_rules
+     * const regex_rules = await prisma.regex_rules.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends regex_rulesUpdateArgs>(args: SelectSubset<T, regex_rulesUpdateArgs<ExtArgs>>): Prisma__regex_rulesClient<$Result.GetResult<Prisma.$regex_rulesPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Regex_rules.
+     * @param {regex_rulesDeleteManyArgs} args - Arguments to filter Regex_rules to delete.
+     * @example
+     * // Delete a few Regex_rules
+     * const { count } = await prisma.regex_rules.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends regex_rulesDeleteManyArgs>(args?: SelectSubset<T, regex_rulesDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Regex_rules.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {regex_rulesUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Regex_rules
+     * const regex_rules = await prisma.regex_rules.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends regex_rulesUpdateManyArgs>(args: SelectSubset<T, regex_rulesUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Regex_rules and returns the data updated in the database.
+     * @param {regex_rulesUpdateManyAndReturnArgs} args - Arguments to update many Regex_rules.
+     * @example
+     * // Update many Regex_rules
+     * const regex_rules = await prisma.regex_rules.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Regex_rules and only return the `id`
+     * const regex_rulesWithIdOnly = await prisma.regex_rules.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends regex_rulesUpdateManyAndReturnArgs>(args: SelectSubset<T, regex_rulesUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$regex_rulesPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Regex_rules.
+     * @param {regex_rulesUpsertArgs} args - Arguments to update or create a Regex_rules.
+     * @example
+     * // Update or create a Regex_rules
+     * const regex_rules = await prisma.regex_rules.upsert({
+     *   create: {
+     *     // ... data to create a Regex_rules
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Regex_rules we want to update
+     *   }
+     * })
+     */
+    upsert<T extends regex_rulesUpsertArgs>(args: SelectSubset<T, regex_rulesUpsertArgs<ExtArgs>>): Prisma__regex_rulesClient<$Result.GetResult<Prisma.$regex_rulesPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Regex_rules.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {regex_rulesCountArgs} args - Arguments to filter Regex_rules to count.
+     * @example
+     * // Count the number of Regex_rules
+     * const count = await prisma.regex_rules.count({
+     *   where: {
+     *     // ... the filter for the Regex_rules we want to count
+     *   }
+     * })
+    **/
+    count<T extends regex_rulesCountArgs>(
+      args?: Subset<T, regex_rulesCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Regex_rulesCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Regex_rules.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Regex_rulesAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Regex_rulesAggregateArgs>(args: Subset<T, Regex_rulesAggregateArgs>): Prisma.PrismaPromise<GetRegex_rulesAggregateType<T>>
+
+    /**
+     * Group by Regex_rules.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {regex_rulesGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends regex_rulesGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: regex_rulesGroupByArgs['orderBy'] }
+        : { orderBy?: regex_rulesGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, regex_rulesGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRegex_rulesGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the regex_rules model
+   */
+  readonly fields: regex_rulesFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for regex_rules.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__regex_rulesClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the regex_rules model
+   */
+  interface regex_rulesFieldRefs {
+    readonly id: FieldRef<"regex_rules", 'BigInt'>
+    readonly pattern: FieldRef<"regex_rules", 'String'>
+    readonly replacement: FieldRef<"regex_rules", 'String'>
+    readonly description: FieldRef<"regex_rules", 'String'>
+    readonly category: FieldRef<"regex_rules", 'String'>
+    readonly enabled: FieldRef<"regex_rules", 'Boolean'>
+    readonly priority: FieldRef<"regex_rules", 'Int'>
+    readonly created_at: FieldRef<"regex_rules", 'DateTime'>
+    readonly updated_at: FieldRef<"regex_rules", 'DateTime'>
+    readonly confidence: FieldRef<"regex_rules", 'Decimal'>
+    readonly normalizer_type: FieldRef<"regex_rules", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * regex_rules findUnique
+   */
+  export type regex_rulesFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the regex_rules
+     */
+    select?: regex_rulesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the regex_rules
+     */
+    omit?: regex_rulesOmit<ExtArgs> | null
+    /**
+     * Filter, which regex_rules to fetch.
+     */
+    where: regex_rulesWhereUniqueInput
+  }
+
+  /**
+   * regex_rules findUniqueOrThrow
+   */
+  export type regex_rulesFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the regex_rules
+     */
+    select?: regex_rulesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the regex_rules
+     */
+    omit?: regex_rulesOmit<ExtArgs> | null
+    /**
+     * Filter, which regex_rules to fetch.
+     */
+    where: regex_rulesWhereUniqueInput
+  }
+
+  /**
+   * regex_rules findFirst
+   */
+  export type regex_rulesFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the regex_rules
+     */
+    select?: regex_rulesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the regex_rules
+     */
+    omit?: regex_rulesOmit<ExtArgs> | null
+    /**
+     * Filter, which regex_rules to fetch.
+     */
+    where?: regex_rulesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of regex_rules to fetch.
+     */
+    orderBy?: regex_rulesOrderByWithRelationInput | regex_rulesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for regex_rules.
+     */
+    cursor?: regex_rulesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` regex_rules from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` regex_rules.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of regex_rules.
+     */
+    distinct?: Regex_rulesScalarFieldEnum | Regex_rulesScalarFieldEnum[]
+  }
+
+  /**
+   * regex_rules findFirstOrThrow
+   */
+  export type regex_rulesFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the regex_rules
+     */
+    select?: regex_rulesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the regex_rules
+     */
+    omit?: regex_rulesOmit<ExtArgs> | null
+    /**
+     * Filter, which regex_rules to fetch.
+     */
+    where?: regex_rulesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of regex_rules to fetch.
+     */
+    orderBy?: regex_rulesOrderByWithRelationInput | regex_rulesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for regex_rules.
+     */
+    cursor?: regex_rulesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` regex_rules from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` regex_rules.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of regex_rules.
+     */
+    distinct?: Regex_rulesScalarFieldEnum | Regex_rulesScalarFieldEnum[]
+  }
+
+  /**
+   * regex_rules findMany
+   */
+  export type regex_rulesFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the regex_rules
+     */
+    select?: regex_rulesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the regex_rules
+     */
+    omit?: regex_rulesOmit<ExtArgs> | null
+    /**
+     * Filter, which regex_rules to fetch.
+     */
+    where?: regex_rulesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of regex_rules to fetch.
+     */
+    orderBy?: regex_rulesOrderByWithRelationInput | regex_rulesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing regex_rules.
+     */
+    cursor?: regex_rulesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` regex_rules from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` regex_rules.
+     */
+    skip?: number
+    distinct?: Regex_rulesScalarFieldEnum | Regex_rulesScalarFieldEnum[]
+  }
+
+  /**
+   * regex_rules create
+   */
+  export type regex_rulesCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the regex_rules
+     */
+    select?: regex_rulesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the regex_rules
+     */
+    omit?: regex_rulesOmit<ExtArgs> | null
+    /**
+     * The data needed to create a regex_rules.
+     */
+    data: XOR<regex_rulesCreateInput, regex_rulesUncheckedCreateInput>
+  }
+
+  /**
+   * regex_rules createMany
+   */
+  export type regex_rulesCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many regex_rules.
+     */
+    data: regex_rulesCreateManyInput | regex_rulesCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * regex_rules createManyAndReturn
+   */
+  export type regex_rulesCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the regex_rules
+     */
+    select?: regex_rulesSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the regex_rules
+     */
+    omit?: regex_rulesOmit<ExtArgs> | null
+    /**
+     * The data used to create many regex_rules.
+     */
+    data: regex_rulesCreateManyInput | regex_rulesCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * regex_rules update
+   */
+  export type regex_rulesUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the regex_rules
+     */
+    select?: regex_rulesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the regex_rules
+     */
+    omit?: regex_rulesOmit<ExtArgs> | null
+    /**
+     * The data needed to update a regex_rules.
+     */
+    data: XOR<regex_rulesUpdateInput, regex_rulesUncheckedUpdateInput>
+    /**
+     * Choose, which regex_rules to update.
+     */
+    where: regex_rulesWhereUniqueInput
+  }
+
+  /**
+   * regex_rules updateMany
+   */
+  export type regex_rulesUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update regex_rules.
+     */
+    data: XOR<regex_rulesUpdateManyMutationInput, regex_rulesUncheckedUpdateManyInput>
+    /**
+     * Filter which regex_rules to update
+     */
+    where?: regex_rulesWhereInput
+    /**
+     * Limit how many regex_rules to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * regex_rules updateManyAndReturn
+   */
+  export type regex_rulesUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the regex_rules
+     */
+    select?: regex_rulesSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the regex_rules
+     */
+    omit?: regex_rulesOmit<ExtArgs> | null
+    /**
+     * The data used to update regex_rules.
+     */
+    data: XOR<regex_rulesUpdateManyMutationInput, regex_rulesUncheckedUpdateManyInput>
+    /**
+     * Filter which regex_rules to update
+     */
+    where?: regex_rulesWhereInput
+    /**
+     * Limit how many regex_rules to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * regex_rules upsert
+   */
+  export type regex_rulesUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the regex_rules
+     */
+    select?: regex_rulesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the regex_rules
+     */
+    omit?: regex_rulesOmit<ExtArgs> | null
+    /**
+     * The filter to search for the regex_rules to update in case it exists.
+     */
+    where: regex_rulesWhereUniqueInput
+    /**
+     * In case the regex_rules found by the `where` argument doesn't exist, create a new regex_rules with this data.
+     */
+    create: XOR<regex_rulesCreateInput, regex_rulesUncheckedCreateInput>
+    /**
+     * In case the regex_rules was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<regex_rulesUpdateInput, regex_rulesUncheckedUpdateInput>
+  }
+
+  /**
+   * regex_rules delete
+   */
+  export type regex_rulesDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the regex_rules
+     */
+    select?: regex_rulesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the regex_rules
+     */
+    omit?: regex_rulesOmit<ExtArgs> | null
+    /**
+     * Filter which regex_rules to delete.
+     */
+    where: regex_rulesWhereUniqueInput
+  }
+
+  /**
+   * regex_rules deleteMany
+   */
+  export type regex_rulesDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which regex_rules to delete
+     */
+    where?: regex_rulesWhereInput
+    /**
+     * Limit how many regex_rules to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * regex_rules without action
+   */
+  export type regex_rulesDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the regex_rules
+     */
+    select?: regex_rulesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the regex_rules
+     */
+    omit?: regex_rulesOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -16227,6 +17433,23 @@ export namespace Prisma {
   };
 
   export type NationalPensionWorkplacesScalarFieldEnum = (typeof NationalPensionWorkplacesScalarFieldEnum)[keyof typeof NationalPensionWorkplacesScalarFieldEnum]
+
+
+  export const Regex_rulesScalarFieldEnum: {
+    id: 'id',
+    pattern: 'pattern',
+    replacement: 'replacement',
+    description: 'description',
+    category: 'category',
+    enabled: 'enabled',
+    priority: 'priority',
+    created_at: 'created_at',
+    updated_at: 'updated_at',
+    confidence: 'confidence',
+    normalizer_type: 'normalizer_type'
+  };
+
+  export type Regex_rulesScalarFieldEnum = (typeof Regex_rulesScalarFieldEnum)[keyof typeof Regex_rulesScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -17629,6 +18852,90 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"NationalPensionWorkplaces"> | Date | string
   }
 
+  export type regex_rulesWhereInput = {
+    AND?: regex_rulesWhereInput | regex_rulesWhereInput[]
+    OR?: regex_rulesWhereInput[]
+    NOT?: regex_rulesWhereInput | regex_rulesWhereInput[]
+    id?: BigIntFilter<"regex_rules"> | bigint | number
+    pattern?: StringFilter<"regex_rules"> | string
+    replacement?: StringNullableFilter<"regex_rules"> | string | null
+    description?: StringNullableFilter<"regex_rules"> | string | null
+    category?: StringNullableFilter<"regex_rules"> | string | null
+    enabled?: BoolNullableFilter<"regex_rules"> | boolean | null
+    priority?: IntNullableFilter<"regex_rules"> | number | null
+    created_at?: DateTimeNullableFilter<"regex_rules"> | Date | string | null
+    updated_at?: DateTimeNullableFilter<"regex_rules"> | Date | string | null
+    confidence?: DecimalNullableFilter<"regex_rules"> | Decimal | DecimalJsLike | number | string | null
+    normalizer_type?: StringNullableFilter<"regex_rules"> | string | null
+  }
+
+  export type regex_rulesOrderByWithRelationInput = {
+    id?: SortOrder
+    pattern?: SortOrder
+    replacement?: SortOrderInput | SortOrder
+    description?: SortOrderInput | SortOrder
+    category?: SortOrderInput | SortOrder
+    enabled?: SortOrderInput | SortOrder
+    priority?: SortOrderInput | SortOrder
+    created_at?: SortOrderInput | SortOrder
+    updated_at?: SortOrderInput | SortOrder
+    confidence?: SortOrderInput | SortOrder
+    normalizer_type?: SortOrderInput | SortOrder
+  }
+
+  export type regex_rulesWhereUniqueInput = Prisma.AtLeast<{
+    id?: bigint | number
+    AND?: regex_rulesWhereInput | regex_rulesWhereInput[]
+    OR?: regex_rulesWhereInput[]
+    NOT?: regex_rulesWhereInput | regex_rulesWhereInput[]
+    pattern?: StringFilter<"regex_rules"> | string
+    replacement?: StringNullableFilter<"regex_rules"> | string | null
+    description?: StringNullableFilter<"regex_rules"> | string | null
+    category?: StringNullableFilter<"regex_rules"> | string | null
+    enabled?: BoolNullableFilter<"regex_rules"> | boolean | null
+    priority?: IntNullableFilter<"regex_rules"> | number | null
+    created_at?: DateTimeNullableFilter<"regex_rules"> | Date | string | null
+    updated_at?: DateTimeNullableFilter<"regex_rules"> | Date | string | null
+    confidence?: DecimalNullableFilter<"regex_rules"> | Decimal | DecimalJsLike | number | string | null
+    normalizer_type?: StringNullableFilter<"regex_rules"> | string | null
+  }, "id">
+
+  export type regex_rulesOrderByWithAggregationInput = {
+    id?: SortOrder
+    pattern?: SortOrder
+    replacement?: SortOrderInput | SortOrder
+    description?: SortOrderInput | SortOrder
+    category?: SortOrderInput | SortOrder
+    enabled?: SortOrderInput | SortOrder
+    priority?: SortOrderInput | SortOrder
+    created_at?: SortOrderInput | SortOrder
+    updated_at?: SortOrderInput | SortOrder
+    confidence?: SortOrderInput | SortOrder
+    normalizer_type?: SortOrderInput | SortOrder
+    _count?: regex_rulesCountOrderByAggregateInput
+    _avg?: regex_rulesAvgOrderByAggregateInput
+    _max?: regex_rulesMaxOrderByAggregateInput
+    _min?: regex_rulesMinOrderByAggregateInput
+    _sum?: regex_rulesSumOrderByAggregateInput
+  }
+
+  export type regex_rulesScalarWhereWithAggregatesInput = {
+    AND?: regex_rulesScalarWhereWithAggregatesInput | regex_rulesScalarWhereWithAggregatesInput[]
+    OR?: regex_rulesScalarWhereWithAggregatesInput[]
+    NOT?: regex_rulesScalarWhereWithAggregatesInput | regex_rulesScalarWhereWithAggregatesInput[]
+    id?: BigIntWithAggregatesFilter<"regex_rules"> | bigint | number
+    pattern?: StringWithAggregatesFilter<"regex_rules"> | string
+    replacement?: StringNullableWithAggregatesFilter<"regex_rules"> | string | null
+    description?: StringNullableWithAggregatesFilter<"regex_rules"> | string | null
+    category?: StringNullableWithAggregatesFilter<"regex_rules"> | string | null
+    enabled?: BoolNullableWithAggregatesFilter<"regex_rules"> | boolean | null
+    priority?: IntNullableWithAggregatesFilter<"regex_rules"> | number | null
+    created_at?: DateTimeNullableWithAggregatesFilter<"regex_rules"> | Date | string | null
+    updated_at?: DateTimeNullableWithAggregatesFilter<"regex_rules"> | Date | string | null
+    confidence?: DecimalNullableWithAggregatesFilter<"regex_rules"> | Decimal | DecimalJsLike | number | string | null
+    normalizer_type?: StringNullableWithAggregatesFilter<"regex_rules"> | string | null
+  }
+
   export type CompanyCreateInput = {
     id: string
     companyName: string
@@ -19012,6 +20319,104 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type regex_rulesCreateInput = {
+    id?: bigint | number
+    pattern: string
+    replacement?: string | null
+    description?: string | null
+    category?: string | null
+    enabled?: boolean | null
+    priority?: number | null
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    confidence?: Decimal | DecimalJsLike | number | string | null
+    normalizer_type?: string | null
+  }
+
+  export type regex_rulesUncheckedCreateInput = {
+    id?: bigint | number
+    pattern: string
+    replacement?: string | null
+    description?: string | null
+    category?: string | null
+    enabled?: boolean | null
+    priority?: number | null
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    confidence?: Decimal | DecimalJsLike | number | string | null
+    normalizer_type?: string | null
+  }
+
+  export type regex_rulesUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    pattern?: StringFieldUpdateOperationsInput | string
+    replacement?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    enabled?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    priority?: NullableIntFieldUpdateOperationsInput | number | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    confidence?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    normalizer_type?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type regex_rulesUncheckedUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    pattern?: StringFieldUpdateOperationsInput | string
+    replacement?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    enabled?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    priority?: NullableIntFieldUpdateOperationsInput | number | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    confidence?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    normalizer_type?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type regex_rulesCreateManyInput = {
+    id?: bigint | number
+    pattern: string
+    replacement?: string | null
+    description?: string | null
+    category?: string | null
+    enabled?: boolean | null
+    priority?: number | null
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+    confidence?: Decimal | DecimalJsLike | number | string | null
+    normalizer_type?: string | null
+  }
+
+  export type regex_rulesUpdateManyMutationInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    pattern?: StringFieldUpdateOperationsInput | string
+    replacement?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    enabled?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    priority?: NullableIntFieldUpdateOperationsInput | number | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    confidence?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    normalizer_type?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type regex_rulesUncheckedUpdateManyInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    pattern?: StringFieldUpdateOperationsInput | string
+    replacement?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    enabled?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    priority?: NullableIntFieldUpdateOperationsInput | number | null
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    confidence?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    normalizer_type?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
   export type UuidFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -20243,6 +21648,60 @@ export namespace Prisma {
     _sum?: NestedBigIntNullableFilter<$PrismaModel>
     _min?: NestedBigIntNullableFilter<$PrismaModel>
     _max?: NestedBigIntNullableFilter<$PrismaModel>
+  }
+
+  export type regex_rulesCountOrderByAggregateInput = {
+    id?: SortOrder
+    pattern?: SortOrder
+    replacement?: SortOrder
+    description?: SortOrder
+    category?: SortOrder
+    enabled?: SortOrder
+    priority?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    confidence?: SortOrder
+    normalizer_type?: SortOrder
+  }
+
+  export type regex_rulesAvgOrderByAggregateInput = {
+    id?: SortOrder
+    priority?: SortOrder
+    confidence?: SortOrder
+  }
+
+  export type regex_rulesMaxOrderByAggregateInput = {
+    id?: SortOrder
+    pattern?: SortOrder
+    replacement?: SortOrder
+    description?: SortOrder
+    category?: SortOrder
+    enabled?: SortOrder
+    priority?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    confidence?: SortOrder
+    normalizer_type?: SortOrder
+  }
+
+  export type regex_rulesMinOrderByAggregateInput = {
+    id?: SortOrder
+    pattern?: SortOrder
+    replacement?: SortOrder
+    description?: SortOrder
+    category?: SortOrder
+    enabled?: SortOrder
+    priority?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    confidence?: SortOrder
+    normalizer_type?: SortOrder
+  }
+
+  export type regex_rulesSumOrderByAggregateInput = {
+    id?: SortOrder
+    priority?: SortOrder
+    confidence?: SortOrder
   }
 
   export type RuleCandidateCreateNestedManyWithoutCompanyInput = {

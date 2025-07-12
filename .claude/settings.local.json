@@ -47,7 +47,8 @@
       "Bash(npx expo install:*)",
       "Bash(./test-mobile-app-complete.sh:*)",
       "Bash(./test-mobile-app-improved.sh:*)",
-      "Bash(./test-mobile-app-network.sh:*)"
+      "Bash(./test-mobile-app-network.sh:*)",
+      "Bash(grep:*)"
     ],
     "deny": []
   }

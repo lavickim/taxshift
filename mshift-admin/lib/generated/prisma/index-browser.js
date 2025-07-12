@@ -318,6 +318,20 @@ exports.Prisma.NationalPensionWorkplacesScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.Regex_rulesScalarFieldEnum = {
+  id: 'id',
+  pattern: 'pattern',
+  replacement: 'replacement',
+  description: 'description',
+  category: 'category',
+  enabled: 'enabled',
+  priority: 'priority',
+  created_at: 'created_at',
+  updated_at: 'updated_at',
+  confidence: 'confidence',
+  normalizer_type: 'normalizer_type'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -388,7 +402,8 @@ exports.Prisma.ModelName = {
   RuleEngineCandidate: 'RuleEngineCandidate',
   RuleEngineFeedback: 'RuleEngineFeedback',
   FranchiseBrands: 'FranchiseBrands',
-  NationalPensionWorkplaces: 'NationalPensionWorkplaces'
+  NationalPensionWorkplaces: 'NationalPensionWorkplaces',
+  regex_rules: 'regex_rules'
 };
 
 /**

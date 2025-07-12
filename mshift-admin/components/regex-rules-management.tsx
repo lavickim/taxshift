@@ -296,10 +296,182 @@ export function RegexRulesManagement() {
 
   return (
     <div className="space-y-6">
+      {/* DB 정규식 테스트 섹션 */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <TestTube className="h-5 w-5" />
+            DB 정규식 테스트
+          </CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Spring Boot API → Redis 캐시 → MyBatis → PostgreSQL (regex_rules 테이블)
+          </p>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="md:col-span-2">
+                <Label htmlFor="test-input">테스트 입력</Label>
+                <Textarea
+                  id="test-input"
+                  placeholder="테스트할 거래 내역을 입력하세요... (예: 스포티파이 프리미엄)"
+                  value={testInput}
+                  onChange={(e) => setTestInput(e.target.value)}
+                  rows={3}
+                />
+              </div>
+              <div>
+                <Label htmlFor="test-category">카테고리 필터</Label>
+                <Select value={testCategory} onValueChange={setTestCategory}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="전체" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">전체</SelectItem>
+                    <SelectItem value="편의점">편의점</SelectItem>
+                    <SelectItem value="주유소">주유소</SelectItem>
+                    <SelectItem value="온라인서비스">온라인서비스</SelectItem>
+                    <SelectItem value="카센터">카센터</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            
+            <Button 
+              onClick={testAPI} 
+              disabled={!testInput.trim() || testLoading}
+              className="w-full md:w-auto"
+            >
+              {testLoading ? (
+                <>
+                  <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                  테스트 중...
+                </>
+              ) : (
+                <>
+                  <Play className="h-4 w-4 mr-2" />
+                  정규식 테스트 실행
+                </>
+              )}
+            </Button>
+
+            {/* 테스트 결과 */}
+            {testResult && (
+              <div className="space-y-4">
+                {/* 처리 단계 표시 */}
+                <div className="flex items-center justify-between p-4 bg-muted rounded">
+                  {['Redis 캐시', '정규식 매칭', '결과 생성', '응답'].map((step, idx) => (
+                    <div key={step} className="flex items-center">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm ${
+                        testResult.success ? 'bg-green-500' : idx === 0 ? 'bg-red-500' : 'bg-gray-400'
+                      }`}>
+                        {testResult.success ? (
+                          <CheckCircle className="h-4 w-4" />
+                        ) : idx === 0 ? (
+                          <XCircle className="h-4 w-4" />
+                        ) : (
+                          idx + 1
+                        )}
+                      </div>
+                      <span className="ml-2 text-sm">{step}</span>
+                      {idx < 3 && <span className="mx-2">→</span>}
+                    </div>
+                  ))}
+                </div>
+
+                {testResult.success && testResult.response ? (
+                  <div className="space-y-4">
+                    {testResult.response.matched ? (
+                      <div className="space-y-2">
+                        <h4 className="font-medium text-green-600">✓ 매칭 성공</h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <Card className="border-2 border-blue-300">
+                            <CardContent className="p-4">
+                              <h5 className="font-bold mb-3 text-blue-800 text-base">📝 원본 텍스트</h5>
+                              <p className="text-base bg-blue-100 text-blue-900 p-4 rounded-lg border-2 border-blue-300 font-semibold shadow-sm">{testResult.response.originalText}</p>
+                            </CardContent>
+                          </Card>
+                          <Card className="border-2 border-green-300">
+                            <CardContent className="p-4">
+                              <h5 className="font-bold mb-3 text-green-800 text-base">✨ 처리된 텍스트</h5>
+                              <p className="text-base bg-green-100 text-green-900 p-4 rounded-lg border-2 border-green-300 font-semibold shadow-sm">{testResult.response.processedText}</p>
+                            </CardContent>
+                          </Card>
+                        </div>
+                        
+                        {testResult.response.matchedRules && testResult.response.matchedRules.length > 0 && (
+                          <div>
+                            <h5 className="font-bold mb-3 text-gray-800 text-lg">🎯 매칭된 규칙들</h5>
+                            <div className="space-y-3">
+                              {testResult.response.matchedRules.map((rule: MatchedRule, idx: number) => (
+                                <Card key={idx} className="border-2 border-green-400 bg-green-50 shadow-lg">
+                                  <CardContent className="p-5">
+                                    <div className="grid grid-cols-1 gap-4">
+                                      <div className="flex flex-wrap gap-4">
+                                        <div className="flex-1 min-w-0">
+                                          <span className="font-bold text-gray-800 text-sm block mb-1">🔍 패턴:</span>
+                                          <code className="bg-gray-800 text-green-400 px-3 py-2 rounded-lg border-2 border-gray-600 font-mono text-sm block break-all">{rule.pattern}</code>
+                                        </div>
+                                        <div>
+                                          <span className="font-bold text-gray-800 text-sm block mb-1">📂 카테고리:</span>
+                                          <Badge className="bg-purple-600 text-white text-sm px-3 py-1 font-bold">{rule.category}</Badge>
+                                        </div>
+                                      </div>
+                                      
+                                      <div>
+                                        <span className="font-bold text-gray-800 text-sm block mb-1">✨ 매칭된 텍스트:</span>
+                                        <span className="bg-yellow-300 text-yellow-900 px-4 py-2 rounded-lg border-2 border-yellow-500 font-bold text-base inline-block">{rule.matchedText}</span>
+                                      </div>
+                                    </div>
+                                    
+                                    <div className="mt-4 pt-3 border-t-2 border-green-300">
+                                      <span className="font-bold text-gray-800 text-sm block mb-2">📋 설명:</span>
+                                      <p className="text-sm text-gray-700 bg-white p-3 rounded-lg border border-gray-200 font-medium">{rule.description}</p>
+                                    </div>
+                                  </CardContent>
+                                </Card>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <Card className="border-orange-200">
+                        <CardContent className="p-4">
+                          <div className="flex items-center gap-2 text-orange-600">
+                            <AlertCircle className="h-4 w-4" />
+                            <span className="font-medium">매칭되는 정규식 패턴이 없습니다.</span>
+                          </div>
+                          <p className="text-sm text-muted-foreground mt-2">
+                            "{testInput}"에 대한 패턴을 찾을 수 없습니다. 새로운 규칙을 추가하거나 기존 패턴을 수정해보세요.
+                          </p>
+                        </CardContent>
+                      </Card>
+                    )}
+                  </div>
+                ) : (
+                  <Card className="border-red-200">
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-2 text-red-600">
+                        <XCircle className="h-4 w-4" />
+                        <span className="font-medium">테스트 실패</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground mt-2">
+                        {testResult.error || '알 수 없는 오류가 발생했습니다.'}
+                      </p>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-bold">정규식 규칙 관리</h2>
-          <p className="text-muted-foreground">데이터베이스 기반 정규식 규칙 관리 시스템</p>
+          <p> Spring Boot API → MyBatis → PostgreSQL(table : regex_rules)</p>
         </div>
         <div className="flex gap-2">
           <Button onClick={refreshCache} variant="outline" size="sm">

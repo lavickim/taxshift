@@ -583,7 +583,7 @@ export function CombinedRulesManagement() {
         <div>
           <h2 className="text-3xl font-bold tracking-tight">통합 룰 관리</h2>
           <p className="text-muted-foreground">
-            AI 거래 분류를 위한 규칙을 생성하고 관리합니다
+            AI 거래 분류를 위한 규칙을 생성, 관리
           </p>
         </div>
         <div className="flex gap-2">
