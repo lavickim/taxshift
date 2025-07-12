@@ -36,7 +36,18 @@
       "Bash(yarn --version)",
       "Bash(yarn install)",
       "Bash(yarn dev)",
-      "Bash(./test.sh:*)"
+      "Bash(./test.sh:*)",
+      "Bash(chmod:*)",
+      "Bash(cp:*)",
+      "Bash(npm update:*)",
+      "Bash(npm audit:*)",
+      "Bash(npm install:*)",
+      "Bash(./test-transaction-api.sh:*)",
+      "Bash(./test-mobile-app.sh:*)",
+      "Bash(npx expo install:*)",
+      "Bash(./test-mobile-app-complete.sh:*)",
+      "Bash(./test-mobile-app-improved.sh:*)",
+      "Bash(./test-mobile-app-network.sh:*)"
     ],
     "deny": []
   }

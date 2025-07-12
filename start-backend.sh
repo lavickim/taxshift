@@ -10,7 +10,7 @@ cd "$(dirname "$0")/mshift-api"
 
 # Maven 의존성 확인 및 컴파일
 echo "🔧 Maven 프로젝트 컴파일 중..."
-./mvnw clean compile
+mvn clean compile
 
 # Spring Boot 서버 시작
 echo "🚀 Spring Boot 서버 시작..."
@@ -19,4 +19,4 @@ echo "API 문서: http://localhost:8080/api"
 echo "중단: Ctrl+C"
 echo "================================="
 
-./mvnw spring-boot:run
+mvn spring-boot:run

@@ -1,0 +1,59 @@
+{
+  "timestamp": "2025-07-11T09:56:12.449Z",
+  "consoleLogs": [
+    {
+      "timestamp": "6:56:11 PM",
+      "type": "log",
+      "text": "Running application \"main\" with appParams:\n JSHandle@object \nDevelopment-level warnings: ON.\nPerformance optimizations: OFF."
+    },
+    {
+      "timestamp": "6:56:11 PM",
+      "type": "warn",
+      "text": "props.pointerEvents is deprecated. Use style.pointerEvents"
+    },
+    {
+      "timestamp": "6:56:11 PM",
+      "type": "log",
+      "text": "Loading transaction data from API..."
+    },
+    {
+      "timestamp": "6:56:11 PM",
+      "type": "log",
+      "text": "Transaction data loaded successfully from API: JSHandle@object"
+    }
+  ],
+  "apiLogs": [
+    {
+      "timestamp": "6:56:11 PM",
+      "method": "GET",
+      "url": "http://192.168.45.219:8080/api/rule-engine/health",
+      "type": "request"
+    },
+    {
+      "timestamp": "6:56:11 PM",
+      "method": "GET",
+      "url": "http://192.168.45.219:8080/api/transactions/bank-a",
+      "type": "request"
+    },
+    {
+      "timestamp": "6:56:11 PM",
+      "status": 200,
+      "url": "http://192.168.45.219:8080/api/rule-engine/health",
+      "type": "response",
+      "body": "Rule Engine API is running"
+    },
+    {
+      "timestamp": "6:56:11 PM",
+      "status": 200,
+      "url": "http://192.168.45.219:8080/api/transactions/bank-a",
+      "type": "response",
+      "body": "{\"accountInfo\":{\"bankName\":\"기업은행\",\"accountNumber\":\"****-****-****-1234\",\"balance\":\"130,293\",\"currency\":\"원\"},\"transactions\":[{\"id\":\"txn_001\",\"date\":\"2024-05-18\",\"displayDate\":\"5.18\",\"description\":\"417/"
+    }
+  ],
+  "summary": {
+    "totalConsoleEntries": 4,
+    "totalApiCalls": 4,
+    "successfulApiCalls": 2,
+    "failedApiCalls": 0
+  }
+}

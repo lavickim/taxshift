@@ -1,0 +1,282 @@
+{
+  "accountInfo": {
+    "bankName": "기업은행",
+    "accountNumber": "****-****-****-1234",
+    "balance": "130,293",
+    "currency": "원"
+  },
+  "transactions": [
+    {
+      "id": "txn_001",
+      "date": "2024-05-18",
+      "displayDate": "5.18",
+      "description": "417/3000도금",
+      "amount": -137900,
+      "displayAmount": "-137,900원",
+      "balance": 130293,
+      "displayBalance": "잔액 130,293원",
+      "category": "미분류",
+      "type": "출금"
+    },
+    {
+      "id": "txn_002",
+      "date": "2024-05-16",
+      "displayDate": "5.16",
+      "description": "세븐일레븐 충주기업",
+      "amount": -15800,
+      "displayAmount": "-15,800원",
+      "balance": 268193,
+      "displayBalance": "잔액 268,193원",
+      "category": "미분류",
+      "type": "출금"
+    },
+    {
+      "id": "txn_003",
+      "date": "2024-05-16",
+      "displayDate": "5.16",
+      "description": "지에스25이천하이더",
+      "amount": -4500,
+      "displayAmount": "-4,500원",
+      "balance": 283993,
+      "displayBalance": "잔액 283,993원",
+      "category": "편의점",
+      "type": "출금"
+    },
+    {
+      "id": "txn_004",
+      "date": "2024-05-16",
+      "displayDate": "5.16",
+      "description": "(주)동서/카페카누2호",
+      "amount": -4800,
+      "displayAmount": "-4,800원",
+      "balance": 288493,
+      "displayBalance": "잔액 288,493원",
+      "category": "음식점",
+      "type": "출금"
+    },
+    {
+      "id": "txn_005",
+      "date": "2024-05-16",
+      "displayDate": "5.16",
+      "description": "DNH*GODADDY#3748664056 TEMPE USA",
+      "amount": -37551,
+      "displayAmount": "-37,551원",
+      "balance": 293293,
+      "displayBalance": "잔액 293,293원",
+      "category": "온라인서비스",
+      "type": "출금"
+    },
+    {
+      "id": "txn_006",
+      "date": "2024-05-16",
+      "displayDate": "5.16",
+      "description": "DNH*GODADDY#3746028594 TEMPE USA",
+      "amount": -22856,
+      "displayAmount": "-22,856원",
+      "balance": 330849,
+      "displayBalance": "잔액 330,849원",
+      "category": "온라인서비스",
+      "type": "출금"
+    },
+    {
+      "id": "txn_007",
+      "date": "2024-05-15",
+      "displayDate": "5.15",
+      "description": "고신물상여주유소",
+      "amount": -80000,
+      "displayAmount": "-80,000원",
+      "balance": 353700,
+      "displayBalance": "잔액 353,700원",
+      "category": "주유소",
+      "type": "출금"
+    },
+    {
+      "id": "txn_008",
+      "date": "2024-05-15",
+      "displayDate": "5.15",
+      "description": "건강보험",
+      "amount": -3243240,
+      "displayAmount": "-3,243,240원",
+      "balance": 433700,
+      "displayBalance": "잔액 433,700원",
+      "category": "보험",
+      "type": "출금"
+    },
+        {
+      "id": "3231423",
+      "date": "2024-05-15",
+      "displayDate": "5.15",
+      "description": "에스엠하이플러스주식",
+      "amount": -3243240,
+      "displayAmount": "-3,243,240원",
+      "balance": 433700,
+      "displayBalance": "잔액 433,700원",
+      "category": "보험",
+      "type": "출금"
+    },
+        {
+      "id": "52345345",
+      "date": "2024-05-15",
+      "displayDate": "5.15",
+      "description": "2025결산",
+      "amount": -3243240,
+      "displayAmount": "-3,243,240원",
+      "balance": 433700,
+      "displayBalance": "잔액 433,700원",
+      "category": "보험",
+      "type": "출금"
+    },
+            {
+      "id": "75647",
+      "date": "2024-05-15",
+      "displayDate": "5.15",
+      "description": "롯데리아 서충지신도시점",
+      "amount": -3243240,
+      "displayAmount": "-3,243,240원",
+      "balance": 433700,
+      "displayBalance": "잔액 433,700원",
+      "category": "보험",
+      "type": "출금"
+    },
+                {
+      "id": "89769",
+      "date": "2024-05-15",
+      "displayDate": "5.15",
+      "description": "한국정보통신 (주)",
+      "amount": -3243240,
+      "displayAmount": "-3,243,240원",
+      "balance": 433700,
+      "displayBalance": "잔액 433,700원",
+      "category": "보험",
+      "type": "출금"
+    },
+
+                    {
+      "id": "6243634576",
+      "date": "2024-05-15",
+      "displayDate": "5.15",
+      "description": "과오납연금",
+      "amount": -3243240,
+      "displayAmount": "-3,243,240원",
+      "balance": 433700,
+      "displayBalance": "잔액 433,700원",
+      "category": "보험",
+      "type": "출금"
+    },
+
+                        {
+      "id": "27453743",
+      "date": "2024-05-15",
+      "displayDate": "5.15",
+      "description": "개발용역",
+      "amount": -3243240,
+      "displayAmount": "-3,243,240원",
+      "balance": 433700,
+      "displayBalance": "잔액 433,700원",
+      "category": "보험",
+      "type": "출금"
+    },
+
+                            {
+      "id": "27547453754",
+      "date": "2024-05-15",
+      "displayDate": "5.15",
+      "description": "세금인증수수료",
+      "amount": -3243240,
+      "displayAmount": "-3,243,240원",
+      "balance": 433700,
+      "displayBalance": "잔액 433,700원",
+      "category": "보험",
+      "type": "출금"
+    },
+
+
+
+
+        {
+      "id": "754375367853",
+      "date": "2024-05-15",
+      "displayDate": "5.15",
+      "description": "김용훈",
+      "amount": -3243240,
+      "displayAmount": "-3,243,240원",
+      "balance": 433700,
+      "displayBalance": "잔액 433,700원",
+      "category": "보험",
+      "type": "출금"
+    },
+        {
+      "id": "2474357347645",
+      "date": "2024-05-15",
+      "displayDate": "5.15",
+      "description": "내가 조선의 치키이고 맥주다",
+      "amount": -3243240,
+      "displayAmount": "-3,243,240원",
+      "balance": 433700,
+      "displayBalance": "잔액 433,700원",
+      "category": "보험",
+      "type": "출금"
+    },
+        {
+      "id": "98769789",
+      "date": "2024-05-15",
+      "displayDate": "5.15",
+      "description": "지에스25(GS25)서충주프리미엄점",
+      "amount": -3243240,
+      "displayAmount": "-3,240원",
+      "balance": 433700,
+      "displayBalance": "잔액 433,700원",
+      "category": "보험",
+      "type": "출금"
+    },
+        {
+      "id": "g3werg4",
+      "date": "2024-05-15",
+      "displayDate": "5.15",
+      "description": "토스페이먼츠데이터",
+      "amount": -3243240,
+      "displayAmount": "-3,243,240원",
+      "balance": 433700,
+      "displayBalance": "잔액 433,700원",
+      "category": "보험",
+      "type": "출금"
+    },
+        {
+      "id": "g3454g234",
+      "date": "2024-05-15",
+      "displayDate": "5.15",
+      "description": "이마트 에브리데이 서",
+      "amount": -3243240,
+      "displayAmount": "-3,243,240원",
+      "balance": 433700,
+      "displayBalance": "잔액 433,700원",
+      "category": "보험",
+      "type": "출금"
+    },
+        {
+      "id": "t43t43t",
+      "date": "2024-05-15",
+      "displayDate": "5.15",
+      "description": " (주) 이미트",
+      "amount": -3243240,
+      "displayAmount": "-3,243,240원",
+      "balance": 433700,
+      "displayBalance": "잔액 433,700원",
+      "category": "보험",
+      "type": "출금"
+    },
+        {
+      "id": "u65u5u",
+      "date": "2024-05-15",
+      "displayDate": "5.15",
+      "description": "급여",
+      "amount": -3243240,
+      "displayAmount": "-3,243,240원",
+      "balance": 433700,
+      "displayBalance": "잔액 433,700원",
+      "category": "보험",
+      "type": "출금"
+    }
+
+  ]
+}

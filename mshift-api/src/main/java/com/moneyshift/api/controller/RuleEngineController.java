@@ -16,7 +16,7 @@ import java.util.List;
 @RequestMapping("/rule-engine")
 @RequiredArgsConstructor
 @Slf4j
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
+@CrossOrigin(origins = "*")
 public class RuleEngineController {
     
     private final RuleEngineService ruleEngineService;
