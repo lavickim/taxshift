@@ -221,24 +221,30 @@ const TagMappingManagement: React.FC = () => {
 
   const loadTags = async () => {
     try {
-      // Get tags from mappings data
-      const response = await fetch('/api/v2/tag-mapping/mappings?source=database');
+      // Get tags from tag-account-mappings data
+      const response = await fetch('/api/v2/tag-mapping/tag-account-mappings');
       if (response.ok) {
         const mappings = await response.json();
-        const uniqueTags = mappings
-          .map((mapping: any) => mapping.tag)
-          .filter((tag: any, index: number, self: any[]) => 
-            index === self.findIndex((t: any) => t.id === tag.id)
-          )
-          .map((tag: any) => ({
-            id: tag.id,
-            tagName: tag.tagName,
-            tagDescription: tag.description,
-            category: tag.tagCategory,
-            isActive: tag.isActive
-          }));
-        setTags(uniqueTags);
-        console.log('Loaded tags:', uniqueTags.length);
+        if (Array.isArray(mappings)) {
+          const uniqueTags = mappings
+            .map((mapping: any) => mapping.tag)
+            .filter((tag: any, index: number, self: any[]) => 
+              index === self.findIndex((t: any) => t.id === tag.id)
+            )
+            .filter((tag: any) => tag) // Remove null/undefined tags
+            .map((tag: any) => ({
+              id: tag.id,
+              tagName: tag.tagName,
+              tagDescription: tag.description,
+              category: tag.tagCategory,
+              isActive: tag.isActive
+            }));
+          setTags(uniqueTags);
+          console.log('Loaded tags:', uniqueTags.length);
+        } else {
+          console.log('No mappings data received');
+          setTags([]);
+        }
       } else {
         console.error('Failed to load tags:', response.status);
         setTags([]);
@@ -252,13 +258,20 @@ const TagMappingManagement: React.FC = () => {
   const loadKeywordTagMappings = async () => {
     const startTime = Date.now();
     try {
-      const response = await fetch('/api/v2/tag-mapping/mappings?source=database');
+      // For now, we'll use the first keyword group to get keyword-tag mappings
+      // In a real implementation, this would load all keyword-tag mappings
+      const response = await fetch('/api/v2/tag-mapping/keyword-tag-mappings');
       const responseTime = Date.now() - startTime;
       
       if (response.ok) {
         const data = await response.json();
-        setKeywordTagMappings(data);
-        console.log('Loaded keyword-tag mappings:', data.length);
+        if (Array.isArray(data)) {
+          setKeywordTagMappings(data);
+          console.log('Loaded keyword-tag mappings:', data.length);
+        } else {
+          console.log('No keyword-tag mappings data received');
+          setKeywordTagMappings([]);
+        }
         
         const dataSource = response.headers.get('X-Data-Source') || 'database';
         setDataSourceInfo(prev => ({

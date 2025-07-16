@@ -67,6 +67,31 @@ public class TagMappingService {
     }
     
     /**
+     * 모든 키워드-태그 매핑 조회
+     */
+    public List<KeywordTagMapping> findAllKeywordTagMappings() {
+        log.debug("모든 키워드-태그 매핑 조회");
+        
+        String cacheKey = "all_keyword_tag_mappings";
+        
+        @SuppressWarnings("unchecked")
+        List<KeywordTagMapping> cachedMappings = (List<KeywordTagMapping>) redisTemplate.opsForValue()
+                .get(cacheKey);
+        
+        if (cachedMappings != null) {
+            return cachedMappings;
+        }
+        
+        // 데이터베이스에서 조회
+        List<KeywordTagMapping> mappings = keywordTagMappingService.findAllActiveMappings();
+        
+        // 캐시에 저장
+        redisTemplate.opsForValue().set(cacheKey, mappings, CACHE_TTL_HOURS, TimeUnit.HOURS);
+        
+        return mappings;
+    }
+    
+    /**
      * 태그에서 계정과목으로의 매핑 조회
      */
     public List<TagAccountMapping> findAccountMappingsByTag(Long tagId) {

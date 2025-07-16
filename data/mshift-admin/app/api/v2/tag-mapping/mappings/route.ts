@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     if (keywordGroupId) params.append('keywordGroupId', keywordGroupId);
     if (tagId) params.append('tagId', tagId);
     
-    const backendUrl = `${BACKEND_URL}/api/v2/tag-mapping-mgmt/mappings?${params.toString()}`;
+    const backendUrl = `${BACKEND_URL}/v2/tag-mapping-mgmt/mappings?${params.toString()}`;
     console.log('Proxying to:', backendUrl);
     
     const response = await fetch(backendUrl, {
@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const backendUrl = `${BACKEND_URL}/api/v2/tag-mapping-mgmt/mappings`;
+    const backendUrl = `${BACKEND_URL}/v2/tag-mapping-mgmt/mappings`;
     
     const response = await fetch(backendUrl, {
       method: 'POST',

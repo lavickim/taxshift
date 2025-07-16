@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const response = await fetch(`${JAVA_API_BASE_URL}/api/v2/tag-mapping-mgmt/recommend-tags`, {
+    const response = await fetch(`${JAVA_API_BASE_URL}/v2/tag-mapping-mgmt/recommend-tags`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

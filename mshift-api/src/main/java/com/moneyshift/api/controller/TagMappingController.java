@@ -18,7 +18,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@RequestMapping("/api/v2/tag-mapping-mgmt")
+@RequestMapping("/v2/tag-mapping-mgmt")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 // @AdminOnly("태그 매핑 관리는 어드민 전용입니다") // TODO: 임시 비활성화
@@ -229,6 +229,23 @@ public class TagMappingController {
             
         } catch (Exception e) {
             log.error("계정과목 매핑 조회 실패", e);
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+    
+    /**
+     * 모든 키워드-태그 매핑 조회
+     */
+    @GetMapping("/keyword-tag-mappings")
+    public ResponseEntity<List<KeywordTagMapping>> getAllKeywordTagMappings() {
+        log.info("모든 키워드-태그 매핑 조회");
+        
+        try {
+            List<KeywordTagMapping> mappings = tagMappingService.findAllKeywordTagMappings();
+            return ResponseEntity.ok(mappings);
+            
+        } catch (Exception e) {
+            log.error("키워드-태그 매핑 조회 실패", e);
             return ResponseEntity.internalServerError().build();
         }
     }

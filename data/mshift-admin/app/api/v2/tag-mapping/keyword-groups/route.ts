@@ -6,7 +6,7 @@ export async function GET(request: NextRequest) {
   try {
     console.log('GET /api/v2/tag-mapping-mgmt/keyword-groups - 키워드 그룹 목록 조회');
     
-    const response = await fetch(`${JAVA_API_BASE_URL}/api/v2/tag-mapping-mgmt/keyword-groups`, {
+    const response = await fetch(`${JAVA_API_BASE_URL}/v2/tag-mapping-mgmt/keyword-groups`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const response = await fetch(`${JAVA_API_BASE_URL}/api/v2/tag-mapping-mgmt/keyword-groups`, {
+    const response = await fetch(`${JAVA_API_BASE_URL}/v2/tag-mapping-mgmt/keyword-groups`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

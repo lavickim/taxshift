@@ -250,8 +250,8 @@ export function KeywordRuleTest() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          inputText: inputText.trim(),
-          returnDetails: true
+          description: inputText.trim(),
+          amount: 10000
         })
       });
 
@@ -291,8 +291,8 @@ export function KeywordRuleTest() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          inputText: transaction.description,
-          returnDetails: true
+          description: transaction.description,
+          amount: 10000
         })
       });
 
@@ -340,8 +340,8 @@ export function KeywordRuleTest() {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            inputText: transaction.description,
-            returnDetails: true
+            description: transaction.description,
+            amount: 10000
           })
         });
 

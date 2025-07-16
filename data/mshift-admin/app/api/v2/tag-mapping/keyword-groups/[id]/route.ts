@@ -22,7 +22,7 @@ export async function PUT(
       );
     }
 
-    const response = await fetch(`${JAVA_API_BASE_URL}/api/v2/tag-mapping-mgmt/keyword-groups/${id}`, {
+    const response = await fetch(`${JAVA_API_BASE_URL}/v2/tag-mapping-mgmt/keyword-groups/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -67,7 +67,7 @@ export async function DELETE(
     const id = params.id;
     console.log(`DELETE /api/v2/tag-mapping-mgmt/keyword-groups/${id} - 키워드 그룹 삭제`);
 
-    const response = await fetch(`${JAVA_API_BASE_URL}/api/v2/tag-mapping-mgmt/keyword-groups/${id}`, {
+    const response = await fetch(`${JAVA_API_BASE_URL}/v2/tag-mapping-mgmt/keyword-groups/${id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
