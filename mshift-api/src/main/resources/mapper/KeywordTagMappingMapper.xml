@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.moneyshift.api.mapper.KeywordTagMappingMapper">
+
+    <resultMap id="keywordTagMappingResultMap" type="com.moneyshift.api.model.KeywordTagMapping">
+        <id property="id" column="id"/>
+        <result property="keywordGroupId" column="keyword_group_id"/>
+        <result property="tagId" column="tag_id"/>
+        <result property="confidenceScore" column="confidence_score"/>
+        <result property="contextRules" column="context_rules" typeHandler="com.moneyshift.api.config.JsonNodeTypeHandler"/>
+        <result property="priority" column="priority"/>
+        <result property="usageCount" column="usage_count"/>
+        <result property="isActive" column="is_active"/>
+        <result property="createdAt" column="created_at" typeHandler="com.moneyshift.api.config.LocalDateTimeTypeHandler"/>
+        
+        <!-- Join with KeywordGroup -->
+        <association property="keywordGroup" javaType="com.moneyshift.api.model.KeywordGroup">
+            <id property="id" column="kg_id"/>
+            <result property="groupName" column="kg_group_name"/>
+            <result property="primaryKeyword" column="kg_primary_keyword"/>
+            <result property="synonyms" column="kg_synonyms" typeHandler="com.moneyshift.api.config.StringArrayTypeHandler"/>
+            <result property="category" column="kg_category"/>
+            <result property="confidenceBase" column="kg_confidence_base"/>
+            <result property="isActive" column="kg_is_active"/>
+            <result property="createdAt" column="kg_created_at" typeHandler="com.moneyshift.api.config.LocalDateTimeTypeHandler"/>
+            <result property="updatedAt" column="kg_updated_at" typeHandler="com.moneyshift.api.config.LocalDateTimeTypeHandler"/>
+        </association>
+        
+        <!-- Join with TagsMaster -->
+        <association property="tag" javaType="com.moneyshift.api.model.TagsMaster">
+            <id property="id" column="tag_id"/>
+            <result property="tagName" column="tag_name"/>
+            <result property="tagCategory" column="tag_category"/>
+            <result property="description" column="tag_description"/>
+            <result property="colorHex" column="tag_color_hex"/>
+            <result property="iconName" column="tag_icon_name"/>
+            <result property="displayOrder" column="tag_display_order"/>
+            <result property="isActive" column="tag_is_active"/>
+            <result property="createdAt" column="tag_created_at" typeHandler="com.moneyshift.api.config.LocalDateTimeTypeHandler"/>
+        </association>
+    </resultMap>
+
+    <select id="selectAllActive" resultMap="keywordTagMappingResultMap">
+        SELECT 
+            ktm.id, ktm.keyword_group_id, ktm.tag_id, ktm.confidence_score, 
+            ktm.context_rules, ktm.priority, ktm.usage_count, ktm.is_active, ktm.created_at,
+            kg.id as kg_id, kg.group_name as kg_group_name, kg.primary_keyword as kg_primary_keyword,
+            kg.synonyms as kg_synonyms, kg.category as kg_category, kg.confidence_base as kg_confidence_base,
+            kg.is_active as kg_is_active, kg.created_at as kg_created_at, kg.updated_at as kg_updated_at,
+            tm.id as tag_id, tm.tag_name, tm.tag_category, tm.description as tag_description,
+            tm.color_hex as tag_color_hex, tm.icon_name as tag_icon_name, tm.display_order as tag_display_order,
+            tm.is_active as tag_is_active, tm.created_at as tag_created_at
+        FROM keyword_tag_mappings ktm
+        JOIN keyword_groups kg ON ktm.keyword_group_id = kg.id
+        JOIN tags_master tm ON ktm.tag_id = tm.id
+        WHERE ktm.is_active = true AND kg.is_active = true AND tm.is_active = true
+        ORDER BY ktm.priority DESC, ktm.confidence_score DESC
+    </select>
+
+    <select id="selectByKeywordGroupId" resultMap="keywordTagMappingResultMap">
+        SELECT 
+            ktm.id, ktm.keyword_group_id, ktm.tag_id, ktm.confidence_score, 
+            ktm.context_rules, ktm.priority, ktm.usage_count, ktm.is_active, ktm.created_at,
+            kg.id as kg_id, kg.group_name as kg_group_name, kg.primary_keyword as kg_primary_keyword,
+            kg.synonyms as kg_synonyms, kg.category as kg_category, kg.confidence_base as kg_confidence_base,
+            kg.is_active as kg_is_active, kg.created_at as kg_created_at, kg.updated_at as kg_updated_at,
+            tm.id as tag_id, tm.tag_name, tm.tag_category, tm.description as tag_description,
+            tm.color_hex as tag_color_hex, tm.icon_name as tag_icon_name, tm.display_order as tag_display_order,
+            tm.is_active as tag_is_active, tm.created_at as tag_created_at
+        FROM keyword_tag_mappings ktm
+        JOIN keyword_groups kg ON ktm.keyword_group_id = kg.id
+        JOIN tags_master tm ON ktm.tag_id = tm.id
+        WHERE ktm.keyword_group_id = #{keywordGroupId} AND ktm.is_active = true
+        ORDER BY ktm.priority DESC, ktm.confidence_score DESC
+    </select>
+
+    <select id="selectByTagId" resultMap="keywordTagMappingResultMap">
+        SELECT 
+            ktm.id, ktm.keyword_group_id, ktm.tag_id, ktm.confidence_score, 
+            ktm.context_rules, ktm.priority, ktm.usage_count, ktm.is_active, ktm.created_at,
+            kg.id as kg_id, kg.group_name as kg_group_name, kg.primary_keyword as kg_primary_keyword,
+            kg.synonyms as kg_synonyms, kg.category as kg_category, kg.confidence_base as kg_confidence_base,
+            kg.is_active as kg_is_active, kg.created_at as kg_created_at, kg.updated_at as kg_updated_at,
+            tm.id as tag_id, tm.tag_name, tm.tag_category, tm.description as tag_description,
+            tm.color_hex as tag_color_hex, tm.icon_name as tag_icon_name, tm.display_order as tag_display_order,
+            tm.is_active as tag_is_active, tm.created_at as tag_created_at
+        FROM keyword_tag_mappings ktm
+        JOIN keyword_groups kg ON ktm.keyword_group_id = kg.id
+        JOIN tags_master tm ON ktm.tag_id = tm.id
+        WHERE ktm.tag_id = #{tagId} AND ktm.is_active = true
+        ORDER BY ktm.priority DESC, ktm.confidence_score DESC
+    </select>
+
+    <select id="selectById" resultMap="keywordTagMappingResultMap">
+        SELECT 
+            ktm.id, ktm.keyword_group_id, ktm.tag_id, ktm.confidence_score, 
+            ktm.context_rules, ktm.priority, ktm.usage_count, ktm.is_active, ktm.created_at,
+            kg.id as kg_id, kg.group_name as kg_group_name, kg.primary_keyword as kg_primary_keyword,
+            kg.synonyms as kg_synonyms, kg.category as kg_category, kg.confidence_base as kg_confidence_base,
+            kg.is_active as kg_is_active, kg.created_at as kg_created_at, kg.updated_at as kg_updated_at,
+            tm.id as tag_id, tm.tag_name, tm.tag_category, tm.description as tag_description,
+            tm.color_hex as tag_color_hex, tm.icon_name as tag_icon_name, tm.display_order as tag_display_order,
+            tm.is_active as tag_is_active, tm.created_at as tag_created_at
+        FROM keyword_tag_mappings ktm
+        JOIN keyword_groups kg ON ktm.keyword_group_id = kg.id
+        JOIN tags_master tm ON ktm.tag_id = tm.id
+        WHERE ktm.id = #{id}
+    </select>
+
+    <select id="selectByKeywordGroupAndTag" resultMap="keywordTagMappingResultMap">
+        SELECT 
+            ktm.id, ktm.keyword_group_id, ktm.tag_id, ktm.confidence_score, 
+            ktm.context_rules, ktm.priority, ktm.usage_count, ktm.is_active, ktm.created_at,
+            kg.id as kg_id, kg.group_name as kg_group_name, kg.primary_keyword as kg_primary_keyword,
+            kg.synonyms as kg_synonyms, kg.category as kg_category, kg.confidence_base as kg_confidence_base,
+            kg.is_active as kg_is_active, kg.created_at as kg_created_at, kg.updated_at as kg_updated_at,
+            tm.id as tag_id, tm.tag_name, tm.tag_category, tm.description as tag_description,
+            tm.color_hex as tag_color_hex, tm.icon_name as tag_icon_name, tm.display_order as tag_display_order,
+            tm.is_active as tag_is_active, tm.created_at as tag_created_at
+        FROM keyword_tag_mappings ktm
+        JOIN keyword_groups kg ON ktm.keyword_group_id = kg.id
+        JOIN tags_master tm ON ktm.tag_id = tm.id
+        WHERE ktm.keyword_group_id = #{keywordGroupId} AND ktm.tag_id = #{tagId}
+    </select>
+
+    <insert id="insertKeywordTagMapping" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO keyword_tag_mappings (keyword_group_id, tag_id, confidence_score, context_rules, priority, usage_count, is_active, created_at)
+        VALUES (#{keywordGroupId}, #{tagId}, #{confidenceScore}, #{contextRules, typeHandler=com.moneyshift.api.config.JsonNodeTypeHandler}::jsonb, #{priority}, #{usageCount}, #{isActive}, NOW())
+    </insert>
+
+    <update id="updateKeywordTagMapping">
+        UPDATE keyword_tag_mappings
+        SET keyword_group_id = #{keywordGroupId},
+            tag_id = #{tagId},
+            confidence_score = #{confidenceScore},
+            context_rules = #{contextRules, typeHandler=com.moneyshift.api.config.JsonNodeTypeHandler}::jsonb,
+            priority = #{priority},
+            usage_count = #{usageCount},
+            is_active = #{isActive}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteKeywordTagMapping">
+        DELETE FROM keyword_tag_mappings WHERE id = #{id}
+    </delete>
+
+    <update id="setActiveStatus">
+        UPDATE keyword_tag_mappings
+        SET is_active = #{active}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateUsageCount">
+        UPDATE keyword_tag_mappings
+        SET usage_count = usage_count + #{increment}
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectTopMappingsByUsage" resultMap="keywordTagMappingResultMap">
+        SELECT 
+            ktm.id, ktm.keyword_group_id, ktm.tag_id, ktm.confidence_score, 
+            ktm.context_rules, ktm.priority, ktm.usage_count, ktm.is_active, ktm.created_at,
+            kg.id as kg_id, kg.group_name as kg_group_name, kg.primary_keyword as kg_primary_keyword,
+            kg.synonyms as kg_synonyms, kg.category as kg_category, kg.confidence_base as kg_confidence_base,
+            kg.is_active as kg_is_active, kg.created_at as kg_created_at, kg.updated_at as kg_updated_at,
+            tm.id as tag_id, tm.tag_name, tm.tag_category, tm.description as tag_description,
+            tm.color_hex as tag_color_hex, tm.icon_name as tag_icon_name, tm.display_order as tag_display_order,
+            tm.is_active as tag_is_active, tm.created_at as tag_created_at
+        FROM keyword_tag_mappings ktm
+        JOIN keyword_groups kg ON ktm.keyword_group_id = kg.id
+        JOIN tags_master tm ON ktm.tag_id = tm.id
+        WHERE ktm.is_active = true AND kg.is_active = true AND tm.is_active = true
+        ORDER BY ktm.usage_count DESC
+        LIMIT #{limit}
+    </select>
+
+    <select id="selectMappingsByConfidenceRange" resultMap="keywordTagMappingResultMap">
+        SELECT 
+            ktm.id, ktm.keyword_group_id, ktm.tag_id, ktm.confidence_score, 
+            ktm.context_rules, ktm.priority, ktm.usage_count, ktm.is_active, ktm.created_at,
+            kg.id as kg_id, kg.group_name as kg_group_name, kg.primary_keyword as kg_primary_keyword,
+            kg.synonyms as kg_synonyms, kg.category as kg_category, kg.confidence_base as kg_confidence_base,
+            kg.is_active as kg_is_active, kg.created_at as kg_created_at, kg.updated_at as kg_updated_at,
+            tm.id as tag_id, tm.tag_name, tm.tag_category, tm.description as tag_description,
+            tm.color_hex as tag_color_hex, tm.icon_name as tag_icon_name, tm.display_order as tag_display_order,
+            tm.is_active as tag_is_active, tm.created_at as tag_created_at
+        FROM keyword_tag_mappings ktm
+        JOIN keyword_groups kg ON ktm.keyword_group_id = kg.id
+        JOIN tags_master tm ON ktm.tag_id = tm.id
+        WHERE ktm.is_active = true AND kg.is_active = true AND tm.is_active = true
+        AND ktm.confidence_score &gt;= #{minConfidence} AND ktm.confidence_score &lt;= #{maxConfidence}
+        ORDER BY ktm.confidence_score DESC
+    </select>
+
+</mapper>

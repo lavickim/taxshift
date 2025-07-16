@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.moneyshift.api.mapper.KeywordGroupMapper">
+
+    <resultMap id="keywordGroupResultMap" type="com.moneyshift.api.model.KeywordGroup">
+        <id property="id" column="id"/>
+        <result property="groupName" column="group_name"/>
+        <result property="primaryKeyword" column="primary_keyword"/>
+        <result property="synonyms" column="synonyms" typeHandler="com.moneyshift.api.config.StringArrayTypeHandler"/>
+        <result property="category" column="category"/>
+        <result property="confidenceBase" column="confidence_base"/>
+        <result property="isActive" column="is_active"/>
+        <result property="createdAt" column="created_at" typeHandler="com.moneyshift.api.config.LocalDateTimeTypeHandler"/>
+        <result property="updatedAt" column="updated_at" typeHandler="com.moneyshift.api.config.LocalDateTimeTypeHandler"/>
+    </resultMap>
+
+    <select id="selectAllActive" resultMap="keywordGroupResultMap">
+        SELECT id, group_name, primary_keyword, synonyms, category, confidence_base, is_active, created_at, updated_at
+        FROM keyword_groups
+        WHERE is_active = true
+        ORDER BY group_name
+    </select>
+
+    <select id="selectByCategory" resultMap="keywordGroupResultMap">
+        SELECT id, group_name, primary_keyword, synonyms, category, confidence_base, is_active, created_at, updated_at
+        FROM keyword_groups
+        WHERE is_active = true AND category = #{category}
+        ORDER BY group_name
+    </select>
+
+    <select id="selectById" resultMap="keywordGroupResultMap">
+        SELECT id, group_name, primary_keyword, synonyms, category, confidence_base, is_active, created_at, updated_at
+        FROM keyword_groups
+        WHERE id = #{id}
+    </select>
+
+    <insert id="insertKeywordGroup" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO keyword_groups (group_name, primary_keyword, synonyms, category, confidence_base, is_active, created_at, updated_at)
+        VALUES (#{groupName}, #{primaryKeyword}, #{synonyms}, #{category}, #{confidenceBase}, #{isActive}, NOW(), NOW())
+    </insert>
+
+    <update id="updateKeywordGroup">
+        UPDATE keyword_groups
+        SET group_name = #{groupName},
+            primary_keyword = #{primaryKeyword},
+            synonyms = #{synonyms},
+            category = #{category},
+            confidence_base = #{confidenceBase},
+            is_active = #{isActive},
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteKeywordGroup">
+        DELETE FROM keyword_groups WHERE id = #{id}
+    </delete>
+
+    <update id="setActiveStatus">
+        UPDATE keyword_groups
+        SET is_active = #{active}, updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+</mapper>

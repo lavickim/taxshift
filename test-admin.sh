@@ -11,13 +11,13 @@ CURRENT_DIR=$(pwd)
 echo "📍 현재 위치: $CURRENT_DIR"
 
 # mshift-admin 디렉토리 존재 확인
-ADMIN_DIR="$CURRENT_DIR/mshift-admin"
+ADMIN_DIR="$CURRENT_DIR/data/mshift-admin"
 if [ ! -d "$ADMIN_DIR" ]; then
     echo "❌ mshift-admin 디렉토리를 찾을 수 없습니다: $ADMIN_DIR"
     exit 1
 fi
 
-echo "✅ mshift-admin 디렉토리 발견: $ADMIN_DIR"
+echo "✅ data/mshift-admin 디렉토리 발견: $ADMIN_DIR"
 
 # mshift-admin 디렉토리로 이동
 cd "$ADMIN_DIR"

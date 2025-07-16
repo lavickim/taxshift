@@ -27,6 +27,10 @@ application-*.yaml
 *.log
 logs/
 app.log*
+server.log
+backend.log
+dev.log
+server-test.log
 
 # IDE files
 .idea/
@@ -58,6 +62,9 @@ node_modules/
 /.next/
 /out/
 mshift-admin/.next/
+data/mshift-admin/.next/
+*/.next/
+.next/
 
 # production
 /build
@@ -95,6 +102,17 @@ ehthumbs.db
 Thumbs.db
 *.pem
 
+# Analysis and reporting files
+*-analysis.json
+*-report.json
+*-fix-report.json
+comprehensive-*.json
+classification-*.json
+keyword-*.json
+false-positives-*.json
+successful-cases-*.json
+tag-*.json
+
 # Temporary files
 *.tmp
 *.temp
@@ -120,9 +138,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+tsconfig.tsbuildinfo
 
 # Vercel
 .vercel
+.vercel/
 
 # ===========================================
 # Large data files (CSV, Excel, etc.)
@@ -135,11 +155,33 @@ data/source/*
 *.dump
 *.sql.gz
 
+# Script generated files
+analyze-*.js
+apply-*.js
+comprehensive-*.js
+final-*.js
+fix-*.js
+fix-*.sql
+fixed-*.js
+optimize-*.js
+optimized-*.js
+validate-*.js
+
 # ===========================================
 # Generated files
 # ===========================================
 /lib/generated/prisma
+data/mshift-admin/lib/generated/
+lib/generated/
+**/lib/generated/
 
 # Test results
 test-results/
 junit.xml
+test-*.png
+test-*.json
+
+# Source maps
+*.map
+*.js.map
+*.css.map

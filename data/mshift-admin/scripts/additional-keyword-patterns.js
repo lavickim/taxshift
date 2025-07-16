@@ -1,0 +1,172 @@
+#!/usr/bin/env node
+
+/**
+ * 누락된 브랜드를 위한 추가 키워드 패턴
+ * 55% → 75%+ 목표로 확장
+ */
+
+const ADDITIONAL_KEYWORD_PATTERNS = {
+  // 음료/스무디 전문점
+  '음료전문점': {
+    keywords: [
+      '스무디킹', 'SMOOTHIE KING', '쥬씨', 'JUICY', '무하유', '샤니',
+      '공차', 'GONG CHA', '요거프레소', 'YOGERPRESSO', '설빙', 'SULBING',
+      'SHAKE SHACK', '쉐이크쉑', '베스킨라빈스', 'BASKIN ROBBINS',
+      '콜드스톤', 'COLDSTONE', '던킨도너츠', 'DUNKIN', '크리스피크림',
+      '파리바게뜨', 'PARIS BAGUETTE', '뚜레쥬르', 'TOUS LES JOURS'
+    ],
+    tag: '음료전문점',
+    accountCode: '651',
+    accountName: '접대비',
+    confidence: 0.88
+  },
+
+  // 카페 확장 (누락된 브랜드들)
+  '카페확장': {
+    keywords: [
+      '폴바셋', 'PAUL BASSETT', '블루보틀커피', 'BLUE BOTTLE',
+      '달콤커피', '프리메이슨커피', '메가커피', 'MEGA COFFEE',
+      '컴포즈커피', 'COMPOSE COFFEE', '더벤티', 'THE VENTI',
+      '카페베네', 'CAFFE BENE', '탐앤탐스', 'TOM N TOMS',
+      '요거프레소', '할리스픽업', '이디야테이크아웃'
+    ],
+    tag: '카페',
+    accountCode: '651',
+    accountName: '접대비',
+    confidence: 0.88
+  },
+
+  // 다국적 요리/레스토랑
+  '다국적요리': {
+    keywords: [
+      '고투웍', 'GO TO WOK', '마라탕', '샤브샤브', '훠궈',
+      '온더보더', 'ON THE BORDER', '아웃백스테이크하우스', 'OUTBACK',
+      'TGIF', '벤치마킹', '제이에스푸드', '빕스', 'VIPS',
+      '애슐리', 'ASHLEY', '토니로마스', 'TONY ROMA',
+      '패밀리레스토랑', '부페', '뷔페', 'BUFFET'
+    ],
+    tag: '레스토랑',
+    accountCode: '651',
+    accountName: '접대비',
+    confidence: 0.85
+  },
+
+  // 면세점/백화점
+  '면세점': {
+    keywords: [
+      '신세계면세점', '동화면세점', '롯데면세점', 'LOTTE DUTY FREE',
+      '신라면세점', 'SHILLA DUTY FREE', '한화갤러리아면세점',
+      '면세점', 'DUTY FREE', '신세계백화점', '롯데백화점',
+      '현대백화점', '갤러리아백화점', 'AK플라자'
+    ],
+    tag: '면세점',
+    accountCode: '634',
+    accountName: '소모품비',
+    confidence: 0.90
+  },
+
+  // 온라인쇼핑 확장
+  '온라인쇼핑확장': {
+    keywords: [
+      'G마켓', 'GMARKET', 'SSG닷컴', 'SSG.COM', '현대Hmall', 'H몰',
+      '롯데iMall', '롯데온', 'LOTTE ON', 'NS홈쇼핑', 'CJ몰',
+      '하이마트', 'HIMART', '전자랜드', 'ETLAND', '디지털프라자',
+      '온라인', 'ONLINE', '인터넷쇼핑', '홈쇼핑'
+    ],
+    tag: '온라인쇼핑',
+    accountCode: '634',
+    accountName: '소모품비',
+    confidence: 0.83
+  },
+
+  // 여행/숙박
+  '여행숙박': {
+    keywords: [
+      '하나투어', 'HANA TOUR', '인터파크투어', '모두투어', 'MODE TOUR',
+      '야놀자', 'YANOLJA', '여기어때', '아고다', 'AGODA',
+      '부킹닷컴', 'BOOKING.COM', '호텔스닷컴', 'HOTELS.COM',
+      '익스피디아', 'EXPEDIA', '트리바고', 'TRIVAGO',
+      '호텔', 'HOTEL', '모텔', 'MOTEL', '펜션', '리조트', 'RESORT',
+      '에어비앤비', 'AIRBNB', '게스트하우스'
+    ],
+    tag: '여행숙박',
+    accountCode: '611',
+    accountName: '여비교통비',
+    confidence: 0.90
+  },
+
+  // 생활용품/잡화
+  '생활용품': {
+    keywords: [
+      '다이소', 'DAISO', '아트박스', 'ARTBOX', '텐바이텐', '10X10',
+      '올리브영', 'OLIVE YOUNG', '왓슨스', 'WATSONS', '부츠', 'BOOTS',
+      'LOB', '록시땅', "L'OCCITANE", '더바디샵', 'THE BODY SHOP',
+      'GS슈퍼마켓', 'GS리테일', '훼미리마트', 'FAMILY MART',
+      '바이더웨이', 'BY THE WAY', '생활용품', '잡화'
+    ],
+    tag: '생활용품',
+    accountCode: '634',
+    accountName: '소모품비',
+    confidence: 0.85
+  },
+
+  // 서점/문화
+  '서점문화': {
+    keywords: [
+      'YES24', '교보문고', 'KYOBO', '알라딘', 'ALADIN',
+      '인터파크도서', '리브로', 'LIBRO', '영풍문고', 'YOUNGPOONG',
+      '반디앤루니스', 'BANDI', '북스리브로', 'CGV', '메가박스', 'MEGABOX',
+      'KU시네마', '롯데시네마', 'LOTTE CINEMA', '영화관', 'CINEMA',
+      '네이버예약', '인터파크티켓', 'YES24티켓', '티켓링크', '멜론티켓'
+    ],
+    tag: '문화생활',
+    accountCode: '651',
+    accountName: '접대비',
+    confidence: 0.85
+  },
+
+  // 배송/택배
+  '배송택배': {
+    keywords: [
+      'CJ택배', 'CJ대한통운', '한진택배', 'HANJIN', '로젠택배', 'LOGEN',
+      'CVSnet', '우체국택배', '동원택배', 'DONGWON', '현대택배',
+      'DHL', '페덱스', 'FEDEX', 'UPS', '택배', '배송', '화물'
+    ],
+    tag: '택배배송',
+    accountCode: '634',
+    accountName: '소모품비',
+    confidence: 0.90
+  },
+
+  // 뷰티/화장품
+  '뷰티화장품': {
+    keywords: [
+      '올리브영', 'OLIVE YOUNG', '아리따움', 'ARITAUM', '이니스프리', 'INNISFREE',
+      '더페이스샵', 'THE FACE SHOP', '토니앤가이', 'TONI&GUY',
+      '에뛰드하우스', 'ETUDE HOUSE', '미샤', 'MISSHA', '헤라', 'HERA',
+      '라네즈', 'LANEIGE', '설화수', 'SULWHASOO', '화장품', '코스메틱'
+    ],
+    tag: '뷰티',
+    accountCode: '634',
+    accountName: '소모품비',
+    confidence: 0.85
+  },
+
+  // 스포츠/운동
+  '스포츠': {
+    keywords: [
+      '나이키', 'NIKE', '아디다스', 'ADIDAS', '뉴발란스', 'NEW BALANCE',
+      '아식스', 'ASICS', '푸마', 'PUMA', '언더아머', 'UNDER ARMOUR',
+      '휠라', 'FILA', '컨버스', 'CONVERSE', '스포츠', 'SPORTS',
+      '헬스장', '피트니스', 'FITNESS', '요가', 'YOGA', '골프', 'GOLF'
+    ],
+    tag: '스포츠용품',
+    accountCode: '634',
+    accountName: '소모품비',
+    confidence: 0.85
+  }
+};
+
+module.exports = {
+  ADDITIONAL_KEYWORD_PATTERNS
+};

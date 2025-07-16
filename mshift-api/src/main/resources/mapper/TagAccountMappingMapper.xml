@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.moneyshift.api.mapper.TagAccountMappingMapper">
+
+    <resultMap id="tagAccountMappingResultMap" type="com.moneyshift.api.model.TagAccountMapping">
+        <id property="id" column="id"/>
+        <result property="tagId" column="tag_id"/>
+        <result property="accountCode" column="account_code"/>
+        <result property="accountName" column="account_name"/>
+        <result property="mappingCondition" column="mapping_condition" typeHandler="com.moneyshift.api.config.JsonNodeTypeHandler"/>
+        <result property="isDefault" column="is_default"/>
+        <result property="priority" column="priority"/>
+        <result property="confidenceBoost" column="confidence_boost"/>
+        <result property="createdAt" column="created_at" typeHandler="com.moneyshift.api.config.LocalDateTimeTypeHandler"/>
+        
+        <!-- Join with TagsMaster -->
+        <association property="tag" javaType="com.moneyshift.api.model.TagsMaster">
+            <id property="id" column="tag_id"/>
+            <result property="tagName" column="tag_name"/>
+            <result property="tagCategory" column="tag_category"/>
+            <result property="description" column="tag_description"/>
+            <result property="colorHex" column="tag_color_hex"/>
+            <result property="iconName" column="tag_icon_name"/>
+            <result property="displayOrder" column="tag_display_order"/>
+            <result property="isActive" column="tag_is_active"/>
+            <result property="createdAt" column="tag_created_at" typeHandler="com.moneyshift.api.config.LocalDateTimeTypeHandler"/>
+        </association>
+    </resultMap>
+
+    <select id="selectAllWithTags" resultMap="tagAccountMappingResultMap">
+        SELECT 
+            tam.id, tam.tag_id, tam.account_code, tam.account_name, tam.mapping_condition,
+            tam.is_default, tam.priority, tam.confidence_boost, tam.created_at,
+            tm.id as tag_id, tm.tag_name, tm.tag_category, tm.description as tag_description,
+            tm.color_hex as tag_color_hex, tm.icon_name as tag_icon_name, tm.display_order as tag_display_order,
+            tm.is_active as tag_is_active, tm.created_at as tag_created_at
+        FROM tag_account_mappings tam
+        JOIN tags_master tm ON tam.tag_id = tm.id
+        ORDER BY tam.priority DESC, tam.account_code
+    </select>
+
+    <select id="selectByTagIdWithTags" resultMap="tagAccountMappingResultMap">
+        SELECT 
+            tam.id, tam.tag_id, tam.account_code, tam.account_name, tam.mapping_condition,
+            tam.is_default, tam.priority, tam.confidence_boost, tam.created_at,
+            tm.id as tag_id, tm.tag_name, tm.tag_category, tm.description as tag_description,
+            tm.color_hex as tag_color_hex, tm.icon_name as tag_icon_name, tm.display_order as tag_display_order,
+            tm.is_active as tag_is_active, tm.created_at as tag_created_at
+        FROM tag_account_mappings tam
+        JOIN tags_master tm ON tam.tag_id = tm.id
+        WHERE tam.tag_id = #{tagId}
+        ORDER BY tam.priority DESC
+    </select>
+
+    <select id="selectByAccountCodeWithTags" resultMap="tagAccountMappingResultMap">
+        SELECT 
+            tam.id, tam.tag_id, tam.account_code, tam.account_name, tam.mapping_condition,
+            tam.is_default, tam.priority, tam.confidence_boost, tam.created_at,
+            tm.id as tag_id, tm.tag_name, tm.tag_category, tm.description as tag_description,
+            tm.color_hex as tag_color_hex, tm.icon_name as tag_icon_name, tm.display_order as tag_display_order,
+            tm.is_active as tag_is_active, tm.created_at as tag_created_at
+        FROM tag_account_mappings tam
+        JOIN tags_master tm ON tam.tag_id = tm.id
+        WHERE tam.account_code = #{accountCode}
+        ORDER BY tam.priority DESC
+    </select>
+
+    <select id="selectByIdWithTags" resultMap="tagAccountMappingResultMap">
+        SELECT 
+            tam.id, tam.tag_id, tam.account_code, tam.account_name, tam.mapping_condition,
+            tam.is_default, tam.priority, tam.confidence_boost, tam.created_at,
+            tm.id as tag_id, tm.tag_name, tm.tag_category, tm.description as tag_description,
+            tm.color_hex as tag_color_hex, tm.icon_name as tag_icon_name, tm.display_order as tag_display_order,
+            tm.is_active as tag_is_active, tm.created_at as tag_created_at
+        FROM tag_account_mappings tam
+        JOIN tags_master tm ON tam.tag_id = tm.id
+        WHERE tam.id = #{id}
+    </select>
+
+</mapper>
