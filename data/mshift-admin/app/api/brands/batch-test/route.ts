@@ -174,7 +174,7 @@ async function testBrandTransaction(brand: any) {
 
   try {
     // 키워드 분류 테스트 수행
-    const response = await fetch('http://localhost:8080/api/keyword-test/classify', {
+    const response = await fetch('http://localhost:8080/v2/keyword-test/classify', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

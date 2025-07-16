@@ -29,7 +29,7 @@ import java.util.concurrent.CompletableFuture;
 @RequiredArgsConstructor
 public class ConfidenceManagementService {
     
-    private final ConfidenceEngine confidenceEngine;
+    // private final ConfidenceEngine confidenceEngine;
     // private final RuleEngineService ruleEngineService; // TODO: 제거된 서비스
     private final KeywordGroupService keywordGroupService;
     private final TagMappingService tagMappingService;
@@ -95,7 +95,7 @@ public class ConfidenceManagementService {
                 request.getFeedbackType(), 
                 request.getReason() != null ? request.getReason() : "No reason provided");
         
-        confidenceEngine.adjustConfidenceByFeedback(ruleId, ruleType, isPositive, reason);
+        // confidenceEngine.adjustConfidenceByFeedback(ruleId, ruleType, isPositive, reason);
     }
     
     /**
@@ -376,9 +376,11 @@ public class ConfidenceManagementService {
         log.info("신뢰도 점수 조회: entityType={}, entityId={}, range={}-{}", entityType, entityId, minScore, maxScore);
         
         // 샘플 데이터 생성
-        ConfidenceScoreResponse response = new ConfidenceScoreResponse();
-        response.setTotalEntities(1500);
-        response.setAverageScore(82.5);
+        ConfidenceScoreResponse response = ConfidenceScoreResponse.builder()
+                .totalEntities(1500)
+                .averageScore(82.5)
+                .retrievedAt(LocalDateTime.now())
+                .build();
         
         // 점수 분포 생성
         ConfidenceScoreResponse.ScoreDistribution distribution = new ConfidenceScoreResponse.ScoreDistribution();
@@ -411,15 +413,19 @@ public class ConfidenceManagementService {
                 request.getEntityType(), request.getEntityId(), request.getAdjustment());
         
         // 현재 점수 조회 (샘플)
-        int currentScore = 75;
-        int newScore = Math.max(0, Math.min(100, currentScore + request.getAdjustment()));
+        BigDecimal currentScore = BigDecimal.valueOf(75);
+        BigDecimal newScore = currentScore.add(request.getAdjustment());
         
         // 결과 생성
-        ConfidenceAdjustmentResult result = new ConfidenceAdjustmentResult();
-        result.setEntityType(request.getEntityType());
-        result.setEntityId(request.getEntityId());
-        result.setOldScore(currentScore);
-        result.setNewScore(newScore);
+        ConfidenceAdjustmentResult result = ConfidenceAdjustmentResult.builder()
+                .entityType(request.getEntityType())
+                .entityId(request.getEntityId())
+                .oldScore(currentScore)
+                .newScore(newScore)
+                .success(true)
+                .message("조정 완료")
+                .adjustedAt(LocalDateTime.now())
+                .build();
         result.setReason(request.getReason());
         result.setSuccess(true);
         
@@ -482,11 +488,13 @@ public class ConfidenceManagementService {
         
         LocalDateTime baseTime = LocalDateTime.now().minusDays(days);
         for (int i = 0; i < days; i += 5) {
-            ConfidenceTrend trend = new ConfidenceTrend();
-            trend.setDate(baseTime.plusDays(i));
-            trend.setAverageConfidence(80.0 + Math.random() * 15); // 80-95 범위
-            trend.setTotalEntities(1500 + (int)(Math.random() * 100));
-            trend.setLowConfidenceCount(50 + (int)(Math.random() * 20));
+            ConfidenceTrend trend = ConfidenceTrend.builder()
+                    .date(baseTime.plusDays(i))
+                    .averageConfidence(BigDecimal.valueOf(80.0 + Math.random() * 15))
+                    .ruleCount(1500 + (int)(Math.random() * 100))
+                    .totalEntities(1500 + (int)(Math.random() * 100))
+                    .lowConfidenceCount(50 + (int)(Math.random() * 20))
+                    .build();
             trends.add(trend);
         }
         
@@ -518,8 +526,8 @@ public class ConfidenceManagementService {
                 config.getAutoApproveThreshold(), config.getShowQuestionThreshold(), config.getLlmFallbackThreshold());
         
         // 유효성 검사
-        if (config.getAutoApproveThreshold() < config.getShowQuestionThreshold() ||
-            config.getShowQuestionThreshold() < config.getLlmFallbackThreshold()) {
+        if (config.getAutoApproveThreshold().compareTo(config.getShowQuestionThreshold()) < 0 ||
+            config.getShowQuestionThreshold().compareTo(config.getLlmFallbackThreshold()) < 0) {
             throw new IllegalArgumentException("임계값 순서가 잘못되었습니다: autoApprove >= showQuestion >= llmFallback");
         }
         
@@ -536,10 +544,17 @@ public class ConfidenceManagementService {
         log.info("신뢰도 임계값 조회");
         
         // 기본값 반환 (향후 DB에서 조회)
-        ThresholdConfiguration config = new ThresholdConfiguration();
-        config.setAutoApproveThreshold(90);
-        config.setShowQuestionThreshold(70);
-        config.setLlmFallbackThreshold(60);
+        ThresholdConfiguration config = ThresholdConfiguration.builder()
+                .autoApproveThreshold(BigDecimal.valueOf(90))
+                .showQuestionThreshold(BigDecimal.valueOf(70))
+                .llmFallbackThreshold(BigDecimal.valueOf(60))
+                .highConfidenceThreshold(BigDecimal.valueOf(85))
+                .mediumConfidenceThreshold(BigDecimal.valueOf(70))
+                .lowConfidenceThreshold(BigDecimal.valueOf(50))
+                .manualReviewThreshold(BigDecimal.valueOf(60))
+                .configuredAt(LocalDateTime.now())
+                .configuredBy("system")
+                .build();
         
         return config;
     }
@@ -744,10 +759,14 @@ public class ConfidenceManagementService {
     
     @lombok.Data
     @lombok.Builder
+    @lombok.NoArgsConstructor
+    @lombok.AllArgsConstructor
     public static class ConfidenceTrend {
         private LocalDateTime date;
         private BigDecimal averageConfidence;
         private long ruleCount;
+        private int totalEntities;
+        private int lowConfidenceCount;
     }
     
     @lombok.Data
@@ -791,5 +810,179 @@ public class ConfidenceManagementService {
         private BigDecimal successRate;
         private long usageCount;
         private String category;
+    }
+    
+    @lombok.Data
+    @lombok.Builder
+    @lombok.NoArgsConstructor
+    @lombok.AllArgsConstructor
+    public static class ConfidenceScoreResponse {
+        private Map<String, List<EntityScore>> scores;
+        private long totalEntities;
+        private LocalDateTime retrievedAt;
+        private double averageScore;
+        private List<EntityScore> topScores;
+        private List<EntityScore> lowScores;
+        private ScoreDistribution distribution;
+        
+        @lombok.Data
+        @lombok.Builder
+        @lombok.NoArgsConstructor
+        @lombok.AllArgsConstructor
+        public static class EntityScore {
+            private Long entityId;
+            private String entityType;
+            private String entityName;
+            private double score;
+            private long usageCount;
+        }
+        
+        @lombok.Data
+        @lombok.Builder
+        @lombok.NoArgsConstructor
+        @lombok.AllArgsConstructor
+        public static class ScoreDistribution {
+            private String range;
+            private int count;
+            private double percentage;
+            private int range90to100;
+            private int range80to89;
+            private int range70to79;
+            private int range60to69;
+            private int rangeBelow60;
+        }
+    }
+    
+    @lombok.Data
+    @lombok.Builder
+    @lombok.NoArgsConstructor
+    @lombok.AllArgsConstructor
+    public static class ConfidenceAdjustmentRequest {
+        private Long entityId;
+        private String entityType;
+        private BigDecimal newScore;
+        private String reason;
+        private String adjustedBy;
+        private BigDecimal adjustment;
+    }
+    
+    @lombok.Data
+    @lombok.Builder
+    @lombok.NoArgsConstructor
+    @lombok.AllArgsConstructor
+    public static class ConfidenceAdjustmentResult {
+        private boolean success;
+        private String message;
+        private BigDecimal oldScore;
+        private BigDecimal newScore;
+        private LocalDateTime adjustedAt;
+        private String entityType;
+        private Long entityId;
+        private String reason;
+    }
+    
+    @lombok.Data
+    @lombok.Builder
+    @lombok.NoArgsConstructor
+    @lombok.AllArgsConstructor
+    public static class BulkResetRequest {
+        private String resetType; // "ALL", "LOW_PERFORMANCE", "SPECIFIC_RANGE"
+        private List<Long> entityIds;
+        private BigDecimal defaultScore;
+        private String reason;
+        private String entityType;
+    }
+    
+    @lombok.Data
+    @lombok.Builder
+    @lombok.NoArgsConstructor
+    @lombok.AllArgsConstructor
+    public static class BulkResetResult {
+        private int totalReset;
+        private int successCount;
+        private int failureCount;
+        private List<String> errors;
+        private LocalDateTime completedAt;
+        private int totalProcessed;
+    }
+    
+    @lombok.Data
+    @lombok.Builder
+    @lombok.NoArgsConstructor
+    @lombok.AllArgsConstructor
+    public static class LearningSystemStatus {
+        private boolean enabled;
+        private String mode; // "ACTIVE", "PASSIVE", "MONITORING"
+        private long totalFeedbacks;
+        private long processedFeedbacks;
+        private BigDecimal learningRate;
+        private LocalDateTime lastProcessed;
+        private Map<String, Object> statistics;
+        private boolean active;
+        private int totalLearningCycles;
+        private int successfulAdjustments;
+        private int failedAdjustments;
+        private double averageImprovementRate;
+        private String lastLearningTime;
+    }
+    
+    @lombok.Data
+    @lombok.Builder
+    @lombok.NoArgsConstructor
+    @lombok.AllArgsConstructor
+    public static class ThresholdConfiguration {
+        private BigDecimal highConfidenceThreshold;
+        private BigDecimal mediumConfidenceThreshold;
+        private BigDecimal lowConfidenceThreshold;
+        private BigDecimal autoApprovalThreshold;
+        private BigDecimal manualReviewThreshold;
+        private LocalDateTime configuredAt;
+        private String configuredBy;
+        private BigDecimal autoApproveThreshold;
+        private BigDecimal showQuestionThreshold;
+        private BigDecimal llmFallbackThreshold;
+    }
+    
+    @lombok.Data
+    @lombok.Builder
+    @lombok.NoArgsConstructor
+    @lombok.AllArgsConstructor
+    public static class OptimizationRequest {
+        private String optimizationType; // "FULL", "INCREMENTAL", "RULE_BASED"
+        private List<Long> targetEntityIds;
+        private boolean dryRun;
+        private Map<String, Object> parameters;
+        private String strategy;
+        private String scope;
+    }
+    
+    @lombok.Data
+    @lombok.Builder
+    @lombok.NoArgsConstructor
+    @lombok.AllArgsConstructor
+    public static class OptimizationResult {
+        private int totalOptimized;
+        private int improvedCount;
+        private int unchangedCount;
+        private int degradedCount;
+        private Map<Long, OptimizationDetail> details;
+        private LocalDateTime optimizedAt;
+        private boolean dryRun;
+        private int totalEntitiesProcessed;
+        private int entitiesImproved;
+        private int entitiesDowngraded;
+        private int entitiesUnchanged;
+        private double averageImprovement;
+        private List<String> recommendations;
+        
+        @lombok.Data
+        @lombok.Builder
+        public static class OptimizationDetail {
+            private Long entityId;
+            private BigDecimal oldScore;
+            private BigDecimal newScore;
+            private String optimizationReason;
+            private boolean improved;
+        }
     }
 }

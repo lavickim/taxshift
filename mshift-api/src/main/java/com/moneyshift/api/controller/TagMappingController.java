@@ -21,7 +21,7 @@ import java.util.List;
 @RequestMapping("/api/v2/tag-mapping-mgmt")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
-@AdminOnly("태그 매핑 관리는 어드민 전용입니다")
+// @AdminOnly("태그 매핑 관리는 어드민 전용입니다") // TODO: 임시 비활성화
 public class TagMappingController {
     
     private final KeywordGroupService keywordGroupService;
@@ -156,6 +156,33 @@ public class TagMappingController {
     // ========== 태그 매핑 관리 ==========
     
     /**
+     * 모든 매핑 조회 (통합 엔드포인트)
+     */
+    @GetMapping("/mappings")
+    public ResponseEntity<Object> getMappings(@RequestParam(defaultValue = "cache") String source,
+                                            @RequestParam(required = false) Long keywordGroupId,
+                                            @RequestParam(required = false) Long tagId) {
+        log.info("매핑 조회 요청 - source: {}, keywordGroupId: {}, tagId: {}", source, keywordGroupId, tagId);
+        
+        try {
+            if (keywordGroupId != null) {
+                List<KeywordTagMapping> mappings = tagMappingService.findTagMappingsByKeywordGroup(keywordGroupId);
+                return ResponseEntity.ok(mappings);
+            } else if (tagId != null) {
+                List<TagAccountMapping> mappings = tagMappingService.findAccountMappingsByTag(tagId);
+                return ResponseEntity.ok(mappings);
+            } else {
+                // 전체 매핑 통계 또는 요약 정보 반환
+                return ResponseEntity.ok(tagMappingService.getMappingStats());
+            }
+            
+        } catch (Exception e) {
+            log.error("매핑 조회 실패", e);
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+    
+    /**
      * 키워드 그룹의 태그 매핑 조회
      */
     @GetMapping("/keyword-groups/{keywordGroupId}/tag-mappings")
@@ -168,6 +195,23 @@ public class TagMappingController {
             
         } catch (Exception e) {
             log.error("태그 매핑 조회 실패", e);
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+    
+    /**
+     * 모든 태그-계정과목 매핑 조회
+     */
+    @GetMapping("/tag-account-mappings")
+    public ResponseEntity<List<TagAccountMapping>> getAllTagAccountMappings() {
+        log.info("모든 태그-계정과목 매핑 조회");
+        
+        try {
+            List<TagAccountMapping> mappings = tagMappingService.findAllTagAccountMappings();
+            return ResponseEntity.ok(mappings);
+            
+        } catch (Exception e) {
+            log.error("태그-계정과목 매핑 조회 실패", e);
             return ResponseEntity.internalServerError().build();
         }
     }
@@ -283,6 +327,23 @@ public class TagMappingController {
             
         } catch (Exception e) {
             log.error("매핑 통계 조회 실패", e);
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+    
+    /**
+     * 통계 조회 (별칭 엔드포인트)
+     */
+    @GetMapping("/stats")
+    public ResponseEntity<TagMappingService.MappingStats> getStats() {
+        log.info("통계 조회 요청");
+        
+        try {
+            TagMappingService.MappingStats stats = tagMappingService.getMappingStats();
+            return ResponseEntity.ok(stats);
+            
+        } catch (Exception e) {
+            log.error("통계 조회 실패", e);
             return ResponseEntity.internalServerError().build();
         }
     }

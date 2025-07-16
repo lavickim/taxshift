@@ -4,9 +4,9 @@ const JAVA_API_BASE_URL = process.env.JAVA_API_BASE_URL || 'http://localhost:808
 
 export async function GET(request: NextRequest) {
   try {
-    console.log('GET /api/v2/tag-mapping/stats - 매핑 통계 조회');
+    console.log('GET /api/v2/tag-mapping-mgmt/stats - 매핑 통계 조회');
     
-    const response = await fetch(`${JAVA_API_BASE_URL}/api/api/v2/tag-mapping/stats`, {
+    const response = await fetch(`${JAVA_API_BASE_URL}/api/v2/tag-mapping-mgmt/stats`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

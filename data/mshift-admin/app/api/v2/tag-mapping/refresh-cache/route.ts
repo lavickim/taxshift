@@ -4,9 +4,9 @@ const JAVA_API_BASE_URL = process.env.JAVA_API_BASE_URL || 'http://localhost:808
 
 export async function POST(request: NextRequest) {
   try {
-    console.log('POST /api/v2/tag-mapping/refresh-cache - 캐시 새로고침');
+    console.log('POST /api/v2/tag-mapping-mgmt/refresh-cache - 캐시 새로고침');
     
-    const response = await fetch(`${JAVA_API_BASE_URL}/api/api/v2/tag-mapping/refresh-cache`, {
+    const response = await fetch(`${JAVA_API_BASE_URL}/api/v2/tag-mapping-mgmt/refresh-cache`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

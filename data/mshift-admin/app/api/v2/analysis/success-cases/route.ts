@@ -3,7 +3,7 @@ import { PrismaClient } from '@/lib/generated/prisma'
 
 const prisma = new PrismaClient()
 
-const KEYWORD_CLASSIFY_API = 'http://localhost:8080/api/v2/keyword-system/classify'
+const KEYWORD_CLASSIFY_API = 'http://localhost:8080/v2/keyword-system/classify'
 
 export async function POST(request: NextRequest) {
   try {

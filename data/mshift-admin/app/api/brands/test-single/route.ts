@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@/lib/generated/prisma';
 
 const prisma = new PrismaClient();
+const FRONTEND_URL = process.env.NEXTAUTH_URL || 'http://localhost:3000';
 
 export async function POST(request: NextRequest) {
   try {
@@ -78,7 +79,7 @@ async function testBrandTransaction(brand: any) {
 
   try {
     // 키워드 분류 테스트 수행 (로컬 API 호출)
-    const response = await fetch('http://localhost:3000/api/v2/keyword-test/classify', {
+    const response = await fetch(`${FRONTEND_URL}/api/v2/keyword-test/classify`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

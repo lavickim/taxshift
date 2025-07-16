@@ -5,7 +5,7 @@ const JAVA_API_BASE_URL = process.env.JAVA_API_BASE_URL || 'http://localhost:808
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    console.log('POST /api/v2/tag-mapping/recommend-tags - 태그 추천 요청:', body);
+    console.log('POST /api/v2/tag-mapping-mgmt/recommend-tags - 태그 추천 요청:', body);
 
     // 요청 데이터 검증
     const { keyword, transactionText, amount, timestamp } = body;
@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const response = await fetch(`${JAVA_API_BASE_URL}/api/api/v2/tag-mapping/recommend-tags`, {
+    const response = await fetch(`${JAVA_API_BASE_URL}/api/v2/tag-mapping-mgmt/recommend-tags`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

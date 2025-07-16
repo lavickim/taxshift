@@ -3,7 +3,7 @@ const { PrismaClient } = require('../lib/generated/prisma');
 const prisma = new PrismaClient();
 
 // API 설정
-const KEYWORD_CLASSIFY_API = 'http://localhost:8080/api/v2/keyword-system/classify';
+const KEYWORD_CLASSIFY_API = 'http://localhost:8080/v2/keyword-system/classify';
 
 async function verifyClassificationAccuracy() {
   console.log('🔍 성공 케이스의 분류 정확성 검증 시작...');

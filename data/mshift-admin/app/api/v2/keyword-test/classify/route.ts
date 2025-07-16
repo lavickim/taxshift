@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
 
     // Java API로 키워드 분류 요청
     const startTime = Date.now();
-    const response = await fetch(`${JAVA_API_BASE_URL}/api/v2/keyword-system/classify`, {
+    const response = await fetch(`${JAVA_API_BASE_URL}/v2/keyword-system/classify`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

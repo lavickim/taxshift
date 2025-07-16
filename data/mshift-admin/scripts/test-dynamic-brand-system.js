@@ -3,7 +3,7 @@ const { PrismaClient } = require('../lib/generated/prisma');
 const prisma = new PrismaClient();
 
 // API 설정
-const KEYWORD_CLASSIFY_API = 'http://localhost:8080/api/v2/keyword-system/classify';
+const KEYWORD_CLASSIFY_API = 'http://localhost:8080/v2/keyword-system/classify';
 
 async function testDynamicBrandSystem() {
   console.log('🔧 동적 브랜드 시스템 테스트 시작...');

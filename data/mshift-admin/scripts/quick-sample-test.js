@@ -3,7 +3,7 @@ const { PrismaClient } = require('../lib/generated/prisma');
 const prisma = new PrismaClient();
 
 // API 설정
-const KEYWORD_CLASSIFY_API = 'http://localhost:8080/api/v2/keyword-system/classify';
+const KEYWORD_CLASSIFY_API = 'http://localhost:8080/v2/keyword-system/classify';
 
 async function quickSampleTest() {
   console.log('🚀 샘플 테스트 시작 (상위 1000개 브랜드)...');

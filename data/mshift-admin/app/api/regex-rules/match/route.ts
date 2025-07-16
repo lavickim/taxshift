@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const JAVA_API_BASE_URL = process.env.JAVA_API_BASE_URL || 'http://localhost:8080/api';
+const JAVA_API_BASE_URL = process.env.JAVA_API_BASE_URL || 'http://localhost:8080';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     
-    const response = await fetch(`${JAVA_API_BASE_URL}/rule-engine/match`, {
+    const response = await fetch(`${JAVA_API_BASE_URL}/v2/keyword-system/classify`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -5,7 +5,7 @@ const JAVA_API_BASE_URL = process.env.JAVA_API_BASE_URL || 'http://localhost:808
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    console.log('POST /api/v2/tag-mapping/keyword-tag-mappings - 키워드-태그 매핑 생성:', body);
+    console.log('POST /api/v2/tag-mapping-mgmt/keyword-tag-mappings - 키워드-태그 매핑 생성:', body);
 
     // 요청 데이터 검증
     const { keywordGroupId, tagId, confidenceScore, priority, contextRules } = body;
@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const response = await fetch(`${JAVA_API_BASE_URL}/api/api/v2/tag-mapping/keyword-tag-mappings`, {
+    const response = await fetch(`${JAVA_API_BASE_URL}/api/v2/tag-mapping-mgmt/keyword-tag-mappings`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

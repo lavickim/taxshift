@@ -239,7 +239,7 @@ async function addMissingBrandKeywords() {
     // 캐시 새로고침
     console.log(`\\n🔄 캐시 새로고침...`);
     try {
-      const response = await fetch('http://localhost:8080/api/v2/tag-mapping/refresh-cache', {
+      const response = await fetch('http://localhost:8080/v2/tag-mapping/refresh-cache', {
         method: 'POST'
       });
       console.log('   캐시 새로고침 완료');

@@ -10,7 +10,7 @@ export async function PUT(
     const body = await request.json();
     const id = params.id;
     
-    console.log(`PUT /api/v2/tag-mapping/keyword-groups/${id} - 키워드 그룹 수정:`, body);
+    console.log(`PUT /api/v2/tag-mapping-mgmt/keyword-groups/${id} - 키워드 그룹 수정:`, body);
 
     // 요청 데이터 검증
     const { groupName, primaryKeyword, synonyms, category, confidenceBase, isActive } = body;
@@ -22,7 +22,7 @@ export async function PUT(
       );
     }
 
-    const response = await fetch(`${JAVA_API_BASE_URL}/api/api/v2/tag-mapping/keyword-groups/${id}`, {
+    const response = await fetch(`${JAVA_API_BASE_URL}/api/v2/tag-mapping-mgmt/keyword-groups/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -65,9 +65,9 @@ export async function DELETE(
 ) {
   try {
     const id = params.id;
-    console.log(`DELETE /api/v2/tag-mapping/keyword-groups/${id} - 키워드 그룹 삭제`);
+    console.log(`DELETE /api/v2/tag-mapping-mgmt/keyword-groups/${id} - 키워드 그룹 삭제`);
 
-    const response = await fetch(`${JAVA_API_BASE_URL}/api/api/v2/tag-mapping/keyword-groups/${id}`, {
+    const response = await fetch(`${JAVA_API_BASE_URL}/api/v2/tag-mapping-mgmt/keyword-groups/${id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

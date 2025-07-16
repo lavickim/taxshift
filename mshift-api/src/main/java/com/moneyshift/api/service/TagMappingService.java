@@ -31,6 +31,8 @@ public class TagMappingService {
     
     private final RedisTemplate<String, Object> redisTemplate;
     private final KeywordGroupService keywordGroupService;
+    private final KeywordTagMappingService keywordTagMappingService;
+    private final TagAccountMappingService tagAccountMappingService;
     
     // 캐시 키 상수
     private static final String CACHE_KEY_KEYWORD_TAG_MAPPINGS = "mappings:keyword_tag:all";
@@ -56,7 +58,7 @@ public class TagMappingService {
         }
         
         // 데이터베이스에서 조회
-        List<KeywordTagMapping> mappings = findKeywordTagMappingsFromDatabase(keywordGroupId);
+        List<KeywordTagMapping> mappings = keywordTagMappingService.findMappingsByKeywordGroup(keywordGroupId);
         
         // 캐시에 저장
         redisTemplate.opsForValue().set(cacheKey, mappings, CACHE_TTL_HOURS, TimeUnit.HOURS);
@@ -81,10 +83,33 @@ public class TagMappingService {
         }
         
         // 데이터베이스에서 조회
-        List<TagAccountMapping> mappings = findTagAccountMappingsFromDatabase(tagId);
+        List<TagAccountMapping> mappings = tagAccountMappingService.findMappingsByTag(tagId);
         
         // 캐시에 저장
         redisTemplate.opsForValue().set(cacheKey, mappings, CACHE_TTL_HOURS, TimeUnit.HOURS);
+        
+        return mappings;
+    }
+    
+    /**
+     * 모든 태그-계정과목 매핑 조회
+     */
+    public List<TagAccountMapping> findAllTagAccountMappings() {
+        log.debug("모든 태그-계정과목 매핑 조회");
+        
+        @SuppressWarnings("unchecked")
+        List<TagAccountMapping> cachedMappings = (List<TagAccountMapping>) redisTemplate.opsForValue()
+                .get(CACHE_KEY_TAG_ACCOUNT_MAPPINGS);
+        
+        if (cachedMappings != null) {
+            return cachedMappings;
+        }
+        
+        // 데이터베이스에서 조회
+        List<TagAccountMapping> mappings = tagAccountMappingService.findAllMappings();
+        
+        // 캐시에 저장
+        redisTemplate.opsForValue().set(CACHE_KEY_TAG_ACCOUNT_MAPPINGS, mappings, CACHE_TTL_HOURS, TimeUnit.HOURS);
         
         return mappings;
     }
@@ -348,6 +373,11 @@ public class TagMappingService {
     }
     
     private List<TagAccountMapping> findTagAccountMappingsFromDatabase(Long tagId) {
+        // TODO: 실제 데이터베이스 조회 구현
+        return new ArrayList<>();
+    }
+    
+    private List<TagAccountMapping> findAllTagAccountMappingsFromDatabase() {
         // TODO: 실제 데이터베이스 조회 구현
         return new ArrayList<>();
     }

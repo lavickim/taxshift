@@ -74,7 +74,10 @@
       "Bash(PGPASSWORD=postgres psql:*)",
       "Bash(psql:*)",
       "Bash(./start-db.sh:*)",
-      "Bash(yarn db:studio:*)"
+      "Bash(yarn db:studio:*)",
+      "Bash(./stop-backend.sh:*)",
+      "Bash(java:*)",
+      "mcp__ide__getDiagnostics"
     ],
     "deny": []
   }

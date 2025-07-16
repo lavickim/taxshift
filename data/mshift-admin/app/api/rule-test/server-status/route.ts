@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 
-const API_BASE_URL = process.env.RULE_ENGINE_API_URL || 'http://localhost:8080/api';
+const API_BASE_URL = process.env.JAVA_API_BASE_URL || 'http://localhost:8080';
 
 export async function GET() {
   try {
     // API 서버 헬스 체크
-    const response = await fetch(`${API_BASE_URL}/rule-engine/health`, {
+    const response = await fetch(`${API_BASE_URL}/transactions/health`, {
       method: 'GET',
       signal: AbortSignal.timeout(5000) // 5초 타임아웃
     });

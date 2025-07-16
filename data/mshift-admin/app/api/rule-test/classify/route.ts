@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const API_BASE_URL = process.env.RULE_ENGINE_API_URL || 'http://localhost:8080/api';
+const API_BASE_URL = process.env.JAVA_API_BASE_URL || 'http://localhost:8080';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     
-    // mshift-api의 규칙 엔진에 요청
-    const response = await fetch(`${API_BASE_URL}/rule-engine/match`, {
+    // mshift-api의 키워드 시스템에 요청
+    const response = await fetch(`${API_BASE_URL}/v2/keyword-system/classify`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

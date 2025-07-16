@@ -4,7 +4,7 @@ const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8080';
 
 export async function GET(request: NextRequest) {
   try {
-    const backendUrl = `${BACKEND_URL}/api/api/v2/tag-mapping/mapping-stats`;
+    const backendUrl = `${BACKEND_URL}/api/v2/tag-mapping-mgmt/mapping-stats`;
     console.log('Proxying to:', backendUrl);
     
     const response = await fetch(backendUrl, {

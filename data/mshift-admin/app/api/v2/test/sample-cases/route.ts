@@ -6,7 +6,7 @@ export async function GET(request: NextRequest) {
   try {
     console.log('GET /api/v2/test/sample-cases - 샘플 테스트 케이스 조회');
     
-    const response = await fetch(`${JAVA_API_BASE_URL}/api/api/v2/test/sample-cases`, {
+    const response = await fetch(`${JAVA_API_BASE_URL}/api/v2/test/sample-cases`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

@@ -4,9 +4,9 @@ const JAVA_API_BASE_URL = process.env.JAVA_API_BASE_URL || 'http://localhost:808
 
 export async function GET(request: NextRequest) {
   try {
-    console.log('GET /api/v2/tag-mapping/tag-account-mappings - 태그-계정과목 매핑 목록 조회');
+    console.log('GET /api/v2/tag-mapping-mgmt/tag-account-mappings - 태그-계정과목 매핑 목록 조회');
     
-    const response = await fetch(`${JAVA_API_BASE_URL}/api/api/v2/tag-mapping/tag-account-mappings`, {
+    const response = await fetch(`${JAVA_API_BASE_URL}/api/v2/tag-mapping-mgmt/tag-account-mappings`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    console.log('POST /api/v2/tag-mapping/tag-account-mappings - 태그-계정과목 매핑 생성:', body);
+    console.log('POST /api/v2/tag-mapping-mgmt/tag-account-mappings - 태그-계정과목 매핑 생성:', body);
 
     // 요청 데이터 검증
     const { tagId, accountCode, accountName, mappingCondition, isDefault, priority, confidenceBoost } = body;
@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const response = await fetch(`${JAVA_API_BASE_URL}/api/api/v2/tag-mapping/tag-account-mappings`, {
+    const response = await fetch(`${JAVA_API_BASE_URL}/api/v2/tag-mapping-mgmt/tag-account-mappings`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

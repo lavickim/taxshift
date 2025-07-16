@@ -4,7 +4,7 @@ const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8080';
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const backendUrl = `${BACKEND_URL}/api/api/v2/tag-mapping/mappings/${params.id}`;
+    const backendUrl = `${BACKEND_URL}/api/v2/tag-mapping-mgmt/mappings/${params.id}`;
     
     const response = await fetch(backendUrl, {
       method: 'GET',
@@ -28,7 +28,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const body = await request.json();
-    const backendUrl = `${BACKEND_URL}/api/api/v2/tag-mapping/mappings/${params.id}`;
+    const backendUrl = `${BACKEND_URL}/api/v2/tag-mapping-mgmt/mappings/${params.id}`;
     
     const response = await fetch(backendUrl, {
       method: 'PUT',
@@ -52,7 +52,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const backendUrl = `${BACKEND_URL}/api/api/v2/tag-mapping/mappings/${params.id}`;
+    const backendUrl = `${BACKEND_URL}/api/v2/tag-mapping-mgmt/mappings/${params.id}`;
     
     const response = await fetch(backendUrl, {
       method: 'DELETE',
