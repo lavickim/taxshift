@@ -5,8 +5,8 @@
 echo "📱 MoneyShift 모바일 앱 시작 중..."
 echo "================================="
 
-# mshift-app/MoneyShift 디렉토리로 이동
-cd "$(dirname "$0")/mshift-app/MoneyShift"
+# mshift-app 디렉토리로 이동
+cd "$(dirname "$0")/mshift-app"
 
 # 의존성 설치 확인
 if [ ! -d "node_modules" ]; then

@@ -77,7 +77,9 @@
       "Bash(yarn db:studio:*)",
       "Bash(./stop-backend.sh:*)",
       "Bash(java:*)",
-      "mcp__ide__getDiagnostics"
+      "mcp__ide__getDiagnostics",
+      "Bash(mv:*)",
+      "Bash(yarn add:*)"
     ],
     "deny": []
   }

@@ -1,0 +1,1 @@
+// Jest config removed for Expo project
