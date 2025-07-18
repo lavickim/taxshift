@@ -112,12 +112,8 @@ const TransactionListScreen: React.FC = () => {
   const handleTransactionPress = (transaction: TransactionItem) => {
     console.log('Transaction pressed:', transaction);
     dispatch(setSelectedTransaction(transaction));
-    // TODO: 거래 상세 화면으로 이동
-    Alert.alert(
-      '거래 상세',
-      `${transaction.merchant}\n${transaction.amount.toLocaleString()}원\n${transaction.category}`,
-      [{ text: '확인', style: 'default' }]
-    );
+    // 거래 상세 화면으로 이동
+    navigation.navigate('TransactionDetail' as never, { transaction } as never);
   };
 
   const getTabCount = (tab: TabType) => {

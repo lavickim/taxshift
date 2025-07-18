@@ -9,6 +9,7 @@ import SettingsScreen from '../screens/SettingsScreen';
 import DataConnectionScreen from '../screens/DataConnectionScreen';
 import ApiTestScreen from '../screens/ApiTestScreen';
 import TransactionListScreen from '../screens/TransactionListScreen';
+import TransactionDetailScreen from '../screens/TransactionDetailScreen';
 import ReportScreen from '../screens/ReportScreen';
 import { Colors } from '../constants/colors';
 
@@ -18,6 +19,7 @@ export type RootStackParamList = {
   DataConnection: undefined;
   ApiTest: undefined;
   TransactionList: undefined;
+  TransactionDetail: { transaction: any };
   Report: undefined;
 };
 
@@ -120,6 +122,7 @@ const AppNavigator = () => {
         <Stack.Screen name="DataConnection" component={DataConnectionScreen} />
         <Stack.Screen name="ApiTest" component={ApiTestScreen} />
         <Stack.Screen name="TransactionList" component={TransactionListScreen} />
+        <Stack.Screen name="TransactionDetail" component={TransactionDetailScreen} />
         <Stack.Screen name="Report" component={ReportScreen} />
       </Stack.Navigator>
     </NavigationContainer>
