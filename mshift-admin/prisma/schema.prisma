@@ -66,37 +66,34 @@ model RuleCandidate {
 }
 
 model Transaction {
-  id                  BigInt            @id @default(autoincrement())
-  companyId           String            @map("company_id") @db.Uuid
-  rawText             String            @map("raw_text")
-  transactionDate     DateTime          @map("transaction_date") @db.Date
-  amount              BigInt
-  normalizedUniqueKey String?           @map("normalized_unique_key")
-  isAnomaly           Boolean           @default(false) @map("is_anomaly")
-  anomalyScore        Decimal?          @map("anomaly_score") @db.Decimal(5, 4)
-  llmResponse         Json?             @map("llm_response")
-  userClarification   Json?             @map("user_clarification")
-  finalDebitAccount   String?           @map("final_debit_account") @db.VarChar(100)
-  finalCreditAccount  String?           @map("final_credit_account") @db.VarChar(100)
-  finalSuggestedTag   String?           @map("final_suggested_tag") @db.VarChar(100)
-  createdAt           DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt           DateTime          @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
-  transactionType     TransactionIOType @map("transaction_type")
-  status              TransactionStatus @default(NORMALIZED)
-  processedBy         ProcessorType?    @map("processed_by")
-  
-  // New fields for enhanced keyword system
-  keywordExtractionResult Json?        @map("keyword_extraction_result") // 키워드 추출 결과
-  tagMatchingResult       Json?        @map("tag_matching_result")       // 태그 매칭 결과
-  confidenceScores        Json?        @map("confidence_scores")         // 각 단계별 신뢰도
-  processingPath          String?      @map("processing_path") @db.VarChar(50) // 처리 경로
-  userQuestionId          BigInt?      @map("user_question_id")          // 사용자 질문 참조
-  userAnswerOptionId      BigInt?      @map("user_answer_option_id")     // 사용자 답변 참조
-  
-  company                 Company            @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  userQuestion            UserQuestion?      @relation(fields: [userQuestionId], references: [id])
-  userAnswerOption        QuestionOption?    @relation(fields: [userAnswerOptionId], references: [id])
+  id                      BigInt              @id @default(autoincrement())
+  companyId               String              @map("company_id") @db.Uuid
+  rawText                 String              @map("raw_text")
+  transactionDate         DateTime            @map("transaction_date") @db.Date
+  amount                  BigInt
+  normalizedUniqueKey     String?             @map("normalized_unique_key")
+  isAnomaly               Boolean             @default(false) @map("is_anomaly")
+  anomalyScore            Decimal?            @map("anomaly_score") @db.Decimal(5, 4)
+  llmResponse             Json?               @map("llm_response")
+  userClarification       Json?               @map("user_clarification")
+  finalDebitAccount       String?             @map("final_debit_account") @db.VarChar(100)
+  finalCreditAccount      String?             @map("final_credit_account") @db.VarChar(100)
+  finalSuggestedTag       String?             @map("final_suggested_tag") @db.VarChar(100)
+  createdAt               DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt               DateTime            @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  transactionType         TransactionIOType   @map("transaction_type")
+  status                  TransactionStatus   @default(NORMALIZED)
+  processedBy             ProcessorType?      @map("processed_by")
+  confidenceScores        Json?               @map("confidence_scores")
+  keywordExtractionResult Json?               @map("keyword_extraction_result")
+  processingPath          String?             @map("processing_path") @db.VarChar(50)
+  tagMatchingResult       Json?               @map("tag_matching_result")
+  userAnswerOptionId      BigInt?             @map("user_answer_option_id")
+  userQuestionId          BigInt?             @map("user_question_id")
   confidenceHistory       ConfidenceHistory[]
+  company                 Company             @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  userAnswerOption        QuestionOption?     @relation(fields: [userAnswerOptionId], references: [id])
+  userQuestion            UserQuestion?       @relation(fields: [userQuestionId], references: [id])
 
   @@index([companyId, status], map: "idx_transactions_company_id_status")
   @@index([transactionDate], map: "idx_transactions_transaction_date")
@@ -154,7 +151,6 @@ model DatacollectionSeoulRestaurants {
   @@map("datacollection_seoul_restaurants")
 }
 
-
 model FranchiseBrands {
   id                          Int       @id @default(autoincrement())
   businessYear                String    @map("business_year")
@@ -171,20 +167,14 @@ model FranchiseBrands {
   companyName                 String?   @map("company_name")
   createdAt                   DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt                   DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
-  
-  // 브랜드 테스트 관련 필드
-  generatedTransactionString  String?   @map("generated_transaction_string") @db.Text
-  testPassed                  Boolean?  @map("test_passed")
+  generatedTransactionString  String?   @map("generated_transaction_string")
   lastTestAt                  DateTime? @map("last_test_at") @db.Timestamptz(6)
-  testResult                  Json?     @map("test_result")
-  
-  // 태그 우선순위별 저장 (3개)
   primaryTag                  String?   @map("primary_tag") @db.VarChar(100)
   secondaryTag                String?   @map("secondary_tag") @db.VarChar(100)
+  tagGenerationReason         String?   @map("tag_generation_reason")
   tertiaryTag                 String?   @map("tertiary_tag") @db.VarChar(100)
-  
-  // 태그 생성 근거
-  tagGenerationReason         String?   @map("tag_generation_reason") @db.Text
+  testPassed                  Boolean?  @map("test_passed")
+  testResult                  Json?     @map("test_result")
 
   @@unique([brandId, businessYear], map: "unique_brand_year")
   @@index([brandName], map: "idx_franchise_brand_name")
@@ -232,38 +222,34 @@ model NationalPensionWorkplaces {
 }
 
 model regex_rules {
-  id              BigInt    @id @default(autoincrement())
-  pattern         String    @db.VarChar(1000)
-  replacement     String?   @db.VarChar(1000)
-  description     String?
-  category        String?   @db.VarChar(100)
-  enabled         Boolean?  @default(true)
-  priority        Int?      @default(0)
-  created_at      DateTime? @default(now()) @db.Timestamp(6)
-  updated_at      DateTime? @default(now()) @db.Timestamp(6)
-  confidence      Decimal?  @default(0.0) @db.Decimal(3, 2)
-  normalizer_type String?   @db.VarChar(100)
-  
-  // Fields from rule_engine table
-  pattern_type    String?   @default("BRAND") @db.VarChar(20)  // "BRAND" or "KEYWORD"
-  keyword         String?   @db.VarChar(255)                   // for keyword patterns
-  tags            String?   @db.VarChar(500)                   // comma-separated tags
-  primary_tag     String?   @db.VarChar(100)                   // 1순위 태그
-  primary_account String?   @db.VarChar(100)                   // 1순위 계정
-  secondary_tag   String?   @db.VarChar(100)                   // 2순위 태그
-  secondary_account String? @db.VarChar(100)                   // 2순위 계정
-  usage_count     Int?      @default(0)                        // 사용 횟수
-  positive_count  Int?      @default(0)                        // 긍정 피드백 수
-  negative_count  Int?      @default(0)                        // 부정 피드백 수
-  last_used       DateTime? @db.Timestamptz(6)                 // 마지막 사용 시간
-  is_active       Boolean?  @default(true)                     // 활성 상태
-  created_by      String?   @default("ADMIN") @db.VarChar(50)  // 생성자
-  success_rate    Decimal?  @db.Decimal(5, 2)                 // 성공률
-  
-  // New fields for enhanced keyword system
-  context_rules         Json?    @map("context_rules")           // 조건부 규칙 (시간, 금액, 위치 등)
-  display_order         Int?     @default(100) @map("display_order")
-  parent_keyword_group_id BigInt? @map("parent_keyword_group_id") // 키워드 그룹 참조
+  id                      BigInt    @id @default(autoincrement())
+  pattern                 String    @db.VarChar(1000)
+  replacement             String?   @db.VarChar(1000)
+  description             String?
+  category                String?   @db.VarChar(100)
+  enabled                 Boolean?  @default(true)
+  priority                Int?      @default(0)
+  created_at              DateTime? @default(now()) @db.Timestamp(6)
+  updated_at              DateTime? @default(now()) @db.Timestamp(6)
+  confidence              Decimal?  @default(0.0) @db.Decimal(3, 2)
+  normalizer_type         String?   @db.VarChar(100)
+  created_by              String?   @default("ADMIN") @db.VarChar(50)
+  is_active               Boolean?  @default(true)
+  keyword                 String?   @db.VarChar(255)
+  last_used               DateTime? @db.Timestamptz(6)
+  negative_count          Int?      @default(0)
+  pattern_type            String?   @default("BRAND") @db.VarChar(20)
+  positive_count          Int?      @default(0)
+  primary_account         String?   @db.VarChar(100)
+  primary_tag             String?   @db.VarChar(100)
+  secondary_account       String?   @db.VarChar(100)
+  secondary_tag           String?   @db.VarChar(100)
+  success_rate            Decimal?  @db.Decimal(5, 2)
+  tags                    String?   @db.VarChar(500)
+  usage_count             Int?      @default(0)
+  context_rules           Json?     @map("context_rules")
+  display_order           Int?      @default(100) @map("display_order")
+  parent_keyword_group_id BigInt?   @map("parent_keyword_group_id")
 
   @@index([category], map: "idx_regex_rules_category")
   @@index([enabled], map: "idx_regex_rules_enabled")
@@ -277,63 +263,57 @@ model regex_rules {
   @@index([display_order], map: "idx_regex_rules_display_order")
 }
 
-// 키워드 그룹 테이블 - 동의어 및 관련 키워드 그룹화
 model KeywordGroup {
-  id              BigInt   @id @default(autoincrement())
-  groupName       String   @map("group_name") @db.VarChar(100)
-  primaryKeyword  String   @map("primary_keyword") @db.VarChar(100)
-  synonyms        String[] @db.VarChar(50)
-  category        String?  @db.VarChar(50)
-  confidenceBase  Decimal  @default(0.70) @map("confidence_base") @db.Decimal(3,2)
-  isActive        Boolean  @default(true) @map("is_active")
-  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt       DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
-  
+  id                 BigInt              @id @default(autoincrement())
+  groupName          String              @map("group_name") @db.VarChar(100)
+  primaryKeyword     String              @map("primary_keyword") @db.VarChar(100)
+  synonyms           String[]            @db.VarChar(50)
+  category           String?             @db.VarChar(50)
+  confidenceBase     Decimal             @default(0.70) @map("confidence_base") @db.Decimal(3, 2)
+  isActive           Boolean             @default(true) @map("is_active")
+  createdAt          DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt          DateTime            @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
   keywordTagMappings KeywordTagMapping[]
-  
+
   @@index([category], map: "idx_keyword_groups_category")
   @@index([isActive], map: "idx_keyword_groups_active")
   @@index([primaryKeyword], map: "idx_keyword_groups_primary_keyword")
   @@map("keyword_groups")
 }
 
-// 태그 마스터 테이블 - 태그 메타데이터 관리
 model TagsMaster {
-  id           BigInt   @id @default(autoincrement())
-  tagName      String   @unique @map("tag_name") @db.VarChar(100)
-  tagCategory  String?  @map("tag_category") @db.VarChar(50)
-  description  String?
-  colorHex     String   @default("#6B7280") @map("color_hex") @db.VarChar(7)
-  iconName     String   @default("tag") @map("icon_name") @db.VarChar(50)
-  displayOrder Int      @default(100) @map("display_order")
-  isActive     Boolean  @default(true) @map("is_active")
-  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  
+  id                 BigInt              @id @default(autoincrement())
+  tagName            String              @unique @map("tag_name") @db.VarChar(100)
+  tagCategory        String?             @map("tag_category") @db.VarChar(50)
+  description        String?
+  colorHex           String              @default("#6B7280") @map("color_hex") @db.VarChar(7)
+  iconName           String              @default("tag") @map("icon_name") @db.VarChar(50)
+  displayOrder       Int                 @default(100) @map("display_order")
+  isActive           Boolean             @default(true) @map("is_active")
+  createdAt          DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
   keywordTagMappings KeywordTagMapping[]
   tagAccountMappings TagAccountMapping[]
   userQuestions      UserQuestion[]
-  
+
   @@index([tagCategory], map: "idx_tags_master_category")
   @@index([isActive], map: "idx_tags_master_active")
   @@index([displayOrder], map: "idx_tags_master_display_order")
   @@map("tags_master")
 }
 
-// 키워드 그룹-태그 매핑 테이블
 model KeywordTagMapping {
-  id               BigInt       @id @default(autoincrement())
-  keywordGroupId   BigInt       @map("keyword_group_id")
-  tagId            BigInt       @map("tag_id")
-  confidenceScore  Decimal      @default(0.70) @map("confidence_score") @db.Decimal(3,2)
-  contextRules     Json?        @map("context_rules")
-  priority         Int          @default(50)
-  usageCount       BigInt       @default(0) @map("usage_count")
-  isActive         Boolean      @default(true) @map("is_active")
-  createdAt        DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
-  
-  keywordGroup     KeywordGroup @relation(fields: [keywordGroupId], references: [id], onDelete: Cascade)
-  tag              TagsMaster   @relation(fields: [tagId], references: [id], onDelete: Cascade)
-  
+  id              BigInt       @id @default(autoincrement())
+  keywordGroupId  BigInt       @map("keyword_group_id")
+  tagId           BigInt       @map("tag_id")
+  confidenceScore Decimal      @default(0.70) @map("confidence_score") @db.Decimal(3, 2)
+  contextRules    Json?        @map("context_rules")
+  priority        Int          @default(50)
+  usageCount      BigInt       @default(0) @map("usage_count")
+  isActive        Boolean      @default(true) @map("is_active")
+  createdAt       DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  keywordGroup    KeywordGroup @relation(fields: [keywordGroupId], references: [id], onDelete: Cascade)
+  tag             TagsMaster   @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
   @@unique([keywordGroupId, tagId], map: "uq_keyword_tag_mapping")
   @@index([keywordGroupId], map: "idx_keyword_tag_mappings_keyword_group")
   @@index([tagId], map: "idx_keyword_tag_mappings_tag")
@@ -342,104 +322,119 @@ model KeywordTagMapping {
   @@map("keyword_tag_mappings")
 }
 
-// 태그-계정과목 매핑 테이블
 model TagAccountMapping {
   id               BigInt     @id @default(autoincrement())
   tagId            BigInt     @map("tag_id")
   accountCode      String     @map("account_code") @db.VarChar(20)
   accountName      String     @map("account_name") @db.VarChar(100)
-  mappingCondition Json?      @map("mapping_condition") // 조건부 매핑 규칙
+  mappingCondition Json?      @map("mapping_condition")
   isDefault        Boolean    @default(false) @map("is_default")
   priority         Int        @default(50)
-  confidenceBoost  Decimal    @default(0.0) @map("confidence_boost") @db.Decimal(3,2)
+  confidenceBoost  Decimal    @default(0.0) @map("confidence_boost") @db.Decimal(3, 2)
   createdAt        DateTime   @default(now()) @map("created_at") @db.Timestamptz(6)
-  
   tag              TagsMaster @relation(fields: [tagId], references: [id], onDelete: Cascade)
-  
+
   @@index([tagId], map: "idx_tag_account_mappings_tag")
   @@index([accountCode], map: "idx_tag_account_mappings_account_code")
   @@index([isDefault], map: "idx_tag_account_mappings_default")
   @@map("tag_account_mappings")
 }
 
-// 사용자 질문 테이블
 model UserQuestion {
-  id                    BigInt           @id @default(autoincrement())
-  triggerTagId          BigInt?          @map("trigger_tag_id")
-  triggerConditions     Json             @map("trigger_conditions") // 질문 발생 조건
-  questionText          String           @map("question_text")
-  questionType          String           @default("SINGLE_CHOICE") @map("question_type") @db.VarChar(20)
-  confidenceThreshold   Decimal          @default(0.85) @map("confidence_threshold") @db.Decimal(3,2)
-  isActive              Boolean          @default(true) @map("is_active")
-  usageCount            BigInt           @default(0) @map("usage_count")
-  createdAt             DateTime         @default(now()) @map("created_at") @db.Timestamptz(6)
-  
-  tag                   TagsMaster?      @relation(fields: [triggerTagId], references: [id])
-  questionOptions       QuestionOption[]
-  transactions          Transaction[]
-  
+  id                  BigInt           @id @default(autoincrement())
+  triggerTagId        BigInt?          @map("trigger_tag_id")
+  triggerConditions   Json             @map("trigger_conditions")
+  questionText        String           @map("question_text")
+  questionType        String           @default("SINGLE_CHOICE") @map("question_type") @db.VarChar(20)
+  confidenceThreshold Decimal          @default(0.85) @map("confidence_threshold") @db.Decimal(3, 2)
+  isActive            Boolean          @default(true) @map("is_active")
+  usageCount          BigInt           @default(0) @map("usage_count")
+  createdAt           DateTime         @default(now()) @map("created_at") @db.Timestamptz(6)
+  questionOptions     QuestionOption[]
+  transactions        Transaction[]
+  tag                 TagsMaster?      @relation(fields: [triggerTagId], references: [id])
+
   @@index([triggerTagId], map: "idx_user_questions_trigger_tag")
   @@index([isActive], map: "idx_user_questions_active")
   @@index([questionType], map: "idx_user_questions_type")
   @@map("user_questions")
 }
 
-// 질문 답변 옵션 테이블
 model QuestionOption {
-  id             BigInt       @id @default(autoincrement())
-  questionId     BigInt       @map("question_id")
-  optionText     String       @map("option_text") @db.VarChar(200)
-  optionValue    Json         @map("option_value") // 선택시 적용할 값들
-  selectionCount BigInt       @default(0) @map("selection_count")
-  displayOrder   Int          @default(100) @map("display_order")
-  isActive       Boolean      @default(true) @map("is_active")
-  
-  question       UserQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  id             BigInt        @id @default(autoincrement())
+  questionId     BigInt        @map("question_id")
+  optionText     String        @map("option_text") @db.VarChar(200)
+  optionValue    Json          @map("option_value")
+  selectionCount BigInt        @default(0) @map("selection_count")
+  displayOrder   Int           @default(100) @map("display_order")
+  isActive       Boolean       @default(true) @map("is_active")
+  question       UserQuestion  @relation(fields: [questionId], references: [id], onDelete: Cascade)
   transactions   Transaction[]
-  
+
   @@index([questionId], map: "idx_question_options_question")
   @@index([displayOrder], map: "idx_question_options_display_order")
   @@map("question_options")
 }
 
-// 신뢰도 변경 이력 테이블
 model ConfidenceHistory {
-  id                BigInt       @id @default(autoincrement())
-  entityType        String       @map("entity_type") @db.VarChar(50) // 'REGEX_RULE', 'KEYWORD_GROUP', 'MAPPING'
-  entityId          BigInt       @map("entity_id")
-  oldConfidence     Decimal?     @map("old_confidence") @db.Decimal(3,2)
-  newConfidence     Decimal      @map("new_confidence") @db.Decimal(3,2)
-  adjustmentReason  String?      @map("adjustment_reason") @db.VarChar(100)
-  adjustedBy        String?      @map("adjusted_by") @db.VarChar(50)
-  transactionId     BigInt?      @map("transaction_id")
-  createdAt         DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
-  
-  transaction       Transaction? @relation(fields: [transactionId], references: [id])
-  
+  id               BigInt       @id @default(autoincrement())
+  entityType       String       @map("entity_type") @db.VarChar(50)
+  entityId         BigInt       @map("entity_id")
+  oldConfidence    Decimal?     @map("old_confidence") @db.Decimal(3, 2)
+  newConfidence    Decimal      @map("new_confidence") @db.Decimal(3, 2)
+  adjustmentReason String?      @map("adjustment_reason") @db.VarChar(100)
+  adjustedBy       String?      @map("adjusted_by") @db.VarChar(50)
+  transactionId    BigInt?      @map("transaction_id")
+  createdAt        DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  transaction      Transaction? @relation(fields: [transactionId], references: [id])
+
   @@index([entityType, entityId], map: "idx_confidence_history_entity")
   @@index([createdAt], map: "idx_confidence_history_created")
   @@map("confidence_history")
 }
 
-// LLM 생성 룰 후보 테이블
 model LlmRuleCandidate {
-  id                  BigInt    @id @default(autoincrement())
-  transactionSamples  String[]  @map("transaction_samples")
-  suggestedPattern    String?   @map("suggested_pattern") @db.VarChar(500)
-  suggestedKeywords   String[]  @map("suggested_keywords")
-  suggestedTag        String?   @map("suggested_tag") @db.VarChar(100)
-  suggestedAccount    String?   @map("suggested_account") @db.VarChar(100)
-  occurrenceCount     Int       @default(1) @map("occurrence_count")
-  confidenceEstimate  Decimal?  @map("confidence_estimate") @db.Decimal(3,2)
-  status              String    @default("PENDING") @map("status") @db.VarChar(20) // PENDING, APPROVED, REJECTED
-  reviewedBy          String?   @map("reviewed_by") @db.VarChar(50)
-  reviewedAt          DateTime? @map("reviewed_at") @db.Timestamptz(6)
-  createdAt           DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
-  
+  id                 BigInt    @id @default(autoincrement())
+  transactionSamples String[]  @map("transaction_samples")
+  suggestedPattern   String?   @map("suggested_pattern") @db.VarChar(500)
+  suggestedKeywords  String[]  @map("suggested_keywords")
+  suggestedTag       String?   @map("suggested_tag") @db.VarChar(100)
+  suggestedAccount   String?   @map("suggested_account") @db.VarChar(100)
+  occurrenceCount    Int       @default(1) @map("occurrence_count")
+  confidenceEstimate Decimal?  @map("confidence_estimate") @db.Decimal(3, 2)
+  status             String    @default("PENDING") @map("status") @db.VarChar(20)
+  reviewedBy         String?   @map("reviewed_by") @db.VarChar(50)
+  reviewedAt         DateTime? @map("reviewed_at") @db.Timestamptz(6)
+  createdAt          DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
   @@index([status], map: "idx_llm_rule_candidates_status")
   @@index([occurrenceCount], map: "idx_llm_rule_candidates_occurrence")
   @@index([createdAt], map: "idx_llm_rule_candidates_created")
   @@map("llm_rule_candidates")
+}
+
+model TestTransactionString {
+  id                  BigInt    @id @default(autoincrement())
+  transactionText     String    @map("transaction_text")
+  amount              Int?      @map("amount")
+  formattedAmount     String?   @map("formatted_amount") @db.VarChar(50)
+  category            String?   @map("category") @db.VarChar(100)
+  expectedTag         String?   @map("expected_tag") @db.VarChar(100)
+  expectedAccountCode String?   @map("expected_account_code") @db.VarChar(20)
+  expectedAccountName String?   @map("expected_account_name") @db.VarChar(100)
+  description         String?   @map("description")
+  isActive            Boolean   @default(true) @map("is_active")
+  createdAt           DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt           DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  lastTestResult      Json?     @map("last_test_result")
+  lastTestAt          DateTime? @map("last_test_at") @db.Timestamptz(6)
+  isMatched           Boolean?  @map("is_matched")
+
+  @@index([category], map: "idx_test_transactions_category")
+  @@index([isActive], map: "idx_test_transactions_active")
+  @@index([isMatched], map: "idx_test_transactions_matched")
+  @@index([lastTestAt], map: "idx_test_transactions_last_test")
+  @@map("test_transaction_strings")
 }
 
 enum TaxpayerType {
@@ -483,31 +478,4 @@ enum TransactionIOType {
   INCOME
 
   @@map("transaction_io_type")
-}
-
-// 테스트 거래 문자열 테이블
-model TestTransactionString {
-  id                  BigInt   @id @default(autoincrement())
-  transactionText     String   @map("transaction_text") @db.Text
-  amount              Int?     @map("amount")                    // 금액 (원)
-  formattedAmount     String?  @map("formatted_amount") @db.VarChar(50) // "9,800원" 형태
-  category            String?  @map("category") @db.VarChar(100) // 테스트 카테고리 (편의점, 주유소 등)
-  expectedTag         String?  @map("expected_tag") @db.VarChar(100)    // 예상 태그
-  expectedAccountCode String?  @map("expected_account_code") @db.VarChar(20) // 예상 계정코드
-  expectedAccountName String?  @map("expected_account_name") @db.VarChar(100) // 예상 계정명
-  description         String?  @map("description") @db.Text     // 설명
-  isActive            Boolean  @default(true) @map("is_active")
-  createdAt           DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt           DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
-  
-  // 테스트 결과 (런타임에 업데이트)
-  lastTestResult      Json?    @map("last_test_result")         // 마지막 테스트 결과
-  lastTestAt          DateTime? @map("last_test_at") @db.Timestamptz(6)
-  isMatched           Boolean? @map("is_matched")               // 마지막 테스트에서 매칭 성공 여부
-  
-  @@index([category], map: "idx_test_transactions_category")
-  @@index([isActive], map: "idx_test_transactions_active") 
-  @@index([isMatched], map: "idx_test_transactions_matched")
-  @@index([lastTestAt], map: "idx_test_transactions_last_test")
-  @@map("test_transaction_strings")
 }

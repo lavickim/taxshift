@@ -302,6 +302,63 @@ export default function BrandTestManagement() {
     return testPassed ? <CheckCircle className="w-3 h-3" /> : <XCircle className="w-3 h-3" />;
   };
 
+  /**
+   * 테스트 결과 상세 정보 토스트
+   */
+  const showTestResultDetails = (brand: FranchiseBrand) => {
+    if (!brand.testResult) {
+      toast.info('테스트 결과가 없습니다.');
+      return;
+    }
+
+    const result = brand.testResult;
+    const status = brand.testPassed ? '성공' : '실패';
+    const statusIcon = brand.testPassed ? '✅' : '❌';
+    
+    let message = `${statusIcon} ${brand.brandName} 테스트 ${status}\n\n`;
+    
+    if (result.inputText) {
+      message += `📝 입력 텍스트: ${result.inputText}\n`;
+    }
+    
+    if (result.expectedTags && result.expectedTags.length > 0) {
+      message += `🎯 기대 태그: [${result.expectedTags.join(', ')}]\n`;
+    }
+    
+    if (result.actualTag) {
+      message += `🏷️ 실제 태그: ${result.actualTag}\n`;
+    }
+    
+    if (result.confidence !== undefined) {
+      message += `📊 신뢰도: ${(result.confidence * 100).toFixed(1)}%\n`;
+    }
+    
+    if (result.processingPath) {
+      message += `⚙️ 처리 경로: ${result.processingPath}\n`;
+    }
+    
+    if (result.processingTime) {
+      message += `⏱️ 처리 시간: ${result.processingTime}ms\n`;
+    }
+    
+    if (result.error) {
+      message += `❗ 오류: ${result.error}\n`;
+    }
+    
+    if (result.rawResult?.extractedKeywords && result.rawResult.extractedKeywords.length > 0) {
+      message += `🔍 추출된 키워드: [${result.rawResult.extractedKeywords.join(', ')}]`;
+    }
+
+    toast.info(message, {
+      duration: 8000,
+      style: {
+        whiteSpace: 'pre-line',
+        maxWidth: '500px',
+        fontSize: '14px'
+      }
+    });
+  };
+
   const successRate = statistics.testedBrands > 0 ? (statistics.passedBrands / statistics.testedBrands) * 100 : 0;
 
   return (
@@ -548,7 +605,10 @@ export default function BrandTestManagement() {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge className={getTestResultColor(brand.testPassed)}>
+                    <Badge 
+                      className={`${getTestResultColor(brand.testPassed)} ${brand.testResult ? 'cursor-pointer hover:opacity-80' : ''}`}
+                      onClick={() => brand.testResult && showTestResultDetails(brand)}
+                    >
                       {getTestResultIcon(brand.testPassed)}
                       <span className="ml-1">
                         {brand.testPassed === undefined ? '미테스트' : brand.testPassed ? '성공' : '실패'}

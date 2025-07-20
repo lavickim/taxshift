@@ -8,8 +8,7 @@ import { DataAnalysisContent } from "@/components/data-analysis-content";
 import { LLMManagement } from "@/components/llm-management";
 import { GuideContent } from "@/components/guide-content";
 import TagMappingManagement from "@/components/tag-mapping-management";
-import { KeywordRuleTest } from "@/components/keyword-rule-test";
-import BrandTestManagement from "@/components/brand-test-management";
+import { TestAndRuleExpansion } from "@/components/test-and-rule-expansion";
 import DynamicSystemMonitoring from "@/components/dynamic-system-monitoring";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -47,7 +46,7 @@ export function AdminDashboardLayout() {
               onClick={() => setActiveTab("home")}
             >
               <Rocket className="mr-2 h-4 w-4" />
-              홈 대시보드
+              대시보드
             </Button>
             <Button
               variant={activeTab === "data-analysis" ? "secondary" : "ghost"}
@@ -64,15 +63,15 @@ export function AdminDashboardLayout() {
               onClick={() => setActiveTab("keyword-rules")}
             >
               <Hash className="mr-2 h-4 w-4" />
-              키워드 룰 관리
+              룰엔진
             </Button>
             <Button
-              variant={activeTab === "transaction-test" ? "secondary" : "ghost"}
+              variant={activeTab === "test-and-rule-expansion" ? "secondary" : "ghost"}
               className="w-full justify-start"
-              onClick={() => setActiveTab("transaction-test")}
+              onClick={() => setActiveTab("test-and-rule-expansion")}
             >
               <CheckCircle className="mr-2 h-4 w-4" />
-              거래문자열 테스트
+              테스트 및 룰확장
             </Button>
             <Button
               variant={activeTab === "llm" ? "secondary" : "ghost"}
@@ -81,14 +80,6 @@ export function AdminDashboardLayout() {
             >
               <Sparkles className="mr-2 h-4 w-4" />
               LLM 관리
-            </Button>
-            <Button
-              variant={activeTab === "brand-test" ? "secondary" : "ghost"}
-              className="w-full justify-start"
-              onClick={() => setActiveTab("brand-test")}
-            >
-              <Building className="mr-2 h-4 w-4" />
-              브랜드 테스트
             </Button>
             <Button
               variant={activeTab === "system-monitoring" ? "secondary" : "ghost"}
@@ -194,7 +185,7 @@ export function AdminDashboardLayout() {
                 </CardContent>
               </Card>
 
-              {/* 가이드 콘텐츠 */}
+              {/* 시스템 PRD */}
               <GuideContent />
             </div>
           )}
@@ -203,21 +194,9 @@ export function AdminDashboardLayout() {
 
           {activeTab === "keyword-rules" && <TagMappingManagement />}
           
-          {activeTab === "transaction-test" && (
-            <div className="space-y-6">
-              <div>
-                <h1 className="text-3xl font-bold">거래문자열 테스트</h1>
-                <p className="text-muted-foreground mt-2">
-                  거래 문자열을 입력하여 키워드 기반 분류 시스템을 테스트합니다.
-                </p>
-              </div>
-              <KeywordRuleTest />
-            </div>
-          )}
+          {activeTab === "test-and-rule-expansion" && <TestAndRuleExpansion />}
           
           {activeTab === "llm" && <LLMManagement />}
-          
-          {activeTab === "brand-test" && <BrandTestManagement />}
           
           {activeTab === "system-monitoring" && (
             <div className="space-y-6">

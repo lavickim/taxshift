@@ -84,7 +84,8 @@
       "WebFetch(domain:docs.expo.dev)",
       "Bash(expo --version)",
       "Bash(yarn list:*)",
-      "WebFetch(domain:docs.swmansion.com)"
+      "WebFetch(domain:docs.swmansion.com)",
+      "Bash(./start-frontend.sh:*)"
     ],
     "deny": []
   }

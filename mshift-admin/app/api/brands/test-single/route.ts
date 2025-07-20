@@ -79,16 +79,22 @@ async function testBrandTransaction(brand: any) {
 
   try {
     // 키워드 분류 테스트 수행 (로컬 API 호출)
+    const requestBody = {
+      description: brand.generatedTransactionString,
+      amount: 35500
+    };
+    
+    console.log('Sending request to keyword API:', requestBody);
+    
     const response = await fetch(`${FRONTEND_URL}/api/v2/keyword-test/classify`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        inputText: brand.generatedTransactionString,
-        returnDetails: true
-      })
+      body: JSON.stringify(requestBody)
     });
+    
+    console.log('Response status:', response.status);
 
     if (!response.ok) {
       throw new Error(`API request failed: ${response.status}`);

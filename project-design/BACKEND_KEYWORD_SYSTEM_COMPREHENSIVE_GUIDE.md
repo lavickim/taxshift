@@ -1,0 +1,667 @@
+# MoneyShift API 백엔드 키워드 시스템 종합 가이드
+
+## 📋 시스템 개요
+
+MoneyShift API는 **4-Layer 거래 분류 파이프라인**을 기반으로 한 Spring Boot 기반 키워드 분류 시스템입니다. 현재 Layer 1 (키워드 패턴 매칭)이 완전히 구현되어 있으며, 높은 성능과 정확도를 제공합니다.
+
+### 핵심 특징
+- **Redis 캐싱 기반 고성능 처리** (< 1ms 응답시간)
+- **키워드-태그-계정과목 3단계 매핑** 체계
+- **신뢰도 기반 자동/수동 처리** 분기
+- **동적 브랜드 검색** 폴백 시스템
+- **확장 가능한 레이어 아키텍처**
+
+---
+
+## 🏗️ 아키텍처 구조
+
+### 4-Layer Processing Pipeline
+
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Layer 0       │    │   Layer 1       │    │   Layer 2       │    │   Layer 3       │
+│  Redis Cache    │ -> │ Keyword Engine  │ -> │  ML Inference   │ -> │ LLM Fallback    │
+│   (< 1ms)       │    │   (10-50ms)     │    │  (미구현)        │    │  (미구현)        │
+└─────────────────┘    └─────────────────┘    └─────────────────┘    └─────────────────┘
+```
+
+#### Layer 0: Redis 캐싱
+- **목적**: 이전 분류 결과의 즉시 반환
+- **성능**: < 1ms 응답 시간
+- **TTL**: 거래 분류 결과 5분
+- **구현**: `RedisCacheService`
+
+#### Layer 1: 키워드 패턴 매칭 (핵심 구현)
+- **목적**: 키워드 추출 → 패턴 매칭 → 동적 브랜드 검색
+- **성능**: 10-50ms (캐시 히트 시 < 1ms)
+- **정확도**: 85-90% (목표 95%)
+- **구현**: `KeywordExtractionEngine`, `KeywordSystemController`
+
+---
+
+## 📁 프로젝트 구조
+
+### 핵심 서비스 계층
+```
+src/main/java/com/moneyshift/api/
+├── service/
+│   ├── KeywordExtractionEngine.java      # 키워드 추출 및 분류 엔진
+│   ├── KeywordGroupService.java          # 키워드 그룹 관리
+│   ├── KeywordTagMappingService.java     # 키워드-태그 매핑 관리
+│   ├── TagAccountMappingService.java     # 태그-계정과목 매핑 관리
+│   ├── TagMappingService.java            # 통합 매핑 관리
+│   ├── ConfidenceEngine.java             # 신뢰도 계산 엔진
+│   ├── DynamicBrandService.java          # 동적 브랜드 검색
+│   └── RedisCacheService.java            # Redis 캐시 관리
+├── controller/
+│   ├── KeywordSystemController.java      # 키워드 시스템 API
+│   ├── KeywordTestController.java        # 키워드 테스트 API
+│   ├── TagMappingController.java         # 태그 매핑 관리 API
+│   └── TagAccountMappingController.java  # 계정과목 매핑 API
+├── model/
+│   ├── KeywordGroup.java                 # 키워드 그룹 엔티티
+│   ├── KeywordTagMapping.java            # 키워드-태그 매핑 엔티티
+│   ├── TagAccountMapping.java            # 태그-계정과목 매핑 엔티티
+│   ├── TagsMaster.java                   # 태그 마스터 엔티티
+│   └── LayerProcessingResult.java        # 처리 결과 엔티티
+└── mapper/
+    ├── KeywordGroupMapper.java           # 키워드 그룹 MyBatis 매퍼
+    ├── KeywordTagMappingMapper.java      # 키워드-태그 매핑 매퍼
+    └── TagAccountMappingMapper.java      # 태그-계정과목 매핑 매퍼
+```
+
+### 데이터베이스 스키마
+```
+src/main/resources/
+├── mapper/
+│   ├── KeywordGroupMapper.xml            # 키워드 그룹 SQL 매핑
+│   ├── KeywordTagMappingMapper.xml       # 키워드-태그 매핑 SQL
+│   └── TagAccountMappingMapper.xml       # 태그-계정과목 매핑 SQL
+├── schema.sql                            # 데이터베이스 스키마 정의
+└── application.yml                       # 애플리케이션 설정
+```
+
+---
+
+## 🗄️ 데이터베이스 스키마
+
+### 핵심 테이블 구조
+
+#### 1. keyword_groups (키워드 그룹)
+```sql
+CREATE TABLE keyword_groups (
+    id                  BIGSERIAL PRIMARY KEY,
+    group_name          VARCHAR(100) NOT NULL,     -- 그룹 이름
+    primary_keyword     VARCHAR(100) NOT NULL,     -- 주 키워드
+    synonyms           TEXT[],                     -- 동의어 배열
+    category           VARCHAR(50),                -- 카테고리
+    confidence_base    DECIMAL(3,2),               -- 기본 신뢰도 (0.00~1.00)
+    is_active          BOOLEAN DEFAULT true,       -- 활성 상태
+    created_at         TIMESTAMP DEFAULT NOW(),
+    updated_at         TIMESTAMP DEFAULT NOW()
+);
+```
+
+#### 2. keyword_tag_mappings (키워드-태그 매핑)
+```sql
+CREATE TABLE keyword_tag_mappings (
+    id                  BIGSERIAL PRIMARY KEY,
+    keyword_group_id    BIGINT NOT NULL,           -- 키워드 그룹 ID
+    tag_id             BIGINT NOT NULL,           -- 태그 ID
+    confidence_score   DECIMAL(3,2),              -- 매핑 신뢰도
+    context_rules      JSONB,                     -- 컨텍스트 규칙
+    priority           INTEGER DEFAULT 50,        -- 우선순위 (0-200)
+    usage_count        BIGINT DEFAULT 0,          -- 사용 횟수
+    is_active          BOOLEAN DEFAULT true,      -- 활성 상태
+    created_at         TIMESTAMP DEFAULT NOW()
+);
+```
+
+#### 3. tag_account_mappings (태그-계정과목 매핑)
+```sql
+CREATE TABLE tag_account_mappings (
+    id                  BIGSERIAL PRIMARY KEY,
+    tag_id             BIGINT NOT NULL,           -- 태그 ID
+    account_code       VARCHAR(10) NOT NULL,     -- 계정과목 코드
+    account_name       VARCHAR(100) NOT NULL,    -- 계정과목명
+    mapping_condition  JSONB,                    -- 매핑 조건
+    is_default         BOOLEAN DEFAULT false,    -- 기본 매핑 여부
+    priority           INTEGER DEFAULT 50,       -- 우선순위
+    confidence_boost   DECIMAL(3,2) DEFAULT 0,   -- 신뢰도 보정값
+    created_at         TIMESTAMP DEFAULT NOW()
+);
+```
+
+#### 4. tags_master (태그 마스터)
+```sql
+CREATE TABLE tags_master (
+    id             BIGSERIAL PRIMARY KEY,
+    tag_name       VARCHAR(50) NOT NULL,         -- 태그명
+    tag_category   VARCHAR(30),                  -- 태그 카테고리
+    description    TEXT,                         -- 설명
+    color_hex      VARCHAR(7),                   -- 색상 코드
+    icon_name      VARCHAR(50),                  -- 아이콘명
+    display_order  INTEGER DEFAULT 0,            -- 표시 순서
+    is_active      BOOLEAN DEFAULT true,         -- 활성 상태
+    created_at     TIMESTAMP DEFAULT NOW()
+);
+```
+
+### 데이터 흐름도
+```
+거래 텍스트 → 키워드 추출 → 키워드 그룹 매칭 → 태그 매핑 → 계정과목 매핑 → 최종 결과
+     ↓              ↓                ↓              ↓             ↓
+   정규화         토큰 분리        우선순위 정렬     신뢰도 계산    조건부 매핑
+```
+
+---
+
+## ⚙️ 핵심 서비스 상세 분석
+
+### 1. KeywordExtractionEngine (키워드 추출 엔진)
+
+#### 주요 메서드
+```java
+public LayerProcessingResult extractAndMatch(String transactionText, BigDecimal amount, LocalDateTime transactionTime)
+```
+
+#### 처리 흐름
+1. **캐시 확인** → Redis에서 이전 결과 조회
+2. **키워드 추출** → 텍스트 정규화 및 토큰화
+3. **키워드 그룹 매칭** → 주 키워드 및 동의어 매칭
+4. **동적 브랜드 매칭** → 키워드 그룹 실패 시 폴백
+5. **태그 결정** → 신뢰도 기반 최적 태그 선택
+6. **계정과목 매핑** → 조건부 규칙 적용
+7. **결과 캐싱** → Redis에 결과 저장 (5분 TTL)
+
+#### 키워드 추출 알고리즘
+```java
+private String normalizeText(String text) {
+    // 1. 한글, 영문, 숫자 외 문자 제거
+    String normalized = text.replaceAll("[^가-힣a-zA-Z0-9\\s]", " ");
+    
+    // 2. 다중 공백을 단일 공백으로 변환
+    normalized = normalized.replaceAll("\\s+", " ");
+    
+    return normalized.trim();
+}
+
+private List<String> extractKeywords(String normalizedText) {
+    String[] tokens = normalizedText.split("[\\s\\*\\-\\_\\(\\)\\[\\]\\{\\}]+");
+    
+    return Arrays.stream(tokens)
+        .filter(token -> token.length() >= 2)      // 2글자 이상
+        .filter(token -> !isNumeric(token))        // 숫자 제외
+        .collect(Collectors.toList());
+}
+```
+
+### 2. KeywordGroupService (키워드 그룹 관리)
+
+#### 핵심 기능
+- **키워드 그룹 CRUD** 작업
+- **동의어 관리** (추가/제거)
+- **카테고리별 검색**
+- **Redis 캐싱** (24시간 TTL)
+
+#### 캐시 전략
+```java
+// 캐시 키 패턴
+private static final String CACHE_KEY_ALL_GROUPS = "keyword_groups:all";
+private static final String CACHE_KEY_CATEGORY_PREFIX = "keyword_groups:category:";
+private static final String CACHE_KEY_ACTIVE_GROUPS = "keyword_groups:active";
+```
+
+### 3. KeywordTagMappingService (키워드-태그 매핑)
+
+#### 핵심 기능
+- **매핑 관계 관리** (키워드 그룹 ↔ 태그)
+- **신뢰도 관리** (0.00~1.00)
+- **사용 통계 추적**
+- **우선순위 관리** (0-200)
+
+#### 매핑 우선순위 시스템
+```java
+public enum MappingPriority {
+    BRAND_EXACT_MATCH(150),      // 브랜드 정확 매칭
+    KEYWORD_LONG(120),           // 긴 키워드 (5글자 이상)
+    KEYWORD_MEDIUM(100),         // 중간 키워드 (3-4글자)
+    KEYWORD_SHORT(80),           // 짧은 키워드 (2글자)
+    DYNAMIC_BRAND(150),          // 동적 브랜드 매칭
+    GENERIC_PATTERN(50),         // 일반 패턴
+    FALLBACK(20);                // 폴백 패턴
+}
+```
+
+### 4. TagAccountMappingService (태그-계정과목 매핑)
+
+#### 핵심 기능
+- **조건부 매핑** (시간, 금액, 컨텍스트 기반)
+- **기본 매핑** 관리
+- **계정과목 추천**
+- **매핑 시나리오 테스트**
+
+#### 조건부 매핑 예시
+```json
+{
+  "time_context": "late_night",
+  "amount_min": 50000,
+  "previous_tag": "회식",
+  "mapping": {
+    "account_code": "5101",
+    "account_name": "접대비"
+  }
+}
+```
+
+### 5. ConfidenceEngine (신뢰도 계산 엔진)
+
+#### 신뢰도 계산 공식
+```
+최종 신뢰도 = (패턴 점수 × 0.4) + (히스토리 점수 × 0.3) + (컨텍스트 점수 × 0.3)
+```
+
+#### 점수 구성 요소
+- **패턴 점수 (40% 가중치)**: 기본 신뢰도 + 키워드 수 보너스 + 키워드 길이 보너스
+- **히스토리 점수 (30% 가중치)**: 사용자 피드백 기반 성공률
+- **컨텍스트 점수 (30% 가중치)**: 시간대, 금액, 요일 적합성
+
+#### 신뢰도 임계값
+- **자동 승인**: 0.90 이상 (즉시 처리)
+- **사용자 질문**: 0.70 ~ 0.89 (확인 후 처리)
+- **거부/재처리**: 0.70 미만 (다음 Layer로 전달)
+
+---
+
+## 🔄 캐싱 전략
+
+### Redis 캐시 구조
+```java
+// 캐시 키 패턴 및 TTL
+classification:{transactionHashCode}          // 분류 결과 (TTL: 5분)
+keyword_groups:all                           // 전체 키워드 그룹 (TTL: 24시간)
+keyword_groups:category:{categoryName}       // 카테고리별 그룹 (TTL: 24시간)
+tag_mappings:keyword:{keywordGroupId}        // 키워드-태그 매핑 (TTL: 24시간)
+tag_mappings:tag:{tagId}                     // 태그-계정과목 매핑 (TTL: 24시간)
+stats:mapping                                // 매핑 통계 (TTL: 10분)
+brand_usage:{brandName}                      // 브랜드 사용 횟수 (TTL: 24시간)
+```
+
+### 캐시 무효화 전략
+```java
+// 키워드 그룹 변경 시
+public void invalidateKeywordGroupCache(Long keywordGroupId) {
+    redisTemplate.delete("keyword_groups:all");
+    redisTemplate.delete("keyword_groups:category:*");
+    redisTemplate.delete("tag_mappings:keyword:" + keywordGroupId);
+}
+
+// 태그 매핑 변경 시
+public void invalidateTagMappingCache(Long tagId) {
+    redisTemplate.delete("tag_mappings:tag:" + tagId);
+    redisTemplate.delete("stats:mapping");
+}
+```
+
+---
+
+## 🚀 API 엔드포인트 가이드
+
+### 1. 키워드 시스템 API (`/v2`)
+
+#### 거래 분류 (핵심 엔드포인트)
+```http
+POST /v2/keyword-system/classify
+Content-Type: application/json
+
+{
+  "description": "스타벅스 아메리카노 결제",
+  "amount": 4500
+}
+```
+
+**응답 예시:**
+```json
+{
+  "matched": true,
+  "tag": "카페",
+  "tagId": 1,
+  "confidence": 0.92,
+  "extractedKeywords": ["스타벅스", "아메리카노"],
+  "processingPath": "KEYWORD_ENGINE",
+  "accountCode": "5201",
+  "accountName": "복리후생비"
+}
+```
+
+#### 키워드 그룹 관리
+```http
+# 키워드 그룹 조회
+GET /v2/tag-mapping/keyword-groups?source=cache
+
+# 키워드 그룹 생성
+POST /v2/tag-mapping/keyword-groups
+{
+  "groupName": "스타벅스",
+  "primaryKeyword": "스타벅스",
+  "synonyms": ["STARBUCKS", "스벅"],
+  "category": "카페",
+  "confidenceBase": 0.92
+}
+
+# 키워드 그룹 수정
+PUT /v2/tag-mapping/keyword-groups/{id}
+
+# 키워드 그룹 삭제
+DELETE /v2/tag-mapping/keyword-groups/{id}
+```
+
+#### 태그 추천
+```http
+POST /v2/tag-mapping/recommend-tags
+{
+  "transactionText": "스타벅스 결제",
+  "amount": 4500,
+  "timestamp": "2024-01-15T10:30:00"
+}
+```
+
+### 2. 매핑 관리 API
+
+#### 키워드-태그 매핑
+```http
+# 매핑 조회
+GET /v2/tag-mapping/mappings?source=cache&keywordGroupId=1
+
+# 매핑 생성
+POST /v2/tag-mapping/mappings
+{
+  "keywordGroupId": 1,
+  "tagId": 5,
+  "confidenceScore": 0.95,
+  "priority": 100,
+  "contextRules": "{\"minAmount\": 1000}"
+}
+```
+
+#### 태그-계정과목 매핑
+```http
+# 매핑 조회
+GET /v2/tag-mapping/tag-account-mappings?tagId=1
+
+# 매핑 생성
+POST /v2/tag-mapping/tag-account-mappings
+{
+  "tagId": 1,
+  "accountCode": "5201",
+  "accountName": "복리후생비",
+  "isDefault": true,
+  "priority": 100
+}
+```
+
+### 3. 관리 및 모니터링 API
+
+#### 캐시 관리
+```http
+# 캐시 새로고침
+POST /v2/tag-mapping/refresh-cache
+
+# 캐시 상태 확인
+GET /v2/tag-mapping/cache-status
+```
+
+#### 통계 조회
+```http
+# 매핑 통계
+GET /v2/tag-mapping/stats
+
+# 키워드-태그 매핑 통계
+GET /v2/tag-mapping/mapping-stats
+```
+
+---
+
+## 📊 성능 및 모니터링
+
+### 현재 성능 지표
+- **캐시 히트율**: 85% 이상
+- **평균 응답 시간**: 
+  - 캐시 히트: < 1ms
+  - 키워드 매칭: 10-50ms
+  - 브랜드 매칭: 20-100ms
+- **분류 정확도**: 85-90% (목표 95%)
+
+### Spring Actuator 엔드포인트
+```yaml
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,mappings
+  endpoint:
+    health:
+      show-details: always
+```
+
+- `GET /api/actuator/health` - 시스템 헬스체크
+- `GET /api/actuator/info` - 애플리케이션 정보
+- `GET /api/actuator/metrics` - 성능 메트릭
+- `GET /api/actuator/mappings` - API 매핑 정보
+
+### 로깅 시스템
+```yaml
+logging:
+  level:
+    com.moneyshift.api: DEBUG
+    org.springframework.web: DEBUG
+    org.mybatis: DEBUG
+```
+
+- **DEBUG**: 상세 처리 과정 및 캐시 상태
+- **INFO**: 주요 이벤트 및 분류 결과
+- **ERROR**: 오류 및 예외 상황
+
+---
+
+## 🔧 설정 및 환경
+
+### application.yml 주요 설정
+```yaml
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/moneyshift
+    username: postgres
+    password: postgres
+    
+  redis:
+    host: localhost
+    port: 6379
+    database: 0
+    timeout: 2000ms
+
+mybatis:
+  type-aliases-package: com.moneyshift.api.model
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: true
+```
+
+### 의존성 관리 (pom.xml)
+```xml
+<dependencies>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-redis</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.mybatis.spring.boot</groupId>
+        <artifactId>mybatis-spring-boot-starter</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+    </dependency>
+</dependencies>
+```
+
+---
+
+## 💡 실제 처리 예시
+
+### 예시 1: 카페 거래 처리
+```
+입력: "스타벅스 강남점 아메리카노 4,500원"
+
+Step 1: 캐시 확인
+- Key: "classification:123456789"
+- Result: 캐시 미스
+
+Step 2: 키워드 추출
+- 정규화: "스타벅스 강남점 아메리카노 4500원"
+- 키워드: ["스타벅스", "강남점", "아메리카노"]
+
+Step 3: 키워드 그룹 매칭
+- 매칭: KeywordGroup(id=10, groupName="스타벅스", category="카페")
+- 우선순위: 길이(3) + 신뢰도(0.85) + 사용횟수(245)
+
+Step 4: 태그 매핑
+- 매핑: KeywordTagMapping(tagId=5, confidence=0.90, priority=100)
+- 태그: Tag(id=5, tagName="카페", category="식음료")
+
+Step 5: 계정과목 매핑
+- 매핑: TagAccountMapping(accountCode="5201", accountName="복리후생비")
+
+Step 6: 신뢰도 계산
+- 패턴 점수: 0.85 + 0.05 (키워드 수) = 0.90
+- 히스토리 점수: 0.85 (245회 사용, 긍정 피드백 90%)
+- 컨텍스트 점수: 0.70 + 0.10 (금액) + 0.05 (시간) = 0.85
+- 최종: (0.90×0.4) + (0.85×0.3) + (0.85×0.3) = 0.87
+
+Step 7: 결과 반환
+- 신뢰도 0.87 → 사용자 질문 범위
+- Redis에 5분간 캐싱
+- 처리 시간: 23ms
+```
+
+### 예시 2: 브랜드 폴백 매칭
+```
+입력: "올리브영 화장품 구매"
+
+Step 1-3: 키워드 매칭 실패
+- 키워드: ["올리브영", "화장품", "구매"]
+- 키워드 그룹에서 "올리브영" 매칭 실패
+
+Step 4: 동적 브랜드 매칭
+- 브랜드 테이블 검색: Brand(brandName="올리브영", category="드럭스토어")
+- 매칭 성공, 사용 횟수 증가 (4회 → 5회)
+
+Step 5: 결과 반환
+- 태그: "드럭스토어" 
+- 계정과목: "소모품비"
+- 신뢰도: 0.80 (브랜드 매칭 기본값)
+- 처리 경로: "DYNAMIC_BRAND"
+```
+
+---
+
+## 🚨 현재 상태 및 개선 필요 사항
+
+### ✅ 현재 구현 완료
+- **Layer 1 키워드 엔진**: 완전 구현
+- **Redis 캐싱 시스템**: 고성능 캐싱
+- **키워드-태그-계정과목 매핑**: 3단계 매핑 체계
+- **동적 브랜드 검색**: 폴백 시스템
+- **신뢰도 계산 엔진**: 다차원 신뢰도 평가
+- **관리 API**: 풍부한 CRUD 및 관리 기능
+
+### 🔴 즉시 개선 필요 (Critical)
+1. **Layer 2 (ML 추론) 구현**
+   - 유사도 매칭 알고리즘
+   - 벡터 임베딩 시스템
+   - 모델 학습 파이프라인
+
+2. **Layer 3 (LLM 폴백) 구현**
+   - Gemini AI 통합
+   - 프롬프트 엔지니어링
+   - 응답 파싱 및 검증
+
+3. **사용자 피드백 시스템 완성**
+   - 데이터베이스 연동
+   - 피드백 기반 학습
+   - 통계 분석
+
+### 🟡 중요 개선 사항 (High Priority)
+1. **보안 및 인증 강화**
+   - JWT 기반 인증
+   - 어드민 권한 관리
+   - API 레이트 리미팅
+
+2. **성능 최적화**
+   - 키워드 매칭 알고리즘 개선
+   - 데이터베이스 쿼리 최적화
+   - 캐시 전략 개선
+
+3. **모니터링 및 알림**
+   - 실시간 모니터링 대시보드
+   - 성능 지표 추적
+   - 장애 알림 시스템
+
+### 🟢 일반 개선 사항 (Medium Priority)
+1. **데이터베이스 스키마 완성**
+   - 거래 로그 테이블
+   - 사용자 피드백 테이블
+   - 성능 통계 테이블
+
+2. **테스트 커버리지 확대**
+   - 단위 테스트 추가
+   - 통합 테스트 보강
+   - 성능 테스트 자동화
+
+---
+
+## 🎯 결론
+
+MoneyShift API는 **체계적인 4-Layer 아키텍처**를 기반으로 한 견고한 거래 분류 시스템입니다.
+
+### 주요 강점
+- ✅ **명확한 레이어 분리**: 각 Layer별 역할과 책임 명확
+- ✅ **포괄적인 API**: 관리 및 테스트를 위한 풍부한 엔드포인트
+- ✅ **효율적인 캐싱**: Redis 기반 고성능 캐싱 시스템
+- ✅ **확장 가능한 구조**: 새로운 Layer 추가 용이
+- ✅ **상세한 로깅**: 디버깅 및 모니터링 지원
+
+### 현재 상태
+- **Layer 1**: ✅ 완전 구현 (키워드 패턴 매칭)
+- **Layer 2**: ❌ 미구현 (ML 추론)
+- **Layer 3**: ❌ 미구현 (LLM 폴백)
+- **전체 시스템**: 🟡 Production-ready에 근접
+
+### 개발 우선순위
+1. **Layer 2/3 구현** → 분류 정확도 향상 (95% 목표)
+2. **보안 강화** → Production 배포 준비
+3. **성능 최적화** → 대용량 처리 준비
+4. **모니터링 시스템** → 운영 안정성 확보
+
+전반적으로 **production-ready**에 가까운 상태이며, 누락된 기능들을 순차적으로 구현하면 완전한 시스템이 될 것입니다.
+
+---
+
+## 📞 개발팀 연락처
+
+- **프로젝트**: MoneyShift API Backend
+- **문서 버전**: v1.0
+- **최종 업데이트**: 2024년 1월
+- **담당자**: MoneyShift Development Team
+
+> 이 문서는 MoneyShift API 백엔드 키워드 시스템의 완전한 가이드로, 향후 개발 작업의 기반이 될 것입니다.

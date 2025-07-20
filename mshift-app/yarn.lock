@@ -3126,7 +3126,7 @@ expo-modules-core@2.5.0:
   dependencies:
     invariant "^2.2.4"
 
-expo-navigation-bar@~4.0.1:
+expo-navigation-bar@4.0.9:
   version "4.0.9"
   resolved "https://registry.yarnpkg.com/expo-navigation-bar/-/expo-navigation-bar-4.0.9.tgz#e0409c2db8f6384d12c87f45c2674effc9fae1b6"
   integrity sha512-dCJ04yPixFOUixJaWlmCZafGeQ1L1g6vWn+oX8rqPnYN9kYCMUz2aRNnhRRoK5MBGFTK/nue2D49TE/AwwWt9w==
@@ -3134,7 +3134,7 @@ expo-navigation-bar@~4.0.1:
     "@react-native/normalize-colors" "0.76.8"
     debug "^4.3.2"
 
-expo-status-bar@~2.2.3:
+expo-status-bar@2.2.3:
   version "2.2.3"
   resolved "https://registry.yarnpkg.com/expo-status-bar/-/expo-status-bar-2.2.3.tgz#09385a866732328e0af3b4588c4f349a15fd7cd0"
   integrity sha512-+c8R3AESBoduunxTJ8353SqKAKpxL6DvcD8VKBuh81zzJyUUbfB4CVjr1GufSJEKsMzNPXZU+HJwXx7Xh7lx8Q==
@@ -3142,7 +3142,7 @@ expo-status-bar@~2.2.3:
     react-native-edge-to-edge "1.6.0"
     react-native-is-edge-to-edge "^1.1.6"
 
-expo@~53.0.0:
+expo@53.0.20:
   version "53.0.20"
   resolved "https://registry.yarnpkg.com/expo/-/expo-53.0.20.tgz#e11b553322de313d47c407367d8d48d3a073e3cc"
   integrity sha512-Nh+HIywVy9KxT/LtH08QcXqrxtUOA9BZhsXn3KCsAYA+kNb80M8VKN8/jfQF+I6CgeKyFKJoPNsWgI0y0VBGrA==
@@ -4782,7 +4782,7 @@ react-native-edge-to-edge@1.6.0:
   resolved "https://registry.yarnpkg.com/react-native-edge-to-edge/-/react-native-edge-to-edge-1.6.0.tgz#2ba63b941704a7f713e298185c26cde4d9e4b973"
   integrity sha512-2WCNdE3Qd6Fwg9+4BpbATUxCLcouF6YRY7K+J36KJ4l3y+tWN6XCqAC4DuoGblAAbb2sLkhEDp4FOlbOIot2Og==
 
-react-native-gesture-handler@~2.24.0:
+react-native-gesture-handler@2.24.0:
   version "2.24.0"
   resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-2.24.0.tgz#b6e1f13ec9bf8dfa5f4911854b6e0d73d882a81a"
   integrity sha512-ZdWyOd1C8axKJHIfYxjJKCcxjWEpUtUWgTOVY2wynbiveSQDm8X/PDyAKXSer/GOtIpjudUbACOndZXCN3vHsw==
@@ -4801,7 +4801,7 @@ react-native-is-edge-to-edge@^1.1.6, react-native-is-edge-to-edge@^1.1.7:
   resolved "https://registry.yarnpkg.com/react-native-is-edge-to-edge/-/react-native-is-edge-to-edge-1.2.1.tgz#64e10851abd9d176cbf2b40562f751622bde3358"
   integrity sha512-FLbPWl/MyYQWz+KwqOZsSyj2JmLKglHatd3xLZWskXOpRaio4LfEDEz8E/A6uD8QoTHW6Aobw1jbEwK7KMgR7Q==
 
-react-native-reanimated@~3.17.4:
+react-native-reanimated@3.17.5:
   version "3.17.5"
   resolved "https://registry.yarnpkg.com/react-native-reanimated/-/react-native-reanimated-3.17.5.tgz#09ebe3c9e3379c5c0c588b7ab30c131ea29b60f0"
   integrity sha512-SxBK7wQfJ4UoWoJqQnmIC7ZjuNgVb9rcY5Xc67upXAFKftWg0rnkknTw6vgwnjRcvYThrjzUVti66XoZdDJGtw==
@@ -4824,7 +4824,7 @@ react-native-safe-area-context@5.4.0:
   resolved "https://registry.yarnpkg.com/react-native-safe-area-context/-/react-native-safe-area-context-5.4.0.tgz#04b51940408c114f75628a12a93569d30c525454"
   integrity sha512-JaEThVyJcLhA+vU0NU8bZ0a1ih6GiF4faZ+ArZLqpYbL6j7R3caRqj+mE3lEtKCuHgwjLg3bCxLL1GPUJZVqUA==
 
-react-native-screens@~4.11.1:
+react-native-screens@4.11.1:
   version "4.11.1"
   resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-4.11.1.tgz#7d0f3d313d8ddc1e55437c5e038f15f8805dc991"
   integrity sha512-F0zOzRVa3ptZfLpD0J8ROdo+y1fEPw+VBFq1MTY/iyDu08al7qFUO5hLMd+EYMda5VXGaTFCa8q7bOppUszhJw==

@@ -45,7 +45,7 @@ async function testSingleBrand(brand) {
       },
       body: JSON.stringify({
         description: brand.generatedTransactionString,
-        amount: 10000
+        amount: 35500
       })
     });
 
@@ -69,13 +69,10 @@ async function testSingleBrand(brand) {
     }
     stats.byProcessingPath[processingPath]++;
 
-    // 예상 태그와 실제 태그 비교
+    // 예상 태그와 실제 태그 비교 (브랜드 테스트와 동일한 로직)
     const expectedTags = [brand.primaryTag, brand.secondaryTag, brand.tertiaryTag].filter(Boolean);
-    const actualTag = result.matched ? (result.tag || result.suggestedTag) : null;
-    const matched = actualTag && expectedTags.some(tag => 
-      tag.toLowerCase().includes(actualTag.toLowerCase()) || 
-      actualTag.toLowerCase().includes(tag.toLowerCase())
-    );
+    const actualTag = result.tag;
+    const matched = result.matched && expectedTags.includes(actualTag);
 
     // 통계 업데이트
     stats.total++;
@@ -119,7 +116,7 @@ async function testSingleBrand(brand) {
       stats.byTag[primaryTag].success++;
     }
 
-    // 데이터베이스에 결과 저장
+    // 데이터베이스에 결과 저장 (브랜드 테스트와 동일한 형식)
     await prisma.franchiseBrands.update({
       where: { id: brand.id },
       data: {
@@ -127,12 +124,14 @@ async function testSingleBrand(brand) {
         lastTestAt: new Date(),
         testResult: {
           matched,
-          actualTag,
+          inputText: brand.generatedTransactionString,
           expectedTags,
+          actualTag,
+          keywordGroup: result.keywordGroup,
           confidence: result.confidence || 0,
-          extractedKeywords: result.extractedKeywords || [],
           processingPath: result.processingPath,
-          processingTime: processingTime
+          processingTime: processingTime,
+          rawResult: result
         }
       }
     });
@@ -168,9 +167,11 @@ async function testSingleBrand(brand) {
       data: {
         testPassed: false,
         lastTestAt: new Date(),
-        testResult: { 
+        testResult: {
+          matched: false,
           error: error.message,
-          processingPath: 'error'
+          inputText: brand.generatedTransactionString,
+          expectedTags: [brand.primaryTag, brand.secondaryTag, brand.tertiaryTag].filter(Boolean)
         }
       }
     });
