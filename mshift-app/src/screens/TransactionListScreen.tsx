@@ -9,7 +9,7 @@ import {
   RefreshControl,
   Alert
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { Colors } from '../constants/colors';
 import TransactionCard, { TransactionItem } from '../components/TransactionCard';

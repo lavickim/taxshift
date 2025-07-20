@@ -79,7 +79,12 @@
       "Bash(java:*)",
       "mcp__ide__getDiagnostics",
       "Bash(mv:*)",
-      "Bash(yarn add:*)"
+      "Bash(yarn add:*)",
+      "Bash(npm cache clean:*)",
+      "WebFetch(domain:docs.expo.dev)",
+      "Bash(expo --version)",
+      "Bash(yarn list:*)",
+      "WebFetch(domain:docs.swmansion.com)"
     ],
     "deny": []
   }

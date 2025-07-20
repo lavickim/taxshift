@@ -194,10 +194,22 @@ The project includes a React Native mobile app:
 
 ### Mobile App (mshift-app)
 ```bash
-cd mshift-app/MoneyShift
-npm install          # Install dependencies
-npm start            # Start Expo development server
+# 환경 설정 (최초 실행 시)
+./setup-app.sh       # Clean setup with proper dependencies
+
+# 일반 실행
+./start-app.sh       # Start Expo development server
+cd mshift-app && expo start --clear  # Alternative direct start
+
+# 수동 설정 (필요시)
+cd mshift-app
+rm -rf node_modules yarn.lock
+yarn install
+expo start --clear
 ```
 
-**Technology Stack**: React Native with Expo, TypeScript
-**Key Features**: Account detail screens, data connection, settings management
+**Technology Stack**: React Native with Expo SDK 53, TypeScript, Redux Toolkit
+**Key Features**: Account detail screens, data connection, settings management, D3.js network graph visualization
+**Ports**: Expo Metro: 8081, Expo Dev Tools: 19002
+
+**Important**: The mobile app uses its own package.json and dependencies separate from the monorepo root. Always run setup-app.sh when encountering dependency issues.

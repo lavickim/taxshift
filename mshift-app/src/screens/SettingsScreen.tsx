@@ -373,7 +373,7 @@ const SettingsScreen = () => {
               'ℹ️', 
               '앱 정보', 
               '버전 1.0.0',
-              () => Alert.alert('앱 정보', 'MoneyShift v1.0.0\n\n스마트한 가계부 관리 솔루션')
+              () => Alert.alert('앱 정보', '머니쉬프트 v1.0.0\n\n스마트한 재무 관리 솔루션')
             )}
             {renderSettingsItem(
               '⭐', 

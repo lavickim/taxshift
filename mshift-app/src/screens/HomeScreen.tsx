@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert, RefreshControl } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { Colors } from '../constants/colors';
+import { commonStyles } from '../constants/styles';
 import { apiCall, API_CONFIG } from '../config/api';
 import TransactionService from '../services/TransactionService';
 import DashboardService, { DashboardData } from '../services/DashboardService';
@@ -15,6 +16,7 @@ const HomeScreen = () => {
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
   const { summary, notifications, loading, refreshing, error } = useAppSelector(state => state.dashboard);
+  const insets = useSafeAreaInsets();
   
   const [ruleEngineStatus, setRuleEngineStatus] = useState<'loading' | 'online' | 'offline'>('loading');
   const [classificationResult, setClassificationResult] = useState<string | null>(null);
@@ -219,7 +221,7 @@ const HomeScreen = () => {
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerLeft}>
-            <Text style={styles.headerTitle}>모두의 회계</Text>
+            <Text style={styles.headerTitle}>머니쉬프트</Text>
             <Text style={styles.headerArrow}>{'>'}</Text>
           </View>
           <TouchableOpacity style={styles.notificationIcon}>

@@ -1,8 +1,9 @@
 import React from 'react';
-import { Text } from 'react-native';
+import { Text, Platform } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import HomeScreen from '../screens/HomeScreen';
 import AccountDetailScreen from '../screens/AccountDetailScreen';
 import SettingsScreen from '../screens/SettingsScreen';
@@ -11,6 +12,7 @@ import ApiTestScreen from '../screens/ApiTestScreen';
 import TransactionListScreen from '../screens/TransactionListScreen';
 import TransactionDetailScreen from '../screens/TransactionDetailScreen';
 import ReportScreen from '../screens/ReportScreen';
+import KeywordNetworkScreen from '../screens/KeywordNetworkScreen';
 import { Colors } from '../constants/colors';
 
 export type RootStackParamList = {
@@ -21,6 +23,7 @@ export type RootStackParamList = {
   TransactionList: undefined;
   TransactionDetail: { transaction: any };
   Report: undefined;
+  KeywordNetwork: undefined;
 };
 
 export type TabParamList = {
@@ -28,6 +31,7 @@ export type TabParamList = {
   Account: undefined;
   Transactions: undefined;
   Report: undefined;
+  KeywordNetwork: undefined;
   Settings: undefined;
 };
 
@@ -35,6 +39,8 @@ const Tab = createBottomTabNavigator<TabParamList>();
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const TabNavigator = () => {
+  const insets = useSafeAreaInsets();
+  
   return (
     <Tab.Navigator
       screenOptions={{
@@ -43,8 +49,8 @@ const TabNavigator = () => {
           backgroundColor: Colors.white,
           borderTopWidth: 1,
           borderTopColor: Colors.card.border,
-          height: 60,
-          paddingBottom: 8,
+          height: 60 + insets.bottom,
+          paddingBottom: insets.bottom > 0 ? insets.bottom : 8,
           paddingTop: 8,
         },
         tabBarActiveTintColor: Colors.primary,
@@ -96,6 +102,16 @@ const TabNavigator = () => {
         }}
       />
       <Tab.Screen 
+        name="KeywordNetwork" 
+        component={KeywordNetworkScreen}
+        options={{
+          tabBarLabel: '네트워크',
+          tabBarIcon: ({ color, size }) => (
+            <Text style={{ fontSize: size, color }}>🌐</Text>
+          ),
+        }}
+      />
+      <Tab.Screen 
         name="Settings" 
         component={SettingsScreen}
         options={{
@@ -124,6 +140,7 @@ const AppNavigator = () => {
         <Stack.Screen name="TransactionList" component={TransactionListScreen} />
         <Stack.Screen name="TransactionDetail" component={TransactionDetailScreen} />
         <Stack.Screen name="Report" component={ReportScreen} />
+        <Stack.Screen name="KeywordNetwork" component={KeywordNetworkScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
