@@ -10,11 +10,12 @@ import { GuideContent } from "@/components/guide-content";
 import TagMappingManagement from "@/components/tag-mapping-management";
 import { TestAndRuleExpansion } from "@/components/test-and-rule-expansion";
 import DynamicSystemMonitoring from "@/components/dynamic-system-monitoring";
+import { AccountingEngineManagement } from "@/components/accounting-engine-management";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, Clock, Rocket, BarChart3, Settings, Sparkles, Hash, Cpu, Building, Monitor } from "lucide-react";
+import { CheckCircle, Clock, Rocket, BarChart3, Settings, Sparkles, Hash, Cpu, Building, Monitor, Calculator } from "lucide-react";
 
 export function AdminDashboardLayout() {
   const [activeTab, setActiveTab] = useState("home");
@@ -88,6 +89,14 @@ export function AdminDashboardLayout() {
             >
               <Monitor className="mr-2 h-4 w-4" />
               시스템 모니터링
+            </Button>
+            <Button
+              variant={activeTab === "accounting-engine" ? "secondary" : "ghost"}
+              className="w-full justify-start"
+              onClick={() => setActiveTab("accounting-engine")}
+            >
+              <Calculator className="mr-2 h-4 w-4" />
+              복식부기엔진
             </Button>
             <Button
               variant={activeTab === "admin-test" ? "secondary" : "ghost"}
@@ -209,6 +218,8 @@ export function AdminDashboardLayout() {
               <DynamicSystemMonitoring />
             </div>
           )}
+          
+          {activeTab === "accounting-engine" && <AccountingEngineManagement />}
           
           {activeTab === "admin-test" && <AdminTestDashboard />}
         </main>

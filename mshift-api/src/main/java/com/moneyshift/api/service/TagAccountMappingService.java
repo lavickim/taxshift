@@ -2,6 +2,7 @@ package com.moneyshift.api.service;
 
 import com.moneyshift.api.mapper.TagAccountMappingMapper;
 import com.moneyshift.api.model.TagAccountMapping;
+import com.moneyshift.api.model.TransactionEntity;
 import com.moneyshift.api.controller.TagAccountMappingController;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -537,5 +538,79 @@ public class TagAccountMappingService {
         rules.add(rule2);
         
         return rules;
+    }
+
+    /**
+     * 태그명으로 계정과목 코드 조회 (기장 시스템용)
+     */
+    public String getAccountCodeByTag(String tagName, TransactionEntity transaction) {
+        try {
+            log.debug("태그 기반 계정과목 조회: tagName={}, transactionAmount={}", tagName, transaction.getAmount());
+            
+            // 기본 태그 매핑 (간단한 예시)
+            switch (tagName) {
+                case "커피전문점":
+                case "커피":
+                    return "5120"; // 복리후생비
+                    
+                case "주유소":
+                case "차량유지":
+                    return "5140"; // 차량유지비
+                    
+                case "편의점":
+                case "사무용품":
+                    return "5130"; // 소모품비
+                    
+                case "음식점":
+                case "식당":
+                    // 조건부 매핑: 야간 시간대 체크
+                    if (isLateNightTransaction(transaction)) {
+                        return "5510"; // 야근식대 (복리후생비)
+                    } else {
+                        return "5110"; // 접대비
+                    }
+                    
+                case "택시":
+                case "교통":
+                    // 조건부 매핑: 금액 기반
+                    if (transaction.getAmount() > 50000) {
+                        return "5110"; // 접대비 (고액)
+                    } else {
+                        return "5230"; // 차량관련비 (교통비)
+                    }
+                    
+                case "통신":
+                case "휴대폰":
+                    return "5150"; // 통신비
+                    
+                case "교육":
+                case "학원":
+                    return "5170"; // 교육훈련비
+                    
+                case "보험":
+                    return "5190"; // 보험료
+                    
+                case "의료":
+                case "병원":
+                    return "5210"; // 의료비
+                    
+                default:
+                    log.debug("매핑되지 않은 태그, 기본 계정과목 사용: tagName={}", tagName);
+                    return "5130"; // 소모품비 (기본값)
+            }
+            
+        } catch (Exception e) {
+            log.warn("태그 기반 계정과목 조회 실패, 기본값 사용: tagName={}, error={}", tagName, e.getMessage());
+            return "5130"; // 소모품비 (기본값)
+        }
+    }
+
+    /**
+     * 야간 거래 여부 확인 (22시-06시)
+     */
+    private boolean isLateNightTransaction(TransactionEntity transaction) {
+        // 실제 구현에서는 transaction의 시간 정보를 확인
+        // 현재는 간단히 false 반환
+        return false;
     }
 }

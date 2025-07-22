@@ -9,15 +9,17 @@ datasource db {
 }
 
 model Company {
-  id                         String          @id @db.Uuid
-  companyName                String          @map("company_name")
-  businessRegistrationNumber String?         @unique @map("business_registration_number") @db.VarChar(20)
-  createdAt                  DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt                  DateTime        @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
-  taxpayerType               TaxpayerType    @default(CORPORATION) @map("taxpayer_type")
+  id                         String              @id @db.Uuid
+  companyName                String              @map("company_name")
+  businessRegistrationNumber String?             @unique @map("business_registration_number") @db.VarChar(20)
+  createdAt                  DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt                  DateTime            @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  taxpayerType               TaxpayerType        @default(CORPORATION) @map("taxpayer_type")
   ruleCandidates             RuleCandidate[]
   rules                      Rule[]
   transactions               Transaction[]
+  journalEntries             JournalEntry[]
+  financialStatements        FinancialStatement[]
 
   @@map("companies")
 }
@@ -478,4 +480,119 @@ enum TransactionIOType {
   INCOME
 
   @@map("transaction_io_type")
+}
+
+// ===== 기장 시스템 관련 테이블들 =====
+
+model ChartOfAccounts {
+  id               Int                    @id @default(autoincrement())
+  accountCode      String                 @unique @map("account_code") @db.VarChar(10)
+  accountName      String                 @map("account_name") @db.VarChar(100)
+  accountType      AccountType            @map("account_type")
+  accountSubtype   String?                @map("account_subtype") @db.VarChar(50)
+  isDebitNormal    Boolean                @map("is_debit_normal")
+  parentAccountId  Int?                   @map("parent_account_id")
+  isActive         Boolean                @default(true) @map("is_active")
+  displayOrder     Int                    @default(0) @map("display_order")
+  createdAt        DateTime               @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime               @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  parentAccount    ChartOfAccounts?       @relation("AccountHierarchy", fields: [parentAccountId], references: [id])
+  childAccounts    ChartOfAccounts[]      @relation("AccountHierarchy")
+  journalDetails   JournalEntryDetail[]
+
+  @@index([accountType], map: "idx_chart_of_accounts_type")
+  @@index([isActive], map: "idx_chart_of_accounts_active")
+  @@index([parentAccountId], map: "idx_chart_of_accounts_parent")
+  @@map("chart_of_accounts")
+}
+
+model JournalEntry {
+  id            BigInt               @id @default(autoincrement())
+  companyId     String               @map("company_id") @db.Uuid
+  entryDate     DateTime             @map("entry_date") @db.Date
+  description   String
+  referenceType String               @default("TRANSACTION") @map("reference_type") @db.VarChar(50)
+  referenceId   BigInt?              @map("reference_id")
+  totalAmount   BigInt               @map("total_amount")
+  status        JournalEntryStatus   @default(DRAFT)
+  createdBy     String?              @map("created_by") @db.VarChar(100)
+  createdAt     DateTime             @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime             @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  company       Company              @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  details       JournalEntryDetail[]
+
+  @@index([companyId], map: "idx_journal_entries_company")
+  @@index([entryDate], map: "idx_journal_entries_date")
+  @@index([status], map: "idx_journal_entries_status")
+  @@index([referenceType, referenceId], map: "idx_journal_entries_reference")
+  @@map("journal_entries")
+}
+
+model JournalEntryDetail {
+  id              BigInt          @id @default(autoincrement())
+  journalEntryId  BigInt          @map("journal_entry_id")
+  lineNumber      Int             @map("line_number")
+  accountCode     String          @map("account_code") @db.VarChar(10)
+  debitAmount     BigInt          @default(0) @map("debit_amount")
+  creditAmount    BigInt          @default(0) @map("credit_amount")
+  description     String?
+  createdAt       DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
+  journalEntry    JournalEntry    @relation(fields: [journalEntryId], references: [id], onDelete: Cascade)
+  account         ChartOfAccounts @relation(fields: [accountCode], references: [accountCode])
+
+  @@index([journalEntryId], map: "idx_journal_entry_details_journal")
+  @@index([accountCode], map: "idx_journal_entry_details_account")
+  @@map("journal_entry_details")
+}
+
+model FinancialStatement {
+  id                BigInt                    @id @default(autoincrement())
+  companyId         String                    @map("company_id") @db.Uuid
+  statementType     FinancialStatementType    @map("statement_type")
+  periodStart       DateTime                  @map("period_start") @db.Date
+  periodEnd         DateTime                  @map("period_end") @db.Date
+  statementData     Json                      @map("statement_data")
+  generationStatus  FinancialGenerationStatus @default(GENERATING) @map("generation_status")
+  createdAt         DateTime                  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt         DateTime                  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  company           Company                   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@index([companyId, periodStart, periodEnd], map: "idx_financial_statements_company_period")
+  @@index([statementType], map: "idx_financial_statements_type")
+  @@index([generationStatus], map: "idx_financial_statements_status")
+  @@map("financial_statements")
+}
+
+enum AccountType {
+  자산
+  부채
+  자본
+  수익
+  비용
+
+  @@map("account_type_enum")
+}
+
+enum JournalEntryStatus {
+  DRAFT
+  CONFIRMED
+  POSTED
+
+  @@map("journal_entry_status_enum")
+}
+
+enum FinancialStatementType {
+  대차대조표
+  손익계산서
+  현금흐름표
+
+  @@map("financial_statement_type_enum")
+}
+
+enum FinancialGenerationStatus {
+  GENERATING
+  COMPLETED
+  ERROR
+
+  @@map("financial_generation_status_enum")
 }

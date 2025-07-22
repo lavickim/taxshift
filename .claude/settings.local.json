@@ -85,7 +85,11 @@
       "Bash(expo --version)",
       "Bash(yarn list:*)",
       "WebFetch(domain:docs.swmansion.com)",
-      "Bash(./start-frontend.sh:*)"
+      "Bash(./start-frontend.sh:*)",
+      "Bash(npx tsx:*)",
+      "Bash(PGPASSWORD=moneyshift123 psql -h localhost -p 5432 -U moneyshift -d moneyshift -f /Users/lavickim/_Dev/moneyshift/mshift-admin/scripts/insert-test-transactions.sql)",
+      "Bash(-H \"Content-Type: application/json\")",
+      "Bash(PGPASSWORD=password psql:*)"
     ],
     "deny": []
   }

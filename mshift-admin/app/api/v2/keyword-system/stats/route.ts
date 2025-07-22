@@ -6,8 +6,8 @@ const prisma = new PrismaClient()
 export async function GET(request: NextRequest) {
   try {
     // 키워드 그룹 통계
-    const totalKeywordGroups = await prisma.keywordGroups.count()
-    const activeKeywordGroups = await prisma.keywordGroups.count({
+    const totalKeywordGroups = await prisma.keywordGroup.count()
+    const activeKeywordGroups = await prisma.keywordGroup.count({
       where: { isActive: true }
     })
 
@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 태그 매핑 통계
-    const totalTagMappings = await prisma.keywordTagMappings.count({
+    const totalTagMappings = await prisma.keywordTagMapping.count({
       where: { isActive: true }
     })
 
