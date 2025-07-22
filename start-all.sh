@@ -15,7 +15,7 @@ NC='\033[0m' # No Color
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 echo -e "${BLUE}1. 데이터베이스 서비스 시작...${NC}"
-bash "$SCRIPT_DIR/start-db.sh"
+bash "$SCRIPT_DIR/scripts/setup/start-db.sh"
 
 echo ""
 echo -e "${YELLOW}데이터베이스가 시작되길 기다리는 중... (5초)${NC}"
@@ -23,7 +23,7 @@ sleep 5
 
 echo ""
 echo -e "${BLUE}2. Java API 서버 백그라운드 시작...${NC}"
-bash "$SCRIPT_DIR/start-backend.sh" > backend.log 2>&1 &
+bash "$SCRIPT_DIR/scripts/setup/start-backend.sh" > backend.log 2>&1 &
 BACKEND_PID=$!
 echo "Backend PID: $BACKEND_PID"
 
@@ -33,7 +33,7 @@ sleep 10
 
 echo ""
 echo -e "${BLUE}3. NextJS 프론트엔드 서버 백그라운드 시작...${NC}"
-bash "$SCRIPT_DIR/start-frontend.sh" > frontend.log 2>&1 &
+bash "$SCRIPT_DIR/scripts/setup/start-frontend.sh" > frontend.log 2>&1 &
 FRONTEND_PID=$!
 echo "Frontend PID: $FRONTEND_PID"
 

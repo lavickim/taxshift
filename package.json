@@ -1,5 +1,8 @@
 {
   "dependencies": {
     "puppeteer": "^24.12.1"
+  },
+  "devDependencies": {
+    "node-fetch": "^3.3.2"
   }
 }

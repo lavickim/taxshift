@@ -1,95 +1,137 @@
 {
+  "todoManagement": {
+    "enabled": true,
+    "masterTodoPath": "project-design/todo/master-todolist.md",
+    "todoDirectory": "project-design/todo/",
+    "autoUpdate": true,
+    "reminderFrequency": "daily",
+    "prioritySystem": {
+      "high": "🔴",
+      "medium": "🟡",
+      "low": "🟢",
+      "info": "⚪"
+    },
+    "statusIcons": {
+      "pending": "[ ]",
+      "completed": "[x]",
+      "verified": "✅",
+      "inProgress": "🔄",
+      "paused": "⏸️",
+      "cancelled": "❌"
+    },
+    "rules": [
+      "Use TodoWrite tool proactively for complex multi-step tasks",
+      "Update todo status immediately after completing tasks",
+      "Break down large tasks into smaller, manageable items",
+      "Always specify priority and estimated time for new tasks",
+      "Review and update master todolist weekly"
+    ]
+  },
+  "developmentWorkflow": {
+    "enabled": true,
+    "methodology": "TDD",
+    "mandatoryPractices": {
+      "testFirst": {
+        "enabled": true,
+        "description": "Always write failing tests before implementing functionality",
+        "exceptions": [
+          "emergency bug fixes",
+          "trivial changes"
+        ],
+        "enforcementLevel": "strict"
+      },
+      "testCoverage": {
+        "minimum": 80,
+        "target": 95,
+        "criticalPaths": 100
+      },
+      "codeQuality": {
+        "linting": true,
+        "typeChecking": true,
+        "formatOnSave": true
+      }
+    },
+    "testingStrategy": {
+      "unitTests": {
+        "framework": "Jest",
+        "location": "src/**/__tests__/**/*.test.ts|tsx",
+        "naming": "[ComponentName].test.ts|tsx",
+        "mandatory": true
+      },
+      "integrationTests": {
+        "framework": "Jest + Testing Library",
+        "location": "src/**/__tests__/integration/**/*.test.ts|tsx",
+        "mandatory": true
+      },
+      "e2eTests": {
+        "framework": "Puppeteer",
+        "location": "tests/e2e/**/*.test.ts",
+        "mandatory": false
+      }
+    },
+    "projectSpecific": {
+      "mobile": {
+        "testingLibrary": "@testing-library/react-native",
+        "mockStrategy": "jest.setup.js",
+        "testCommand": "yarn test"
+      },
+      "admin": {
+        "testingLibrary": "@testing-library/react",
+        "mockStrategy": "jest.config.js",
+        "testCommand": "yarn test"
+      },
+      "backend": {
+        "testingFramework": "JUnit 5",
+        "mockStrategy": "Mockito",
+        "testCommand": "mvn test"
+      }
+    },
+    "automatedChecks": {
+      "preCommit": [
+        "test",
+        "lint",
+        "type-check"
+      ],
+      "prePush": [
+        "test:coverage",
+        "build"
+      ],
+      "ci": [
+        "test:all",
+        "build:all",
+        "security-scan"
+      ]
+    },
+    "tddWorkflow": [
+      "Write failing test first",
+      "Write minimal code to pass test",
+      "Refactor while keeping tests green",
+      "Add more test cases",
+      "Repeat until feature complete"
+    ]
+  },
+  "projectDesignDocuments": {
+    "enabled": true,
+    "referenceRequired": true,
+    "discrepancyReporting": true,
+    "documentsPath": "project-design/",
+    "keyDocuments": [
+      "project-design/기장시스템구현.md",
+      "project-design/기장시스템구현계획서.md",
+      "project-design/todo/master-todolist.md",
+      "project-design/todo/mobile-bookkeeping-todolist.md"
+    ],
+    "rules": [
+      "Always reference relevant design documents before implementation",
+      "Report any discrepancies between implementation and design documents",
+      "Update design documents if implementation requires changes",
+      "Validate implementation against design requirements",
+      "Maintain traceability between requirements and implementation"
+    ]
+  },
   "permissions": {
     "allow": [
-      "WebFetch(domain:docs.anthropic.com)",
-      "Bash(npx prisma generate:*)",
-      "Bash(pkill:*)",
-      "Bash(node:*)",
-      "Bash(curl:*)",
-      "Bash(npm run dev:*)",
-      "Bash(docker exec:*)",
-      "Bash(PGPASSWORD=postgres psql -h localhost -p 5432 -U postgres -d moneyshift -c \"SELECT COUNT(*) FROM franchise_brands;\")",
-      "Bash(brew services stop:*)",
-      "Bash(true)",
-      "Bash(brew uninstall:*)",
-      "Bash(sudo rm:*)",
-      "Bash(lsof:*)",
-      "Bash(iconv:*)",
-      "Bash(npx prisma:*)",
-      "Bash(mkdir:*)",
-      "Bash(docker cp:*)",
-      "Bash(ls:*)",
-      "Bash(docker cp \"/Users/lavickim/_Dev/moneyshift_be/data/source/national_pension_utf8.csv\" moneyshift-postgres:/tmp/national_pension_full.csv)",
-      "Bash(python3:*)",
-      "Bash(npm run build:*)",
-      "Bash(npm run type-check:*)",
-      "Bash(npm run:*)",
-      "Bash(npx eslint:*)",
-      "Bash(git rm:*)",
-      "Bash(git checkout:*)",
-      "Bash(git ls-tree:*)",
-      "Bash(./mvnw clean compile)",
-      "Bash(./scripts/test-rule-management.sh:*)",
-      "Bash(./scripts/test-integrated.sh:*)",
-      "Bash(git pull:*)",
-      "Bash(yarn --version)",
-      "Bash(yarn install)",
-      "Bash(yarn dev)",
-      "Bash(./test.sh:*)",
-      "Bash(chmod:*)",
-      "Bash(cp:*)",
-      "Bash(npm update:*)",
-      "Bash(npm audit:*)",
-      "Bash(npm install:*)",
-      "Bash(./test-transaction-api.sh:*)",
-      "Bash(./test-mobile-app.sh:*)",
-      "Bash(npx expo install:*)",
-      "Bash(./test-mobile-app-complete.sh:*)",
-      "Bash(./test-mobile-app-improved.sh:*)",
-      "Bash(./test-mobile-app-network.sh:*)",
-      "Bash(grep:*)",
-      "Bash(yarn db:generate:*)",
-      "Bash(yarn db:push:*)",
-      "Bash(npx ts-node:*)",
-      "Bash(find:*)",
-      "Bash(rm:*)",
-      "Bash(yarn lint)",
-      "Bash(yarn build)",
-      "Bash(npx tsc:*)",
-      "Bash(mvn clean:*)",
-      "Bash(mvn:*)",
-      "Bash(./start-backend.sh:*)",
-      "Bash(timeout:*)",
-      "Bash(kill:*)",
-      "Bash(PGPASSWORD=postgres psql -h localhost -U postgres -d moneyshift -f scripts/keyword-system-seed-data.sql)",
-      "Bash(PGPASSWORD=postgres psql -h localhost -U postgres -d moneyshift -c \"\\d keyword_groups\")",
-      "Bash(PGPASSWORD=postgres psql -h localhost -U postgres -d moneyshift -f scripts/proper-keyword-seeding.sql)",
-      "Bash(PGPASSWORD=postgres psql -h localhost -U postgres -d moneyshift -c \"TRUNCATE keyword_groups, keyword_tag_mappings, tag_account_mappings RESTART IDENTITY CASCADE;\")",
-      "Bash(PGPASSWORD=postgres psql -h localhost -U postgres -d moneyshift -c \"\\d keyword_tag_mappings\")",
-      "Bash(PGPASSWORD=postgres psql -h localhost -U postgres -d moneyshift -c \"\\d tag_account_mappings\")",
-      "Bash(PGPASSWORD=postgres psql -h localhost -U postgres -d moneyshift -f scripts/proper-keyword-seeding-fixed.sql)",
-      "Bash(PGPASSWORD=postgres psql -h localhost -U postgres -d moneyshift -c \"SELECT id, tag_name, tag_category FROM tags_master ORDER BY id;\")",
-      "Bash(PGPASSWORD=postgres psql -h localhost -U postgres -d moneyshift -f scripts/proper-keyword-seeding-final.sql)",
-      "Bash(PGPASSWORD=postgres psql -h localhost -U postgres -d moneyshift -c \"\n-- 단계별 시딩 (키워드 그룹만 먼저)\nDELETE FROM keyword_groups WHERE group_name IN (''세븐일레븐'', ''CU편의점'', ''이마트24'', ''GS25'');\n\nINSERT INTO keyword_groups (group_name, primary_keyword, synonyms, category, confidence_base, is_active) VALUES\n(''세븐일레븐'', ''세븐일레븐'', ARRAY[''7-eleven'', ''7일레븐'', ''세븐'', ''711''], ''편의점'', 0.92, true),\n(''CU편의점'', ''CU'', ARRAY[''씨유'', ''cu편의점'', ''cu점''], ''편의점'', 0.90, true),\n(''이마트24'', ''이마트24'', ARRAY[''emart24'', ''이마트이십사''], ''편의점'', 0.88, true),\n(''GS25'', ''GS25'', ARRAY[''지에스25'', ''gs이십오''], ''편의점'', 0.89, true),\n(''GS칼텍스'', ''GS칼텍스'', ARRAY[''gs칼텍스'', ''지에스칼텍스'', ''gs''], ''주유소'', 0.95, true),\n(''SK에너지'', ''SK에너지'', ARRAY[''sk'', ''에스케이'', ''sk주유소''], ''주유소'', 0.93, true),\n(''스타벅스'', ''스타벅스'', ARRAY[''스벅'', ''starbucks'', ''별다방''], ''카페'', 0.96, true),\n(''맥도날드'', ''맥도날드'', ARRAY[''맥도'', ''mcdonald'', ''맥날''], ''패스트푸드'', 0.89, true),\n(''쿠팡'', ''쿠팡'', ARRAY[''coupang'', ''쿠팡이츠''], ''온라인쇼핑'', 0.82, true),\n(''카카오택시'', ''카카오택시'', ARRAY[''kakao'', ''카톡택시''], ''택시'', 0.90, true);\n\nSELECT ''keyword_groups'' as table_name, count(*) as count FROM keyword_groups WHERE is_active = true;\n\")",
-      "Bash(PGPASSWORD=postgres psql:*)",
-      "Bash(psql:*)",
-      "Bash(./start-db.sh:*)",
-      "Bash(yarn db:studio:*)",
-      "Bash(./stop-backend.sh:*)",
-      "Bash(java:*)",
-      "mcp__ide__getDiagnostics",
-      "Bash(mv:*)",
-      "Bash(yarn add:*)",
-      "Bash(npm cache clean:*)",
-      "WebFetch(domain:docs.expo.dev)",
-      "Bash(expo --version)",
-      "Bash(yarn list:*)",
-      "WebFetch(domain:docs.swmansion.com)",
-      "Bash(./start-frontend.sh:*)",
-      "Bash(npx tsx:*)",
-      "Bash(PGPASSWORD=moneyshift123 psql -h localhost -p 5432 -U moneyshift -d moneyshift -f /Users/lavickim/_Dev/moneyshift/mshift-admin/scripts/insert-test-transactions.sql)",
-      "Bash(-H \"Content-Type: application/json\")",
-      "Bash(PGPASSWORD=password psql:*)"
+      "Bash(./start-all-with-tdd.sh:*)"
     ],
     "deny": []
   }

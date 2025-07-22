@@ -7,7 +7,10 @@
     "start:clear": "npx expo start --clear",
     "android": "npx expo start --android",
     "ios": "npx expo start --ios",
-    "web": "npx expo start --web"
+    "web": "npx expo start --web",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "@expo/metro-runtime": "~5.0.4",
@@ -19,11 +22,13 @@
     "d3-force": "^3.0.0",
     "d3-scale": "^4.0.2",
     "expo": "53.0.20",
+    "expo-linear-gradient": "^14.1.5",
     "expo-navigation-bar": "4.0.9",
     "expo-status-bar": "2.2.3",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-native": "0.79.5",
+    "react-native-chart-kit": "^6.12.0",
     "react-native-gesture-handler": "2.24.0",
     "react-native-reanimated": "3.17.5",
     "react-native-safe-area-context": "5.4.0",
@@ -35,11 +40,20 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
+    "@testing-library/jest-native": "^5.4.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/react-native": "^13.2.0",
+    "@testing-library/user-event": "^14.6.1",
     "@types/d3": "^7.4.3",
     "@types/d3-force": "^3.0.9",
     "@types/d3-scale": "^4.0.8",
+    "@types/jest": "^30.0.0",
     "@types/react": "~19.0.10",
+    "@types/react-test-renderer": "^19.1.0",
+    "jest": "^30.0.5",
+    "jest-environment-jsdom": "^30.0.5",
     "puppeteer": "^24.12.1",
+    "react-test-renderer": "19.0.0",
     "typescript": "~5.8.3"
   },
   "private": true
