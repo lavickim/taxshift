@@ -113,7 +113,7 @@ const TransactionListScreen: React.FC = () => {
     console.log('Transaction pressed:', transaction);
     dispatch(setSelectedTransaction(transaction));
     // 거래 상세 화면으로 이동
-    navigation.navigate('TransactionDetail' as never, { transaction } as never);
+    (navigation as any).navigate('TransactionDetail', { transaction });
   };
 
   const getTabCount = (tab: TabType) => {

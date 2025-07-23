@@ -156,7 +156,7 @@ const ReportScreen: React.FC = () => {
         <Text style={[
           styles.summaryValue, 
           styles.netIncomeText,
-          reportData?.netIncome >= 0 ? styles.positive : styles.negative
+          (reportData?.netIncome ?? 0) >= 0 ? styles.positive : styles.negative
         ]}>
           {formatCurrency(reportData?.netIncome || 0)}
         </Text>

@@ -11,9 +11,10 @@ export default function App() {
   useEffect(() => {
     if (Platform.OS === 'android') {
       // SDK 53에서는 edge-to-edge가 기본이므로 NavigationBar 설정
-      import('expo-navigation-bar').then(({ NavigationBar }) => {
-        NavigationBar.setStyle('dark');
-        NavigationBar.setBackgroundColor('#ffffff');
+      import('expo-navigation-bar').then((NavigationBarModule) => {
+        if (NavigationBarModule.default?.setBackgroundColorAsync) {
+          NavigationBarModule.default.setBackgroundColorAsync('#ffffff');
+        }
       });
     }
   }, []);

@@ -413,7 +413,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   profileHeaderBackground: {
-    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
     backgroundColor: Colors.primary,
     paddingTop: 20,
     paddingBottom: 30,

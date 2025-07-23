@@ -26,6 +26,7 @@ export interface NotificationItem {
   dueDate?: string;
   priority: 'high' | 'medium' | 'low';
   isRead: boolean;
+  timestamp: string;
 }
 
 export interface TransactionSummary {

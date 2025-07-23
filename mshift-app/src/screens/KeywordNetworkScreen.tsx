@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 
 // 웹에서는 제스처 핸들러 사용 안함
-let Gesture, GestureDetector, useSharedValue, useAnimatedStyle, runOnJS, ReanimatedView;
+let Gesture: any, GestureDetector: any, useSharedValue: any, useAnimatedStyle: any, runOnJS: any, ReanimatedView: any;
 let gestureHandlersAvailable = false;
 
 if (Platform.OS !== 'web') {
@@ -297,7 +297,7 @@ const KeywordNetworkScreen: React.FC = () => {
       )
       .force('center', d3.forceCenter(svgWidth / 2, svgHeight / 2))
       .force('collision', d3.forceCollide()
-        .radius(d => d.radius + 5)
+        .radius(d => (d as any).radius + 5)
       )
       .alphaDecay(0.02)
       .on('tick', handleTick);
@@ -381,7 +381,7 @@ const KeywordNetworkScreen: React.FC = () => {
         const animatedNode = animatedNodes.get(node.id!);
         if (animatedNode && node.x !== undefined && node.y !== undefined) {
           // 현재 줌과 팬을 고려한 상대적 위치 계산
-          const scaleValue = gestureState.scale || 1;
+          const scaleValue = (gestureState as any).scale || 1;
           const newX = node.x + (gestureState.dx / scaleValue);
           const newY = node.y + (gestureState.dy / scaleValue);
           
@@ -513,7 +513,7 @@ const KeywordNetworkScreen: React.FC = () => {
       .onStart(() => {
         console.log('🤏 Pinch gesture started');
       })
-      .onUpdate((event) => {
+      .onUpdate((event: any) => {
         console.log('🤏 Pinch update:', event.scale, 'Velocity:', event.velocity);
         const newScale = Math.max(0.5, Math.min(3, event.scale));
         if (gestureHandlersAvailable && useSharedValue && scale.value !== undefined) {
@@ -524,7 +524,7 @@ const KeywordNetworkScreen: React.FC = () => {
           console.log('🤏 Setting scale (Animated) to:', newScale);
         }
       })
-      .onEnd((event) => {
+      .onEnd((event: any) => {
         console.log('🤏 Pinch end:', event.scale);
         const newScale = Math.max(0.5, Math.min(3, event.scale));
         
@@ -544,7 +544,7 @@ const KeywordNetworkScreen: React.FC = () => {
       .onStart(() => {
         console.log('👆 Pan gesture started, isDraggingNode:', isDraggingNode);
       })
-      .onUpdate((event) => {
+      .onUpdate((event: any) => {
         if (!isDraggingNode) {
           console.log('👆 Pan update:', event.translationX, event.translationY, 'isDraggingNode:', isDraggingNode);
           
@@ -561,7 +561,7 @@ const KeywordNetworkScreen: React.FC = () => {
           console.log('👆 Pan blocked - node dragging active');
         }
       })
-      .onEnd((event) => {
+      .onEnd((event: any) => {
         if (!isDraggingNode) {
           console.log('👆 Pan end:', event.translationX, event.translationY);
           const newTranslateX = gestureState.translateX + event.translationX;

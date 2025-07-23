@@ -179,6 +179,36 @@ class BookkeepingService {
   }
 
   /**
+   * 분개 삭제
+   */
+  static async deleteJournalEntry(journalEntryId: number): Promise<{ success: boolean; message?: string }> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/v2/accounting/journal-entries/${journalEntryId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        return {
+          success: false,
+          message: errorData.message || '분개 삭제 중 오류가 발생했습니다.'
+        };
+      }
+
+      return { success: true };
+    } catch (error) {
+      console.error('분개 삭제 오류:', error);
+      return {
+        success: false,
+        message: '네트워크 오류가 발생했습니다.'
+      };
+    }
+  }
+
+  /**
    * 분개 수정
    */
   static async updateJournalEntry(journalEntryId: number, updatedEntry: Partial<JournalEntry>): Promise<JournalEntryResponse> {

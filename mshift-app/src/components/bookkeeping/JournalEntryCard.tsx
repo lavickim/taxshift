@@ -112,6 +112,7 @@ const JournalEntryCard: React.FC<JournalEntryCardProps> = ({
       actions.push(
         <TouchableOpacity
           key="delete"
+          testID="delete-button"
           style={[styles.actionButton, { backgroundColor: '#EF4444' }]}
           onPress={() => {
             Alert.alert(
@@ -169,7 +170,7 @@ const JournalEntryCard: React.FC<JournalEntryCardProps> = ({
           <Text style={styles.amount}>{formatAmount(entry.totalAmount)}</Text>
           <View style={styles.detailsRight}>
             {entry.confidence && (
-              <View style={styles.confidenceContainer}>
+              <View style={styles.confidenceContainer} testID="confidence-indicator">
                 <View
                   style={[
                     styles.confidenceDot,
@@ -209,13 +210,33 @@ const JournalEntryCard: React.FC<JournalEntryCardProps> = ({
 
         {/* Balance Check Indicator */}
         {entry.details && (
-          <View style={styles.balanceIndicator}>
-            <Ionicons
-              name="shield-checkmark"
-              size={14}
-              color="#10B981"
-            />
-            <Text style={styles.balanceText}>대차평균</Text>
+          <View style={styles.balanceIndicator} testID="balance-indicator">
+            {(() => {
+              const totalDebit = entry.details?.reduce((sum, detail) => sum + detail.debitAmount, 0) || 0;
+              const totalCredit = entry.details?.reduce((sum, detail) => sum + detail.creditAmount, 0) || 0;
+              const isBalanced = totalDebit === totalCredit;
+              
+              if (!isBalanced) {
+                return (
+                  <View testID="imbalance-warning" style={styles.imbalanceWarning}>
+                    <Ionicons name="warning" size={14} color="#EF4444" />
+                    <Text style={styles.imbalanceText}>불균형</Text>
+                  </View>
+                );
+              }
+              
+              return (
+                <>
+                  <Ionicons
+                    name="shield-checkmark"
+                    size={14}
+                    color="#10B981"
+                    testID="status-icon"
+                  />
+                  <Text style={styles.balanceText}>대차평균</Text>
+                </>
+              );
+            })()}
           </View>
         )}
       </TouchableOpacity>
@@ -359,6 +380,15 @@ const styles = StyleSheet.create({
   balanceText: {
     fontSize: 10,
     color: '#10B981',
+    marginLeft: 2,
+  },
+  imbalanceWarning: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  imbalanceText: {
+    fontSize: 10,
+    color: '#EF4444',
     marginLeft: 2,
   },
   actionsContainer: {

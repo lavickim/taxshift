@@ -35,7 +35,7 @@ echo ""
 
 # 1. 데이터베이스 상태 체크
 echo -e "${YELLOW}🗄️ [1/4] Database & Redis 상태 체크...${NC}"
-if ! ./scripts/setup/start-db.sh > /dev/null 2>&1; then
+if ! ./start-db.sh > /dev/null 2>&1; then
     echo -e "${RED}❌ 데이터베이스 시작 실패${NC}"
     FAILED_SERVICES+=("Database")
 else

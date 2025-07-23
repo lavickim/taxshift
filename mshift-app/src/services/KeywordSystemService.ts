@@ -220,7 +220,7 @@ class KeywordSystemService {
       ]);
 
       const isHealthy = cacheStatus?.isHealthy !== false && 
-                       systemStats?.totalKeywordGroups > 0 && 
+                       (systemStats?.totalKeywordGroups ?? 0) > 0 && 
                        keywordGroups.length > 0;
 
       console.log('System health check completed:', {

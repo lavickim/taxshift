@@ -30,7 +30,8 @@ describe('DashboardService', () => {
             title: '검토 필요',
             message: '신규 거래 3건 검토 필요',
             priority: 'high',
-            isRead: false
+            isRead: false,
+            timestamp: '2025-07-22T10:00:00Z'
           }
         ],
         recentTransactions: [
@@ -100,7 +101,8 @@ describe('DashboardService', () => {
             title: '검토 필요',
             message: '신규 거래 3건 검토 필요',
             priority: 'high',
-            isRead: false
+            isRead: false,
+            timestamp: '2025-07-22T10:00:00Z'
           },
           {
             id: '2',
@@ -108,7 +110,8 @@ describe('DashboardService', () => {
             title: '세금 신고',
             message: '부가세 신고 마감 D-5',
             priority: 'medium',
-            isRead: false
+            isRead: false,
+            timestamp: '2025-07-22T10:00:00Z'
           }
         ],
         unreadCount: 2

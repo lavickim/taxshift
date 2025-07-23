@@ -1,19 +1,22 @@
-import { View } from 'react-native';
+const React = require('react');
+const { View } = require('react-native');
 
-const MockSwipeable = ({ children, renderRightActions, ...props }) => {
-  return View({ ...props, children });
+const MockSwipeable = (props) => {
+  return React.createElement(View, props, props.children);
 };
 
-export const Swipeable = MockSwipeable;
-export const PanGestureHandler = View;
-export const GestureHandlerRootView = View;
-export const State = {};
-export const Directions = {};
+const MockGestureHandlerRootView = (props) => {
+  return React.createElement(View, props, props.children);
+};
 
-export default {
+const MockPanGestureHandler = (props) => {
+  return React.createElement(View, props, props.children);
+};
+
+module.exports = {
   Swipeable: MockSwipeable,
-  PanGestureHandler: View,
-  GestureHandlerRootView: View,
+  PanGestureHandler: MockPanGestureHandler,
+  GestureHandlerRootView: MockGestureHandlerRootView,
   State: {},
   Directions: {},
 };

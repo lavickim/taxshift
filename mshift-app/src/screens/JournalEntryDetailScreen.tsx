@@ -12,7 +12,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 
-import { AppDispatch } from '../store/store';
+import { AppDispatch } from '../store';
 import {
   selectCurrentJournalEntry,
   fetchJournalEntry,
@@ -318,11 +318,6 @@ const JournalEntryDetailScreen: React.FC<JournalEntryDetailScreenProps> = ({
           {journalEntry.referenceId && (
             <Text style={styles.referenceItem}>
               참조 ID: {journalEntry.referenceId}
-            </Text>
-          )}
-          {journalEntry.createdBy && (
-            <Text style={styles.referenceItem}>
-              생성자: {journalEntry.createdBy}
             </Text>
           )}
           <Text style={styles.referenceItem}>

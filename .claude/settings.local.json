@@ -131,7 +131,7 @@
   },
   "permissions": {
     "allow": [
-      "Bash(./start-all-with-tdd.sh:*)"
+      "Bash(npm test:*)"
     ],
     "deny": []
   }

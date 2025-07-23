@@ -54,7 +54,7 @@ const AccountDetailScreen = () => {
       }
     } catch (error) {
       console.error('Failed to load transaction data:', error);
-      Alert.alert('데이터 로딩 오류', `거래 내역을 불러오는데 실패했습니다.\n오류: ${error.message || error}`);
+      Alert.alert('데이터 로딩 오류', `거래 내역을 불러오는데 실패했습니다.\n오류: ${error instanceof Error ? error.message : String(error)}`);
       
       // 에러 시에도 기본 데이터 설정
       setTransactionData({

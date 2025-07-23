@@ -19,44 +19,7 @@ jest.mock('react-native-chart-kit', () => ({
   PieChart: 'PieChart'
 }));
 
-// Mock react-native-gesture-handler with proper Swipeable support
-jest.mock('react-native-gesture-handler', () => {
-  const View = require('react-native/Libraries/Components/View/View');
-  const MockSwipeable = ({ children, renderRightActions, ...props }) => {
-    return require('react-native').View({ ...props, children });
-  };
-  MockSwipeable.renderRightActions = undefined;
-  
-  return {
-    Swipeable: MockSwipeable,
-    DrawerLayout: View,
-    State: {},
-    ScrollView: View,
-    Slider: View,
-    Switch: View,
-    TextInput: View,
-    ToolbarAndroid: View,
-    ViewPagerAndroid: View,
-    WebView: View,
-    NativeViewGestureHandler: View,
-    TapGestureHandler: View,
-    FlingGestureHandler: View,
-    ForceTouchGestureHandler: View,
-    LongPressGestureHandler: View,
-    PanGestureHandler: View,
-    PinchGestureHandler: View,
-    RotationGestureHandler: View,
-    /* Buttons */
-    RawButton: View,
-    BaseButton: View,
-    RectButton: View,
-    BorderlessButton: View,
-    /* Other */
-    FlatList: View,
-    gestureHandlerRootHOC: jest.fn(),
-    Directions: {},
-  };
-});
+// react-native-gesture-handler is mocked via __mocks__/react-native-gesture-handler.js
 
 // Mock Redux
 jest.mock('react-redux', () => ({
@@ -104,3 +67,27 @@ global.fetch = jest.fn(() =>
     text: () => Promise.resolve(''),
   })
 );
+
+// Suppress console errors during tests to reduce noise
+const originalError = console.error;
+beforeAll(() => {
+  console.error = (...args) => {
+    // Only suppress specific test-related errors
+    if (
+      typeof args[0] === 'string' && (
+        args[0].includes('데이터 로딩 실패:') ||
+        args[0].includes('분개 생성 API 호출 오류:') ||
+        args[0].includes('Failed to load dashboard summary:') ||
+        args[0].includes('대차대조표 생성 오류:') ||
+        args[0].includes('API call failed:')
+      )
+    ) {
+      return;
+    }
+    originalError.call(console, ...args);
+  };
+});
+
+afterAll(() => {
+  console.error = originalError;
+});

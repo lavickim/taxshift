@@ -12,7 +12,7 @@ import {
 import { useSelector, useDispatch } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
 
-import { AppDispatch } from '../store/store';
+import { AppDispatch } from '../store/index';
 import {
   selectFilteredJournalEntries,
   selectBookkeepingFilters,

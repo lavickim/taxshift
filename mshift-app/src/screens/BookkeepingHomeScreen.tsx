@@ -13,7 +13,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 
-import { AppDispatch } from '../store/store';
+import { AppDispatch } from '../store';
 import {
   selectBookkeepingStats,
   selectJournalEntries,
@@ -34,7 +34,13 @@ interface BookkeepingHomeScreenProps {
 
 const BookkeepingHomeScreen: React.FC<BookkeepingHomeScreenProps> = ({ navigation }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const stats = useSelector(selectBookkeepingStats);
+  const stats = useSelector(selectBookkeepingStats) || {
+    totalEntries: 0,
+    pendingReview: 0,
+    completedToday: 0,
+    errorEntries: 0,
+    totalAmount: 0
+  };
   const journalEntries = useSelector(selectJournalEntries);
   const filters = useSelector(selectBookkeepingFilters);
   
@@ -55,11 +61,15 @@ const BookkeepingHomeScreen: React.FC<BookkeepingHomeScreenProps> = ({ navigatio
         companyId: 'default-company' // TODO: 실제 회사 ID 사용
       }));
 
-      await dispatch(fetchJournalEntries({
+      const result = dispatch(fetchJournalEntries({
         companyId: 'default-company',
         startDate,
         endDate
-      })).unwrap();
+      }));
+      
+      if (result && typeof result.unwrap === 'function') {
+        await result.unwrap();
+      }
     } catch (error) {
       console.error('데이터 로딩 실패:', error);
       Alert.alert('오류', '데이터를 불러오는데 실패했습니다.');
@@ -109,7 +119,7 @@ const BookkeepingHomeScreen: React.FC<BookkeepingHomeScreenProps> = ({ navigatio
     navigation.navigate('FinancialStatements');
   };
 
-  const recentEntries = journalEntries.slice(0, 5);
+  const recentEntries = (journalEntries || []).slice(0, 5);
 
   return (
     <View style={styles.container}>

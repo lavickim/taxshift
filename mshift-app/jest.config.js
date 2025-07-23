@@ -15,7 +15,7 @@ module.exports = {
     '<rootDir>/src/**/__tests__/**/*.{ts,tsx}',
     '<rootDir>/src/**/*.{test,spec}.{ts,tsx}'
   ],
-  moduleNameMapping: {
+  moduleNameMapper: {
     '^react-native-gesture-handler$': '<rootDir>/__mocks__/react-native-gesture-handler.js'
   }
 };

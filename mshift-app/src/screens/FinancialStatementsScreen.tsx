@@ -14,7 +14,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 
-import { AppDispatch } from '../store/store';
+import { AppDispatch } from '../store';
 import {
   selectFinancialStatements,
   generateBalanceSheet,
