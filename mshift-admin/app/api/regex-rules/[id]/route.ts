@@ -4,10 +4,11 @@ const JAVA_API_BASE_URL = process.env.JAVA_API_BASE_URL || 'http://localhost:808
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const response = await fetch(`${JAVA_API_BASE_URL}/admin/rules/${params.id}`, {
+    const resolvedParams = await params;
+    const response = await fetch(`${JAVA_API_BASE_URL}/admin/rules/${resolvedParams.id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -31,12 +32,13 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const resolvedParams = await params;
     const body = await request.json();
     
-    const response = await fetch(`${JAVA_API_BASE_URL}/admin/rules/${params.id}`, {
+    const response = await fetch(`${JAVA_API_BASE_URL}/admin/rules/${resolvedParams.id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -61,10 +63,11 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const response = await fetch(`${JAVA_API_BASE_URL}/admin/rules/${params.id}`, {
+    const resolvedParams = await params;
+    const response = await fetch(`${JAVA_API_BASE_URL}/admin/rules/${resolvedParams.id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

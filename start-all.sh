@@ -28,14 +28,15 @@ BACKEND_PID=$!
 echo "Backend PID: $BACKEND_PID"
 
 echo ""
-echo -e "${YELLOW}API 서버가 시작되길 기다리는 중... (10초)${NC}"
-sleep 10
+echo -e "${YELLOW}API 서버가 시작되길 기다리는 중... (15초)${NC}"
+sleep 15
 
 echo ""
-echo -e "${BLUE}3. NextJS 프론트엔드 서버 백그라운드 시작...${NC}"
-bash "$SCRIPT_DIR/start-frontend.sh" > frontend.log 2>&1 &
+echo -e "${BLUE}3. NextJS Admin 서버 백그라운드 시작 (TDD 검증 포함)...${NC}"
+echo -e "${YELLOW}⚠️ TDD 검증으로 인해 시작 시간이 더 소요될 수 있습니다...${NC}"
+bash "$SCRIPT_DIR/start-admin.sh" > frontend.log 2>&1 &
 FRONTEND_PID=$!
-echo "Frontend PID: $FRONTEND_PID"
+echo "Admin Frontend PID: $FRONTEND_PID"
 
 echo ""
 echo -e "${GREEN}✅ 모든 서비스 시작 완료!${NC}"

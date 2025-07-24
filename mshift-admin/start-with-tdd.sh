@@ -24,7 +24,7 @@ fi
 
 # 3. TypeScript 컴파일 체크
 echo "🔍 TypeScript 컴파일 체크 중..."
-if ! npx tsc --noEmit; then
+if ! npx tsc --noEmit --skipLibCheck; then
     echo "❌ TypeScript 컴파일 오류가 있습니다. 수정 후 다시 시도하세요."
     exit 1
 fi

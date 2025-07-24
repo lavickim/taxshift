@@ -1,11 +1,11 @@
 // API 설정 - 백엔드 현재 상태에 맞춤
 export const API_CONFIG = {
   // 개발 환경 - 모든 IP에서 접근 가능
-  BASE_URL: 'http://192.168.45.219:8080/api',
+  BASE_URL: 'http://192.168.45.219:8080/mshift-api',
   
   // 대체 URL들 (필요시 수동 변경)
-  // BASE_URL: 'http://localhost:8080/api',  // 로컬 개발
-  // BASE_URL: 'http://10.0.0.1:8080/api',   // 다른 네트워크
+  // BASE_URL: 'http://localhost:8080/mshift-api',  // 로컬 개발
+  // BASE_URL: 'http://10.0.0.1:8080/mshift-api',   // 다른 네트워크
   
   ENDPOINTS: {
     // 기존 룰 엔진 (현재 문제 있음)

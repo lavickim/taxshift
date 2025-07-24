@@ -11,13 +11,19 @@ declare global {
   var prisma: PrismaClient | undefined;
 }
 
-// Prisma 클라이언트 인스턴스 생성
-const prisma = globalThis.prisma || new PrismaClient({
-  log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
-});
+// Prisma 클라이언트 인스턴스 생성 (중복 방지)
+let prisma: PrismaClient;
 
-if (process.env.NODE_ENV !== 'production') {
-  globalThis.prisma = prisma;
+if (globalThis.prisma) {
+  prisma = globalThis.prisma;
+} else {
+  prisma = new PrismaClient({
+    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+  });
+  
+  if (process.env.NODE_ENV !== 'production') {
+    globalThis.prisma = prisma;
+  }
 }
 
 export { prisma };

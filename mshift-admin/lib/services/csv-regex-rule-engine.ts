@@ -2,9 +2,18 @@
  * CSV 기반 정규식 규칙 엔진
  */
 export class CsvRegexRuleEngine {
+  private static instance: CsvRegexRuleEngine;
   private rules: RegexRule[] = [];
+  private loaded: boolean = false;
 
-  constructor() {}
+  private constructor() {}
+
+  public static getInstance(): CsvRegexRuleEngine {
+    if (!CsvRegexRuleEngine.instance) {
+      CsvRegexRuleEngine.instance = new CsvRegexRuleEngine();
+    }
+    return CsvRegexRuleEngine.instance;
+  }
 
   async loadRules(): Promise<void> {
     // 기본 규칙들 로드
@@ -31,9 +40,10 @@ export class CsvRegexRuleEngine {
         enabled: true
       }
     ];
+    this.loaded = true;
   }
 
-  matchRule(text: string): RegexRuleMatch | null {
+  matchPattern(text: string): RegexRuleMatch | null {
     for (const rule of this.rules) {
       if (!rule.enabled) continue;
       
@@ -56,6 +66,10 @@ export class CsvRegexRuleEngine {
 
   getRuleById(id: number): RegexRule | undefined {
     return this.rules.find(rule => rule.id === id);
+  }
+
+  get isLoaded(): boolean {
+    return this.loaded;
   }
 }
 

@@ -5,7 +5,7 @@ import { Colors } from '../constants/colors';
 import { apiCall } from '../config/api';
 
 const ApiTestScreen = () => {
-  const [apiBaseUrl, setApiBaseUrl] = useState('http://192.168.45.219:8080/api');
+  const [apiBaseUrl, setApiBaseUrl] = useState('http://192.168.45.219:8080/mshift-api');
   const [testText, setTestText] = useState('GS25 편의점 결제');
   const [result, setResult] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
@@ -62,11 +62,11 @@ const ApiTestScreen = () => {
   };
 
   const quickSetLocalIP = () => {
-    setApiBaseUrl('http://192.168.45.219:8080/api');
+    setApiBaseUrl('http://192.168.45.219:8080/mshift-api');
   };
 
   const quickSetLocalhost = () => {
-    setApiBaseUrl('http://localhost:8080/api');
+    setApiBaseUrl('http://localhost:8080/mshift-api');
   };
 
   return (

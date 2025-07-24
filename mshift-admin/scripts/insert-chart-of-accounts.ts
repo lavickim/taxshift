@@ -5,7 +5,7 @@
  * 표준 계정과목 체계를 데이터베이스에 생성합니다.
  */
 
-const { PrismaClient } = require('../lib/generated/prisma');
+import { PrismaClient } from '../lib/generated/prisma';
 
 const prisma = new PrismaClient();
 

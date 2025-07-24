@@ -4,11 +4,12 @@ const JAVA_API_BASE_URL = process.env.JAVA_API_BASE_URL || 'http://localhost:808
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const resolvedParams = await params;
     const body = await request.json();
-    const id = params.id;
+    const id = resolvedParams.id;
     
     console.log(`PUT /api/v2/tag-mapping-mgmt/keyword-groups/${id} - 키워드 그룹 수정:`, body);
 
@@ -61,10 +62,11 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const id = params.id;
+    const resolvedParams = await params;
+    const id = resolvedParams.id;
     console.log(`DELETE /api/v2/tag-mapping-mgmt/keyword-groups/${id} - 키워드 그룹 삭제`);
 
     const response = await fetch(`${JAVA_API_BASE_URL}/v2/tag-mapping-mgmt/keyword-groups/${id}`, {

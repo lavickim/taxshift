@@ -6,10 +6,11 @@ const prisma = new PrismaClient();
 // PUT - 통합 regex rule 수정
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const ruleId = parseInt(params.id);
+    const resolvedParams = await params;
+    const ruleId = parseInt(resolvedParams.id);
     const body = await request.json();
     const {
       pattern,
@@ -108,10 +109,11 @@ export async function PUT(
 // DELETE - 통합 regex rule 삭제
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const ruleId = parseInt(params.id);
+    const resolvedParams = await params;
+    const ruleId = parseInt(resolvedParams.id);
 
     // 규칙 존재 확인
     const existingRule = await prisma.regex_rules.findUnique({

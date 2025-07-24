@@ -107,7 +107,7 @@ async function insertTestTransactions() {
     ];
 
     // 기존 데이터 삭제 (ID 충돌 방지)
-    await prisma.transactions.deleteMany({
+    await prisma.transaction.deleteMany({
       where: {
         id: { in: testTransactions.map(t => t.id) }
       }
@@ -115,20 +115,20 @@ async function insertTestTransactions() {
 
     // 새 데이터 삽입
     for (const transaction of testTransactions) {
-      await prisma.transactions.create({
+      await prisma.transaction.create({
         data: {
           id: transaction.id,
-          company_id: transaction.companyId,
-          raw_text: transaction.rawText,
-          transaction_date: transaction.transactionDate,
+          companyId: transaction.companyId,
+          rawText: transaction.rawText,
+          transactionDate: transaction.transactionDate,
           amount: transaction.amount,
-          final_suggested_tag: transaction.finalSuggestedTag,
-          final_debit_account: transaction.finalDebitAccount,
-          final_credit_account: transaction.finalCreditAccount,
-          transaction_type: transaction.transactionType,
-          status: transaction.status,
-          created_at: new Date(),
-          updated_at: new Date()
+          finalSuggestedTag: transaction.finalSuggestedTag,
+          finalDebitAccount: transaction.finalDebitAccount,
+          finalCreditAccount: transaction.finalCreditAccount,
+          transactionType: transaction.transactionType,
+          status: transaction.status as any,
+          createdAt: new Date(),
+          updatedAt: new Date()
         }
       });
     }
@@ -136,8 +136,8 @@ async function insertTestTransactions() {
     console.log(`✅ ${testTransactions.length}개의 테스트 거래 데이터가 성공적으로 생성되었습니다.`);
 
     // 생성된 데이터 확인
-    const count = await prisma.transactions.count({
-      where: { company_id: 'COMP001' }
+    const count = await prisma.transaction.count({
+      where: { companyId: 'COMP001' }
     });
     console.log(`📊 COMP001 회사의 총 거래 수: ${count}개`);
 

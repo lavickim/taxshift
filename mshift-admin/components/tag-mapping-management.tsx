@@ -132,10 +132,10 @@ const TagMappingManagement: React.FC = () => {
   const [mappingStats, setMappingStats] = useState<MappingStats | null>(null);
   const [loading, setLoading] = useState(false);
   const [dataSourceInfo, setDataSourceInfo] = useState({
-    keywordGroups: { source: 'unknown', responseTime: 0, lastUpdated: null },
-    tags: { source: 'unknown', responseTime: 0, lastUpdated: null },
-    keywordTagMappings: { source: 'unknown', responseTime: 0, lastUpdated: null },
-    tagAccountMappings: { source: 'unknown', responseTime: 0, lastUpdated: null },
+    keywordGroups: { source: 'unknown', responseTime: 0, lastUpdated: null as Date | null },
+    tags: { source: 'unknown', responseTime: 0, lastUpdated: null as Date | null },
+    keywordTagMappings: { source: 'unknown', responseTime: 0, lastUpdated: null as Date | null },
+    tagAccountMappings: { source: 'unknown', responseTime: 0, lastUpdated: null as Date | null },
   });
   
   // Modal states

@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8080';
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const backendUrl = `${BACKEND_URL}/api/v2/tag-mapping-mgmt/mappings/${params.id}`;
+    const resolvedParams = await params;
+    const backendUrl = `${BACKEND_URL}/api/v2/tag-mapping-mgmt/mappings/${resolvedParams.id}`;
     
     const response = await fetch(backendUrl, {
       method: 'GET',
@@ -25,10 +26,11 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const resolvedParams = await params;
     const body = await request.json();
-    const backendUrl = `${BACKEND_URL}/api/v2/tag-mapping-mgmt/mappings/${params.id}`;
+    const backendUrl = `${BACKEND_URL}/api/v2/tag-mapping-mgmt/mappings/${resolvedParams.id}`;
     
     const response = await fetch(backendUrl, {
       method: 'PUT',
@@ -50,9 +52,10 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const backendUrl = `${BACKEND_URL}/api/v2/tag-mapping-mgmt/mappings/${params.id}`;
+    const resolvedParams = await params;
+    const backendUrl = `${BACKEND_URL}/api/v2/tag-mapping-mgmt/mappings/${resolvedParams.id}`;
     
     const response = await fetch(backendUrl, {
       method: 'DELETE',

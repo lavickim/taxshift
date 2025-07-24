@@ -128,16 +128,16 @@ export class TransactionClassifier {
       const regexResult = this.regexEngine.matchPattern(text);
       layerResults.regex = regexResult;
 
-      if (regexResult.matched) {
+      if (regexResult) {
         this.stats.regexMatches++;
         this.stats.layerDistribution.regex++;
 
         const result = {
           matched: true,
-          category: regexResult.category,
+          category: regexResult.businessType,
           confidence: regexResult.confidence,
-          predictedName: regexResult.normalizedName,
-          description: regexResult.description || '정규식 매칭 결과',
+          predictedName: regexResult.businessType,
+          description: '정규식 매칭 결과',
           originalText: text,
           source: 'regex' as const,
           processingTime: Date.now() - startTime
@@ -331,7 +331,7 @@ export class TransactionClassifier {
     try {
       const [cacheHealthy, regexHealthy, mlHealthy, llmHealthy] = await Promise.all([
         this.cacheService.healthCheck(),
-        this.regexEngine.isLoaded(),
+        this.regexEngine.isLoaded,
         this.mlService.isModelLoaded(),
         this.llmService.healthCheck()
       ]);

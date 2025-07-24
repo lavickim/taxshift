@@ -131,7 +131,7 @@
   },
   "permissions": {
     "allow": [
-      "Bash(npm test:*)"
+      "Bash(psql:*)"
     ],
     "deny": []
   }
