@@ -35,4 +35,31 @@ public class TransactionContext {
     private boolean isWeekend;
     private boolean isBusinessHours;
     private boolean isLateNight;
+    
+    /**
+     * 늦은 밤 시간인지 확인 (22:00 - 06:00)
+     */
+    public boolean isLateNight() {
+        if (timestamp == null) return false;
+        int hour = timestamp.getHour();
+        return hour >= 22 || hour < 6;
+    }
+    
+    /**
+     * 영업시간인지 확인 (09:00 - 18:00)
+     */
+    public boolean isBusinessHours() {
+        if (timestamp == null) return false;
+        int hour = timestamp.getHour();
+        return hour >= 9 && hour <= 18;
+    }
+    
+    /**
+     * 주말인지 확인 (토요일, 일요일)
+     */
+    public boolean isWeekend() {
+        if (timestamp == null) return false;
+        int dayOfWeek = timestamp.getDayOfWeek().getValue();
+        return dayOfWeek == 6 || dayOfWeek == 7; // 토요일(6), 일요일(7)
+    }
 }

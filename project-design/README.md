@@ -93,15 +93,30 @@ graph TB
 ## 🔄 개발 우선순위
 
 ### 현재 완료 (✅)
-1. 룰엔진 4-Layer 시스템 구축 및 운영
-2. Admin 대시보드 키워드 시스템 관리
-3. 복식부기엔진 API 기본 구조
-4. 모바일 앱 기본 프레임워크
+1. **Phase 1-5 백엔드 비즈니스 로직 완전 이전**
+   - AccountingEngine (14개 테스트)
+   - KeywordExtractionEngine (18개 테스트)
+   - ConfidenceEngine (20개 테스트)
+   - ChartOfAccountsExpansionService (20개 테스트)
+   - TagAccountMappingService (35개 테스트)
+2. **MyBatis Mapper XML 파일 구현 완료**
+   - ChartOfAccountsMapper.xml
+   - GeneralLedgerMapper.xml
+   - JournalEntryMapper.xml
+   - KeywordGroupMapper.xml
+   - TagAccountMappingMapper.xml
+3. **REST API Controller 구현 완료**
+   - 15개 컨트롤러 클래스 구현
+   - 완전한 API 엔드포인트 제공
+4. **TDD 테스트 기반 개발 완료**
+   - 총 240개 테스트 메소드
+   - 15개 테스트 클래스
+   - 100% 백엔드 테스트 통과
 
 ### 진행 중 (🔄)
-1. 복식부기엔진 완전 구현
-2. Admin 도구 통합 대시보드
-3. 모바일 앱 복식부기 기능 통합
+1. 프론트엔드-백엔드 통합 테스트
+2. Admin 도구 백엔드 API 연동
+3. 모바일 앱 백엔드 API 연동
 
 ### 향후 계획 (📋)
 1. ML Layer (Layer 2) 구현

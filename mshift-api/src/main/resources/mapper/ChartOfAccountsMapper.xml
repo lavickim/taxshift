@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.moneyshift.api.mapper.ChartOfAccountsMapper">
+
+    <!-- Chart of Accounts ResultMap -->
+    <resultMap id="ChartOfAccountsResultMap" type="com.moneyshift.api.model.ChartOfAccount">
+        <id property="id" column="id"/>
+        <result property="accountCode" column="account_code"/>
+        <result property="accountName" column="account_name"/>
+        <result property="accountType" column="account_type"/>
+        <result property="accountSubtype" column="account_subtype"/>
+        <result property="isDebitNormal" column="is_debit_normal"/>
+        <result property="parentAccountId" column="parent_account_id"/>
+        <result property="isActive" column="is_active"/>
+        <result property="displayOrder" column="display_order"/>
+        <result property="description" column="description"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <!-- 전체 활성 계정과목 조회 -->
+    <select id="findAllActiveAccounts" resultMap="ChartOfAccountsResultMap">
+        SELECT 
+            id, account_code, account_name, account_type, account_subtype,
+            is_debit_normal, parent_account_id, is_active, display_order,
+            description, created_at, updated_at
+        FROM chart_of_accounts
+        WHERE is_active = true
+        ORDER BY display_order, account_code
+    </select>
+
+    <!-- 계정과목 코드로 단건 조회 -->
+    <select id="findAccountByCode" parameterType="java.lang.String" resultMap="ChartOfAccountsResultMap">
+        SELECT 
+            id, account_code, account_name, account_type, account_subtype,
+            is_debit_normal, parent_account_id, is_active, display_order,
+            description, created_at, updated_at
+        FROM chart_of_accounts
+        WHERE account_code = #{accountCode}
+        AND is_active = true
+    </select>
+
+    <!-- 계정과목 ID로 단건 조회 -->
+    <select id="findAccountById" parameterType="java.lang.Long" resultMap="ChartOfAccountsResultMap">
+        SELECT 
+            id, account_code, account_name, account_type, account_subtype,
+            is_debit_normal, parent_account_id, is_active, display_order,
+            description, created_at, updated_at
+        FROM chart_of_accounts
+        WHERE id = #{id}
+    </select>
+
+    <!-- 계정과목 유형별 조회 -->
+    <select id="findAccountsByType" parameterType="java.lang.String" resultMap="ChartOfAccountsResultMap">
+        SELECT 
+            id, account_code, account_name, account_type, account_subtype,
+            is_debit_normal, parent_account_id, is_active, display_order,
+            description, created_at, updated_at
+        FROM chart_of_accounts
+        WHERE account_type = #{accountType}
+        AND is_active = true
+        ORDER BY display_order, account_code
+    </select>
+
+    <!-- 계정과목 유형 및 하위유형별 조회 -->
+    <select id="findAccountsByTypeAndSubtype" resultMap="ChartOfAccountsResultMap">
+        SELECT 
+            id, account_code, account_name, account_type, account_subtype,
+            is_debit_normal, parent_account_id, is_active, display_order,
+            description, created_at, updated_at
+        FROM chart_of_accounts
+        WHERE account_type = #{accountType}
+        <if test="accountSubtype != null">
+            AND account_subtype = #{accountSubtype}
+        </if>
+        AND is_active = true
+        ORDER BY display_order, account_code
+    </select>
+
+    <!-- 상위 계정과목의 하위 계정과목들 조회 -->
+    <select id="findSubAccounts" parameterType="java.lang.Long" resultMap="ChartOfAccountsResultMap">
+        SELECT 
+            id, account_code, account_name, account_type, account_subtype,
+            is_debit_normal, parent_account_id, is_active, display_order,
+            description, created_at, updated_at
+        FROM chart_of_accounts
+        WHERE parent_account_id = #{parentAccountId}
+        AND is_active = true
+        ORDER BY display_order, account_code
+    </select>
+
+    <!-- 계정과목 검색 (계정코드 또는 계정명) -->
+    <select id="searchAccounts" resultMap="ChartOfAccountsResultMap">
+        SELECT 
+            id, account_code, account_name, account_type, account_subtype,
+            is_debit_normal, parent_account_id, is_active, display_order,
+            description, created_at, updated_at
+        FROM chart_of_accounts
+        WHERE is_active = true
+        <if test="keyword != null and keyword != ''">
+            AND (
+                account_code ILIKE '%' || #{keyword} || '%'
+                OR account_name ILIKE '%' || #{keyword} || '%'
+                OR description ILIKE '%' || #{keyword} || '%'
+            )
+        </if>
+        <if test="accountType != null">
+            AND account_type = #{accountType}
+        </if>
+        ORDER BY display_order, account_code
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 계정과목 검색 총 개수 -->
+    <select id="countSearchAccounts" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM chart_of_accounts
+        WHERE is_active = true
+        <if test="keyword != null and keyword != ''">
+            AND (
+                account_code ILIKE '%' || #{keyword} || '%'
+                OR account_name ILIKE '%' || #{keyword} || '%'
+                OR description ILIKE '%' || #{keyword} || '%'
+            )
+        </if>
+        <if test="accountType != null">
+            AND account_type = #{accountType}
+        </if>
+    </select>
+
+    <!-- 계정과목 생성 -->
+    <insert id="insertAccount" parameterType="com.moneyshift.api.model.ChartOfAccount"
+            useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO chart_of_accounts (
+            account_code, account_name, account_type, account_subtype,
+            is_debit_normal, parent_account_id, is_active, display_order, description
+        ) VALUES (
+            #{accountCode}, #{accountName}, #{accountType}, #{accountSubtype},
+            #{isDebitNormal}, #{parentAccountId}, #{isActive}, #{displayOrder}, #{description}
+        )
+    </insert>
+
+    <!-- 계정과목 업데이트 -->
+    <update id="updateAccount" parameterType="com.moneyshift.api.model.ChartOfAccount">
+        UPDATE chart_of_accounts
+        SET 
+            account_name = #{accountName},
+            account_type = #{accountType},
+            account_subtype = #{accountSubtype},
+            is_debit_normal = #{isDebitNormal},
+            parent_account_id = #{parentAccountId},
+            is_active = #{isActive},
+            display_order = #{displayOrder},
+            description = #{description},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+
+    <!-- 계정과목 비활성화 (소프트 삭제) -->
+    <update id="deactivateAccount" parameterType="java.lang.Long">
+        UPDATE chart_of_accounts
+        SET 
+            is_active = false,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+
+    <!-- 계정과목 활성화 -->
+    <update id="activateAccount" parameterType="java.lang.Long">
+        UPDATE chart_of_accounts
+        SET 
+            is_active = true,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+
+    <!-- 계정과목 코드 중복 확인 -->
+    <select id="existsByAccountCode" parameterType="java.lang.String" resultType="java.lang.Boolean">
+        SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END
+        FROM chart_of_accounts
+        WHERE account_code = #{accountCode}
+    </select>
+
+    <!-- 계정과목 사용 여부 확인 (분개에서 사용 중인지) -->
+    <select id="isAccountInUse" parameterType="java.lang.String" resultType="java.lang.Boolean">
+        SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END
+        FROM journal_entry_details
+        WHERE account_code = #{accountCode}
+    </select>
+
+    <!-- 계정과목 계층 구조 조회 (재귀 CTE) -->
+    <select id="findAccountHierarchy" parameterType="java.lang.Long" resultMap="ChartOfAccountsResultMap">
+        WITH RECURSIVE account_hierarchy AS (
+            -- 기준 계정
+            SELECT 
+                id, account_code, account_name, account_type, account_subtype,
+                is_debit_normal, parent_account_id, is_active, display_order,
+                description, created_at, updated_at, 0 as level
+            FROM chart_of_accounts
+            WHERE id = #{accountId}
+            
+            UNION ALL
+            
+            -- 하위 계정들
+            SELECT 
+                coa.id, coa.account_code, coa.account_name, coa.account_type, coa.account_subtype,
+                coa.is_debit_normal, coa.parent_account_id, coa.is_active, coa.display_order,
+                coa.description, coa.created_at, coa.updated_at, ah.level + 1
+            FROM chart_of_accounts coa
+            INNER JOIN account_hierarchy ah ON coa.parent_account_id = ah.id
+            WHERE coa.is_active = true
+        )
+        SELECT 
+            id, account_code, account_name, account_type, account_subtype,
+            is_debit_normal, parent_account_id, is_active, display_order,
+            description, created_at, updated_at
+        FROM account_hierarchy
+        ORDER BY level, display_order, account_code
+    </select>
+
+    <!-- 최대 표시 순서 조회 -->
+    <select id="getMaxDisplayOrder" resultType="java.lang.Integer">
+        SELECT COALESCE(MAX(display_order), 0)
+        FROM chart_of_accounts
+        <if test="accountType != null">
+            WHERE account_type = #{accountType}
+        </if>
+    </select>
+
+    <!-- 표시 순서 업데이트 -->
+    <update id="updateDisplayOrders">
+        UPDATE chart_of_accounts
+        SET 
+            display_order = #{newOrder},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = #{accountId}
+    </update>
+
+    <!-- 계정과목 통계 -->
+    <select id="getAccountStatistics" resultType="java.util.Map">
+        SELECT 
+            account_type,
+            COUNT(*) as count,
+            COUNT(CASE WHEN is_active THEN 1 END) as active_count,
+            COUNT(CASE WHEN NOT is_active THEN 1 END) as inactive_count
+        FROM chart_of_accounts
+        GROUP BY account_type
+        ORDER BY account_type
+    </select>
+
+    <!-- 계정과목별 사용 빈도 조회 -->
+    <select id="getAccountUsageStatistics" resultType="java.util.Map">
+        SELECT 
+            coa.account_code,
+            coa.account_name,
+            coa.account_type,
+            COUNT(jed.id) as usage_count,
+            COALESCE(SUM(jed.debit_amount), 0) as total_debit,
+            COALESCE(SUM(jed.credit_amount), 0) as total_credit
+        FROM chart_of_accounts coa
+        LEFT JOIN journal_entry_details jed ON coa.account_code = jed.account_code
+        LEFT JOIN journal_entries je ON jed.journal_entry_id = je.id
+        WHERE coa.is_active = true
+        <if test="startDate != null">
+            AND (je.entry_date IS NULL OR je.entry_date >= #{startDate})
+        </if>
+        <if test="endDate != null">
+            AND (je.entry_date IS NULL OR je.entry_date <= #{endDate})
+        </if>
+        GROUP BY coa.account_code, coa.account_name, coa.account_type
+        ORDER BY usage_count DESC, coa.account_code
+    </select>
+
+    <!-- 미사용 계정과목 조회 -->
+    <select id="findUnusedAccounts" resultMap="ChartOfAccountsResultMap">
+        SELECT 
+            coa.id, coa.account_code, coa.account_name, coa.account_type, coa.account_subtype,
+            coa.is_debit_normal, coa.parent_account_id, coa.is_active, coa.display_order,
+            coa.description, coa.created_at, coa.updated_at
+        FROM chart_of_accounts coa
+        LEFT JOIN journal_entry_details jed ON coa.account_code = jed.account_code
+        WHERE coa.is_active = true
+        AND jed.id IS NULL
+        ORDER BY coa.account_type, coa.account_code
+    </select>
+
+    <!-- 계정과목 일괄 생성 -->
+    <insert id="insertAccountsBatch" parameterType="java.util.List">
+        INSERT INTO chart_of_accounts (
+            account_code, account_name, account_type, account_subtype,
+            is_debit_normal, parent_account_id, is_active, display_order, description
+        ) VALUES
+        <foreach collection="list" item="account" separator=",">
+            (#{account.accountCode}, #{account.accountName}, #{account.accountType}, #{account.accountSubtype},
+             #{account.isDebitNormal}, #{account.parentAccountId}, #{account.isActive}, 
+             #{account.displayOrder}, #{account.description})
+        </foreach>
+    </insert>
+
+</mapper>

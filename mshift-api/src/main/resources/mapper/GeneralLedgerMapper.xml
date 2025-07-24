@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.moneyshift.api.mapper.GeneralLedgerMapper">
+
+    <!-- General Ledger ResultMap -->
+    <resultMap id="GeneralLedgerResultMap" type="com.moneyshift.api.model.GeneralLedger">
+        <id property="id" column="id"/>
+        <result property="companyId" column="company_id"/>
+        <result property="accountCode" column="account_code"/>
+        <result property="fiscalYear" column="fiscal_year"/>
+        <result property="fiscalMonth" column="fiscal_month"/>
+        <result property="beginningDebitBalance" column="beginning_debit_balance"/>
+        <result property="beginningCreditBalance" column="beginning_credit_balance"/>
+        <result property="periodDebitAmount" column="period_debit_amount"/>
+        <result property="periodCreditAmount" column="period_credit_amount"/>
+        <result property="yearToDateDebit" column="year_to_date_debit"/>
+        <result property="yearToDateCredit" column="year_to_date_credit"/>
+        <result property="endingDebitBalance" column="ending_debit_balance"/>
+        <result property="endingCreditBalance" column="ending_credit_balance"/>
+        <result property="isClosed" column="is_closed"/>
+        <result property="closedAt" column="closed_at"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <!-- GL Detail ResultMap -->
+    <resultMap id="GLDetailResultMap" type="com.moneyshift.api.model.GLDetail">
+        <id property="id" column="id"/>
+        <result property="generalLedgerId" column="general_ledger_id"/>
+        <result property="journalEntryId" column="journal_entry_id"/>
+        <result property="postingDate" column="posting_date"/>
+        <result property="debitAmount" column="debit_amount"/>
+        <result property="creditAmount" column="credit_amount"/>
+        <result property="runningBalance" column="running_balance"/>
+        <result property="description" column="description"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <!-- GL 계정 단건 조회 -->
+    <select id="findGeneralLedgerAccount" resultMap="GeneralLedgerResultMap">
+        SELECT 
+            gl.id, gl.company_id, gl.account_code, gl.fiscal_year, gl.fiscal_month,
+            gl.beginning_debit_balance, gl.beginning_credit_balance,
+            gl.period_debit_amount, gl.period_credit_amount,
+            gl.year_to_date_debit, gl.year_to_date_credit,
+            gl.ending_debit_balance, gl.ending_credit_balance,
+            gl.is_closed, gl.closed_at, gl.created_at, gl.updated_at
+        FROM general_ledger gl
+        WHERE gl.company_id = #{companyId}
+        AND gl.account_code = #{accountCode}
+        AND gl.fiscal_year = #{fiscalYear}
+        AND gl.fiscal_month = #{fiscalMonth}
+    </select>
+
+    <!-- GL 계정 목록 조회 -->
+    <select id="findGeneralLedgerAccounts" resultMap="GeneralLedgerResultMap">
+        SELECT 
+            gl.id, gl.company_id, gl.account_code, gl.fiscal_year, gl.fiscal_month,
+            gl.beginning_debit_balance, gl.beginning_credit_balance,
+            gl.period_debit_amount, gl.period_credit_amount,
+            gl.year_to_date_debit, gl.year_to_date_credit,
+            gl.ending_debit_balance, gl.ending_credit_balance,
+            gl.is_closed, gl.closed_at, gl.created_at, gl.updated_at
+        FROM general_ledger gl
+        <where>
+            <if test="companyId != null">
+                AND gl.company_id = #{companyId}
+            </if>
+            <if test="fiscalYear != null">
+                AND gl.fiscal_year = #{fiscalYear}
+            </if>
+            <if test="fiscalMonth != null">
+                AND gl.fiscal_month = #{fiscalMonth}
+            </if>
+            <if test="accountCodes != null and accountCodes.size() > 0">
+                AND gl.account_code IN
+                <foreach collection="accountCodes" item="accountCode" open="(" separator="," close=")">
+                    #{accountCode}
+                </foreach>
+            </if>
+            <if test="isClosed != null">
+                AND gl.is_closed = #{isClosed}
+            </if>
+        </where>
+        ORDER BY gl.account_code, gl.fiscal_year, gl.fiscal_month
+    </select>
+
+    <!-- GL 계정 생성 또는 업데이트 -->
+    <insert id="insertGeneralLedgerAccount" parameterType="com.moneyshift.api.model.GeneralLedger"
+            useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO general_ledger (
+            company_id, account_code, fiscal_year, fiscal_month,
+            beginning_debit_balance, beginning_credit_balance,
+            period_debit_amount, period_credit_amount,
+            year_to_date_debit, year_to_date_credit,
+            ending_debit_balance, ending_credit_balance,
+            is_closed
+        ) VALUES (
+            #{companyId}, #{accountCode}, #{fiscalYear}, #{fiscalMonth},
+            #{beginningDebitBalance}, #{beginningCreditBalance},
+            #{periodDebitAmount}, #{periodCreditAmount},
+            #{yearToDateDebit}, #{yearToDateCredit},
+            #{endingDebitBalance}, #{endingCreditBalance},
+            #{isClosed}
+        )
+        ON CONFLICT (company_id, account_code, fiscal_year, fiscal_month)
+        DO UPDATE SET
+            period_debit_amount = general_ledger.period_debit_amount + EXCLUDED.period_debit_amount,
+            period_credit_amount = general_ledger.period_credit_amount + EXCLUDED.period_credit_amount,
+            year_to_date_debit = general_ledger.year_to_date_debit + EXCLUDED.period_debit_amount,
+            year_to_date_credit = general_ledger.year_to_date_credit + EXCLUDED.period_credit_amount,
+            ending_debit_balance = general_ledger.ending_debit_balance + EXCLUDED.period_debit_amount - EXCLUDED.period_credit_amount,
+            ending_credit_balance = general_ledger.ending_credit_balance + EXCLUDED.period_credit_amount - EXCLUDED.period_debit_amount,
+            updated_at = CURRENT_TIMESTAMP
+    </insert>
+
+    <!-- GL 계정 잔액 업데이트 -->
+    <update id="updateGeneralLedgerBalance">
+        UPDATE general_ledger 
+        SET 
+            period_debit_amount = period_debit_amount + #{debitAmount},
+            period_credit_amount = period_credit_amount + #{creditAmount},
+            year_to_date_debit = year_to_date_debit + #{debitAmount},
+            year_to_date_credit = year_to_date_credit + #{creditAmount},
+            ending_debit_balance = ending_debit_balance + #{debitAmount} - #{creditAmount},
+            ending_credit_balance = ending_credit_balance + #{creditAmount} - #{debitAmount},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = #{generalLedgerId}
+    </update>
+
+    <!-- GL 상세 내역 생성 -->
+    <insert id="insertGLDetail" parameterType="com.moneyshift.api.model.GLDetail"
+            useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO gl_details (
+            general_ledger_id, journal_entry_id, posting_date,
+            debit_amount, credit_amount, running_balance, description
+        ) VALUES (
+            #{generalLedgerId}, #{journalEntryId}, #{postingDate},
+            #{debitAmount}, #{creditAmount}, #{runningBalance}, #{description}
+        )
+    </insert>
+
+    <!-- GL 상세 내역 조회 -->
+    <select id="findGLDetails" resultMap="GLDetailResultMap">
+        SELECT 
+            gld.id, gld.general_ledger_id, gld.journal_entry_id, gld.posting_date,
+            gld.debit_amount, gld.credit_amount, gld.running_balance, 
+            gld.description, gld.created_at
+        FROM gl_details gld
+        WHERE gld.general_ledger_id = #{generalLedgerId}
+        ORDER BY gld.posting_date, gld.id
+    </select>
+
+    <!-- GL 계정별 잔액 조회 (시산표용) -->
+    <select id="getTrialBalanceData" resultType="java.util.Map">
+        SELECT 
+            gl.account_code,
+            coa.account_name,
+            coa.account_type,
+            COALESCE(SUM(gl.ending_debit_balance), 0) as debit_balance,
+            COALESCE(SUM(gl.ending_credit_balance), 0) as credit_balance
+        FROM general_ledger gl
+        INNER JOIN chart_of_accounts coa ON gl.account_code = coa.account_code
+        WHERE gl.company_id = #{companyId}
+        AND gl.fiscal_year = #{fiscalYear}
+        AND gl.fiscal_month = #{fiscalMonth}
+        AND coa.is_active = true
+        GROUP BY gl.account_code, coa.account_name, coa.account_type
+        HAVING COALESCE(SUM(gl.ending_debit_balance), 0) > 0 
+            OR COALESCE(SUM(gl.ending_credit_balance), 0) > 0
+        ORDER BY coa.account_type, gl.account_code
+    </select>
+
+    <!-- 손익계산서 데이터 조회 -->
+    <select id="getIncomeStatementData" resultType="java.util.Map">
+        SELECT 
+            gl.account_code,
+            coa.account_name,
+            coa.account_type,
+            CASE 
+                WHEN coa.account_type = '수익' THEN COALESCE(SUM(gl.period_credit_amount - gl.period_debit_amount), 0)
+                WHEN coa.account_type = '비용' THEN COALESCE(SUM(gl.period_debit_amount - gl.period_credit_amount), 0)
+                ELSE 0
+            END as amount
+        FROM general_ledger gl
+        INNER JOIN chart_of_accounts coa ON gl.account_code = coa.account_code
+        WHERE gl.company_id = #{companyId}
+        AND gl.fiscal_year = #{fiscalYear}
+        AND gl.fiscal_month = #{fiscalMonth}
+        AND coa.account_type IN ('수익', '비용')
+        AND coa.is_active = true
+        GROUP BY gl.account_code, coa.account_name, coa.account_type
+        HAVING (CASE 
+                WHEN coa.account_type = '수익' THEN COALESCE(SUM(gl.period_credit_amount - gl.period_debit_amount), 0)
+                WHEN coa.account_type = '비용' THEN COALESCE(SUM(gl.period_debit_amount - gl.period_credit_amount), 0)
+                ELSE 0
+            END) != 0
+        ORDER BY coa.account_type DESC, gl.account_code
+    </select>
+
+    <!-- 재무상태표 데이터 조회 -->
+    <select id="getBalanceSheetData" resultType="java.util.Map">
+        SELECT 
+            gl.account_code,
+            coa.account_name,
+            coa.account_type,
+            CASE 
+                WHEN coa.account_type = '자산' THEN COALESCE(SUM(gl.ending_debit_balance - gl.ending_credit_balance), 0)
+                WHEN coa.account_type IN ('부채', '자본') THEN COALESCE(SUM(gl.ending_credit_balance - gl.ending_debit_balance), 0)
+                ELSE 0
+            END as amount
+        FROM general_ledger gl
+        INNER JOIN chart_of_accounts coa ON gl.account_code = coa.account_code
+        WHERE gl.company_id = #{companyId}
+        AND gl.fiscal_year = #{fiscalYear}
+        AND gl.fiscal_month = #{fiscalMonth}
+        AND coa.account_type IN ('자산', '부채', '자본')
+        AND coa.is_active = true
+        GROUP BY gl.account_code, coa.account_name, coa.account_type
+        HAVING (CASE 
+                WHEN coa.account_type = '자산' THEN COALESCE(SUM(gl.ending_debit_balance - gl.ending_credit_balance), 0)
+                WHEN coa.account_type IN ('부채', '자본') THEN COALESCE(SUM(gl.ending_credit_balance - gl.ending_debit_balance), 0)
+                ELSE 0
+            END) != 0
+        ORDER BY 
+            CASE coa.account_type 
+                WHEN '자산' THEN 1 
+                WHEN '부채' THEN 2 
+                WHEN '자본' THEN 3 
+            END, 
+            gl.account_code
+    </select>
+
+    <!-- 현금흐름표 데이터 조회 -->
+    <select id="getCashFlowData" resultType="java.util.Map">
+        SELECT 
+            gl.account_code,
+            coa.account_name,
+            COALESCE(SUM(gl.period_debit_amount), 0) as period_debit,
+            COALESCE(SUM(gl.period_credit_amount), 0) as period_credit,
+            COALESCE(SUM(gl.period_debit_amount - gl.period_credit_amount), 0) as net_change
+        FROM general_ledger gl
+        INNER JOIN chart_of_accounts coa ON gl.account_code = coa.account_code
+        WHERE gl.company_id = #{companyId}
+        AND gl.fiscal_year = #{fiscalYear}
+        AND gl.fiscal_month = #{fiscalMonth}
+        AND (gl.account_code LIKE '1000%' OR gl.account_code LIKE '1010%')  -- 현금성 자산
+        AND coa.is_active = true
+        GROUP BY gl.account_code, coa.account_name
+        ORDER BY gl.account_code
+    </select>
+
+    <!-- GL 계정 마감 처리 -->
+    <update id="closeGeneralLedgerAccounts">
+        UPDATE general_ledger 
+        SET 
+            is_closed = true,
+            closed_at = CURRENT_TIMESTAMP,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE company_id = #{companyId}
+        AND fiscal_year = #{fiscalYear}
+        AND fiscal_month = #{fiscalMonth}
+        AND is_closed = false
+    </update>
+
+    <!-- GL 계정 마감 재개방 -->
+    <update id="reopenGeneralLedgerAccounts">
+        UPDATE general_ledger 
+        SET 
+            is_closed = false,
+            closed_at = NULL,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE company_id = #{companyId}
+        AND fiscal_year = #{fiscalYear}
+        AND fiscal_month = #{fiscalMonth}
+        AND is_closed = true
+    </update>
+
+    <!-- 이전 월 기말잔액을 다음 월 기초잔액으로 이월 -->
+    <insert id="carryForwardBalances">
+        INSERT INTO general_ledger (
+            company_id, account_code, fiscal_year, fiscal_month,
+            beginning_debit_balance, beginning_credit_balance,
+            period_debit_amount, period_credit_amount,
+            year_to_date_debit, year_to_date_credit,
+            ending_debit_balance, ending_credit_balance,
+            is_closed
+        )
+        SELECT 
+            company_id, account_code, 
+            CASE 
+                WHEN fiscal_month = 12 THEN fiscal_year + 1
+                ELSE fiscal_year
+            END as fiscal_year,
+            CASE 
+                WHEN fiscal_month = 12 THEN 1
+                ELSE fiscal_month + 1
+            END as fiscal_month,
+            ending_debit_balance as beginning_debit_balance,
+            ending_credit_balance as beginning_credit_balance,
+            0 as period_debit_amount,
+            0 as period_credit_amount,
+            CASE 
+                WHEN fiscal_month = 12 THEN ending_debit_balance  -- 연도말이면 YTD 리셋
+                ELSE year_to_date_debit
+            END as year_to_date_debit,
+            CASE 
+                WHEN fiscal_month = 12 THEN ending_credit_balance  -- 연도말이면 YTD 리셋
+                ELSE year_to_date_credit
+            END as year_to_date_credit,
+            ending_debit_balance,
+            ending_credit_balance,
+            false as is_closed
+        FROM general_ledger
+        WHERE company_id = #{companyId}
+        AND fiscal_year = #{fiscalYear}
+        AND fiscal_month = #{fiscalMonth}
+        AND is_closed = true
+        ON CONFLICT (company_id, account_code, fiscal_year, fiscal_month) DO NOTHING
+    </insert>
+
+    <!-- GL 마감 이력 조회 -->
+    <select id="getClosingHistory" resultType="java.util.Map">
+        SELECT 
+            fiscal_year,
+            fiscal_month,
+            COUNT(*) as total_accounts,
+            COUNT(CASE WHEN is_closed THEN 1 END) as closed_accounts,
+            MAX(closed_at) as closed_at
+        FROM general_ledger 
+        WHERE company_id = #{companyId}
+        GROUP BY fiscal_year, fiscal_month
+        HAVING COUNT(CASE WHEN is_closed THEN 1 END) > 0
+        ORDER BY fiscal_year DESC, fiscal_month DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+</mapper>

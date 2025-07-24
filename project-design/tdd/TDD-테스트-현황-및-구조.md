@@ -49,32 +49,63 @@ scripts/
 
 ## ☕ Java API Backend (mshift-api)
 
-### ✅ 테스트 현황: 100% 통과 (11/11)
+### ✅ 테스트 현황: 100% 통과 (240/240)
 
 #### 테스트 구조
 ```
 src/test/java/com/moneyshift/api/
 ├── service/
-│   └── AccountingEngineTest.java        # 복식부기 엔진 테스트
-└── MshiftApiApplicationTests.java       # Spring Boot 통합 테스트
+│   ├── AccountingEngineTest.java                 # 복식부기 엔진 (14개 테스트)
+│   ├── KeywordExtractionEngineTest.java          # 키워드 추출 엔진 (18개 테스트)
+│   ├── ConfidenceEngineTest.java                 # 신뢰도 엔진 (20개 테스트)
+│   ├── ChartOfAccountsExpansionServiceTest.java  # 계정과목 확장 서비스 (20개 테스트)
+│   ├── TagAccountMappingServiceTest.java         # 태그-계정 매핑 서비스 (35개 테스트)
+│   ├── TransactionTaggingServiceTest.java        # 거래 태깅 서비스 (13개 테스트)
+│   ├── Phase1ChartOfAccountsExpansionTest.java   # Phase 1 테스트 (13개 테스트)
+│   ├── Phase2TagAccountMappingTest.java          # Phase 2 테스트 (13개 테스트)
+│   ├── Phase3GeneralLedgerTest.java              # Phase 3 테스트 (15개 테스트)
+│   ├── Phase4JournalEntryTest.java               # Phase 4 테스트 (15개 테스트)
+│   └── Phase5MonthEndClosingTest.java            # Phase 5 테스트 (12개 테스트)
+├── mapper/
+│   ├── ChartOfAccountsMapperTest.java            # 계정과목 매퍼 (19개 테스트)
+│   ├── GeneralLedgerMapperTest.java              # 총계정원장 매퍼 (16개 테스트)
+│   └── JournalEntryMapperTest.java               # 분개 매퍼 (16개 테스트)
+└── MshiftApiApplicationTests.java                # Spring Boot 통합 테스트 (1개)
 ```
 
-#### 주요 테스트 항목
+#### 🎯 핵심 서비스 테스트 현황
 
-**AccountingEngineTest.java** (10개 테스트)
-- `shouldRetrieveAllActiveAccounts()` - 전체 활성 계정과목 조회
-- `shouldFindAccountByCode()` - 계정과목 코드 조회
-- `shouldFindAccountsByType()` - 계정과목 유형별 조회
-- `shouldInsertJournalEntry()` - 분개 생성
-- `shouldInsertJournalEntryDetail()` - 분개 상세 생성
-- `shouldFindJournalEntryById()` - 분개 ID 조회
-- `shouldFindJournalEntryDetails()` - 분개 상세 조회
-- `shouldFindJournalEntriesByCompanyAndPeriod()` - 회사별 기간별 분개 조회
-- `shouldGetAccountBalances()` - 계정과목별 잔액 집계 (대차대조표용)
-- `shouldGetIncomeStatementData()` - 손익계산서 데이터 조회
+**1. AccountingEngineTest.java** (14개 테스트)
+- 복식부기 기반 거래 처리 및 분개 생성 로직 검증
+- 대차대조표 및 손익계산서 생성 검증
+- 계정과목 체계 및 분개 상세 검증
 
-**MshiftApiApplicationTests.java** (1개 테스트)
-- Spring Boot 컨텍스트 로딩 테스트
+**2. KeywordExtractionEngineTest.java** (18개 테스트)  
+- 거래 내역에서 키워드 추출 로직 검증
+- 패턴 매칭 및 정규식 기반 분류 검증
+- 신뢰도 기반 키워드 우선순위 검증
+
+**3. ConfidenceEngineTest.java** (20개 테스트)
+- 거래 분류 신뢰도 계산 로직 검증
+- 다양한 신뢰도 알고리즘 비교 검증
+- 임계값 기반 자동/수동 분류 결정 검증
+
+**4. ChartOfAccountsExpansionServiceTest.java** (20개 테스트)
+- 동적 계정과목 생성 로직 검증
+- 계정과목 계층구조 관리 검증
+- 업종별 특화 계정과목 생성 검증
+
+**5. TagAccountMappingServiceTest.java** (35개 테스트)
+- 태그-계정과목 매핑 규칙 엔진 검증
+- 매핑 우선순위 및 충돌 해결 로직 검증
+- 자동 매핑 추천 시스템 검증
+
+#### 🔄 Phase별 통합 테스트
+
+**Phase 1-5 테스트**: 총 68개 테스트
+- 각 Phase별 비즈니스 로직 완전성 검증
+- Phase간 데이터 흐름 검증
+- 전체 회계 프로세스 End-to-End 검증
 
 #### 테스트 실행 방법
 ```bash
