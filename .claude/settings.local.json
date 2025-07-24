@@ -131,7 +131,7 @@
   },
   "permissions": {
     "allow": [
-      "Bash(grep:*)"
+      "Bash(git add:*)"
     ],
     "deny": []
   }
