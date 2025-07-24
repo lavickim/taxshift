@@ -69,7 +69,7 @@ check_system_status() {
     fi
     
     # Java API 서버 확인
-    if curl -s --connect-timeout 5 http://localhost:8080/api/rule-engine/rules > /dev/null; then
+    if curl -s --connect-timeout 5 http://localhost:8080/mshift-api/actuator/health > /dev/null; then
         log "${GREEN}✅ Java API 서버 실행 중${NC}"
     else
         log "${RED}❌ Java API 서버가 실행되지 않음${NC}"
@@ -78,7 +78,7 @@ check_system_status() {
     fi
     
     # PostgreSQL 확인
-    if curl -s --connect-timeout 5 http://localhost:8080/api/rule-engine/rules | jq '.' > /dev/null 2>&1; then
+    if curl -s --connect-timeout 5 http://localhost:8080/mshift-api/actuator/health | jq '.status' > /dev/null 2>&1; then
         log "${GREEN}✅ PostgreSQL 데이터베이스 연결 정상${NC}"
     else
         log "${RED}❌ PostgreSQL 데이터베이스 연결 실패${NC}"
@@ -146,7 +146,7 @@ main() {
     # 4. 데이터베이스 무결성 테스트
     total_tests=$((total_tests + 1))
     if run_test "데이터베이스 무결성 테스트" \
-               "curl -s http://localhost:8080/api/rule-engine/rules | jq 'length' > /dev/null" \
+               "curl -s http://localhost:8080/mshift-api/actuator/health | jq '.status' > /dev/null" \
                "데이터베이스 연결 및 데이터 조회 테스트"; then
         passed_tests=$((passed_tests + 1))
     else

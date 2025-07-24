@@ -1,10 +1,18 @@
 package com.moneyshift.api.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 /**
  * 분개 생성 응답 모델
  */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class JournalEntryResponse {
     
     @JsonProperty("success")
@@ -19,45 +27,31 @@ public class JournalEntryResponse {
     @JsonProperty("processing_info")
     private ProcessingInfo processingInfo;
 
-    // 기본 생성자
-    public JournalEntryResponse() {}
-
-    // 성공 응답 생성자
-    public JournalEntryResponse(JournalEntry journalEntry) {
-        this.success = true;
-        this.message = "분개가 성공적으로 생성되었습니다.";
-        this.journalEntry = journalEntry;
+    // 성공 응답 생성 팩토리 메소드
+    public static JournalEntryResponse success(JournalEntry journalEntry) {
+        return JournalEntryResponse.builder()
+                .success(true)
+                .message("분개가 성공적으로 생성되었습니다.")
+                .journalEntry(journalEntry)
+                .build();
     }
 
-    // 오류 응답 생성자
-    public JournalEntryResponse(String errorMessage) {
-        this.success = false;
-        this.message = errorMessage;
-        this.journalEntry = null;
-    }
-
-    // Getters and Setters
-    public Boolean getSuccess() { return success; }
-    public void setSuccess(Boolean success) { this.success = success; }
-
-    public String getMessage() { return message; }
-    public void setMessage(String message) { this.message = message; }
-
-    public JournalEntry getJournalEntry() { return journalEntry; }
-    public void setJournalEntry(JournalEntry journalEntry) { this.journalEntry = journalEntry; }
-
-    public ProcessingInfo getProcessingInfo() { return processingInfo; }
-    public void setProcessingInfo(ProcessingInfo processingInfo) { this.processingInfo = processingInfo; }
-
-    @Override
-    public String toString() {
-        return String.format("JournalEntryResponse{success=%s, message='%s', journalEntry=%s}", 
-                           success, message, journalEntry);
+    // 오류 응답 생성 팩토리 메소드
+    public static JournalEntryResponse error(String errorMessage) {
+        return JournalEntryResponse.builder()
+                .success(false)
+                .message(errorMessage)
+                .journalEntry(null)
+                .build();
     }
 
     /**
      * 분개 처리 과정 정보
      */
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class ProcessingInfo {
         @JsonProperty("processing_time_ms")
         private Long processingTimeMs;
@@ -67,23 +61,5 @@ public class JournalEntryResponse {
         
         @JsonProperty("account_mapping_source")
         private String accountMappingSource; // "TAG_MAPPING", "MANUAL", "DEFAULT"
-
-        public ProcessingInfo() {}
-
-        public ProcessingInfo(Long processingTimeMs, Boolean validationPassed, String accountMappingSource) {
-            this.processingTimeMs = processingTimeMs;
-            this.validationPassed = validationPassed;
-            this.accountMappingSource = accountMappingSource;
-        }
-
-        // Getters and Setters
-        public Long getProcessingTimeMs() { return processingTimeMs; }
-        public void setProcessingTimeMs(Long processingTimeMs) { this.processingTimeMs = processingTimeMs; }
-
-        public Boolean getValidationPassed() { return validationPassed; }
-        public void setValidationPassed(Boolean validationPassed) { this.validationPassed = validationPassed; }
-
-        public String getAccountMappingSource() { return accountMappingSource; }
-        public void setAccountMappingSource(String accountMappingSource) { this.accountMappingSource = accountMappingSource; }
     }
 }

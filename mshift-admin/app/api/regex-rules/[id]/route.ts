@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const JAVA_API_BASE_URL = process.env.JAVA_API_BASE_URL || 'http://localhost:8080/api';
+const JAVA_API_BASE_URL = process.env.JAVA_API_BASE_URL || 'http://localhost:8080/mshift-api';
 
 export async function GET(
   request: NextRequest,

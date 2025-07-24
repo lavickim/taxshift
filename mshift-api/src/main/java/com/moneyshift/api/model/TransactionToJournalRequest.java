@@ -1,10 +1,18 @@
 package com.moneyshift.api.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 /**
  * 거래 → 분개 생성 요청 모델
  */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TransactionToJournalRequest {
     
     @JsonProperty("transaction_id")
@@ -14,30 +22,6 @@ public class TransactionToJournalRequest {
     private String companyId;
     
     @JsonProperty("force_regenerate")
+    @Builder.Default
     private Boolean forceRegenerate = false;
-
-    // 기본 생성자
-    public TransactionToJournalRequest() {}
-
-    // 생성자
-    public TransactionToJournalRequest(Long transactionId, String companyId) {
-        this.transactionId = transactionId;
-        this.companyId = companyId;
-    }
-
-    // Getters and Setters
-    public Long getTransactionId() { return transactionId; }
-    public void setTransactionId(Long transactionId) { this.transactionId = transactionId; }
-
-    public String getCompanyId() { return companyId; }
-    public void setCompanyId(String companyId) { this.companyId = companyId; }
-
-    public Boolean getForceRegenerate() { return forceRegenerate; }
-    public void setForceRegenerate(Boolean forceRegenerate) { this.forceRegenerate = forceRegenerate; }
-
-    @Override
-    public String toString() {
-        return String.format("TransactionToJournalRequest{transactionId=%d, companyId='%s', forceRegenerate=%s}", 
-                           transactionId, companyId, forceRegenerate);
-    }
 }

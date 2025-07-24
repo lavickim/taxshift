@@ -17,7 +17,7 @@ NC='\033[0m' # No Color
 
 # 설정
 BASE_URL="http://localhost:3000"
-API_URL="http://localhost:8080/api"
+API_URL="http://localhost:8080/mshift-api"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 

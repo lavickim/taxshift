@@ -29,7 +29,7 @@ The system implements a 4-layer transaction classification pipeline optimized fo
 ```bash
 ./start-db.sh      # PostgreSQL + Redis containers
 ./start-backend.sh # Spring Boot API (mvn spring-boot:run)
-./start-frontend.sh # NextJS dev server (yarn dev)
+./start-frontend.sh # NextJS dev server
 ```
 
 ### Frontend Development (mshift-admin)
@@ -80,136 +80,25 @@ cd mshift-admin && yarn test [filename] # Run specific Jest test
 cd mshift-api && mvn test -Dtest=ClassName # Run specific Java test
 ```
 
-## Project Architecture
+## Memory Log
 
-### Service Communication
-- **Frontend ↔ Backend**: REST API communication via NextJS API routes that proxy to Spring Boot
-- **Database Sharing**: PostgreSQL shared between frontend (Prisma) and backend (MyBatis)
-- **Caching**: Redis for high-performance transaction classification
-- **Data Pipeline**: Independent Python service for external data processing
+### Workflow Reminders
+- 왜 루트에 있는 스타트 스크립트 안돌려? 작업이 전체 작업이 끝나면 이걸 돌려서 검증하라고 했잖아. 잘 기억해둬. 
 
-### Key Technologies
-- **Frontend**: NextJS 15, React 19, TypeScript, Tailwind CSS, Prisma ORM, Radix UI
-- **Backend**: Spring Boot 3.2.7, Java 17, MyBatis, PostgreSQL, Redis
-- **Data Processing**: Python, Streamlit, Jupyter, Pandas
-- **Testing**: Jest (frontend), JUnit (backend), Puppeteer (E2E)
+### Development Philosophy
+- 내가 티디디로 하라는 것은 새로운 것을 개발할 때 기존 것이 안되는 문제를 막으려는 거야. 그래서 안되면 원인을 파악하고 성공시키는 주로를 계속 유지하면서 가야 한다고. 정 해결 못한 상황이면 보고 하고. 
 
-### Database Schema (Prisma)
-Core business models:
-- `companies` - Business entities with tax classification
-- `transactions` - Financial records with classification
-- `regex_rules` - Pattern matching rules for classification
-- `transaction_cache` - Performance optimization cache
-- External data collection tables for government/business data
+### Service Execution
+- 그리고 서비스 실행 시킬때 이미 떠있으면 포트 여러개 안쓰게 기존 걸 죽이고 실행하는 방법으로 해.
 
-### Critical Configuration
-- **Environment**: `.env` files required for database URLs, API keys (especially for mshift-data_processing)
-- **CORS**: Configured for frontend-backend communication
-- **Redis**: TTL-based caching for classification layers
-- **Testing**: Comprehensive test infrastructure with result logging
-- **Ports**: 3000 (frontend), 8080 (backend), 8501 (data processing), 5432 (PostgreSQL), 6379 (Redis)
+### Project Design and API Management
+- 지금 여러개의 앱고 디비를 한꺼번에 다루고 있잖아. 그래서 하나가 api가 바뀐다든가 하면, 다른 시스템에 영향을 줄거고. 그래서 루트밑에 프로젝트 디자인 폴더에 서로 영향을 주는 api나 인터페이스, 테스트들을 모조리 잘 분류해서 정리해 놓고. 앞으로 개발 작업 할 때 그 문서에 있는 것들이 바뀌게 되면 같이 다른 것들을 수정하고, 테스트를 돌려서 성공하면 계속 진행하도록 해.
 
-## Development Workflow
+### Docker Usage
+- 앞으로는 다커를 사용해.
 
-### TDD Approach (from Cursor rules)
-This project follows strict Test-Driven Development:
-1. Write failing tests first
-2. Implement minimal code to pass
-3. Refactor while maintaining test coverage
-4. Each feature requires approval before proceeding
+### Refactoring Approach
+- 주요 페이스 지날 때마다 리팩토링 목록 만들고 리펙토링해.
 
-### File Structure Conventions
-- **Components**: PascalCase (TransactionProcessing.tsx)
-- **Services**: kebab-case (cache-service.ts)
-- **API Routes**: kebab-case/route.ts
-- **Tests**: [filename].test.ts
-
-### Layer Processing Priority
-1. **Cache lookup** first (Redis/PostgreSQL cache)
-2. **Regex patterns** for known business types
-3. **ML inference** for similarity matching (future)
-4. **LLM processing** for complex/unknown cases only
-
-## Important Patterns
-
-### Transaction Classification
-The system is optimized for Korean financial data with specific patterns for:
-- Gas stations (주유소)
-- Convenience stores (편의점) 
-- Car service centers (카센터)
-- Online services (온라인서비스)
-
-### Error Handling
-- Progressive fallback through classification layers
-- Comprehensive logging to `test-results/` directory
-- Health checks via Spring Actuator endpoints
-
-### Performance Optimization
-- Redis caching with configurable TTL
-- Batch processing support for large datasets
-- Database indexes on frequently queried fields
-
-## Testing Strategy
-
-### Test Levels
-- **Unit Tests**: Individual service functions
-- **Integration Tests**: API endpoint validation
-- **E2E Tests**: Full pipeline processing via Puppeteer
-- **Performance Tests**: Layer processing distribution validation
-
-### Test Execution
-Tests generate detailed logs in `test-results/`:
-- `integrated-test-report.log` - Full system testing
-- `test_summary.csv` - Results summary
-- `rule-management-test.log` - Rule engine testing
-
-When running tests, always check these logs for detailed failure analysis.
-
-## Key Implementation Notes
-
-### Lint and Type Checking
-Always run after code changes:
-```bash
-cd mshift-admin && yarn lint    # Frontend linting
-cd mshift-api && mvn test       # Backend validation
-```
-
-### Database Migrations
-Use Prisma for schema changes:
-1. Modify `prisma/schema.prisma`
-2. Run `yarn db:generate`
-3. Apply with `yarn db:push` or `yarn db:migrate`
-
-### Business Logic
-The core classification engine prioritizes:
-1. Performance (cache hits)
-2. Accuracy (regex patterns)
-3. Coverage (ML + LLM fallbacks)
-
-Business rules are centralized in the `regex_rules` table and cached in Redis for optimal performance.
-
-## Mobile App Development
-
-The project includes a React Native mobile app:
-
-### Mobile App (mshift-app)
-```bash
-# 환경 설정 (최초 실행 시)
-./setup-app.sh       # Clean setup with proper dependencies
-
-# 일반 실행
-./start-app.sh       # Start Expo development server
-cd mshift-app && expo start --clear  # Alternative direct start
-
-# 수동 설정 (필요시)
-cd mshift-app
-rm -rf node_modules yarn.lock
-yarn install
-expo start --clear
-```
-
-**Technology Stack**: React Native with Expo SDK 53, TypeScript, Redux Toolkit
-**Key Features**: Account detail screens, data connection, settings management, D3.js network graph visualization
-**Ports**: Expo Metro: 8081, Expo Dev Tools: 19002
-
-**Important**: The mobile app uses its own package.json and dependencies separate from the monorepo root. Always run setup-app.sh when encountering dependency issues.
+### Code Standards
+- 최신 안정화된 표준을 사용해.

@@ -1,116 +1,138 @@
 package com.moneyshift.api.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 
 /**
- * 분개 상세 내역 모델 (차변/대변)
+ * Phase 4: 분개 상세 내역 모델 (차변/대변)
+ * 복식부기 원칙에 따른 분개 라인별 차변/대변 금액 관리
  */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@Schema(description = "분개 상세 내역 모델", example = """
+    {
+      "id": 1,
+      "journal_entry_id": 100,
+      "line_number": 1,
+      "account_code": "5130",
+      "account_name": "소모품비",
+      "debit_amount": 50000.00,
+      "credit_amount": 0.00,
+      "description": "사무용품 구매"
+    }
+    """)
 public class JournalEntryDetail {
     
-    @JsonProperty("id")
+    @Schema(description = "분개 상세 ID", example = "1")
     private Long id;
     
-    @JsonProperty("journal_entry_id")
+    @NotNull(message = "분개 ID는 필수입니다")
+    @Schema(description = "분개 ID", example = "100")
     private Long journalEntryId;
     
-    @JsonProperty("line_number")
+    @NotNull(message = "라인 번호는 필수입니다")
+    @Schema(description = "라인 번호", example = "1")
     private Integer lineNumber;
     
-    @JsonProperty("account_code")
+    @NotBlank(message = "계정코드는 필수입니다")
+    @Schema(description = "계정코드", example = "5130")
     private String accountCode;
     
-    @JsonProperty("account_name")
+    @Schema(description = "계정과목명", example = "소모품비")
     private String accountName;
     
-    @JsonProperty("debit_amount")
-    private Long debitAmount;
+    @Builder.Default
+    @Schema(description = "차변 금액", example = "50000.00", defaultValue = "0.00")
+    private BigDecimal debitAmount = BigDecimal.ZERO;
     
-    @JsonProperty("credit_amount")
-    private Long creditAmount;
+    @Builder.Default
+    @Schema(description = "대변 금액", example = "0.00", defaultValue = "0.00")
+    private BigDecimal creditAmount = BigDecimal.ZERO;
     
-    @JsonProperty("description")
+    @Schema(description = "분개 라인 설명", example = "사무용품 구매")
     private String description;
 
-    // 기본 생성자
-    public JournalEntryDetail() {
-        this.debitAmount = 0L;
-        this.creditAmount = 0L;
-    }
-
-    // 생성자
-    public JournalEntryDetail(Integer lineNumber, String accountCode, String accountName, 
-                             Long debitAmount, Long creditAmount, String description) {
-        this.lineNumber = lineNumber;
-        this.accountCode = accountCode;
-        this.accountName = accountName;
-        this.debitAmount = debitAmount != null ? debitAmount : 0L;
-        this.creditAmount = creditAmount != null ? creditAmount : 0L;
-        this.description = description;
-    }
-
-    // 차변 생성 편의 메서드
-    public static JournalEntryDetail createDebit(Integer lineNumber, String accountCode, 
-                                               String accountName, Long amount, String description) {
-        return new JournalEntryDetail(lineNumber, accountCode, accountName, amount, 0L, description);
-    }
-
-    // 대변 생성 편의 메서드
-    public static JournalEntryDetail createCredit(Integer lineNumber, String accountCode, 
-                                                String accountName, Long amount, String description) {
-        return new JournalEntryDetail(lineNumber, accountCode, accountName, 0L, amount, description);
-    }
-
-    // Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public Long getJournalEntryId() { return journalEntryId; }
-    public void setJournalEntryId(Long journalEntryId) { this.journalEntryId = journalEntryId; }
-
-    public Integer getLineNumber() { return lineNumber; }
-    public void setLineNumber(Integer lineNumber) { this.lineNumber = lineNumber; }
-
-    public String getAccountCode() { return accountCode; }
-    public void setAccountCode(String accountCode) { this.accountCode = accountCode; }
-
-    public String getAccountName() { return accountName; }
-    public void setAccountName(String accountName) { this.accountName = accountName; }
-
-    public Long getDebitAmount() { return debitAmount; }
-    public void setDebitAmount(Long debitAmount) { this.debitAmount = debitAmount; }
-
-    public Long getCreditAmount() { return creditAmount; }
-    public void setCreditAmount(Long creditAmount) { this.creditAmount = creditAmount; }
-
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    // ========== 비즈니스 로직 메소드들 ==========
 
     /**
-     * 분개가 차변인지 확인
+     * 차변 분개 라인 생성 (Builder 패턴)
+     */
+    public static JournalEntryDetail createDebit(Integer lineNumber, String accountCode, 
+                                               String accountName, BigDecimal amount, String description) {
+        return JournalEntryDetail.builder()
+                .lineNumber(lineNumber)
+                .accountCode(accountCode)
+                .accountName(accountName)
+                .debitAmount(amount)
+                .creditAmount(BigDecimal.ZERO)
+                .description(description)
+                .build();
+    }
+
+    /**
+     * 대변 분개 라인 생성 (Builder 패턴)
+     */
+    public static JournalEntryDetail createCredit(Integer lineNumber, String accountCode, 
+                                                String accountName, BigDecimal amount, String description) {
+        return JournalEntryDetail.builder()
+                .lineNumber(lineNumber)
+                .accountCode(accountCode)
+                .accountName(accountName)
+                .debitAmount(BigDecimal.ZERO)
+                .creditAmount(amount)
+                .description(description)
+                .build();
+    }
+
+    /**
+     * 차변 분개 라인인지 확인
      */
     public boolean isDebit() {
-        return debitAmount > 0 && creditAmount == 0;
+        return debitAmount != null && debitAmount.compareTo(BigDecimal.ZERO) > 0;
     }
 
     /**
-     * 분개가 대변인지 확인
+     * 대변 분개 라인인지 확인
      */
     public boolean isCredit() {
-        return creditAmount > 0 && debitAmount == 0;
+        return creditAmount != null && creditAmount.compareTo(BigDecimal.ZERO) > 0;
     }
 
     /**
-     * 분개 금액 반환 (차변이면 양수, 대변이면 음수)
+     * 분개 라인 금액 (차변 또는 대변)
      */
-    public Long getSignedAmount() {
-        if (isDebit()) return debitAmount;
-        if (isCredit()) return -creditAmount;
-        return 0L;
+    public BigDecimal getAmount() {
+        return isDebit() ? debitAmount : creditAmount;
     }
 
-    @Override
-    public String toString() {
-        return String.format("JournalEntryDetail{lineNumber=%d, accountCode='%s', accountName='%s', debit=%d, credit=%d, description='%s'}", 
-                           lineNumber, accountCode, accountName, debitAmount, creditAmount, description);
+    /**
+     * 분개 라인 순 금액 (차변 - 대변)
+     */
+    public BigDecimal getNetAmount() {
+        return debitAmount.subtract(creditAmount);
+    }
+
+    /**
+     * 분개 라인의 차대구분
+     */
+    public String getDebitCreditType() {
+        if (isDebit()) {
+            return "DEBIT";
+        } else if (isCredit()) {
+            return "CREDIT";
+        } else {
+            return "NONE";
+        }
     }
 }

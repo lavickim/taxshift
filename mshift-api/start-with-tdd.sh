@@ -25,7 +25,7 @@ fi
 
 # 3. 데이터베이스 연결 체크
 echo "🗄️ 데이터베이스 연결 체크 중..."
-if ! pg_isready -h localhost -p 5432 -U moneyshift 2>/dev/null; then
+if ! pg_isready -h localhost -p 5432 -U postgres 2>/dev/null; then
     echo "❌ PostgreSQL 데이터베이스 연결 실패. 데이터베이스가 실행 중인지 확인하세요."
     echo "다음 명령어로 데이터베이스를 시작하세요: ./start-db.sh"
     exit 1

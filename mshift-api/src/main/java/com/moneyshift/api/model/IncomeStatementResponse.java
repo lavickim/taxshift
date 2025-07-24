@@ -4,10 +4,18 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
+import lombok.Data;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 /**
  * 손익계산서 응답 모델
  */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class IncomeStatementResponse {
     
     private List<AccountItem> revenue;
@@ -20,63 +28,46 @@ public class IncomeStatementResponse {
     private BigDecimal operatingIncome;
     private BigDecimal netIncome;
 
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class AccountItem {
         private String accountCode;
         private String accountName;
         private BigDecimal amount;
         private String category;
-
-        public AccountItem() {}
-
-        public AccountItem(String accountCode, String accountName, BigDecimal amount) {
-            this.accountCode = accountCode;
-            this.accountName = accountName;
-            this.amount = amount;
-        }
-
-        public AccountItem(String accountCode, String accountName, BigDecimal amount, String category) {
-            this.accountCode = accountCode;
-            this.accountName = accountName;
-            this.amount = amount;
-            this.category = category;
-        }
-
-        // Getters and Setters
-        public String getAccountCode() { return accountCode; }
-        public void setAccountCode(String accountCode) { this.accountCode = accountCode; }
-
-        public String getAccountName() { return accountName; }
-        public void setAccountName(String accountName) { this.accountName = accountName; }
-
-        public BigDecimal getAmount() { return amount; }
-        public void setAmount(BigDecimal amount) { this.amount = amount; }
-
-        public String getCategory() { return category; }
-        public void setCategory(String category) { this.category = category; }
     }
 
-    public IncomeStatementResponse() {}
-
-    public IncomeStatementResponse(List<AccountItem> revenue, List<AccountItem> expenses, 
-                                 LocalDate periodStart, LocalDate periodEnd) {
-        this.revenue = revenue;
-        this.expenses = expenses;
-        this.periodStart = periodStart;
-        this.periodEnd = periodEnd;
-        this.totalRevenue = calculateTotal(revenue);
-        this.totalExpenses = calculateTotal(expenses);
-        this.grossProfit = calculateGrossProfit();
-        this.operatingIncome = calculateOperatingIncome();
-        this.netIncome = totalRevenue.subtract(totalExpenses);
+    // 비즈니스 로직을 포함한 생성자 메소드
+    public static IncomeStatementResponse create(List<AccountItem> revenue, List<AccountItem> expenses, 
+                                               LocalDate periodStart, LocalDate periodEnd) {
+        BigDecimal totalRevenue = calculateTotal(revenue);
+        BigDecimal totalExpenses = calculateTotal(expenses);
+        BigDecimal grossProfit = calculateGrossProfit(revenue, totalRevenue, expenses);
+        BigDecimal operatingIncome = calculateOperatingIncome(grossProfit, expenses);
+        BigDecimal netIncome = totalRevenue.subtract(totalExpenses);
+        
+        return IncomeStatementResponse.builder()
+                .revenue(revenue)
+                .expenses(expenses)
+                .periodStart(periodStart)
+                .periodEnd(periodEnd)
+                .totalRevenue(totalRevenue)
+                .totalExpenses(totalExpenses)
+                .grossProfit(grossProfit)
+                .operatingIncome(operatingIncome)
+                .netIncome(netIncome)
+                .build();
     }
 
-    private BigDecimal calculateTotal(List<AccountItem> items) {
+    private static BigDecimal calculateTotal(List<AccountItem> items) {
         return items.stream()
                 .map(AccountItem::getAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    private BigDecimal calculateGrossProfit() {
+    private static BigDecimal calculateGrossProfit(List<AccountItem> revenue, BigDecimal totalRevenue, List<AccountItem> expenses) {
         BigDecimal cogs = expenses.stream()
                 .filter(item -> "COGS".equals(item.getCategory()))
                 .map(AccountItem::getAmount)
@@ -84,7 +75,7 @@ public class IncomeStatementResponse {
         return totalRevenue.subtract(cogs);
     }
 
-    private BigDecimal calculateOperatingIncome() {
+    private static BigDecimal calculateOperatingIncome(BigDecimal grossProfit, List<AccountItem> expenses) {
         BigDecimal operatingExpenses = expenses.stream()
                 .filter(item -> "OPERATING".equals(item.getCategory()))
                 .map(AccountItem::getAmount)
@@ -92,46 +83,23 @@ public class IncomeStatementResponse {
         return grossProfit.subtract(operatingExpenses);
     }
 
-    // Getters and Setters
-    public List<AccountItem> getRevenue() { return revenue; }
+    // 비즈니스 로직 메소드들
     public void setRevenue(List<AccountItem> revenue) { 
         this.revenue = revenue;
         this.totalRevenue = calculateTotal(revenue);
         updateCalculatedFields();
     }
 
-    public List<AccountItem> getExpenses() { return expenses; }
     public void setExpenses(List<AccountItem> expenses) { 
         this.expenses = expenses;
         this.totalExpenses = calculateTotal(expenses);
         updateCalculatedFields();
     }
 
-    public LocalDate getPeriodStart() { return periodStart; }
-    public void setPeriodStart(LocalDate periodStart) { this.periodStart = periodStart; }
-
-    public LocalDate getPeriodEnd() { return periodEnd; }
-    public void setPeriodEnd(LocalDate periodEnd) { this.periodEnd = periodEnd; }
-
-    public BigDecimal getTotalRevenue() { return totalRevenue; }
-    public void setTotalRevenue(BigDecimal totalRevenue) { this.totalRevenue = totalRevenue; }
-
-    public BigDecimal getTotalExpenses() { return totalExpenses; }
-    public void setTotalExpenses(BigDecimal totalExpenses) { this.totalExpenses = totalExpenses; }
-
-    public BigDecimal getGrossProfit() { return grossProfit; }
-    public void setGrossProfit(BigDecimal grossProfit) { this.grossProfit = grossProfit; }
-
-    public BigDecimal getOperatingIncome() { return operatingIncome; }
-    public void setOperatingIncome(BigDecimal operatingIncome) { this.operatingIncome = operatingIncome; }
-
-    public BigDecimal getNetIncome() { return netIncome; }
-    public void setNetIncome(BigDecimal netIncome) { this.netIncome = netIncome; }
-
     private void updateCalculatedFields() {
         if (revenue != null && expenses != null) {
-            this.grossProfit = calculateGrossProfit();
-            this.operatingIncome = calculateOperatingIncome();
+            this.grossProfit = calculateGrossProfit(revenue, totalRevenue, expenses);
+            this.operatingIncome = calculateOperatingIncome(grossProfit, expenses);
             this.netIncome = totalRevenue.subtract(totalExpenses);
         }
     }
@@ -157,15 +125,4 @@ public class IncomeStatementResponse {
                 .multiply(BigDecimal.valueOf(100));
     }
 
-    @Override
-    public String toString() {
-        return "IncomeStatementResponse{" +
-                "totalRevenue=" + totalRevenue +
-                ", totalExpenses=" + totalExpenses +
-                ", netIncome=" + netIncome +
-                ", periodStart=" + periodStart +
-                ", periodEnd=" + periodEnd +
-                ", netProfitMargin=" + getNetProfitMargin() + "%" +
-                '}';
-    }
 }

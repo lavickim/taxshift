@@ -3,12 +3,15 @@ package com.moneyshift.api.service;
 import com.moneyshift.api.mapper.AccountingMapper;
 import com.moneyshift.api.mapper.TransactionMapper;
 import com.moneyshift.api.model.*;
+import io.micrometer.core.annotation.Counted;
+import io.micrometer.core.annotation.Timed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -34,6 +37,8 @@ public class AccountingEngine {
     /**
      * 거래 내역을 분석하여 자동으로 분개 생성
      */
+    @Timed(value = "accounting.service.process.transaction", description = "서비스: 거래→분개 변환 처리시간")
+    @Counted(value = "accounting.service.process.transaction.total", description = "서비스: 거래→분개 변환 총 처리 수")
     public JournalEntry processTransaction(TransactionToJournalRequest request) {
         long startTime = System.currentTimeMillis();
         
@@ -113,14 +118,14 @@ public class AccountingEngine {
      * 복식부기 분개 생성
      */
     private JournalEntry createJournalEntry(TransactionEntity transaction, String expenseAccountCode, String cashAccountCode) {
-        // 분개 헤더 생성
-        JournalEntry journalEntry = new JournalEntry(
+        // 분개 헤더 생성 (Builder 패턴)
+        JournalEntry journalEntry = JournalEntry.createDraft(
             transaction.getCompanyId(),
             transaction.getTransactionDate(),
             transaction.getRawText(),
             "TRANSACTION",
             transaction.getId(),
-            transaction.getAmount()
+            new BigDecimal(transaction.getAmount())
         );
         journalEntry.setCreatedBy("SYSTEM");
         
@@ -149,8 +154,8 @@ public class AccountingEngine {
         
         if ("EXPENSE".equals(transactionType)) {
             // 비용 발생: 차변(비용 계정), 대변(현금/예금)
-            details.add(JournalEntryDetail.createDebit(1, expenseAccountCode, expenseAccountName, amount, "비용 발생"));
-            details.add(JournalEntryDetail.createCredit(2, cashAccountCode, cashAccountName, amount, "현금 지출"));
+            details.add(JournalEntryDetail.createDebit(1, expenseAccountCode, expenseAccountName, new BigDecimal(amount), "비용 발생"));
+            details.add(JournalEntryDetail.createCredit(2, cashAccountCode, cashAccountName, new BigDecimal(amount), "현금 지출"));
             
         } else if ("INCOME".equals(transactionType)) {
             // 수익 발생: 차변(현금/예금), 대변(수익 계정)
@@ -158,8 +163,8 @@ public class AccountingEngine {
             ChartOfAccount revenueAccount = accountingMapper.findAccountByCode(revenueAccountCode);
             String revenueAccountName = revenueAccount != null ? revenueAccount.getAccountName() : "매출";
             
-            details.add(JournalEntryDetail.createDebit(1, cashAccountCode, cashAccountName, amount, "현금 수입"));
-            details.add(JournalEntryDetail.createCredit(2, revenueAccountCode, revenueAccountName, amount, "매출 발생"));
+            details.add(JournalEntryDetail.createDebit(1, cashAccountCode, cashAccountName, new BigDecimal(amount), "현금 수입"));
+            details.add(JournalEntryDetail.createCredit(2, revenueAccountCode, revenueAccountName, new BigDecimal(amount), "매출 발생"));
         } else {
             throw new RuntimeException("지원하지 않는 거래 유형: " + transactionType);
         }
@@ -236,6 +241,8 @@ public class AccountingEngine {
     /**
      * 대차대조표 데이터 생성
      */
+    @Timed(value = "accounting.service.balance.sheet.generate", description = "서비스: 대차대조표 생성 처리시간")
+    @Counted(value = "accounting.service.balance.sheet.generate.total", description = "서비스: 대차대조표 생성 총 처리 수")
     public Map<String, Object> generateBalanceSheetData(String companyId, LocalDate asOfDate) {
         List<Map<String, Object>> accountBalances = accountingMapper.getAccountBalances(companyId, asOfDate);
         
@@ -286,6 +293,8 @@ public class AccountingEngine {
     /**
      * 손익계산서 데이터 생성
      */
+    @Timed(value = "accounting.service.income.statement.generate", description = "서비스: 손익계산서 생성 처리시간")
+    @Counted(value = "accounting.service.income.statement.generate.total", description = "서비스: 손익계산서 생성 총 처리 수")
     public Map<String, Object> generateIncomeStatementData(String companyId, LocalDate periodStart, LocalDate periodEnd) {
         List<Map<String, Object>> incomeStatementData = accountingMapper.getIncomeStatementData(companyId, periodStart, periodEnd);
         

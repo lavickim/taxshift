@@ -120,7 +120,7 @@ class AccountingEngineTest {
         journalEntry.setDescription("테스트 분개");
         journalEntry.setReferenceType("TRANSACTION");
         journalEntry.setReferenceId(123L);
-        journalEntry.setTotalAmount(10000L);
+        journalEntry.setTotalAmount(new BigDecimal("10000"));
         journalEntry.setStatus("DRAFT");
         journalEntry.setCreatedBy("test-user");
 
@@ -139,8 +139,8 @@ class AccountingEngineTest {
         detail.setJournalEntryId(1L);
         detail.setLineNumber(1);
         detail.setAccountCode("1100");
-        detail.setDebitAmount(10000L);
-        detail.setCreditAmount(0L);
+        detail.setDebitAmount(new BigDecimal("10000"));
+        detail.setCreditAmount(new BigDecimal("0"));
         detail.setDescription("현금 증가");
 
         // When
@@ -292,8 +292,8 @@ class AccountingEngineTest {
         JournalEntryDetail detail = new JournalEntryDetail();
         detail.setJournalEntryId(journalEntryId);
         detail.setAccountCode(accountCode);
-        detail.setDebitAmount(Long.parseLong(debitAmount));
-        detail.setCreditAmount(Long.parseLong(creditAmount));
+        detail.setDebitAmount(new BigDecimal(debitAmount));
+        detail.setCreditAmount(new BigDecimal(creditAmount));
         return detail;
     }
     

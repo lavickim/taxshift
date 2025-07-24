@@ -1,26 +1,12 @@
 #!/bin/bash
 
-# 데이터베이스 서비스 시작 스크립트
+# MoneyShift 데이터베이스 서비스 시작 스크립트
+# 새로운 Docker 관리 시스템 사용
 
-echo "🗄️ 데이터베이스 서비스 시작 중..."
-echo "================================="
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Docker Compose로 PostgreSQL과 Redis 시작
-echo "🐘 PostgreSQL 시작 중..."
-echo "🔴 Redis 시작 중..."
+echo "🚀 MoneyShift 데이터베이스 서비스 시작..."
+echo "================================"
 
-docker-compose up -d postgres redis
-
-echo ""
-echo "✅ 데이터베이스 서비스 시작 완료!"
-echo "--------------------------------"
-echo "PostgreSQL: localhost:5432"
-echo "  - 데이터베이스: moneyshift"
-echo "  - 사용자: postgres"
-echo "  - 비밀번호: postgres"
-echo ""
-echo "Redis: localhost:6379"
-echo ""
-echo "서비스 중지: docker-compose down"
-echo "로그 확인: docker-compose logs postgres redis"
-echo "================================="
+# 통합 Docker 관리 스크립트 실행
+"$SCRIPT_DIR/scripts/manage-docker.sh" start

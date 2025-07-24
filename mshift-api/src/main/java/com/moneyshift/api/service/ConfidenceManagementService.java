@@ -702,6 +702,8 @@ public class ConfidenceManagementService {
     
     @lombok.Data
     @lombok.Builder
+    @lombok.NoArgsConstructor
+    @lombok.AllArgsConstructor
     public static class UserFeedbackRequest {
         private Long transactionId;
         private FeedbackType feedbackType;
@@ -726,6 +728,8 @@ public class ConfidenceManagementService {
     
     @lombok.Data
     @lombok.Builder
+    @lombok.NoArgsConstructor
+    @lombok.AllArgsConstructor
     public static class RuleUsageStats {
         private Long ruleId;
         private String ruleType;
@@ -738,6 +742,8 @@ public class ConfidenceManagementService {
     
     @lombok.Data
     @lombok.Builder
+    @lombok.NoArgsConstructor
+    @lombok.AllArgsConstructor
     public static class LowPerformanceRule {
         private Long ruleId;
         private String reason;
@@ -803,6 +809,8 @@ public class ConfidenceManagementService {
     
     @lombok.Data
     @lombok.Builder
+    @lombok.NoArgsConstructor
+    @lombok.AllArgsConstructor
     public static class RulePerformance {
         private Long ruleId;
         private String pattern;

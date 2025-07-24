@@ -9,278 +9,35 @@ datasource db {
 }
 
 model Company {
-  id                         String              @id @db.Uuid
-  companyName                String              @map("company_name")
-  businessRegistrationNumber String?             @unique @map("business_registration_number") @db.VarChar(20)
-  createdAt                  DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt                  DateTime            @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
-  taxpayerType               TaxpayerType        @default(CORPORATION) @map("taxpayer_type")
-  ruleCandidates             RuleCandidate[]
-  rules                      Rule[]
+  id                         String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  companyName                String           @map("company_name") @db.VarChar(255)
+  businessRegistrationNumber String?          @unique @map("business_registration_number") @db.VarChar(20)
+  createdAt                  DateTime?        @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt                  DateTime?        @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  taxpayerType               TaxpayerType?    @default(CORPORATION) @map("taxpayer_type")
+  generalLedgers             GeneralLedger[]
+  newJournalEntries          JournalEntries[]
   transactions               Transaction[]
-  journalEntries             JournalEntry[]
-  financialStatements        FinancialStatement[]
 
   @@map("companies")
 }
 
-model TransactionCache {
-  rawTextHash String   @id @map("raw_text_hash") @db.Char(64)
-  rawText     String   @map("raw_text")
-  uniqueKey   String   @map("unique_key")
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-
-  @@map("transaction_cache")
-}
-
-model Rule {
-  id                  Int         @id @default(autoincrement())
-  companyId           String      @map("company_id") @db.Uuid
-  uniqueKey           String      @map("unique_key")
-  targetDebitAccount  String      @map("target_debit_account") @db.VarChar(100)
-  targetCreditAccount String      @default("보통예금") @map("target_credit_account") @db.VarChar(100)
-  targetSuggestedTag  String?     @map("target_suggested_tag") @db.VarChar(100)
-  vatApplicable       Boolean     @default(false) @map("vat_applicable")
-  priority            Int         @default(0)
-  isActive            Boolean     @default(true) @map("is_active")
-  createdAt           DateTime    @default(now()) @map("created_at") @db.Timestamptz(6)
-  createdBy           RuleCreator @default(AUTO_GENERATED) @map("created_by")
-  company             Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
-
-  @@unique([companyId, uniqueKey])
-  @@index([companyId, uniqueKey], map: "idx_rules_company_id_unique_key")
-  @@map("rules")
-}
-
-model RuleCandidate {
-  id                 Int      @id @default(autoincrement())
-  companyId          String   @map("company_id") @db.Uuid
-  uniqueKey          String   @map("unique_key")
-  targetDebitAccount String   @map("target_debit_account") @db.VarChar(100)
-  targetSuggestedTag String?  @map("target_suggested_tag") @db.VarChar(100)
-  vatApplicable      Boolean? @map("vat_applicable")
-  suggestionCount    Int      @default(1) @map("suggestion_count")
-  lastSuggestedAt    DateTime @default(now()) @map("last_suggested_at") @db.Timestamptz(6)
-  company            Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-
-  @@unique([companyId, uniqueKey, targetDebitAccount], map: "uq_company_key_account")
-  @@map("rule_candidates")
-}
-
 model Transaction {
-  id                      BigInt              @id @default(autoincrement())
-  companyId               String              @map("company_id") @db.Uuid
-  rawText                 String              @map("raw_text")
-  transactionDate         DateTime            @map("transaction_date") @db.Date
-  amount                  BigInt
-  normalizedUniqueKey     String?             @map("normalized_unique_key")
-  isAnomaly               Boolean             @default(false) @map("is_anomaly")
-  anomalyScore            Decimal?            @map("anomaly_score") @db.Decimal(5, 4)
-  llmResponse             Json?               @map("llm_response")
-  userClarification       Json?               @map("user_clarification")
-  finalDebitAccount       String?             @map("final_debit_account") @db.VarChar(100)
-  finalCreditAccount      String?             @map("final_credit_account") @db.VarChar(100)
-  finalSuggestedTag       String?             @map("final_suggested_tag") @db.VarChar(100)
-  createdAt               DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt               DateTime            @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
-  transactionType         TransactionIOType   @map("transaction_type")
-  status                  TransactionStatus   @default(NORMALIZED)
-  processedBy             ProcessorType?      @map("processed_by")
-  confidenceScores        Json?               @map("confidence_scores")
-  keywordExtractionResult Json?               @map("keyword_extraction_result")
-  processingPath          String?             @map("processing_path") @db.VarChar(50)
-  tagMatchingResult       Json?               @map("tag_matching_result")
-  userAnswerOptionId      BigInt?             @map("user_answer_option_id")
-  userQuestionId          BigInt?             @map("user_question_id")
-  confidenceHistory       ConfidenceHistory[]
-  company                 Company             @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  userAnswerOption        QuestionOption?     @relation(fields: [userAnswerOptionId], references: [id])
-  userQuestion            UserQuestion?       @relation(fields: [userQuestionId], references: [id])
+  id                 BigInt            @id @default(autoincrement())
+  companyId          String            @map("company_id") @db.Uuid
+  rawText            String            @map("raw_text")
+  transactionDate    DateTime          @map("transaction_date") @db.Date
+  amount             BigInt
+  transactionType    TransactionIOType @map("transaction_type")
+  finalDebitAccount  String?           @map("final_debit_account") @db.VarChar(100)
+  finalCreditAccount String?           @map("final_credit_account") @db.VarChar(100)
+  finalSuggestedTag  String?           @map("final_suggested_tag") @db.VarChar(100)
+  createdAt          DateTime?         @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt          DateTime?         @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  company            Company           @relation(fields: [companyId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  @@index([companyId, status], map: "idx_transactions_company_id_status")
-  @@index([transactionDate], map: "idx_transactions_transaction_date")
-  @@index([userQuestionId], map: "idx_transactions_user_question")
-  @@index([processingPath], map: "idx_transactions_processing_path")
+  @@index([companyId], map: "idx_transactions_company_id")
   @@map("transactions")
-}
-
-model DatacollectionGyeonggiDelivery {
-  id                 String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  listTotalCount     Int?     @map("list_total_count")
-  responseCode       String?  @map("response_code")
-  responseMessage    String?  @map("response_message")
-  apiVersion         String?  @map("api_version")
-  businessRegNo      String   @unique @map("business_reg_no")
-  sigunName          String?  @map("sigun_name")
-  storeName          String   @map("store_name")
-  industryType       String?  @map("industry_type")
-  refinedRoadAddress String?  @map("refined_road_address")
-  refinedLotAddress  String?  @map("refined_lot_address")
-  refinedZipcode     String?  @map("refined_zipcode")
-  refinedLatitude    Decimal? @map("refined_latitude") @db.Decimal(10, 8)
-  refinedLongitude   Decimal? @map("refined_longitude") @db.Decimal(11, 8)
-  dataSource         String   @default("gyeonggi_delivery") @map("data_source")
-  collectionBatchId  String?  @map("collection_batch_id")
-  createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt          DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
-
-  @@map("datacollection_gyeonggi_delivery")
-}
-
-model DatacollectionSeoulRestaurants {
-  id                         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  licenseDate                String?  @map("license_date")
-  businessStatusCode         String?  @map("business_status_code")
-  businessStatusName         String?  @map("business_status_name")
-  businessName               String   @map("business_name")
-  businessType               String?  @map("business_type")
-  dataSource                 String   @default("seoul_restaurants") @map("data_source")
-  collectionBatchId          String?  @map("collection_batch_id")
-  createdAt                  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt                  DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
-  apiVersion                 String?  @map("api_version")
-  businessRegistrationNumber String?  @unique @map("business_registration_number")
-  licenseExpiryDate          String?  @map("license_expiry_date")
-  listTotalCount             Int?     @map("list_total_count")
-  lotNumberAddress           String?  @map("lot_number_address")
-  refinedLatitude            Decimal? @map("refined_latitude") @db.Decimal(10, 8)
-  refinedLongitude           Decimal? @map("refined_longitude") @db.Decimal(11, 8)
-  responseCode               String?  @map("response_code")
-  responseMessage            String?  @map("response_message")
-  roadNameAddress            String?  @map("road_name_address")
-  zipCode                    String?  @map("zip_code")
-
-  @@map("datacollection_seoul_restaurants")
-}
-
-model FranchiseBrands {
-  id                          Int       @id @default(autoincrement())
-  businessYear                String    @map("business_year")
-  brandId                     String    @unique @map("brand_id")
-  headquartersId              String?   @map("headquarters_id")
-  businessRegistrationNumber  String?   @map("business_registration_number")
-  corporateRegistrationNumber String?   @map("corporate_registration_number")
-  representativeName          String?   @map("representative_name")
-  brandName                   String    @map("brand_name")
-  industryLargeCategory       String?   @map("industry_large_category")
-  industryMediumCategory      String?   @map("industry_medium_category")
-  mainProduct                 String?   @map("main_product")
-  businessStartDate           DateTime? @map("business_start_date") @db.Date
-  companyName                 String?   @map("company_name")
-  createdAt                   DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt                   DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
-  generatedTransactionString  String?   @map("generated_transaction_string")
-  lastTestAt                  DateTime? @map("last_test_at") @db.Timestamptz(6)
-  primaryTag                  String?   @map("primary_tag") @db.VarChar(100)
-  secondaryTag                String?   @map("secondary_tag") @db.VarChar(100)
-  tagGenerationReason         String?   @map("tag_generation_reason")
-  tertiaryTag                 String?   @map("tertiary_tag") @db.VarChar(100)
-  testPassed                  Boolean?  @map("test_passed")
-  testResult                  Json?     @map("test_result")
-
-  @@unique([brandId, businessYear], map: "unique_brand_year")
-  @@index([brandName], map: "idx_franchise_brand_name")
-  @@index([businessYear], map: "idx_franchise_business_year")
-  @@index([companyName], map: "idx_franchise_company_name")
-  @@index([industryLargeCategory, industryMediumCategory], map: "idx_franchise_industry")
-  @@index([testPassed], map: "idx_franchise_test_passed")
-  @@index([lastTestAt], map: "idx_franchise_last_test_at")
-  @@index([primaryTag], map: "idx_franchise_primary_tag")
-  @@map("franchise_brands")
-}
-
-model NationalPensionWorkplaces {
-  id                         Int      @id @default(autoincrement())
-  dataYearMonth              String   @map("data_year_month")
-  workplaceName              String   @map("workplace_name")
-  businessRegistrationNumber String   @map("business_registration_number")
-  workplaceStatusCode        Int      @map("workplace_status_code")
-  postalCode                 String?  @map("postal_code")
-  addressJibun               String?  @map("address_jibun")
-  addressRoad                String?  @map("address_road")
-  legalDongCode              String?  @map("legal_dong_code")
-  adminDongCode              String?  @map("admin_dong_code")
-  sidoCode                   String?  @map("sido_code")
-  sigunguCode                String?  @map("sigungu_code")
-  eubmyeondongCode           String?  @map("eubmyeondong_code")
-  workplaceTypeCode          Int?     @map("workplace_type_code")
-  industryCode               String?  @map("industry_code")
-  industryName               String?  @map("industry_name")
-  applicationDate            String?  @map("application_date")
-  reRegistrationDate         String?  @map("re_registration_date")
-  withdrawalDate             String?  @map("withdrawal_date")
-  memberCount                Int?     @map("member_count")
-  monthlyNoticeAmount        BigInt?  @map("monthly_notice_amount")
-  newAcquisitionCount        Int?     @map("new_acquisition_count")
-  lossCount                  Int?     @map("loss_count")
-  createdAt                  DateTime @default(now()) @map("created_at")
-  updatedAt                  DateTime @default(now()) @updatedAt @map("updated_at")
-
-  @@index([dataYearMonth], map: "idx_national_pension_data_year_month")
-  @@index([workplaceStatusCode], map: "idx_national_pension_status")
-  @@index([industryCode], map: "idx_national_pension_industry")
-  @@index([addressRoad], map: "idx_national_pension_address")
-  @@map("national_pension_workplaces")
-}
-
-model regex_rules {
-  id                      BigInt    @id @default(autoincrement())
-  pattern                 String    @db.VarChar(1000)
-  replacement             String?   @db.VarChar(1000)
-  description             String?
-  category                String?   @db.VarChar(100)
-  enabled                 Boolean?  @default(true)
-  priority                Int?      @default(0)
-  created_at              DateTime? @default(now()) @db.Timestamp(6)
-  updated_at              DateTime? @default(now()) @db.Timestamp(6)
-  confidence              Decimal?  @default(0.0) @db.Decimal(3, 2)
-  normalizer_type         String?   @db.VarChar(100)
-  created_by              String?   @default("ADMIN") @db.VarChar(50)
-  is_active               Boolean?  @default(true)
-  keyword                 String?   @db.VarChar(255)
-  last_used               DateTime? @db.Timestamptz(6)
-  negative_count          Int?      @default(0)
-  pattern_type            String?   @default("BRAND") @db.VarChar(20)
-  positive_count          Int?      @default(0)
-  primary_account         String?   @db.VarChar(100)
-  primary_tag             String?   @db.VarChar(100)
-  secondary_account       String?   @db.VarChar(100)
-  secondary_tag           String?   @db.VarChar(100)
-  success_rate            Decimal?  @db.Decimal(5, 2)
-  tags                    String?   @db.VarChar(500)
-  usage_count             Int?      @default(0)
-  context_rules           Json?     @map("context_rules")
-  display_order           Int?      @default(100) @map("display_order")
-  parent_keyword_group_id BigInt?   @map("parent_keyword_group_id")
-
-  @@index([category], map: "idx_regex_rules_category")
-  @@index([enabled], map: "idx_regex_rules_enabled")
-  @@index([enabled, category], map: "idx_regex_rules_enabled_category")
-  @@index([normalizer_type], map: "idx_regex_rules_normalizer_type")
-  @@index([priority], map: "idx_regex_rules_priority")
-  @@index([pattern_type], map: "idx_regex_rules_pattern_type")
-  @@index([keyword], map: "idx_regex_rules_keyword")
-  @@index([is_active], map: "idx_regex_rules_is_active")
-  @@index([parent_keyword_group_id], map: "idx_regex_rules_parent_keyword_group")
-  @@index([display_order], map: "idx_regex_rules_display_order")
-}
-
-model KeywordGroup {
-  id                 BigInt              @id @default(autoincrement())
-  groupName          String              @map("group_name") @db.VarChar(100)
-  primaryKeyword     String              @map("primary_keyword") @db.VarChar(100)
-  synonyms           String[]            @db.VarChar(50)
-  category           String?             @db.VarChar(50)
-  confidenceBase     Decimal             @default(0.70) @map("confidence_base") @db.Decimal(3, 2)
-  isActive           Boolean             @default(true) @map("is_active")
-  createdAt          DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt          DateTime            @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
-  keywordTagMappings KeywordTagMapping[]
-
-  @@index([category], map: "idx_keyword_groups_category")
-  @@index([isActive], map: "idx_keyword_groups_active")
-  @@index([primaryKeyword], map: "idx_keyword_groups_primary_keyword")
-  @@map("keyword_groups")
 }
 
 model TagsMaster {
@@ -288,155 +45,134 @@ model TagsMaster {
   tagName            String              @unique @map("tag_name") @db.VarChar(100)
   tagCategory        String?             @map("tag_category") @db.VarChar(50)
   description        String?
-  colorHex           String              @default("#6B7280") @map("color_hex") @db.VarChar(7)
-  iconName           String              @default("tag") @map("icon_name") @db.VarChar(50)
-  displayOrder       Int                 @default(100) @map("display_order")
-  isActive           Boolean             @default(true) @map("is_active")
-  createdAt          DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
-  keywordTagMappings KeywordTagMapping[]
+  colorHex           String?             @default("#6B7280") @map("color_hex") @db.VarChar(7)
+  iconName           String?             @default("tag") @map("icon_name") @db.VarChar(50)
+  displayOrder       Int?                @default(100) @map("display_order")
+  isActive           Boolean?            @default(true) @map("is_active")
+  createdAt          DateTime?           @default(now()) @map("created_at") @db.Timestamptz(6)
   tagAccountMappings TagAccountMapping[]
-  userQuestions      UserQuestion[]
 
-  @@index([tagCategory], map: "idx_tags_master_category")
-  @@index([isActive], map: "idx_tags_master_active")
-  @@index([displayOrder], map: "idx_tags_master_display_order")
   @@map("tags_master")
 }
 
-model KeywordTagMapping {
-  id              BigInt       @id @default(autoincrement())
-  keywordGroupId  BigInt       @map("keyword_group_id")
-  tagId           BigInt       @map("tag_id")
-  confidenceScore Decimal      @default(0.70) @map("confidence_score") @db.Decimal(3, 2)
-  contextRules    Json?        @map("context_rules")
-  priority        Int          @default(50)
-  usageCount      BigInt       @default(0) @map("usage_count")
-  isActive        Boolean      @default(true) @map("is_active")
-  createdAt       DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
-  keywordGroup    KeywordGroup @relation(fields: [keywordGroupId], references: [id], onDelete: Cascade)
-  tag             TagsMaster   @relation(fields: [tagId], references: [id], onDelete: Cascade)
-
-  @@unique([keywordGroupId, tagId], map: "uq_keyword_tag_mapping")
-  @@index([keywordGroupId], map: "idx_keyword_tag_mappings_keyword_group")
-  @@index([tagId], map: "idx_keyword_tag_mappings_tag")
-  @@index([isActive], map: "idx_keyword_tag_mappings_active")
-  @@index([confidenceScore], map: "idx_keyword_tag_mappings_confidence")
-  @@map("keyword_tag_mappings")
-}
-
 model TagAccountMapping {
-  id               BigInt     @id @default(autoincrement())
-  tagId            BigInt     @map("tag_id")
-  accountCode      String     @map("account_code") @db.VarChar(20)
-  accountName      String     @map("account_name") @db.VarChar(100)
-  mappingCondition Json?      @map("mapping_condition")
-  isDefault        Boolean    @default(false) @map("is_default")
-  priority         Int        @default(50)
-  confidenceBoost  Decimal    @default(0.0) @map("confidence_boost") @db.Decimal(3, 2)
-  createdAt        DateTime   @default(now()) @map("created_at") @db.Timestamptz(6)
-  tag              TagsMaster @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  id                BigInt          @id @default(autoincrement())
+  tagId             BigInt          @map("tag_id")
+  accountCode       String          @map("account_code") @db.VarChar(20)
+  accountName       String          @map("account_name") @db.VarChar(100)
+  mappingCondition  Json?           @map("mapping_condition")
+  isDefault         Boolean?        @default(false) @map("is_default")
+  priority          Int?            @default(50)
+  confidenceBoost   Decimal?        @default(0.0) @map("confidence_boost") @db.Decimal(3, 2)
+  createdAt         DateTime?       @default(now()) @map("created_at") @db.Timestamptz(6)
+  chart_of_accounts ChartOfAccounts @relation(fields: [accountCode], references: [accountCode], onDelete: NoAction, onUpdate: NoAction)
+  tag               TagsMaster      @relation(fields: [tagId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  @@index([tagId], map: "idx_tag_account_mappings_tag")
-  @@index([accountCode], map: "idx_tag_account_mappings_account_code")
-  @@index([isDefault], map: "idx_tag_account_mappings_default")
   @@map("tag_account_mappings")
 }
 
-model UserQuestion {
-  id                  BigInt           @id @default(autoincrement())
-  triggerTagId        BigInt?          @map("trigger_tag_id")
-  triggerConditions   Json             @map("trigger_conditions")
-  questionText        String           @map("question_text")
-  questionType        String           @default("SINGLE_CHOICE") @map("question_type") @db.VarChar(20)
-  confidenceThreshold Decimal          @default(0.85) @map("confidence_threshold") @db.Decimal(3, 2)
-  isActive            Boolean          @default(true) @map("is_active")
-  usageCount          BigInt           @default(0) @map("usage_count")
-  createdAt           DateTime         @default(now()) @map("created_at") @db.Timestamptz(6)
-  questionOptions     QuestionOption[]
-  transactions        Transaction[]
-  tag                 TagsMaster?      @relation(fields: [triggerTagId], references: [id])
+model ChartOfAccounts {
+  id                   Int                  @id @default(autoincrement())
+  accountCode          String               @unique @map("account_code") @db.VarChar(10)
+  accountName          String               @map("account_name") @db.VarChar(100)
+  accountType          AccountType          @map("account_type")
+  accountSubtype       String?              @map("account_subtype") @db.VarChar(50)
+  isDebitNormal        Boolean              @map("is_debit_normal")
+  parentAccountId      Int?                 @map("parent_account_id")
+  isActive             Boolean?             @default(true) @map("is_active")
+  displayOrder         Int?                 @default(0) @map("display_order")
+  createdAt            DateTime?            @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt            DateTime?            @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  parentAccount        ChartOfAccounts?     @relation("AccountHierarchy", fields: [parentAccountId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  childAccounts        ChartOfAccounts[]    @relation("AccountHierarchy")
+  generalLedgers       GeneralLedger[]
+  journalEntryDetails  JournalEntryDetail[]
+  tag_account_mappings TagAccountMapping[]
 
-  @@index([triggerTagId], map: "idx_user_questions_trigger_tag")
-  @@index([isActive], map: "idx_user_questions_active")
-  @@index([questionType], map: "idx_user_questions_type")
-  @@map("user_questions")
+  @@map("chart_of_accounts")
 }
 
-model QuestionOption {
-  id             BigInt        @id @default(autoincrement())
-  questionId     BigInt        @map("question_id")
-  optionText     String        @map("option_text") @db.VarChar(200)
-  optionValue    Json          @map("option_value")
-  selectionCount BigInt        @default(0) @map("selection_count")
-  displayOrder   Int           @default(100) @map("display_order")
-  isActive       Boolean       @default(true) @map("is_active")
-  question       UserQuestion  @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  transactions   Transaction[]
+model GeneralLedger {
+  id                     BigInt          @id @default(autoincrement())
+  companyId              String          @map("company_id") @db.Uuid
+  accountCode            String          @map("account_code") @db.VarChar(20)
+  fiscalYear             Int             @map("fiscal_year")
+  fiscalMonth            Int             @map("fiscal_month")
+  beginningDebitBalance  Decimal?        @default(0) @map("beginning_debit_balance") @db.Decimal(18, 2)
+  beginningCreditBalance Decimal?        @default(0) @map("beginning_credit_balance") @db.Decimal(18, 2)
+  periodDebitAmount      Decimal?        @default(0) @map("period_debit_amount") @db.Decimal(18, 2)
+  periodCreditAmount     Decimal?        @default(0) @map("period_credit_amount") @db.Decimal(18, 2)
+  yearToDateDebit        Decimal?        @default(0) @map("year_to_date_debit") @db.Decimal(18, 2)
+  yearToDateCredit       Decimal?        @default(0) @map("year_to_date_credit") @db.Decimal(18, 2)
+  endingDebitBalance     Decimal?        @default(0) @map("ending_debit_balance") @db.Decimal(18, 2)
+  endingCreditBalance    Decimal?        @default(0) @map("ending_credit_balance") @db.Decimal(18, 2)
+  isClosed               Boolean?        @default(false) @map("is_closed")
+  closedAt               DateTime?       @map("closed_at") @db.Timestamptz(6)
+  createdAt              DateTime?       @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt              DateTime?       @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  chartOfAccount         ChartOfAccounts @relation(fields: [accountCode], references: [accountCode], onDelete: NoAction, onUpdate: NoAction)
+  company                Company         @relation(fields: [companyId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  glDetails              GlDetail[]
 
-  @@index([questionId], map: "idx_question_options_question")
-  @@index([displayOrder], map: "idx_question_options_display_order")
-  @@map("question_options")
+  @@unique([companyId, accountCode, fiscalYear, fiscalMonth])
+  @@index([companyId, fiscalYear], map: "idx_gl_company_year")
+  @@map("general_ledger")
 }
 
-model ConfidenceHistory {
-  id               BigInt       @id @default(autoincrement())
-  entityType       String       @map("entity_type") @db.VarChar(50)
-  entityId         BigInt       @map("entity_id")
-  oldConfidence    Decimal?     @map("old_confidence") @db.Decimal(3, 2)
-  newConfidence    Decimal      @map("new_confidence") @db.Decimal(3, 2)
-  adjustmentReason String?      @map("adjustment_reason") @db.VarChar(100)
-  adjustedBy       String?      @map("adjusted_by") @db.VarChar(50)
-  transactionId    BigInt?      @map("transaction_id")
-  createdAt        DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
-  transaction      Transaction? @relation(fields: [transactionId], references: [id])
+model GlDetail {
+  id              BigInt         @id @default(autoincrement())
+  generalLedgerId BigInt         @map("general_ledger_id")
+  journalEntryId  BigInt         @map("journal_entry_id")
+  postingDate     DateTime       @map("posting_date") @db.Date
+  debitAmount     Decimal?       @default(0) @map("debit_amount") @db.Decimal(18, 2)
+  creditAmount    Decimal?       @default(0) @map("credit_amount") @db.Decimal(18, 2)
+  runningBalance  Decimal        @map("running_balance") @db.Decimal(18, 2)
+  description     String?
+  createdAt       DateTime?      @default(now()) @map("created_at") @db.Timestamptz(6)
+  generalLedger   GeneralLedger  @relation(fields: [generalLedgerId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  journalEntry    JournalEntries @relation(fields: [journalEntryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@index([entityType, entityId], map: "idx_confidence_history_entity")
-  @@index([createdAt], map: "idx_confidence_history_created")
-  @@map("confidence_history")
+  @@map("gl_details")
 }
 
-model LlmRuleCandidate {
-  id                 BigInt    @id @default(autoincrement())
-  transactionSamples String[]  @map("transaction_samples")
-  suggestedPattern   String?   @map("suggested_pattern") @db.VarChar(500)
-  suggestedKeywords  String[]  @map("suggested_keywords")
-  suggestedTag       String?   @map("suggested_tag") @db.VarChar(100)
-  suggestedAccount   String?   @map("suggested_account") @db.VarChar(100)
-  occurrenceCount    Int       @default(1) @map("occurrence_count")
-  confidenceEstimate Decimal?  @map("confidence_estimate") @db.Decimal(3, 2)
-  status             String    @default("PENDING") @map("status") @db.VarChar(20)
-  reviewedBy         String?   @map("reviewed_by") @db.VarChar(50)
-  reviewedAt         DateTime? @map("reviewed_at") @db.Timestamptz(6)
-  createdAt          DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+model JournalEntries {
+  id                BigInt                      @id @default(autoincrement())
+  companyId         String                      @map("company_id") @db.Uuid
+  entryDate         DateTime                    @map("entry_date") @db.Date
+  description       String
+  totalDebitAmount  Decimal                     @map("total_debit_amount") @db.Decimal(18, 2)
+  totalCreditAmount Decimal                     @map("total_credit_amount") @db.Decimal(18, 2)
+  status            JournalEntryApprovalStatus? @default(DRAFT)
+  confidenceScore   Decimal?                    @map("confidence_score") @db.Decimal(5, 2)
+  postedAt          DateTime?                   @map("posted_at") @db.Timestamptz(6)
+  createdAt         DateTime?                   @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt         DateTime?                   @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  glDetails         GlDetail[]
+  company           Company                     @relation(fields: [companyId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  details           JournalEntryDetail[]
 
-  @@index([status], map: "idx_llm_rule_candidates_status")
-  @@index([occurrenceCount], map: "idx_llm_rule_candidates_occurrence")
-  @@index([createdAt], map: "idx_llm_rule_candidates_created")
-  @@map("llm_rule_candidates")
+  @@index([companyId, entryDate], map: "idx_journal_entries_company_date")
+  @@index([status], map: "idx_journal_entries_status")
+  @@map("journal_entries")
 }
 
-model TestTransactionString {
-  id                  BigInt    @id @default(autoincrement())
-  transactionText     String    @map("transaction_text")
-  amount              Int?      @map("amount")
-  formattedAmount     String?   @map("formatted_amount") @db.VarChar(50)
-  category            String?   @map("category") @db.VarChar(100)
-  expectedTag         String?   @map("expected_tag") @db.VarChar(100)
-  expectedAccountCode String?   @map("expected_account_code") @db.VarChar(20)
-  expectedAccountName String?   @map("expected_account_name") @db.VarChar(100)
-  description         String?   @map("description")
-  isActive            Boolean   @default(true) @map("is_active")
-  createdAt           DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt           DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
-  lastTestResult      Json?     @map("last_test_result")
-  lastTestAt          DateTime? @map("last_test_at") @db.Timestamptz(6)
-  isMatched           Boolean?  @map("is_matched")
+model JournalEntryDetail {
+  id             BigInt          @id @default(autoincrement())
+  journalEntryId BigInt          @map("journal_entry_id")
+  lineNumber     Int             @map("line_number")
+  accountCode    String          @map("account_code") @db.VarChar(20)
+  accountName    String          @map("account_name") @db.VarChar(100)
+  debitAmount    Decimal?        @default(0) @map("debit_amount") @db.Decimal(18, 2)
+  creditAmount   Decimal?        @default(0) @map("credit_amount") @db.Decimal(18, 2)
+  description    String?
+  costCenter     String?         @map("cost_center") @db.VarChar(50)
+  projectCode    String?         @map("project_code") @db.VarChar(50)
+  createdAt      DateTime?       @default(now()) @map("created_at") @db.Timestamptz(6)
+  chartOfAccount ChartOfAccounts @relation(fields: [accountCode], references: [accountCode], onDelete: NoAction, onUpdate: NoAction)
+  journalEntry   JournalEntries  @relation(fields: [journalEntryId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  @@index([category], map: "idx_test_transactions_category")
-  @@index([isActive], map: "idx_test_transactions_active")
-  @@index([isMatched], map: "idx_test_transactions_matched")
-  @@index([lastTestAt], map: "idx_test_transactions_last_test")
-  @@map("test_transaction_strings")
+  @@index([journalEntryId], map: "idx_journal_entry_details_entry_id")
+  @@map("journal_entry_details")
 }
 
 enum TaxpayerType {
@@ -446,35 +182,6 @@ enum TaxpayerType {
   @@map("taxpayer_type_enum")
 }
 
-enum RuleCreator {
-  ADMIN
-  AUTO_GENERATED
-
-  @@map("rule_creator_enum")
-}
-
-enum TransactionStatus {
-  NORMALIZED
-  RULE_PROCESSED
-  NEEDS_CLARIFICATION
-  LLM_PROCESSED
-  CLARIFIED
-  NEEDS_REVIEW
-
-  @@map("transaction_status_enum")
-}
-
-enum ProcessorType {
-  CACHE
-  REGEX_FILTER
-  INFERENCE_ML
-  NORMALIZER_LLM
-  RULE_ENGINE
-  ANALYZER_LLM
-
-  @@map("processor_type_enum")
-}
-
 enum TransactionIOType {
   EXPENSE
   INCOME
@@ -482,117 +189,22 @@ enum TransactionIOType {
   @@map("transaction_io_type")
 }
 
-// ===== 기장 시스템 관련 테이블들 =====
-
-model ChartOfAccounts {
-  id               Int                    @id @default(autoincrement())
-  accountCode      String                 @unique @map("account_code") @db.VarChar(10)
-  accountName      String                 @map("account_name") @db.VarChar(100)
-  accountType      AccountType            @map("account_type")
-  accountSubtype   String?                @map("account_subtype") @db.VarChar(50)
-  isDebitNormal    Boolean                @map("is_debit_normal")
-  parentAccountId  Int?                   @map("parent_account_id")
-  isActive         Boolean                @default(true) @map("is_active")
-  displayOrder     Int                    @default(0) @map("display_order")
-  createdAt        DateTime               @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt        DateTime               @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
-  parentAccount    ChartOfAccounts?       @relation("AccountHierarchy", fields: [parentAccountId], references: [id])
-  childAccounts    ChartOfAccounts[]      @relation("AccountHierarchy")
-  journalDetails   JournalEntryDetail[]
-
-  @@index([accountType], map: "idx_chart_of_accounts_type")
-  @@index([isActive], map: "idx_chart_of_accounts_active")
-  @@index([parentAccountId], map: "idx_chart_of_accounts_parent")
-  @@map("chart_of_accounts")
-}
-
-model JournalEntry {
-  id            BigInt               @id @default(autoincrement())
-  companyId     String               @map("company_id") @db.Uuid
-  entryDate     DateTime             @map("entry_date") @db.Date
-  description   String
-  referenceType String               @default("TRANSACTION") @map("reference_type") @db.VarChar(50)
-  referenceId   BigInt?              @map("reference_id")
-  totalAmount   BigInt               @map("total_amount")
-  status        JournalEntryStatus   @default(DRAFT)
-  createdBy     String?              @map("created_by") @db.VarChar(100)
-  createdAt     DateTime             @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt     DateTime             @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
-  company       Company              @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  details       JournalEntryDetail[]
-
-  @@index([companyId], map: "idx_journal_entries_company")
-  @@index([entryDate], map: "idx_journal_entries_date")
-  @@index([status], map: "idx_journal_entries_status")
-  @@index([referenceType, referenceId], map: "idx_journal_entries_reference")
-  @@map("journal_entries")
-}
-
-model JournalEntryDetail {
-  id              BigInt          @id @default(autoincrement())
-  journalEntryId  BigInt          @map("journal_entry_id")
-  lineNumber      Int             @map("line_number")
-  accountCode     String          @map("account_code") @db.VarChar(10)
-  debitAmount     BigInt          @default(0) @map("debit_amount")
-  creditAmount    BigInt          @default(0) @map("credit_amount")
-  description     String?
-  createdAt       DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
-  journalEntry    JournalEntry    @relation(fields: [journalEntryId], references: [id], onDelete: Cascade)
-  account         ChartOfAccounts @relation(fields: [accountCode], references: [accountCode])
-
-  @@index([journalEntryId], map: "idx_journal_entry_details_journal")
-  @@index([accountCode], map: "idx_journal_entry_details_account")
-  @@map("journal_entry_details")
-}
-
-model FinancialStatement {
-  id                BigInt                    @id @default(autoincrement())
-  companyId         String                    @map("company_id") @db.Uuid
-  statementType     FinancialStatementType    @map("statement_type")
-  periodStart       DateTime                  @map("period_start") @db.Date
-  periodEnd         DateTime                  @map("period_end") @db.Date
-  statementData     Json                      @map("statement_data")
-  generationStatus  FinancialGenerationStatus @default(GENERATING) @map("generation_status")
-  createdAt         DateTime                  @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt         DateTime                  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
-  company           Company                   @relation(fields: [companyId], references: [id], onDelete: Cascade)
-
-  @@index([companyId, periodStart, periodEnd], map: "idx_financial_statements_company_period")
-  @@index([statementType], map: "idx_financial_statements_type")
-  @@index([generationStatus], map: "idx_financial_statements_status")
-  @@map("financial_statements")
-}
-
 enum AccountType {
-  자산
-  부채
-  자본
-  수익
-  비용
+  ASSET      @map("자산")
+  LIABILITY  @map("부채")
+  EQUITY     @map("자본")
+  REVENUE    @map("수익")
+  EXPENSE    @map("비용")
 
   @@map("account_type_enum")
 }
 
-enum JournalEntryStatus {
+enum JournalEntryApprovalStatus {
   DRAFT
-  CONFIRMED
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
   POSTED
 
-  @@map("journal_entry_status_enum")
-}
-
-enum FinancialStatementType {
-  대차대조표
-  손익계산서
-  현금흐름표
-
-  @@map("financial_statement_type_enum")
-}
-
-enum FinancialGenerationStatus {
-  GENERATING
-  COMPLETED
-  ERROR
-
-  @@map("financial_generation_status_enum")
+  @@map("journal_entry_approval_status_enum")
 }

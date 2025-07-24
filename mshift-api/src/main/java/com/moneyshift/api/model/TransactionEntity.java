@@ -1,11 +1,21 @@
 package com.moneyshift.api.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDate;
 
 /**
  * 거래 내역 엔티티 (데이터베이스 transactions 테이블)
+ * MyBatis + Lombok + Builder 패턴
  */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TransactionEntity {
     
     @JsonProperty("id")
@@ -26,67 +36,47 @@ public class TransactionEntity {
     @JsonProperty("final_suggested_tag")
     private String finalSuggestedTag;
     
-    @JsonProperty("final_debit_account")
+    @JsonProperty("final_debit_account") 
     private String finalDebitAccount;
     
     @JsonProperty("final_credit_account")
     private String finalCreditAccount;
     
     @JsonProperty("transaction_type")
-    private String transactionType;
+    private String transactionType;  // "EXPENSE", "INCOME", "TRANSFER"
     
-    @JsonProperty("status")
-    private String status;
+    @JsonProperty("layer_matched")
+    private String layerMatched;  // "CACHE", "REGEX", "ML", "LLM"
+    
+    @JsonProperty("confidence_score")
+    private Double confidenceScore;
 
-    // 기본 생성자
-    public TransactionEntity() {}
-
-    // 생성자
-    public TransactionEntity(Long id, String companyId, String rawText, LocalDate transactionDate, 
-                           Long amount, String finalSuggestedTag, String transactionType) {
-        this.id = id;
-        this.companyId = companyId;
-        this.rawText = rawText;
-        this.transactionDate = transactionDate;
-        this.amount = amount;
-        this.finalSuggestedTag = finalSuggestedTag;
-        this.transactionType = transactionType;
+    /**
+     * 지출 거래인지 확인
+     */
+    public boolean isExpense() {
+        return "EXPENSE".equals(transactionType);
     }
 
-    // Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    /**
+     * 수입 거래인지 확인
+     */
+    public boolean isIncome() {
+        return "INCOME".equals(transactionType);
+    }
 
-    public String getCompanyId() { return companyId; }
-    public void setCompanyId(String companyId) { this.companyId = companyId; }
+    /**
+     * 거래 금액 (절댓값)
+     */
+    public Long getAbsoluteAmount() {
+        return amount != null ? Math.abs(amount) : 0L;
+    }
 
-    public String getRawText() { return rawText; }
-    public void setRawText(String rawText) { this.rawText = rawText; }
-
-    public LocalDate getTransactionDate() { return transactionDate; }
-    public void setTransactionDate(LocalDate transactionDate) { this.transactionDate = transactionDate; }
-
-    public Long getAmount() { return amount; }
-    public void setAmount(Long amount) { this.amount = amount; }
-
-    public String getFinalSuggestedTag() { return finalSuggestedTag; }
-    public void setFinalSuggestedTag(String finalSuggestedTag) { this.finalSuggestedTag = finalSuggestedTag; }
-
-    public String getFinalDebitAccount() { return finalDebitAccount; }
-    public void setFinalDebitAccount(String finalDebitAccount) { this.finalDebitAccount = finalDebitAccount; }
-
-    public String getFinalCreditAccount() { return finalCreditAccount; }
-    public void setFinalCreditAccount(String finalCreditAccount) { this.finalCreditAccount = finalCreditAccount; }
-
-    public String getTransactionType() { return transactionType; }
-    public void setTransactionType(String transactionType) { this.transactionType = transactionType; }
-
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
-
-    @Override
-    public String toString() {
-        return String.format("TransactionEntity{id=%d, companyId='%s', rawText='%s', transactionDate=%s, amount=%d, tag='%s', type='%s'}", 
-                           id, companyId, rawText, transactionDate, amount, finalSuggestedTag, transactionType);
+    /**
+     * 거래 설명 정리
+     */
+    public String getCleanDescription() {
+        if (rawText == null) return "";
+        return rawText.trim().replaceAll("\\s+", " ");
     }
 }

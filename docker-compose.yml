@@ -1,0 +1,62 @@
+# MoneyShift Development Environment
+# PostgreSQL + Redis 통합 관리
+services:
+  postgres:
+    image: postgres:15
+    container_name: moneyshift-postgres
+    environment:
+      POSTGRES_DB: moneyshift
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+      - ./scripts/pg_hba.conf:/var/lib/postgresql/data/pg_hba.conf
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d moneyshift"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    networks:
+      - moneyshift-network
+    command: ["postgres", "-c", "hba_file=/var/lib/postgresql/data/pg_hba.conf"]
+
+  redis:
+    image: redis:7-alpine
+    container_name: moneyshift-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - moneyshift-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+    driver: local
+    name: moneyshift_postgres_data
+  redis_data:
+    driver: local
+    name: moneyshift_redis_data
+
+networks:
+  moneyshift-network:
+    driver: bridge
+    name: moneyshift_network

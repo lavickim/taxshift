@@ -46,36 +46,8 @@ public class LayerProcessingResult {
     // 전체 매칭 결과
     private List<PatternMatch> allMatches;
     
-    // 편의 메서드
+    // 편의 메서드 (Lombok이 생성하는 getter/setter와 별도로 필요한 비즈니스 로직)
     public boolean isMatched() {
         return matched;
-    }
-    
-    public String getTag() {
-        return tag;
-    }
-    
-    public Long getTagId() {
-        return tagId;
-    }
-    
-    public double getConfidence() {
-        return confidence;
-    }
-    
-    public String getProcessingPath() {
-        return processingPath;
-    }
-    
-    public String getAccountCode() {
-        return accountCode;
-    }
-    
-    public String getAccountName() {
-        return accountName;
-    }
-    
-    public void setProcessingPath(String processingPath) {
-        this.processingPath = processingPath;
     }
 }

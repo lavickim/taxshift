@@ -47,9 +47,31 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,metrics,mappings
+        include: health,info,metrics,mappings,prometheus,httptrace
   endpoint:
     health:
       show-details: always
     mappings:
       enabled: true
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    tags:
+      application: mshift-api
+      service: accounting-engine
+    web:
+      server:
+        request:
+          autotime:
+            enabled: true
+            percentiles: 0.5,0.9,0.95,0.99
+    distribution:
+      percentiles-histogram:
+        http:
+          server:
+            requests: true

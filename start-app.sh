@@ -8,6 +8,17 @@ echo "================================="
 # mshift-app 디렉토리로 이동
 cd "$(dirname "$0")/mshift-app"
 
+# Expo 관련 포트들 자동 정리 (8081: Metro, 19002: Dev Tools)
+echo "🔥 Expo 관련 포트 정리 중..."
+for port in 8081 19002; do
+    PORT_PID=$(lsof -ti :$port 2>/dev/null)
+    if [ ! -z "$PORT_PID" ]; then
+        echo "🔥 포트 $port 기존 프로세스 종료 중... (PID: $PORT_PID)"
+        kill -9 $PORT_PID 2>/dev/null || true
+    fi
+done
+sleep 2
+
 # TDD 검증 실행
 echo "🧪 TDD 테스트 검증 중..."
 if ! ./start-with-tdd.sh --test-only; then
