@@ -281,10 +281,11 @@ public class VoucherTemplateService {
         }
 
         // 지원 형식 검증
-        if (template.getSupportedFormats() != null) {
-            for (String format : template.getSupportedFormats()) {
-                if (!format.matches("^(HTML|PDF|EXCEL)$")) {
-                    throw new IllegalArgumentException("지원하지 않는 출력 형식입니다: " + format);
+        if (template.getSupportedFormats() != null && !template.getSupportedFormats().trim().isEmpty()) {
+            String[] formats = template.getSupportedFormats().split(",");
+            for (String format : formats) {
+                if (!format.trim().matches("^(HTML|PDF|EXCEL)$")) {
+                    throw new IllegalArgumentException("지원하지 않는 출력 형식입니다: " + format.trim());
                 }
             }
         }
@@ -324,7 +325,7 @@ public class VoucherTemplateService {
                 .isActive(true)
                 .isDefault(true)
                 .version("1.0")
-                .supportedFormats(new String[]{"HTML", "PDF", "EXCEL"})
+                .supportedFormats("HTML,PDF,EXCEL")
                 .includeApproval(true)
                 .includeLogo(false)
                 .pageOrientation("PORTRAIT")
@@ -348,7 +349,7 @@ public class VoucherTemplateService {
                 .isActive(true)
                 .isDefault(true)
                 .version("1.0")
-                .supportedFormats(new String[]{"HTML", "PDF", "EXCEL"})
+                .supportedFormats("HTML,PDF,EXCEL")
                 .includeApproval(true)
                 .includeLogo(false)
                 .pageOrientation("PORTRAIT")
@@ -372,7 +373,7 @@ public class VoucherTemplateService {
                 .isActive(true)
                 .isDefault(true)
                 .version("1.0")
-                .supportedFormats(new String[]{"HTML", "PDF", "EXCEL"})
+                .supportedFormats("HTML,PDF,EXCEL")
                 .includeApproval(true)
                 .includeLogo(false)
                 .pageOrientation("PORTRAIT")
@@ -396,7 +397,7 @@ public class VoucherTemplateService {
                 .isActive(true)
                 .isDefault(true)
                 .version("1.0")
-                .supportedFormats(new String[]{"HTML", "PDF", "EXCEL"})
+                .supportedFormats("HTML,PDF,EXCEL")
                 .includeApproval(true)
                 .includeLogo(false)
                 .pageOrientation("PORTRAIT")

@@ -60,8 +60,8 @@ public class VoucherTemplate {
     @Builder.Default
     private String version = "1.0";
     
-    @Schema(description = "지원 출력 형식", example = "[\"HTML\", \"PDF\", \"EXCEL\"]")
-    private String[] supportedFormats;
+    @Schema(description = "지원 출력 형식", example = "HTML,PDF,EXCEL")
+    private String supportedFormats;
     
     @Schema(description = "결재란 포함 여부", example = "true")
     @Builder.Default
@@ -131,11 +131,12 @@ public class VoucherTemplate {
      * 특정 출력 형식 지원 여부 확인
      */
     public boolean supportsFormat(String format) {
-        if (supportedFormats == null) {
+        if (supportedFormats == null || supportedFormats.trim().isEmpty()) {
             return false;
         }
-        for (String supportedFormat : supportedFormats) {
-            if (supportedFormat.equalsIgnoreCase(format)) {
+        String[] formats = supportedFormats.split(",");
+        for (String supportedFormat : formats) {
+            if (supportedFormat.trim().equalsIgnoreCase(format)) {
                 return true;
             }
         }

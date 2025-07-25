@@ -16,7 +16,7 @@
         <result property="isActive" column="is_active"/>
         <result property="isDefault" column="is_default"/>
         <result property="version" column="version"/>
-        <result property="supportedFormats" column="supported_formats" typeHandler="com.moneyshift.api.config.StringArrayTypeHandler"/>
+        <result property="supportedFormats" column="supported_formats"/>
         <result property="includeApproval" column="include_approval"/>
         <result property="includeLogo" column="include_logo"/>
         <result property="pageOrientation" column="page_orientation"/>
@@ -41,7 +41,7 @@
             <if test="companyId != null">#{companyId}::uuid</if>
             <if test="companyId == null">NULL</if>,
             #{htmlTemplate}, #{cssStyles}, #{description},
-            #{isActive}, #{isDefault}, #{version}, #{supportedFormats},
+            #{isActive}, #{isDefault}, #{version}, #{supportedFormats}::text,
             #{includeApproval}, #{includeLogo}, #{pageOrientation},
             #{paperSize}, #{marginSettings}, #{createdBy}
         )
@@ -55,7 +55,7 @@
             html_template = #{htmlTemplate},
             css_styles = #{cssStyles},
             description = #{description},
-            supported_formats = #{supportedFormats},
+            supported_formats = #{supportedFormats}::text,
             include_approval = #{includeApproval},
             include_logo = #{includeLogo},
             page_orientation = #{pageOrientation},
