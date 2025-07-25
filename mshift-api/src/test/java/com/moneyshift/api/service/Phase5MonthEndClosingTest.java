@@ -60,7 +60,7 @@ public class Phase5MonthEndClosingTest {
         assertNotNull(result.getTrialBalance());
         assertNotNull(result.getFinancialStatements());
         assertTrue(result.getClosedAccountsCount() > 0);
-        assertTrue(result.getProcessingTimeMs() > 0);
+        assertTrue(result.getProcessingTimeMs() >= 0); // 타이밍 이슈로 0ms일 수 있음 (빠른 처리)
     }
 
     @Test
