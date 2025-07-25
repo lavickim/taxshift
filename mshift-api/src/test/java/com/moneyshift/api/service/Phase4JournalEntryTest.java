@@ -299,7 +299,7 @@ public class Phase4JournalEntryTest extends BaseTestClass {
                 .findFirst()
                 .orElse(null);
         assertNotNull(debitDetail);
-        assertEquals("5120", debitDetail.getAccountCode()); // 복리후생비
+        assertEquals("5204", debitDetail.getAccountCode()); // AccountCodeConfig 확장: 복리후생비 5120→5204
         assertEquals(new BigDecimal("50000"), debitDetail.getDebitAmount());
         
         // 대변: 보통예금

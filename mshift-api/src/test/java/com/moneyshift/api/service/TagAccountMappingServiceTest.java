@@ -549,7 +549,7 @@ class TagAccountMappingServiceTest {
         List<String> accountCodes = result.stream()
                 .map(TagAccountMappingController.AccountInfo::getAccountCode)
                 .toList();
-        assertThat(accountCodes).contains("5101", "5201", "5301", "5401", "5901");
+        assertThat(accountCodes).contains("5101", "5204", "5301", "5401", "5901"); // AccountCodeConfig 확장: 5201→5204
         
         // 모든 계정과목이 활성화 상태인지 확인
         assertThat(result).allMatch(TagAccountMappingController.AccountInfo::isActive);
