@@ -268,9 +268,9 @@ public class Phase5MonthEndClosingManagerTest extends BaseTestClass {
     @Order(2)
     @DisplayName("TDD 5-1-2: 시산표 불균형 시 마감이 불가능해야 함")
     void should_PreventClosing_When_TrialBalanceIsUnbalanced() {
-        // Given: 불균형 계정과목 먼저 생성
+        // Given: 불균형 계정과목 먼저 생성 (테스트용 임시 계정)
         ChartOfAccount unbalancedChartAccount = ChartOfAccount.builder()
-                .accountCode(generateAccountCode("9999"))
+                .accountCode(accountCodePrefix + "9999")
                 .accountName("테스트불균형계정")
                 .accountType("자산")
                 .isDebitNormal(true)
@@ -282,7 +282,7 @@ public class Phase5MonthEndClosingManagerTest extends BaseTestClass {
         // Given: 불균형 GL 계정 추가
         GeneralLedger unbalancedAccount = GeneralLedger.builder()
                 .companyId(testCompanyId)
-                .accountCode(generateAccountCode("9999"))
+                .accountCode(accountCodePrefix + "9999")
                 .fiscalYear(TEST_FISCAL_YEAR)
                 .fiscalMonth(TEST_FISCAL_MONTH)
                 .beginningDebitBalance(BigDecimal.ZERO)
@@ -764,12 +764,11 @@ public class Phase5MonthEndClosingManagerTest extends BaseTestClass {
 
     private void closeRevenueAccounts(String companyId, int fiscalYear, int fiscalMonth) {
         // 당기순이익 계정과목 생성 (없으면)
-        ChartOfAccount netIncomeAccount = createAccountFromConfig(AccountCodeConfig.Codes.CURRENT_YEAR_EARNINGS, 3500);
+        String netIncomeAccountCode = generateAccountCode(AccountCodeConfig.Codes.CURRENT_YEAR_EARNINGS);
         
-        try {
+        if (!chartOfAccountsMapper.existsByAccountCode(netIncomeAccountCode)) {
+            ChartOfAccount netIncomeAccount = createAccountFromConfig(AccountCodeConfig.Codes.CURRENT_YEAR_EARNINGS, 3500);
             chartOfAccountsMapper.insertAccount(netIncomeAccount);
-        } catch (Exception e) {
-            // 이미 존재하는 경우 무시
         }
 
         // 수익 계정 조회

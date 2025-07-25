@@ -404,9 +404,9 @@ public class Phase4JournalEntryManagerTest extends BaseTestClass {
         processTransactionToJournalEntry(testTransactionRequest);
         
         // Create another test company for comparison
-        String anotherCompanyId = java.util.UUID.randomUUID().toString();
         // 별도 회사는 자동 생성된 다른 테스트 회사 사용
         String anotherCompanyId = UUID.randomUUID().toString();
+        setupAdditionalTestCompany(anotherCompanyId);
         
         TransactionToJournalRequest anotherCompanyRequest = TransactionToJournalRequest.builder()
                 .transactionId(12347L)
@@ -464,9 +464,9 @@ public class Phase4JournalEntryManagerTest extends BaseTestClass {
     @DisplayName("TDD 4-4-3: 키워드로 분개 검색이 가능해야 함")
     void should_SearchJournalEntriesByKeyword_When_QueryingWithSearchTerm() {
         // Given: 격리된 회사에서 다양한 설명의 분개 생성
-        String searchTestCompanyId = java.util.UUID.randomUUID().toString();
         // 검색 테스트용 별도 회사 사용
         String searchTestCompanyId = UUID.randomUUID().toString();
+        setupAdditionalTestCompany(searchTestCompanyId);
         
         TransactionToJournalRequest officeRequest = testTransactionRequest.toBuilder()
                 .companyId(searchTestCompanyId)

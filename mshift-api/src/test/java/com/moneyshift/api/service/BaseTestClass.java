@@ -308,4 +308,28 @@ public abstract class BaseTestClass {
         }
         System.out.println("========================");
     }
+
+    /**
+     * 추가 테스트 회사 생성 (다중 회사 테스트용)
+     */
+    protected void setupAdditionalTestCompany(String companyId) {
+        try {
+            // 고유한 사업자등록번호 생성
+            String businessNumber = "ADDITIONAL-" + companyId.substring(0, 8);
+            
+            String insertSql = """
+                INSERT INTO companies (id, company_name, business_registration_number, taxpayer_type) 
+                VALUES (?::uuid, ?, ?, 'CORPORATION') 
+                ON CONFLICT (id) DO NOTHING
+                """;
+            
+            jdbcTemplate.update(insertSql, companyId, 
+                              "Additional Test Company " + companyId.substring(0, 8), 
+                              businessNumber);
+            
+            companyRegistry.put(companyId, true);
+        } catch (Exception e) {
+            throw new RuntimeException("추가 테스트 회사 생성 실패: " + e.getMessage(), e);
+        }
+    }
 }
