@@ -7,6 +7,7 @@ import com.moneyshift.api.service.AccountingEngine;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,10 +59,14 @@ public class Phase4JournalEntryManagerTest {
 
     @Autowired
     private ChartOfAccountsMapper chartOfAccountsMapper;
+    
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     // 테스트 데이터 상수
-    private static final String TEST_COMPANY_ID = "test-company-je";
+    private String TEST_COMPANY_ID;
     private static final LocalDate TEST_ENTRY_DATE = LocalDate.of(2025, 1, 15);
+    private String uniqueAccountPrefix;
 
     // 테스트용 거래 데이터
     private TransactionToJournalRequest testTransactionRequest;
@@ -74,14 +79,38 @@ public class Phase4JournalEntryManagerTest {
 
     @BeforeEach
     void setUp() {
+        // 각 테스트마다 고유한 ID 생성
+        TEST_COMPANY_ID = UUID.randomUUID().toString();
+        uniqueAccountPrefix = TEST_COMPANY_ID.substring(0, 8);
+        
         setupTestAccounts();
         setupTestTransactionRequest();
+    }
+    
+    @AfterEach
+    void tearDown() {
+        // 테스트 데이터 정리
+        cleanupTestData();
+    }
+    
+    private void cleanupTestData() {
+        try {
+            // 분개 데이터 삭제
+            jdbcTemplate.update("DELETE FROM journal_entry_details WHERE journal_entry_id IN " +
+                    "(SELECT id FROM journal_entries WHERE company_id = ?)", TEST_COMPANY_ID);
+            jdbcTemplate.update("DELETE FROM journal_entries WHERE company_id = ?", TEST_COMPANY_ID);
+            
+            // 계정과목 삭제 (고유 prefix로 시작하는 것들)
+            jdbcTemplate.update("DELETE FROM chart_of_accounts WHERE account_code LIKE ?", uniqueAccountPrefix + "%");
+        } catch (Exception e) {
+            System.err.println("테스트 데이터 정리 실패: " + e.getMessage());
+        }
     }
 
     private void setupTestAccounts() {
         // 현금 계정 (자산)
         cashAccount = ChartOfAccount.builder()
-                .accountCode("1000")
+                .accountCode(uniqueAccountPrefix + "1000")
                 .accountName("현금")
                 .accountType("자산")
                 .isDebitNormal(true)
@@ -91,7 +120,7 @@ public class Phase4JournalEntryManagerTest {
 
         // 사무용품비 계정 (비용)
         expenseAccount = ChartOfAccount.builder()
-                .accountCode("5000")
+                .accountCode(uniqueAccountPrefix + "5000")
                 .accountName("사무용품비")
                 .accountType("비용")
                 .isDebitNormal(true)
@@ -101,7 +130,7 @@ public class Phase4JournalEntryManagerTest {
 
         // 매출 계정 (수익)
         revenueAccount = ChartOfAccount.builder()
-                .accountCode("4000")
+                .accountCode(uniqueAccountPrefix + "4000")
                 .accountName("매출")
                 .accountType("수익")
                 .isDebitNormal(false)
@@ -111,7 +140,7 @@ public class Phase4JournalEntryManagerTest {
 
         // 미지급금 계정 (부채)
         liabilityAccount = ChartOfAccount.builder()
-                .accountCode("2000")
+                .accountCode(uniqueAccountPrefix + "2000")
                 .accountName("미지급금")
                 .accountType("부채")
                 .isDebitNormal(false)
@@ -119,14 +148,19 @@ public class Phase4JournalEntryManagerTest {
                 .displayOrder(20)
                 .build();
 
-        // 계정과목 등록
-        try {
-            chartOfAccountsMapper.insertAccount(cashAccount);
-            chartOfAccountsMapper.insertAccount(expenseAccount);
-            chartOfAccountsMapper.insertAccount(revenueAccount);
-            chartOfAccountsMapper.insertAccount(liabilityAccount);
-        } catch (Exception e) {
-            // 이미 존재하는 경우 무시
+        // 계정과목 등록 (중복 체크 후 삽입)
+        insertAccountIfNotExists(cashAccount);
+        insertAccountIfNotExists(expenseAccount);
+        insertAccountIfNotExists(revenueAccount);
+        insertAccountIfNotExists(liabilityAccount);
+    }
+    
+    private void insertAccountIfNotExists(ChartOfAccount account) {
+        String checkSql = "SELECT COUNT(*) FROM chart_of_accounts WHERE account_code = ?";
+        Integer count = jdbcTemplate.queryForObject(checkSql, Integer.class, account.getAccountCode());
+        
+        if (count == null || count == 0) {
+            chartOfAccountsMapper.insertAccount(account);
         }
     }
 
@@ -264,7 +298,7 @@ public class Phase4JournalEntryManagerTest {
                 JournalEntryDetail.builder()
                         .journalEntryId(unbalancedEntry.getId())
                         .lineNumber(1)
-                        .accountCode("5000")
+                        .accountCode(uniqueAccountPrefix + "5000")
                         .accountName("사무용품비")
                         .debitAmount(new BigDecimal("100000"))
                         .creditAmount(BigDecimal.ZERO)
@@ -273,7 +307,7 @@ public class Phase4JournalEntryManagerTest {
                 JournalEntryDetail.builder()
                         .journalEntryId(unbalancedEntry.getId())
                         .lineNumber(2)
-                        .accountCode("1000")
+                        .accountCode(uniqueAccountPrefix + "1000")
                         .accountName("현금")
                         .debitAmount(BigDecimal.ZERO)
                         .creditAmount(new BigDecimal("50000")) // 불균형!

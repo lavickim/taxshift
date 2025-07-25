@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,9 +52,9 @@ import static org.assertj.core.api.Assertions.*;
  */
 @SpringBootTest
 @ActiveProfiles("test")
-@Transactional
 @DisplayName("Phase 5: 월말마감(Month-End Closing) 처리 TDD 구현")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class Phase5MonthEndClosingManagerTest {
 
     @Autowired
@@ -72,10 +73,11 @@ public class Phase5MonthEndClosingManagerTest {
     private JdbcTemplate jdbcTemplate;
 
     // 테스트 데이터 상수
-    private static final String TEST_COMPANY_ID = UUID.randomUUID().toString();
+    private String TEST_COMPANY_ID;
     private static final int TEST_FISCAL_YEAR = 2025;
     private static final int TEST_FISCAL_MONTH = 1;
     private static final LocalDate TEST_CLOSING_DATE = LocalDate.of(2025, 1, 31);
+    private String uniqueAccountPrefix;
 
     // 테스트용 계정과목 데이터
     private ChartOfAccount cashAccount;         // 1000 - 현금 (자산)
@@ -91,10 +93,15 @@ public class Phase5MonthEndClosingManagerTest {
 
     @BeforeEach
     void setUp() {
+        // 각 테스트마다 고유한 ID 생성
+        TEST_COMPANY_ID = UUID.randomUUID().toString();
+        uniqueAccountPrefix = TEST_COMPANY_ID.substring(0, 8);
+        
         setupTestCompany();
         setupTestAccounts();
         setupTestGLAccounts();
     }
+    
 
     private void setupTestCompany() {
         // 테스트용 회사가 이미 존재하는지 확인
@@ -113,9 +120,9 @@ public class Phase5MonthEndClosingManagerTest {
     }
 
     private void setupTestAccounts() {
-        // 자산 계정들
+        // 자산 계정들 (고유한 계정코드 사용)
         cashAccount = ChartOfAccount.builder()
-                .accountCode("1000")
+                .accountCode(uniqueAccountPrefix + "1000")
                 .accountName("현금")
                 .accountType("자산")
                 .isDebitNormal(true)
@@ -124,7 +131,7 @@ public class Phase5MonthEndClosingManagerTest {
                 .build();
 
         inventoryAccount = ChartOfAccount.builder()
-                .accountCode("1300")
+                .accountCode(uniqueAccountPrefix + "1300")
                 .accountName("재고자산")
                 .accountType("자산")
                 .isDebitNormal(true)
@@ -134,7 +141,7 @@ public class Phase5MonthEndClosingManagerTest {
 
         // 부채 계정
         liabilityAccount = ChartOfAccount.builder()
-                .accountCode("2000")
+                .accountCode(uniqueAccountPrefix + "2000")
                 .accountName("미지급금")
                 .accountType("부채")
                 .isDebitNormal(false)
@@ -144,7 +151,7 @@ public class Phase5MonthEndClosingManagerTest {
 
         // 자본 계정들
         capitalAccount = ChartOfAccount.builder()
-                .accountCode("3000")
+                .accountCode(uniqueAccountPrefix + "3000")
                 .accountName("자본금")
                 .accountType("자본")
                 .isDebitNormal(false)
@@ -153,7 +160,7 @@ public class Phase5MonthEndClosingManagerTest {
                 .build();
 
         netIncomeAccount = ChartOfAccount.builder()
-                .accountCode("3500")
+                .accountCode(uniqueAccountPrefix + "3500")
                 .accountName("당기순이익")
                 .accountType("자본")
                 .isDebitNormal(false)
@@ -163,7 +170,7 @@ public class Phase5MonthEndClosingManagerTest {
 
         // 수익 계정
         revenueAccount = ChartOfAccount.builder()
-                .accountCode("4000")
+                .accountCode(uniqueAccountPrefix + "4000")
                 .accountName("매출")
                 .accountType("수익")
                 .isDebitNormal(false)
@@ -173,7 +180,7 @@ public class Phase5MonthEndClosingManagerTest {
 
         // 비용 계정
         expenseAccount = ChartOfAccount.builder()
-                .accountCode("5000")
+                .accountCode(uniqueAccountPrefix + "5000")
                 .accountName("사무용품비")
                 .accountType("비용")
                 .isDebitNormal(true)
@@ -181,17 +188,22 @@ public class Phase5MonthEndClosingManagerTest {
                 .displayOrder(50)
                 .build();
 
-        // 계정과목 등록
-        try {
-            chartOfAccountsMapper.insertAccount(cashAccount);
-            chartOfAccountsMapper.insertAccount(inventoryAccount);
-            chartOfAccountsMapper.insertAccount(liabilityAccount);
-            chartOfAccountsMapper.insertAccount(capitalAccount);
-            chartOfAccountsMapper.insertAccount(netIncomeAccount);
-            chartOfAccountsMapper.insertAccount(revenueAccount);
-            chartOfAccountsMapper.insertAccount(expenseAccount);
-        } catch (Exception e) {
-            // 이미 존재하는 경우 무시
+        // 계정과목 등록 (중복 체크 후 삽입)
+        insertAccountIfNotExists(cashAccount);
+        insertAccountIfNotExists(inventoryAccount);
+        insertAccountIfNotExists(liabilityAccount);
+        insertAccountIfNotExists(capitalAccount);
+        insertAccountIfNotExists(netIncomeAccount);
+        insertAccountIfNotExists(revenueAccount);
+        insertAccountIfNotExists(expenseAccount);
+    }
+    
+    private void insertAccountIfNotExists(ChartOfAccount account) {
+        String checkSql = "SELECT COUNT(*) FROM chart_of_accounts WHERE account_code = ?";
+        Integer count = jdbcTemplate.queryForObject(checkSql, Integer.class, account.getAccountCode());
+        
+        if (count == null || count == 0) {
+            chartOfAccountsMapper.insertAccount(account);
         }
     }
 
@@ -200,7 +212,7 @@ public class Phase5MonthEndClosingManagerTest {
                 // 현금 계정 (자산) - 차변 잔액
                 GeneralLedger.builder()
                         .companyId(TEST_COMPANY_ID)
-                        .accountCode("1000")
+                        .accountCode(uniqueAccountPrefix + "1000")
                         .fiscalYear(TEST_FISCAL_YEAR)
                         .fiscalMonth(TEST_FISCAL_MONTH)
                         .beginningDebitBalance(new BigDecimal("1000000"))
@@ -217,7 +229,7 @@ public class Phase5MonthEndClosingManagerTest {
                 // 재고자산 계정 (자산) - 차변 잔액
                 GeneralLedger.builder()
                         .companyId(TEST_COMPANY_ID)
-                        .accountCode("1300")
+                        .accountCode(uniqueAccountPrefix + "1300")
                         .fiscalYear(TEST_FISCAL_YEAR)
                         .fiscalMonth(TEST_FISCAL_MONTH)
                         .beginningDebitBalance(new BigDecimal("800000"))
@@ -234,7 +246,7 @@ public class Phase5MonthEndClosingManagerTest {
                 // 미지급금 계정 (부채) - 대변 잔액
                 GeneralLedger.builder()
                         .companyId(TEST_COMPANY_ID)
-                        .accountCode("2000")
+                        .accountCode(uniqueAccountPrefix + "2000")
                         .fiscalYear(TEST_FISCAL_YEAR)
                         .fiscalMonth(TEST_FISCAL_MONTH)
                         .beginningDebitBalance(BigDecimal.ZERO)
@@ -251,7 +263,7 @@ public class Phase5MonthEndClosingManagerTest {
                 // 자본금 계정 (자본) - 대변 잔액
                 GeneralLedger.builder()
                         .companyId(TEST_COMPANY_ID)
-                        .accountCode("3000")
+                        .accountCode(uniqueAccountPrefix + "3000")
                         .fiscalYear(TEST_FISCAL_YEAR)
                         .fiscalMonth(TEST_FISCAL_MONTH)
                         .beginningDebitBalance(BigDecimal.ZERO)
@@ -268,7 +280,7 @@ public class Phase5MonthEndClosingManagerTest {
                 // 매출 계정 (수익) - 대변 잔액
                 GeneralLedger.builder()
                         .companyId(TEST_COMPANY_ID)
-                        .accountCode("4000")
+                        .accountCode(uniqueAccountPrefix + "4000")
                         .fiscalYear(TEST_FISCAL_YEAR)
                         .fiscalMonth(TEST_FISCAL_MONTH)
                         .beginningDebitBalance(BigDecimal.ZERO)
@@ -285,7 +297,7 @@ public class Phase5MonthEndClosingManagerTest {
                 // 사무용품비 계정 (비용) - 차변 잔액
                 GeneralLedger.builder()
                         .companyId(TEST_COMPANY_ID)
-                        .accountCode("5000")
+                        .accountCode(uniqueAccountPrefix + "5000")
                         .fiscalYear(TEST_FISCAL_YEAR)
                         .fiscalMonth(TEST_FISCAL_MONTH)
                         .beginningDebitBalance(BigDecimal.ZERO)
@@ -340,10 +352,21 @@ public class Phase5MonthEndClosingManagerTest {
     @Order(2)
     @DisplayName("TDD 5-1-2: 시산표 불균형 시 마감이 불가능해야 함")
     void should_PreventClosing_When_TrialBalanceIsUnbalanced() {
+        // Given: 불균형 계정과목 먼저 생성
+        ChartOfAccount unbalancedChartAccount = ChartOfAccount.builder()
+                .accountCode(uniqueAccountPrefix + "9999")
+                .accountName("테스트불균형계정")
+                .accountType("자산")
+                .isDebitNormal(true)
+                .isActive(true)
+                .displayOrder(99)
+                .build();
+        insertAccountIfNotExists(unbalancedChartAccount);
+        
         // Given: 불균형 GL 계정 추가
         GeneralLedger unbalancedAccount = GeneralLedger.builder()
                 .companyId(TEST_COMPANY_ID)
-                .accountCode("9999")
+                .accountCode(uniqueAccountPrefix + "9999")
                 .fiscalYear(TEST_FISCAL_YEAR)
                 .fiscalMonth(TEST_FISCAL_MONTH)
                 .beginningDebitBalance(BigDecimal.ZERO)
@@ -460,14 +483,14 @@ public class Phase5MonthEndClosingManagerTest {
 
         // Then: 수익 계정 잔액이 0이 되어야 함
         GeneralLedger revenueGL = generalLedgerMapper.findGeneralLedgerAccount(
-                TEST_COMPANY_ID, "4000", TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+                TEST_COMPANY_ID, uniqueAccountPrefix + "4000", TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
         
         assertThat(revenueGL.getEndingDebitBalance()).isEqualByComparingTo(BigDecimal.ZERO);
         assertThat(revenueGL.getEndingCreditBalance()).isEqualByComparingTo(BigDecimal.ZERO);
 
         // 당기순이익 계정에 수익이 대변에 반영되어야 함
         GeneralLedger netIncomeGL = generalLedgerMapper.findGeneralLedgerAccount(
-                TEST_COMPANY_ID, "3500", TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+                TEST_COMPANY_ID, uniqueAccountPrefix + "3500", TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
         
         assertThat(netIncomeGL).isNotNull();
         assertThat(netIncomeGL.getEndingCreditBalance()).isEqualByComparingTo(new BigDecimal("750000"));
@@ -485,14 +508,14 @@ public class Phase5MonthEndClosingManagerTest {
 
         // Then: 비용 계정 잔액이 0이 되어야 함
         GeneralLedger expenseGL = generalLedgerMapper.findGeneralLedgerAccount(
-                TEST_COMPANY_ID, "5000", TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+                TEST_COMPANY_ID, uniqueAccountPrefix + "5000", TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
         
         assertThat(expenseGL.getEndingDebitBalance()).isEqualByComparingTo(BigDecimal.ZERO);
         assertThat(expenseGL.getEndingCreditBalance()).isEqualByComparingTo(BigDecimal.ZERO);
 
         // 당기순이익 계정에 최종 순이익이 반영되어야 함
         GeneralLedger netIncomeGL = generalLedgerMapper.findGeneralLedgerAccount(
-                TEST_COMPANY_ID, "3500", TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+                TEST_COMPANY_ID, uniqueAccountPrefix + "3500", TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
         
         // 순이익 = 수익(750000) - 비용(90000) = 660000
         assertThat(netIncomeGL.getEndingCreditBalance()).isEqualByComparingTo(new BigDecimal("660000"));
@@ -598,7 +621,7 @@ public class Phase5MonthEndClosingManagerTest {
 
         // 현금 계정 이월 확인
         GeneralLedger nextMonthCash = generalLedgerMapper.findGeneralLedgerAccount(
-                TEST_COMPANY_ID, "1000", TEST_FISCAL_YEAR, TEST_FISCAL_MONTH + 1);
+                TEST_COMPANY_ID, uniqueAccountPrefix + "1000", TEST_FISCAL_YEAR, TEST_FISCAL_MONTH + 1);
 
         assertThat(nextMonthCash).isNotNull();
         assertThat(nextMonthCash.getBeginningDebitBalance()).isEqualByComparingTo(new BigDecimal("1300000"));
@@ -617,7 +640,7 @@ public class Phase5MonthEndClosingManagerTest {
 
         // When: 부채 계정 이월 확인
         GeneralLedger nextMonthLiability = generalLedgerMapper.findGeneralLedgerAccount(
-                TEST_COMPANY_ID, "2000", TEST_FISCAL_YEAR, TEST_FISCAL_MONTH + 1);
+                TEST_COMPANY_ID, uniqueAccountPrefix + "2000", TEST_FISCAL_YEAR, TEST_FISCAL_MONTH + 1);
 
         // Then: 부채 계정이 정확히 이월되어야 함
         assertThat(nextMonthLiability).isNotNull();
@@ -626,7 +649,7 @@ public class Phase5MonthEndClosingManagerTest {
 
         // When: 자본 계정 이월 확인 (당기순이익 포함)
         GeneralLedger nextMonthNetIncome = generalLedgerMapper.findGeneralLedgerAccount(
-                TEST_COMPANY_ID, "3500", TEST_FISCAL_YEAR, TEST_FISCAL_MONTH + 1);
+                TEST_COMPANY_ID, uniqueAccountPrefix + "3500", TEST_FISCAL_YEAR, TEST_FISCAL_MONTH + 1);
 
         // Then: 당기순이익이 차기월로 이월되어야 함
         assertThat(nextMonthNetIncome).isNotNull();
@@ -643,10 +666,10 @@ public class Phase5MonthEndClosingManagerTest {
 
         // When: 수익 계정 조회 시도
         GeneralLedger nextMonthRevenue = generalLedgerMapper.findGeneralLedgerAccount(
-                TEST_COMPANY_ID, "4000", TEST_FISCAL_YEAR, TEST_FISCAL_MONTH + 1);
+                TEST_COMPANY_ID, uniqueAccountPrefix + "4000", TEST_FISCAL_YEAR, TEST_FISCAL_MONTH + 1);
 
         GeneralLedger nextMonthExpense = generalLedgerMapper.findGeneralLedgerAccount(
-                TEST_COMPANY_ID, "5000", TEST_FISCAL_YEAR, TEST_FISCAL_MONTH + 1);
+                TEST_COMPANY_ID, uniqueAccountPrefix + "5000", TEST_FISCAL_YEAR, TEST_FISCAL_MONTH + 1);
 
         // Then: 수익과 비용 계정은 이월되지 않아야 함 (또는 0 잔액으로 이월)
         if (nextMonthRevenue != null) {
@@ -817,7 +840,7 @@ public class Phase5MonthEndClosingManagerTest {
     private void closeRevenueAccounts(String companyId, int fiscalYear, int fiscalMonth) {
         // 3500 당기순이익 계정과목 생성 (없으면)
         ChartOfAccount netIncomeAccount = ChartOfAccount.builder()
-                .accountCode("3500")
+                .accountCode(uniqueAccountPrefix + "3500")
                 .accountName("당기순이익")
                 .accountType("자본")
                 .accountSubtype("이익잉여금")
@@ -835,7 +858,7 @@ public class Phase5MonthEndClosingManagerTest {
 
         // 수익 계정 조회
         List<GeneralLedger> revenueAccounts = generalLedgerMapper.findGeneralLedgerAccounts(
-                companyId, fiscalYear, fiscalMonth, Arrays.asList("4000"), false);
+                companyId, fiscalYear, fiscalMonth, Arrays.asList(uniqueAccountPrefix + "4000"), false);
 
         // 각 수익 계정을 당기순이익으로 대체
         for (GeneralLedger revenueAccount : revenueAccounts) {
@@ -843,7 +866,7 @@ public class Phase5MonthEndClosingManagerTest {
                 // 당기순이익 계정 생성 또는 업데이트
                 GeneralLedger netIncomeGL = GeneralLedger.builder()
                         .companyId(companyId)
-                        .accountCode("3500")
+                        .accountCode(uniqueAccountPrefix + "3500")
                         .fiscalYear(fiscalYear)
                         .fiscalMonth(fiscalMonth)
                         .beginningDebitBalance(BigDecimal.ZERO)
@@ -860,7 +883,7 @@ public class Phase5MonthEndClosingManagerTest {
                 generalLedgerMapper.insertGeneralLedgerAccount(netIncomeGL);
 
                 // 수익 계정 잔액을 0으로 만들기 - DB에 반영
-                generalLedgerMapper.resetGeneralLedgerBalance(companyId, "4000", fiscalYear, fiscalMonth);
+                generalLedgerMapper.resetGeneralLedgerBalance(companyId, uniqueAccountPrefix + "4000", fiscalYear, fiscalMonth);
             }
         }
     }
@@ -868,11 +891,11 @@ public class Phase5MonthEndClosingManagerTest {
     private void closeExpenseAccounts(String companyId, int fiscalYear, int fiscalMonth) {
         // 비용 계정 조회
         List<GeneralLedger> expenseAccounts = generalLedgerMapper.findGeneralLedgerAccounts(
-                companyId, fiscalYear, fiscalMonth, Arrays.asList("5000"), false);
+                companyId, fiscalYear, fiscalMonth, Arrays.asList(uniqueAccountPrefix + "5000"), false);
 
         // 당기순이익 계정 조회
         GeneralLedger netIncomeAccount = generalLedgerMapper.findGeneralLedgerAccount(
-                companyId, "3500", fiscalYear, fiscalMonth);
+                companyId, uniqueAccountPrefix + "3500", fiscalYear, fiscalMonth);
 
         // 각 비용 계정을 당기순이익에서 차감
         for (GeneralLedger expenseAccount : expenseAccounts) {
@@ -884,7 +907,7 @@ public class Phase5MonthEndClosingManagerTest {
                     
                     // 당기순이익 계정 직접 업데이트
                     generalLedgerMapper.updateGeneralLedgerBalanceDirectly(
-                            companyId, "3500", fiscalYear, fiscalMonth,
+                            companyId, uniqueAccountPrefix + "3500", fiscalYear, fiscalMonth,
                             BigDecimal.ZERO, newNetIncome,
                             BigDecimal.ZERO, newNetIncome,
                             BigDecimal.ZERO, newNetIncome
@@ -892,7 +915,7 @@ public class Phase5MonthEndClosingManagerTest {
                 }
 
                 // 비용 계정 잔액을 0으로 만들기 - DB에 반영
-                generalLedgerMapper.resetGeneralLedgerBalance(companyId, "5000", fiscalYear, fiscalMonth);
+                generalLedgerMapper.resetGeneralLedgerBalance(companyId, uniqueAccountPrefix + "5000", fiscalYear, fiscalMonth);
             }
         }
     }

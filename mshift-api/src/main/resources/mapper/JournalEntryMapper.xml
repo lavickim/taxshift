@@ -15,7 +15,6 @@
         <result property="confidenceScore" column="confidence_score"/>
         <result property="createdAt" column="created_at"/>
         <result property="updatedAt" column="updated_at"/>
-        <result property="approvedAt" column="approved_at"/>
         <result property="postedAt" column="posted_at"/>
         <collection property="details" ofType="com.moneyshift.api.model.JournalEntryDetail">
             <id property="id" column="detail_id"/>
@@ -84,7 +83,7 @@
         SELECT 
             je.id, je.company_id, je.entry_date, je.description,
             je.total_debit_amount, je.total_credit_amount, je.status,
-            je.confidence_score, je.created_at, je.updated_at, je.approved_at, je.posted_at,
+            je.confidence_score, je.created_at, je.updated_at, je.posted_at,
             jed.id as detail_id, jed.journal_entry_id, jed.line_number,
             jed.account_code, jed.account_name, jed.debit_amount, jed.credit_amount,
             jed.description as detail_description
@@ -160,7 +159,6 @@
         UPDATE journal_entries 
         SET status = #{status}::journal_entry_status,
             <if test="status == 'APPROVED'">
-                approved_at = CURRENT_TIMESTAMP,
             </if>
             <if test="status == 'POSTED'">
                 posted_at = CURRENT_TIMESTAMP,

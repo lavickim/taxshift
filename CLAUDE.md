@@ -105,3 +105,8 @@ cd mshift-api && mvn test -Dtest=ClassName # Run specific Java test
 
 ### Commit and Documentation
 - 구분할 만한 작업이 끝나면 작업 요약해서 머밋해 깃에 커밋해룰에 기록해놔
+
+- 앞으로 깃에 커밋할때는 클로드가 다운될때를 대비해서 항상 이 문서를 이런 형식으로 업데이트 하게 기억해놔.
+
+### Test Files
+- 테스트 파일은 루트에 있는 스크립트야.
