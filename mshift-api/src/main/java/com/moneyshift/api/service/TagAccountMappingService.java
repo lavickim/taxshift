@@ -344,7 +344,7 @@ public class TagAccountMappingService {
         
         // 샘플 계정과목 데이터
         accounts.add(createAccountInfo("5101", "접대비", "판매비", "고객 및 거래처 접대 비용", true));
-        accounts.add(createAccountInfo("5201", "복리후생비", "판매비", "직원 복리후생 비용", true));
+        accounts.add(createAccountInfo("5204", "복리후생비", "판매비", "직원 복리후생 비용", true)); // AccountCodeConfig 확장: 5201→5204
         accounts.add(createAccountInfo("5301", "여비교통비", "판매비", "출장 및 교통비용", true));
         accounts.add(createAccountInfo("5401", "회의비", "판매비", "회의 관련 비용", true));
         accounts.add(createAccountInfo("5901", "기타비용", "판매비", "기타 잡비", true));
@@ -551,7 +551,7 @@ public class TagAccountMappingService {
             switch (tagName) {
                 case "커피전문점":
                 case "커피":
-                    return "5120"; // 복리후생비
+                    return "5204"; // AccountCodeConfig 확장: 복리후생비 5120→5204
                     
                 case "주유소":
                 case "차량유지":
@@ -580,8 +580,9 @@ public class TagAccountMappingService {
                     }
                     
                 case "통신":
+                case "통신비":
                 case "휴대폰":
-                    return "5150"; // 통신비
+                    return "5213"; // AccountCodeConfig 확장: 통신비 5150→5213
                     
                 case "교육":
                 case "학원":

@@ -14,8 +14,8 @@
         <result property="parentAccountId" column="parent_account_id"/>
         <result property="isActive" column="is_active"/>
         <result property="displayOrder" column="display_order"/>
-        <result property="createdAt" column="created_at" typeHandler="com.moneyshift.api.config.LocalDateTimeTypeHandler"/>
-        <result property="updatedAt" column="updated_at" typeHandler="com.moneyshift.api.config.LocalDateTimeTypeHandler"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
     </resultMap>
 
     <!-- 전체 활성 계정과목 조회 -->

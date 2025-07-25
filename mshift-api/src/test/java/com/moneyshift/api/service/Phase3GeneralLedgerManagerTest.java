@@ -470,9 +470,10 @@ public class Phase3GeneralLedgerManagerTest extends BaseTestClass {
 
         assertThat(nextMonthAccounts).isNotEmpty();
         assertThat(nextMonthAccounts).allMatch(account -> !account.getIsClosed());
+        // BigDecimal 비교 시 compareTo 사용 (scale 차이로 인한 equals 실패 방지)
         assertThat(nextMonthAccounts).allMatch(account -> 
-                account.getPeriodDebitAmount().equals(BigDecimal.ZERO) &&
-                account.getPeriodCreditAmount().equals(BigDecimal.ZERO));
+                account.getPeriodDebitAmount().compareTo(BigDecimal.ZERO) == 0 &&
+                account.getPeriodCreditAmount().compareTo(BigDecimal.ZERO) == 0);
     }
 
     // =============================================================================

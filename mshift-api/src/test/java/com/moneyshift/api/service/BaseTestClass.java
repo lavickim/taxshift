@@ -137,7 +137,7 @@ public abstract class BaseTestClass {
         
         // AccountingEngine에서 사용하는 추가 계정들
         createAccountIfNotExists("1120", "보통예금", "자산", true);
-        createAccountIfNotExists("5120", "복리후생비", "비용", true);
+        createAccountIfNotExists("5204", "복리후생비", "비용", true); // AccountCodeConfig 확장: 5120→5204
         createAccountIfNotExists("4110", "매출", "수익", false);
         createAccountIfNotExists("5130", "소모품비", "비용", true);
     }

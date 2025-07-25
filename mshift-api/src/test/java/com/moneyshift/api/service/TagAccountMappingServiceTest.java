@@ -618,7 +618,7 @@ class TagAccountMappingServiceTest {
         String result = tagAccountMappingService.getAccountCodeByTag(tagName, testTransaction);
 
         // Then
-        assertThat(result).isEqualTo("5120"); // 복리후생비
+        assertThat(result).isEqualTo("5204"); // AccountCodeConfig 확장: 복리후생비 5120→5204
     }
 
     @Test

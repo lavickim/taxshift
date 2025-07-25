@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  * Layer 0: Redis 캐시 (즉시 응답)
  * Layer 1: Regex 패턴 매칭 (95% 정확도 목표)
  * Layer 2: ML 추론 (향후 통합 예정)
- * Layer 3: LLM 폴백 (Gemini AI)
+ * Layer 3: LLM 폴백 (Gemini AI) - ⚠️ TODO: 아직 미구현 (Claude가 표시)
  * 
  * 처리 흐름:
  * 1. 캐시 조회 → 2. 키워드 추출 → 3. 태그 매칭 → 4. 계정과목 도출 → 5. 사용자 질문 (필요시)
@@ -83,10 +83,11 @@ public class TransactionTaggingService {
                     result = buildResultFromLayer2(layer2Result, request);
                     result.setProcessingPath("ML_INFERENCE");
                 } else {
-                    // Layer 3: LLM 폴백
+                    // Layer 3: LLM 폴백 - ⚠️ TODO: 아직 미구현 (Claude가 표시)
                     LayerProcessingResult layer3Result = processLayer3(request);
                     result.getProcessingLayers().add(layer3Result);
                     
+                    // ⚠️ 주의: LLM 미구현으로 빈 결과 반환 (Claude가 표시)
                     result = buildResultFromLayer3(layer3Result, request);
                     result.setProcessingPath("LLM_FALLBACK");
                 }
@@ -200,15 +201,23 @@ public class TransactionTaggingService {
     }
     
     /**
-     * Layer 3: LLM 폴백 (향후 구현)
+     * Layer 3: LLM 폴백 (Gemini AI)
+     * ⚠️ TODO: 아직 미구현 - Gemini AI 연동 필요 (Claude가 표시)
+     * 
+     * 향후 구현 예정 기능:
+     * 1. Gemini AI API 호출
+     * 2. 자연어 기반 거래 분류
+     * 3. 비정형 텍스트 패턴 매칭
+     * 4. 컴텍스트 기반 계정과목 추천
      */
     private LayerProcessingResult processLayer3(TransactionTaggingRequest request) {
-        log.debug("Layer 3 처리: LLM 폴백 (현재 미구현)");
+        log.debug("Layer 3 처리: LLM 폴백 (현재 미구현) - Claude가 표시");
         
+        // ⚠️ 주의: LLM 미구현으로 빈 결과 반환 (Claude가 표시)
         return LayerProcessingResult.builder()
                 .layerName("LLM_FALLBACK")
                 .successful(false)
-                .reason("LLM fallback not yet implemented")
+                .reason("⚠️ LLM fallback not yet implemented - Gemini AI integration needed (Claude marked)")
                 .processingTimeMs(0L)
                 .build();
     }
@@ -243,11 +252,17 @@ public class TransactionTaggingService {
     }
     
     /**
-     * Layer 3 결과로부터 최종 결과 구성 (향후 구현)
+     * Layer 3 결과로부터 최종 결과 구성
+     * ⚠️ TODO: LLM 미구현으로 빈 결과 반환 (Claude가 표시)
+     * 
+     * 향후 구현 예정:
+     * - Gemini AI 응답에서 태그와 계정과목 추출
+     * - 신뢰도 점수 산정
+     * - 사용자 질문 여부 결정
      */
     private TransactionTaggingResult buildResultFromLayer3(LayerProcessingResult layer3, TransactionTaggingRequest request) {
-        // TODO: LLM 결과 기반 결과 구성
-        return buildErrorResult(request, new RuntimeException("Layer 3 not implemented"));
+        // ⚠️ 주의: LLM 미구현으로 빈 결과 반환 (Claude가 표시)
+        return buildErrorResult(request, new RuntimeException("⚠️ Layer 3 (LLM) not implemented - Gemini AI integration needed (Claude marked)"));
     }
     
     /**

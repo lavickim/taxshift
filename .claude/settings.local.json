@@ -131,7 +131,7 @@
   },
   "permissions": {
     "allow": [
-      "Bash(psql:*)"
+      "Bash(curl:*)"
     ],
     "deny": []
   }

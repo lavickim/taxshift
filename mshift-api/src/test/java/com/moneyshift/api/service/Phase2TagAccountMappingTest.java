@@ -72,8 +72,8 @@ public class Phase2TagAccountMappingTest {
         // When: 계정과목 조회
         String accountCode = tagAccountMappingService.getAccountCodeByTag(tagName, sampleTransaction);
         
-        // Then: 복리후생비(5120) 반환
-        assertEquals("5120", accountCode, "커피전문점은 복리후생비(5120)로 매핑되어야 함");
+        // Then: AccountCodeConfig 확장으로 복리후생비가 5204로 변경됨
+        assertEquals("5204", accountCode, "커피전문점은 복리후생비(5204)로 매핑되어야 함");
     }
 
     @Test
@@ -199,8 +199,8 @@ public class Phase2TagAccountMappingTest {
         // When: 계정과목 조회
         String accountCode = tagAccountMappingService.getAccountCodeByTag(tagName, commTransaction);
         
-        // Then: 통신비(150) 반환
-        assertEquals("5150", accountCode, "통신비는 통신비(5150)로 매핑되어야 함");
+        // Then: AccountCodeConfig 확장으로 통신비는 5213으로 변경됨
+        assertEquals("5213", accountCode, "통신비는 통신비(5213)로 매핑되어야 함");
     }
 
     @Test
@@ -208,7 +208,7 @@ public class Phase2TagAccountMappingTest {
     public void testMultipleTagMapping() {
         // Given: 여러 태그들
         String[] tags = {"커피전문점", "주유소", "편의점", "통신비"};
-        String[] expectedCodes = {"5120", "5140", "5130", "5150"};
+        String[] expectedCodes = {"5204", "5140", "5130", "5213"}; // 5120 → 5204, 5150 → 5213 (AccountCodeConfig 변경)
         
         // When & Then: 각 태그별 매핑 확인
         for (int i = 0; i < tags.length; i++) {
@@ -288,9 +288,9 @@ public class Phase2TagAccountMappingTest {
         assertFalse(accounts.isEmpty(), "계정과목 목록은 비어있지 않아야 함");
         
         // 주요 계정과목들이 포함되어 있는지 확인
-        boolean hasCoffeeAccount = accounts.stream()
-            .anyMatch(account -> "5120".equals(account.getAccountCode()));
-        assertTrue(hasCoffeeAccount, "복리후생비(5120) 계정이 포함되어야 함");
+        boolean hasWelfareAccount = accounts.stream()
+            .anyMatch(account -> "5204".equals(account.getAccountCode()));
+        assertTrue(hasWelfareAccount, "복리후생비(5204) 계정이 포함되어야 함"); // AccountCodeConfig 확장: 5120→5204
     }
 
     @Test
