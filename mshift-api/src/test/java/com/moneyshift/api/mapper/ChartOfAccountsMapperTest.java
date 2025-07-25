@@ -28,7 +28,7 @@ public class ChartOfAccountsMapperTest extends BaseTestClass {
     void setUp() {
         // 테스트용 계정과목 생성
         testAccount = ChartOfAccount.builder()
-                .accountCode(TestAccountCodes.CASH)
+                .accountCode(getCashAccountCode())
                 .accountName("현금")
                 .accountType("자산")
                 .accountSubtype("유동자산")
@@ -97,7 +97,7 @@ public class ChartOfAccountsMapperTest extends BaseTestClass {
         // Then
         assertThat(foundAccount).isNotNull();
         assertThat(foundAccount.getId()).isEqualTo(accountId);
-        assertThat(foundAccount.getAccountCode()).isEqualTo(TestAccountCodes.CASH);
+        assertThat(foundAccount.getAccountCode()).isEqualTo(getCashAccountCode());
     }
 
     @Test
@@ -105,15 +105,15 @@ public class ChartOfAccountsMapperTest extends BaseTestClass {
     void should_FindAllActiveAccounts_When_ActiveAccountsExist() {
         // Given
         ChartOfAccount account1 = ChartOfAccount.builder()
-                .accountCode(TestAccountCodes.CASH).accountName("현금").accountType("자산")
+                .accountCode(getCashAccountCode()).accountName("현금").accountType("자산")
                 .isDebitNormal(true).isActive(true).displayOrder(1).build();
         
         ChartOfAccount account2 = ChartOfAccount.builder()
-                .accountCode(TestAccountCodes.ACCOUNTS_PAYABLE).accountName("외상매입금").accountType("부채")
+                .accountCode(getAccountsPayableCode()).accountName("외상매입금").accountType("부채")
                 .isDebitNormal(false).isActive(true).displayOrder(2).build();
 
         ChartOfAccount inactiveAccount = ChartOfAccount.builder()
-                .accountCode(TestAccountCodes.CAPITAL_STOCK).accountName("비활성계정").accountType("자본")
+                .accountCode(getCapitalStockCode()).accountName("비활성계정").accountType("자본")
                 .isDebitNormal(false).isActive(false).displayOrder(3).build();
 
         chartOfAccountsMapper.insertAccount(account1);
@@ -126,7 +126,7 @@ public class ChartOfAccountsMapperTest extends BaseTestClass {
         // Then
         assertThat(activeAccounts).hasSize(2);
         assertThat(activeAccounts).extracting(ChartOfAccount::getAccountCode)
-                .containsExactly(TestAccountCodes.CASH, TestAccountCodes.ACCOUNTS_PAYABLE);
+                .containsExactly(getCashAccountCode(), getAccountsPayableCode());
         assertThat(activeAccounts).allMatch(ChartOfAccount::getIsActive);
     }
 
@@ -135,15 +135,15 @@ public class ChartOfAccountsMapperTest extends BaseTestClass {
     void should_FindAccountsByType_When_AccountsOfTypeExist() {
         // Given
         ChartOfAccount assetAccount1 = ChartOfAccount.builder()
-                .accountCode(TestAccountCodes.CASH).accountName("현금").accountType("자산")
+                .accountCode(getCashAccountCode()).accountName("현금").accountType("자산")
                 .isDebitNormal(true).isActive(true).displayOrder(1).build();
 
         ChartOfAccount assetAccount2 = ChartOfAccount.builder()
-                .accountCode(TestAccountCodes.BANK_DEPOSITS).accountName("보통예금").accountType("자산")
+                .accountCode(getBankDepositsCode()).accountName("보통예금").accountType("자산")
                 .isDebitNormal(true).isActive(true).displayOrder(2).build();
 
         ChartOfAccount liabilityAccount = ChartOfAccount.builder()
-                .accountCode(TestAccountCodes.ACCOUNTS_PAYABLE).accountName("외상매입금").accountType("부채")
+                .accountCode(getAccountsPayableCode()).accountName("외상매입금").accountType("부채")
                 .isDebitNormal(false).isActive(true).displayOrder(3).build();
 
         chartOfAccountsMapper.insertAccount(assetAccount1);
@@ -158,7 +158,7 @@ public class ChartOfAccountsMapperTest extends BaseTestClass {
         assertThat(assetAccounts).extracting(ChartOfAccount::getAccountType)
                 .containsOnly("자산");
         assertThat(assetAccounts).extracting(ChartOfAccount::getAccountCode)
-                .containsExactly(TestAccountCodes.CASH, TestAccountCodes.BANK_DEPOSITS);
+                .containsExactly(getCashAccountCode(), getBankDepositsCode());
     }
 
     @Test
@@ -166,11 +166,11 @@ public class ChartOfAccountsMapperTest extends BaseTestClass {
     void should_SearchAccounts_When_KeywordMatches() {
         // Given
         ChartOfAccount cashAccount = ChartOfAccount.builder()
-                .accountCode(TestAccountCodes.CASH).accountName("현금").accountType("자산")
+                .accountCode(getCashAccountCode()).accountName("현금").accountType("자산")
                 .accountSubtype("현금성 자산").isActive(true).displayOrder(1).build();
 
         ChartOfAccount bankAccount = ChartOfAccount.builder()
-                .accountCode(TestAccountCodes.BANK_DEPOSITS).accountName("보통예금").accountType("자산")
+                .accountCode(getBankDepositsCode()).accountName("보통예금").accountType("자산")
                 .accountSubtype("은행 예금").isActive(true).displayOrder(2).build();
 
         chartOfAccountsMapper.insertAccount(cashAccount);
@@ -291,7 +291,7 @@ public class ChartOfAccountsMapperTest extends BaseTestClass {
     @DisplayName("TDD: 계정과목 사용 여부 확인 테스트")
     void should_CheckAccountInUse_When_AccountCodeProvided() {
         // Given
-        String accountCode = TestAccountCodes.CASH;
+        String accountCode = getCashAccountCode();
 
         // When & Then - 사용되지 않는 계정 (분개에서 사용 안됨)
         Boolean inUse = chartOfAccountsMapper.isAccountInUse(accountCode);
@@ -305,11 +305,11 @@ public class ChartOfAccountsMapperTest extends BaseTestClass {
     void should_GetMaxDisplayOrder_When_AccountsExist() {
         // Given
         ChartOfAccount account1 = ChartOfAccount.builder()
-                .accountCode(TestAccountCodes.CASH).accountName("계정1").accountType("자산")
+                .accountCode(getCashAccountCode()).accountName("계정1").accountType("자산")
                 .isActive(true).displayOrder(5).build();
 
         ChartOfAccount account2 = ChartOfAccount.builder()
-                .accountCode(TestAccountCodes.BANK_DEPOSITS).accountName("계정2").accountType("자산")
+                .accountCode(getBankDepositsCode()).accountName("계정2").accountType("자산")
                 .isActive(true).displayOrder(10).build();
 
         chartOfAccountsMapper.insertAccount(account1);
@@ -327,15 +327,15 @@ public class ChartOfAccountsMapperTest extends BaseTestClass {
     void should_GetAccountStatistics_When_AccountsExist() {
         // Given
         ChartOfAccount assetAccount = ChartOfAccount.builder()
-                .accountCode(TestAccountCodes.CASH).accountName("자산계정").accountType("자산")
+                .accountCode(getCashAccountCode()).accountName("자산계정").accountType("자산")
                 .isActive(true).displayOrder(1).build();
 
         ChartOfAccount liabilityAccount = ChartOfAccount.builder()
-                .accountCode(TestAccountCodes.ACCOUNTS_PAYABLE).accountName("부채계정").accountType("부채")
+                .accountCode(getAccountsPayableCode()).accountName("부채계정").accountType("부채")
                 .isActive(true).displayOrder(2).build();
 
         ChartOfAccount inactiveAccount = ChartOfAccount.builder()
-                .accountCode(TestAccountCodes.CAPITAL_STOCK).accountName("비활성계정").accountType("자산")
+                .accountCode(getCapitalStockCode()).accountName("비활성계정").accountType("자산")
                 .isActive(false).displayOrder(3).build();
 
         chartOfAccountsMapper.insertAccount(assetAccount);
@@ -379,15 +379,15 @@ public class ChartOfAccountsMapperTest extends BaseTestClass {
         // Given
         List<ChartOfAccount> accounts = List.of(
                 ChartOfAccount.builder()
-                        .accountCode(TestAccountCodes.CASH).accountName("현금").accountType("자산")
+                        .accountCode(getCashAccountCode()).accountName("현금").accountType("자산")
                         .isDebitNormal(true).isActive(true).displayOrder(1).build(),
                 
                 ChartOfAccount.builder()
-                        .accountCode(TestAccountCodes.ACCOUNTS_PAYABLE).accountName("외상매입금").accountType("부채")
+                        .accountCode(getAccountsPayableCode()).accountName("외상매입금").accountType("부채")
                         .isDebitNormal(false).isActive(true).displayOrder(2).build(),
                 
                 ChartOfAccount.builder()
-                        .accountCode(TestAccountCodes.CAPITAL_STOCK).accountName("자본금").accountType("자본")
+                        .accountCode(getCapitalStockCode()).accountName("자본금").accountType("자본")
                         .isDebitNormal(false).isActive(true).displayOrder(3).build()
         );
 
@@ -398,9 +398,9 @@ public class ChartOfAccountsMapperTest extends BaseTestClass {
         assertThat(result).isEqualTo(3);
 
         // 생성된 계정들 확인
-        ChartOfAccount cash = chartOfAccountsMapper.findAccountByCode(TestAccountCodes.CASH);
-        ChartOfAccount liability = chartOfAccountsMapper.findAccountByCode(TestAccountCodes.ACCOUNTS_PAYABLE);
-        ChartOfAccount equity = chartOfAccountsMapper.findAccountByCode(TestAccountCodes.CAPITAL_STOCK);
+        ChartOfAccount cash = chartOfAccountsMapper.findAccountByCode(getCashAccountCode());
+        ChartOfAccount liability = chartOfAccountsMapper.findAccountByCode(getAccountsPayableCode());
+        ChartOfAccount equity = chartOfAccountsMapper.findAccountByCode(getCapitalStockCode());
 
         assertThat(cash.getAccountName()).isEqualTo("현금");
         assertThat(liability.getAccountName()).isEqualTo("외상매입금");
@@ -412,12 +412,12 @@ public class ChartOfAccountsMapperTest extends BaseTestClass {
     void should_FindAccountHierarchy_When_HierarchyExists() {
         // Given - 계층 구조 생성 (부모-자식 관계)
         ChartOfAccount parentAccount = ChartOfAccount.builder()
-                .accountCode(TestAccountCodes.CASH).accountName("유동자산").accountType("자산")
+                .accountCode(getCashAccountCode()).accountName("유동자산").accountType("자산")
                 .isDebitNormal(true).isActive(true).displayOrder(1).build();
         chartOfAccountsMapper.insertAccount(parentAccount);
 
         ChartOfAccount childAccount = ChartOfAccount.builder()
-                .accountCode(TestAccountCodes.BANK_DEPOSITS).accountName("현금").accountType("자산")
+                .accountCode(getBankDepositsCode()).accountName("현금").accountType("자산")
                 .parentAccountId(parentAccount.getId())
                 .isDebitNormal(true).isActive(true).displayOrder(2).build();
         chartOfAccountsMapper.insertAccount(childAccount);
@@ -427,8 +427,8 @@ public class ChartOfAccountsMapperTest extends BaseTestClass {
 
         // Then
         assertThat(hierarchy).hasSize(2); // 부모 + 자식
-        assertThat(hierarchy.get(0).getAccountCode()).isEqualTo(TestAccountCodes.CASH); // 부모가 먼저
-        assertThat(hierarchy.get(1).getAccountCode()).isEqualTo(TestAccountCodes.BANK_DEPOSITS); // 자식이 다음
+        assertThat(hierarchy.get(0).getAccountCode()).isEqualTo(getCashAccountCode()); // 부모가 먼저
+        assertThat(hierarchy.get(1).getAccountCode()).isEqualTo(getBankDepositsCode()); // 자식이 다음
         assertThat(hierarchy.get(1).getParentAccountId()).isEqualTo(parentAccount.getId());
     }
 

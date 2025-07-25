@@ -318,36 +318,54 @@ public abstract class BaseTestClass {
     /**
      * 테스트용 계정코드 상수 (중앙화된 관리)
      * 모든 매퍼 레벨 테스트에서 사용할 보장된 계정코드들
+     * 
+     * ⚠️ 중요: 매퍼 테스트에서는 반드시 generateAccountCode() 메서드를 사용해야 합니다.
+     * 이 상수들은 BaseCode 참조용이며, 실제 테스트에서는 prefix가 붙은 전체 코드를 사용해야 합니다.
      */
     public static final class TestAccountCodes {
-        // 자산 계정
-        public static final String CASH = AccountCodeConfig.Codes.CASH;
-        public static final String BANK_DEPOSITS = AccountCodeConfig.Codes.BANK_DEPOSITS;
-        public static final String ACCOUNTS_RECEIVABLE = AccountCodeConfig.Codes.ACCOUNTS_RECEIVABLE;
-        public static final String OFFICE_SUPPLIES = AccountCodeConfig.Codes.OFFICE_SUPPLIES;
-        
-        // 부채 계정
-        public static final String ACCOUNTS_PAYABLE = AccountCodeConfig.Codes.ACCOUNTS_PAYABLE;
-        public static final String SHORT_TERM_LOANS = AccountCodeConfig.Codes.SHORT_TERM_LOANS;
-        
-        // 자본 계정
-        public static final String CAPITAL_STOCK = AccountCodeConfig.Codes.CAPITAL_STOCK;
-        public static final String RETAINED_EARNINGS = AccountCodeConfig.Codes.RETAINED_EARNINGS;
-        
-        // 수익 계정
-        public static final String SALES_REVENUE = AccountCodeConfig.Codes.SALES_REVENUE;
-        public static final String NON_OPERATING_INCOME = AccountCodeConfig.Codes.NON_OPERATING_INCOME;
-        
-        // 비용 계정
-        public static final String OFFICE_SUPPLIES_EXPENSE = AccountCodeConfig.Codes.OFFICE_SUPPLIES_EXPENSE;
-        public static final String ENTERTAINMENT_EXPENSE = AccountCodeConfig.Codes.ENTERTAINMENT_EXPENSE;
-        public static final String WELFARE_EXPENSE = AccountCodeConfig.Codes.WELFARE_EXPENSE;
-        public static final String COMMUNICATION_EXPENSE = AccountCodeConfig.Codes.COMMUNICATION_EXPENSE;
-        public static final String UTILITIES_EXPENSE = AccountCodeConfig.Codes.UTILITIES_EXPENSE;
-        
-        // 매퍼 테스트에서 자주 사용하는 기본 계정들
-        public static final String DEFAULT_DEBIT_ACCOUNT = OFFICE_SUPPLIES_EXPENSE;  // "5110"
-        public static final String DEFAULT_CREDIT_ACCOUNT = CASH;                    // "1100"
+        // Base codes for AccountCodeConfig reference
+        public static final String CASH_BASE = AccountCodeConfig.Codes.CASH;
+        public static final String BANK_DEPOSITS_BASE = AccountCodeConfig.Codes.BANK_DEPOSITS;
+        public static final String ACCOUNTS_RECEIVABLE_BASE = AccountCodeConfig.Codes.ACCOUNTS_RECEIVABLE;
+        public static final String OFFICE_SUPPLIES_BASE = AccountCodeConfig.Codes.OFFICE_SUPPLIES;
+        public static final String ACCOUNTS_PAYABLE_BASE = AccountCodeConfig.Codes.ACCOUNTS_PAYABLE;
+        public static final String SHORT_TERM_LOANS_BASE = AccountCodeConfig.Codes.SHORT_TERM_LOANS;
+        public static final String CAPITAL_STOCK_BASE = AccountCodeConfig.Codes.CAPITAL_STOCK;
+        public static final String RETAINED_EARNINGS_BASE = AccountCodeConfig.Codes.RETAINED_EARNINGS;
+        public static final String SALES_REVENUE_BASE = AccountCodeConfig.Codes.SALES_REVENUE;
+        public static final String NON_OPERATING_INCOME_BASE = AccountCodeConfig.Codes.NON_OPERATING_INCOME;
+        public static final String OFFICE_SUPPLIES_EXPENSE_BASE = AccountCodeConfig.Codes.OFFICE_SUPPLIES_EXPENSE;
+        public static final String ENTERTAINMENT_EXPENSE_BASE = AccountCodeConfig.Codes.ENTERTAINMENT_EXPENSE;
+        public static final String WELFARE_EXPENSE_BASE = AccountCodeConfig.Codes.WELFARE_EXPENSE;
+        public static final String COMMUNICATION_EXPENSE_BASE = AccountCodeConfig.Codes.COMMUNICATION_EXPENSE;
+        public static final String UTILITIES_EXPENSE_BASE = AccountCodeConfig.Codes.UTILITIES_EXPENSE;
+    }
+    
+    /**
+     * 매퍼 테스트용 헬퍼 메서드: 자주 사용하는 계정코드들
+     */
+    protected String getCashAccountCode() {
+        return generateAccountCode(TestAccountCodes.CASH_BASE);
+    }
+    
+    protected String getAccountsPayableCode() {
+        return generateAccountCode(TestAccountCodes.ACCOUNTS_PAYABLE_BASE);
+    }
+    
+    protected String getBankDepositsCode() {
+        return generateAccountCode(TestAccountCodes.BANK_DEPOSITS_BASE);
+    }
+    
+    protected String getCapitalStockCode() {
+        return generateAccountCode(TestAccountCodes.CAPITAL_STOCK_BASE);
+    }
+    
+    protected String getSalesRevenueCode() {
+        return generateAccountCode(TestAccountCodes.SALES_REVENUE_BASE);
+    }
+    
+    protected String getOfficeSuppliesExpenseCode() {
+        return generateAccountCode(TestAccountCodes.OFFICE_SUPPLIES_EXPENSE_BASE);
     }
 
     /**

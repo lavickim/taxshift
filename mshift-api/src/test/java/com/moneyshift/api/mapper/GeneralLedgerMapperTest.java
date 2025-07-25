@@ -33,7 +33,7 @@ public class GeneralLedgerMapperTest extends BaseTestClass {
         // 테스트용 GL 계정 생성
         testGLAccount = GeneralLedger.builder()
                 .companyId(testCompanyId)
-                .accountCode(TestAccountCodes.CASH)
+                .accountCode(getCashAccountCode())
                 .fiscalYear(2025)
                 .fiscalMonth(1)
                 .beginningDebitBalance(new BigDecimal("500000"))
@@ -66,12 +66,12 @@ public class GeneralLedgerMapperTest extends BaseTestClass {
 
         // When
         GeneralLedger foundAccount = generalLedgerMapper.findGeneralLedgerAccount(
-                testCompanyId, TestAccountCodes.CASH, 2025, 1);
+                testCompanyId, getCashAccountCode(), 2025, 1);
 
         // Then
         assertThat(foundAccount).isNotNull();
         assertThat(foundAccount.getCompanyId()).isEqualTo(testCompanyId);
-        assertThat(foundAccount.getAccountCode()).isEqualTo(TestAccountCodes.CASH);
+        assertThat(foundAccount.getAccountCode()).isEqualTo(getCashAccountCode());
         assertThat(foundAccount.getFiscalYear()).isEqualTo(2025);
         assertThat(foundAccount.getFiscalMonth()).isEqualTo(1);
         assertThat(foundAccount.getBeginningDebitBalance()).isEqualByComparingTo(new BigDecimal("500000"));
@@ -99,7 +99,7 @@ public class GeneralLedgerMapperTest extends BaseTestClass {
     void should_FindGeneralLedgerAccounts_When_AccountsExist() {
         // Given
         GeneralLedger account1 = GeneralLedger.builder()
-                .companyId(testCompanyId).accountCode(TestAccountCodes.CASH)
+                .companyId(testCompanyId).accountCode(getCashAccountCode())
                 .fiscalYear(2025).fiscalMonth(1)
                 .beginningDebitBalance(new BigDecimal("100000"))
                 .beginningCreditBalance(BigDecimal.ZERO)
@@ -113,7 +113,7 @@ public class GeneralLedgerMapperTest extends BaseTestClass {
                 .build();
 
         GeneralLedger account2 = GeneralLedger.builder()
-                .companyId(testCompanyId).accountCode(TestAccountCodes.ACCOUNTS_PAYABLE)
+                .companyId(testCompanyId).accountCode(getAccountsPayableCode())
                 .fiscalYear(2025).fiscalMonth(1)
                 .beginningDebitBalance(BigDecimal.ZERO)
                 .beginningCreditBalance(new BigDecimal("200000"))
@@ -136,7 +136,7 @@ public class GeneralLedgerMapperTest extends BaseTestClass {
         // Then
         assertThat(glAccounts).hasSize(2);
         assertThat(glAccounts).extracting(GeneralLedger::getAccountCode)
-                .containsExactlyInAnyOrder(TestAccountCodes.CASH, TestAccountCodes.ACCOUNTS_PAYABLE);
+                .containsExactlyInAnyOrder(getCashAccountCode(), getAccountsPayableCode());
     }
 
     @Test
@@ -144,7 +144,7 @@ public class GeneralLedgerMapperTest extends BaseTestClass {
     void should_FindGeneralLedgerAccountsByClosedStatus_When_FilterProvided() {
         // Given
         GeneralLedger openAccount = GeneralLedger.builder()
-                .companyId(testCompanyId).accountCode(TestAccountCodes.CASH)
+                .companyId(testCompanyId).accountCode(getCashAccountCode())
                 .fiscalYear(2025).fiscalMonth(1)
                 .beginningDebitBalance(new BigDecimal("100000"))
                 .beginningCreditBalance(BigDecimal.ZERO)
@@ -158,7 +158,7 @@ public class GeneralLedgerMapperTest extends BaseTestClass {
                 .build();
 
         GeneralLedger closedAccount = GeneralLedger.builder()
-                .companyId(testCompanyId).accountCode(TestAccountCodes.ACCOUNTS_PAYABLE)
+                .companyId(testCompanyId).accountCode(getAccountsPayableCode())
                 .fiscalYear(2025).fiscalMonth(1)
                 .beginningDebitBalance(BigDecimal.ZERO)
                 .beginningCreditBalance(new BigDecimal("200000"))
@@ -180,7 +180,7 @@ public class GeneralLedgerMapperTest extends BaseTestClass {
 
         // Then
         assertThat(openAccounts).hasSize(1);
-        assertThat(openAccounts.get(0).getAccountCode()).isEqualTo(TestAccountCodes.CASH);
+        assertThat(openAccounts.get(0).getAccountCode()).isEqualTo(getCashAccountCode());
         assertThat(openAccounts.get(0).getIsClosed()).isFalse();
     }
 
@@ -224,7 +224,7 @@ public class GeneralLedgerMapperTest extends BaseTestClass {
 
         // 업데이트된 계정 조회하여 검증
         GeneralLedger updatedAccount = generalLedgerMapper.findGeneralLedgerAccount(
-                testCompanyId, TestAccountCodes.CASH, 2025, 1);
+                testCompanyId, getCashAccountCode(), 2025, 1);
         
         // 기존 금액에 추가된 금액이 더해졌는지 확인
         assertThat(updatedAccount.getPeriodDebitAmount())
@@ -309,7 +309,7 @@ public class GeneralLedgerMapperTest extends BaseTestClass {
     void should_GetTrialBalanceData_When_GLAccountsExist() {
         // Given - 여러 GL 계정 생성
         GeneralLedger assetAccount = GeneralLedger.builder()
-                .companyId(testCompanyId).accountCode(TestAccountCodes.CASH)
+                .companyId(testCompanyId).accountCode(getCashAccountCode())
                 .fiscalYear(2025).fiscalMonth(1)
                 .beginningDebitBalance(new BigDecimal("500000"))
                 .beginningCreditBalance(BigDecimal.ZERO)
@@ -323,7 +323,7 @@ public class GeneralLedgerMapperTest extends BaseTestClass {
                 .build();
 
         GeneralLedger liabilityAccount = GeneralLedger.builder()
-                .companyId(testCompanyId).accountCode(TestAccountCodes.ACCOUNTS_PAYABLE)
+                .companyId(testCompanyId).accountCode(getAccountsPayableCode())
                 .fiscalYear(2025).fiscalMonth(1)
                 .beginningDebitBalance(BigDecimal.ZERO)
                 .beginningCreditBalance(new BigDecimal("300000"))
@@ -351,7 +351,7 @@ public class GeneralLedgerMapperTest extends BaseTestClass {
                 .filter(row -> ((Number) row.get("debit_balance")).doubleValue() > 0)
                 .findFirst().orElse(null);
         assertThat(debitAccount).isNotNull();
-        assertThat(debitAccount.get("account_code")).isEqualTo(TestAccountCodes.CASH);
+        assertThat(debitAccount.get("account_code")).isEqualTo(getCashAccountCode());
         assertThat(((Number) debitAccount.get("debit_balance")).doubleValue()).isEqualTo(550000.0);
 
         // 대변 잔액이 있는 계정 확인
@@ -359,7 +359,7 @@ public class GeneralLedgerMapperTest extends BaseTestClass {
                 .filter(row -> ((Number) row.get("credit_balance")).doubleValue() > 0)
                 .findFirst().orElse(null);
         assertThat(creditAccount).isNotNull();
-        assertThat(creditAccount.get("account_code")).isEqualTo(TestAccountCodes.ACCOUNTS_PAYABLE);
+        assertThat(creditAccount.get("account_code")).isEqualTo(getAccountsPayableCode());
         assertThat(((Number) creditAccount.get("credit_balance")).doubleValue()).isEqualTo(360000.0);
     }
 
@@ -371,7 +371,7 @@ public class GeneralLedgerMapperTest extends BaseTestClass {
         // 하지만 메소드 호출과 기본 동작은 검증 가능
 
         GeneralLedger revenueAccount = GeneralLedger.builder()
-                .companyId(testCompanyId).accountCode(TestAccountCodes.SALES_REVENUE)
+                .companyId(testCompanyId).accountCode(getSalesRevenueCode())
                 .fiscalYear(2025).fiscalMonth(1)
                 .beginningDebitBalance(BigDecimal.ZERO)
                 .beginningCreditBalance(BigDecimal.ZERO)
@@ -401,7 +401,7 @@ public class GeneralLedgerMapperTest extends BaseTestClass {
     void should_GetBalanceSheetData_When_BalanceSheetAccountsExist() {
         // Given
         GeneralLedger balanceSheetAccount = GeneralLedger.builder()
-                .companyId(testCompanyId).accountCode(TestAccountCodes.CASH)
+                .companyId(testCompanyId).accountCode(getCashAccountCode())
                 .fiscalYear(2025).fiscalMonth(1)
                 .beginningDebitBalance(new BigDecimal("1000000"))
                 .beginningCreditBalance(BigDecimal.ZERO)
@@ -430,7 +430,7 @@ public class GeneralLedgerMapperTest extends BaseTestClass {
     void should_GetCashFlowData_When_CashAccountsExist() {
         // Given
         GeneralLedger cashAccount = GeneralLedger.builder()
-                .companyId(testCompanyId).accountCode(TestAccountCodes.CASH) // 현금 계정
+                .companyId(testCompanyId).accountCode(getCashAccountCode()) // 현금 계정
                 .fiscalYear(2025).fiscalMonth(1)
                 .beginningDebitBalance(new BigDecimal("500000"))
                 .beginningCreditBalance(BigDecimal.ZERO)
@@ -459,7 +459,7 @@ public class GeneralLedgerMapperTest extends BaseTestClass {
     void should_CloseGeneralLedgerAccounts_When_OpenAccountsExist() {
         // Given
         GeneralLedger openAccount1 = GeneralLedger.builder()
-                .companyId(testCompanyId).accountCode(TestAccountCodes.CASH)
+                .companyId(testCompanyId).accountCode(getCashAccountCode())
                 .fiscalYear(2025).fiscalMonth(1)
                 .beginningDebitBalance(new BigDecimal("100000"))
                 .beginningCreditBalance(BigDecimal.ZERO)
@@ -473,7 +473,7 @@ public class GeneralLedgerMapperTest extends BaseTestClass {
                 .build();
 
         GeneralLedger openAccount2 = GeneralLedger.builder()
-                .companyId(testCompanyId).accountCode(TestAccountCodes.ACCOUNTS_PAYABLE)
+                .companyId(testCompanyId).accountCode(getAccountsPayableCode())
                 .fiscalYear(2025).fiscalMonth(1)
                 .beginningDebitBalance(BigDecimal.ZERO)
                 .beginningCreditBalance(new BigDecimal("200000"))
@@ -496,8 +496,8 @@ public class GeneralLedgerMapperTest extends BaseTestClass {
         assertThat(closedCount).isEqualTo(2);
 
         // 마감 상태 확인
-        GeneralLedger closedAccount1 = generalLedgerMapper.findGeneralLedgerAccount(testCompanyId, TestAccountCodes.CASH, 2025, 1);
-        GeneralLedger closedAccount2 = generalLedgerMapper.findGeneralLedgerAccount(testCompanyId, TestAccountCodes.ACCOUNTS_PAYABLE, 2025, 1);
+        GeneralLedger closedAccount1 = generalLedgerMapper.findGeneralLedgerAccount(testCompanyId, getCashAccountCode(), 2025, 1);
+        GeneralLedger closedAccount2 = generalLedgerMapper.findGeneralLedgerAccount(testCompanyId, getAccountsPayableCode(), 2025, 1);
 
         assertThat(closedAccount1.getIsClosed()).isTrue();
         assertThat(closedAccount1.getClosedAt()).isNotNull();
@@ -510,7 +510,7 @@ public class GeneralLedgerMapperTest extends BaseTestClass {
     void should_ReopenGeneralLedgerAccounts_When_ClosedAccountsExist() {
         // Given - 마감된 계정들 생성
         GeneralLedger closedAccount = GeneralLedger.builder()
-                .companyId(testCompanyId).accountCode(TestAccountCodes.CASH)
+                .companyId(testCompanyId).accountCode(getCashAccountCode())
                 .fiscalYear(2025).fiscalMonth(1)
                 .beginningDebitBalance(new BigDecimal("100000"))
                 .beginningCreditBalance(BigDecimal.ZERO)
@@ -532,7 +532,7 @@ public class GeneralLedgerMapperTest extends BaseTestClass {
         assertThat(reopenedCount).isEqualTo(1);
 
         // 재개방 상태 확인
-        GeneralLedger reopenedAccount = generalLedgerMapper.findGeneralLedgerAccount(testCompanyId, TestAccountCodes.CASH, 2025, 1);
+        GeneralLedger reopenedAccount = generalLedgerMapper.findGeneralLedgerAccount(testCompanyId, getCashAccountCode(), 2025, 1);
         assertThat(reopenedAccount.getIsClosed()).isFalse();
         assertThat(reopenedAccount.getClosedAt()).isNull();
     }
@@ -542,7 +542,7 @@ public class GeneralLedgerMapperTest extends BaseTestClass {
     void should_CarryForwardBalances_When_ClosedAccountsExist() {
         // Given - 12월 마감된 계정 생성
         GeneralLedger decemberAccount = GeneralLedger.builder()
-                .companyId(testCompanyId).accountCode(TestAccountCodes.CASH)
+                .companyId(testCompanyId).accountCode(getCashAccountCode())
                 .fiscalYear(2024).fiscalMonth(12)
                 .beginningDebitBalance(new BigDecimal("500000"))
                 .beginningCreditBalance(BigDecimal.ZERO)
@@ -564,7 +564,7 @@ public class GeneralLedgerMapperTest extends BaseTestClass {
         assertThat(carriedForwardCount).isEqualTo(1);
 
         // 이월된 계정 확인 (2025년 1월)
-        GeneralLedger januaryAccount = generalLedgerMapper.findGeneralLedgerAccount(testCompanyId, TestAccountCodes.CASH, 2025, 1);
+        GeneralLedger januaryAccount = generalLedgerMapper.findGeneralLedgerAccount(testCompanyId, getCashAccountCode(), 2025, 1);
         assertThat(januaryAccount).isNotNull();
         assertThat(januaryAccount.getBeginningDebitBalance()).isEqualByComparingTo(new BigDecimal("1500000"));
         assertThat(januaryAccount.getEndingDebitBalance()).isEqualByComparingTo(new BigDecimal("1500000"));
@@ -578,7 +578,7 @@ public class GeneralLedgerMapperTest extends BaseTestClass {
     void should_GetClosingHistory_When_ClosingHistoryExists() {
         // Given - 마감된 계정들 생성
         GeneralLedger closedAccount1 = GeneralLedger.builder()
-                .companyId(testCompanyId).accountCode(TestAccountCodes.CASH)
+                .companyId(testCompanyId).accountCode(getCashAccountCode())
                 .fiscalYear(2025).fiscalMonth(1)
                 .beginningDebitBalance(new BigDecimal("100000"))
                 .beginningCreditBalance(BigDecimal.ZERO)
@@ -592,7 +592,7 @@ public class GeneralLedgerMapperTest extends BaseTestClass {
                 .build();
 
         GeneralLedger closedAccount2 = GeneralLedger.builder()
-                .companyId(testCompanyId).accountCode(TestAccountCodes.ACCOUNTS_PAYABLE)
+                .companyId(testCompanyId).accountCode(getAccountsPayableCode())
                 .fiscalYear(2025).fiscalMonth(1)
                 .beginningDebitBalance(BigDecimal.ZERO)
                 .beginningCreditBalance(new BigDecimal("200000"))
