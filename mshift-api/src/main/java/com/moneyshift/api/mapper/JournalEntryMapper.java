@@ -164,4 +164,29 @@ public interface JournalEntryMapper {
      * @return 감사 로그 목록
      */
     List<Map<String, Object>> findJournalEntryAuditLogs(@Param("journalEntryId") Long journalEntryId);
+
+    /**
+     * 특정 ID 목록으로 분개 조회 (전표 출력용)
+     * @param ids 분개 ID 목록
+     * @return 분개 목록
+     */
+    List<JournalEntry> findByIds(@Param("ids") List<Long> ids);
+
+    /**
+     * 회사 ID와 날짜 범위로 분개 조회 (전표 출력용)
+     * @param companyId 회사 ID
+     * @param startDate 시작 날짜
+     * @param endDate 종료 날짜
+     * @return 분개 목록
+     */
+    List<JournalEntry> findByCompanyIdAndDateRange(@Param("companyId") String companyId,
+                                                  @Param("startDate") LocalDate startDate,
+                                                  @Param("endDate") LocalDate endDate);
+
+    /**
+     * 분개 상세 내역 조회 (전표 출력용)
+     * @param journalEntryId 분개 ID
+     * @return 분개 상세 목록
+     */
+    List<JournalEntryDetail> findDetailsByJournalEntryId(@Param("journalEntryId") Long journalEntryId);
 }

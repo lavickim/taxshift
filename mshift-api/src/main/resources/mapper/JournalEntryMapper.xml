@@ -257,4 +257,41 @@
         ORDER BY jeal.created_at DESC
     </select>
 
+    <!-- 특정 ID 목록으로 분개 조회 (전표 출력용) -->
+    <select id="findByIds" resultMap="JournalEntryResultMap">
+        SELECT 
+            je.id, je.company_id, je.entry_date, je.description,
+            je.total_debit_amount, je.total_credit_amount, je.status,
+            je.confidence_score, je.created_by
+        FROM journal_entries je
+        WHERE je.id IN 
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        ORDER BY je.entry_date DESC, je.id DESC
+    </select>
+
+    <!-- 회사 ID와 날짜 범위로 분개 조회 (전표 출력용) -->
+    <select id="findByCompanyIdAndDateRange" resultMap="JournalEntryResultMap">
+        SELECT 
+            je.id, je.company_id, je.entry_date, je.description,
+            je.total_debit_amount, je.total_credit_amount, je.status,
+            je.confidence_score, je.created_by
+        FROM journal_entries je
+        WHERE je.company_id = #{companyId}::uuid
+        AND je.entry_date BETWEEN #{startDate} AND #{endDate}
+        ORDER BY je.entry_date DESC, je.id DESC
+    </select>
+
+    <!-- 분개 상세 내역 조회 (전표 출력용) -->
+    <select id="findDetailsByJournalEntryId" parameterType="java.lang.Long" resultMap="JournalEntryDetailResultMap">
+        SELECT 
+            jed.id, jed.journal_entry_id, jed.line_number,
+            jed.account_code, jed.account_name, jed.debit_amount, 
+            jed.credit_amount, jed.description
+        FROM journal_entry_details jed
+        WHERE jed.journal_entry_id = #{journalEntryId}
+        ORDER BY jed.line_number
+    </select>
+
 </mapper>
