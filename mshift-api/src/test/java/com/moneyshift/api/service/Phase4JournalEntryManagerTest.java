@@ -6,10 +6,7 @@ import com.moneyshift.api.model.*;
 import com.moneyshift.api.service.AccountingEngine;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.annotation.DirtiesContext;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -44,12 +41,10 @@ import static org.assertj.core.api.Assertions.*;
  * @version 1.0
  * @since 2025-07-24
  */
-@SpringBootTest
-@ActiveProfiles("test")
-@Transactional
 @DisplayName("Phase 4: 분개장(Journal Entry) 관리 TDD 구현")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class Phase4JournalEntryManagerTest {
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+public class Phase4JournalEntryManagerTest extends BaseTestClass {
 
     @Autowired
     private AccountingEngine accountingEngine;
@@ -60,13 +55,8 @@ public class Phase4JournalEntryManagerTest {
     @Autowired
     private ChartOfAccountsMapper chartOfAccountsMapper;
     
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
     // 테스트 데이터 상수
-    private String TEST_COMPANY_ID;
     private static final LocalDate TEST_ENTRY_DATE = LocalDate.of(2025, 1, 15);
-    private String uniqueAccountPrefix;
 
     // 테스트용 거래 데이터
     private TransactionToJournalRequest testTransactionRequest;
@@ -79,9 +69,8 @@ public class Phase4JournalEntryManagerTest {
 
     @BeforeEach
     void setUp() {
-        // 각 테스트마다 고유한 ID 생성
-        TEST_COMPANY_ID = UUID.randomUUID().toString();
-        uniqueAccountPrefix = TEST_COMPANY_ID.substring(0, 8);
+        // 베이스 클래스에서 회사 설정
+        setupTestCompany();
         
         setupTestAccounts();
         setupTestTransactionRequest();
@@ -89,22 +78,8 @@ public class Phase4JournalEntryManagerTest {
     
     @AfterEach
     void tearDown() {
-        // 테스트 데이터 정리
+        // 베이스 클래스의 테스트 데이터 정리 사용
         cleanupTestData();
-    }
-    
-    private void cleanupTestData() {
-        try {
-            // 분개 데이터 삭제
-            jdbcTemplate.update("DELETE FROM journal_entry_details WHERE journal_entry_id IN " +
-                    "(SELECT id FROM journal_entries WHERE company_id = ?)", TEST_COMPANY_ID);
-            jdbcTemplate.update("DELETE FROM journal_entries WHERE company_id = ?", TEST_COMPANY_ID);
-            
-            // 계정과목 삭제 (고유 prefix로 시작하는 것들)
-            jdbcTemplate.update("DELETE FROM chart_of_accounts WHERE account_code LIKE ?", uniqueAccountPrefix + "%");
-        } catch (Exception e) {
-            System.err.println("테스트 데이터 정리 실패: " + e.getMessage());
-        }
     }
 
     private void setupTestAccounts() {

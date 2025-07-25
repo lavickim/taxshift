@@ -50,11 +50,9 @@ import static org.mockito.Mockito.*;
  * @version 1.0
  * @since 2025-07-24
  */
-@SpringBootTest
-@ActiveProfiles("test")
 @DisplayName("Phase 3: 총계정원장 관리 TDD 구현")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class Phase3GeneralLedgerManagerTest {
+public class Phase3GeneralLedgerManagerTest extends BaseTestClass {
 
     @Autowired
     private AccountingEngine accountingEngine;
@@ -68,15 +66,10 @@ public class Phase3GeneralLedgerManagerTest {
     @Autowired
     private ChartOfAccountsMapper chartOfAccountsMapper;
     
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
     // 테스트 데이터 상수
-    private String TEST_COMPANY_ID;
     private static final int TEST_FISCAL_YEAR = 2025;
     private static final int TEST_FISCAL_MONTH = 1;
     private static final LocalDate TEST_ENTRY_DATE = LocalDate.of(2025, 1, 15);
-    private String uniqueAccountPrefix;
 
     // 테스트용 분개 데이터
     private JournalEntry testJournalEntry;
@@ -90,55 +83,17 @@ public class Phase3GeneralLedgerManagerTest {
 
     @BeforeEach
     void setUp() {
-        // 각 테스트마다 고유한 ID 생성
-        TEST_COMPANY_ID = UUID.randomUUID().toString();
-        uniqueAccountPrefix = TEST_COMPANY_ID.substring(0, 8);
-        
+        // 베이스 클래스에서 회사 설정
         setupTestCompany();
+        
         setupTestAccounts();
         setupTestJournalEntry();
     }
     
     @AfterEach
     void tearDown() {
-        // 테스트 데이터 정리
+        // 베이스 클래스의 테스트 데이터 정리 사용
         cleanupTestData();
-    }
-    
-    private void setupTestCompany() {
-        // 테스트용 회사가 이미 존재하는지 확인
-        String checkSql = "SELECT COUNT(*) FROM companies WHERE id = ?::uuid";
-        Integer count = jdbcTemplate.queryForObject(checkSql, Integer.class, TEST_COMPANY_ID);
-        
-        if (count == null || count == 0) {
-            // 고유한 사업자등록번호 생성 (UUID 기반)
-            String uniqueBusinessNumber = TEST_COMPANY_ID.substring(0, 8) + "-" + TEST_COMPANY_ID.substring(9, 13);
-            
-            // 테스트용 회사 생성
-            String insertSql = "INSERT INTO companies (id, company_name, business_registration_number, taxpayer_type) " +
-                             "VALUES (?::uuid, ?, ?, 'CORPORATION') ON CONFLICT (id) DO NOTHING";
-            jdbcTemplate.update(insertSql, TEST_COMPANY_ID, "테스트 회사 " + TEST_COMPANY_ID.substring(0, 8), uniqueBusinessNumber);
-        }
-    }
-    
-    private void cleanupTestData() {
-        try {
-            // GL 데이터 삭제
-            jdbcTemplate.update("DELETE FROM general_ledger WHERE company_id = ?::uuid", TEST_COMPANY_ID);
-            
-            // 분개 데이터 삭제
-            jdbcTemplate.update("DELETE FROM journal_entry_details WHERE journal_entry_id IN " +
-                    "(SELECT id FROM journal_entries WHERE company_id = ?::uuid)", TEST_COMPANY_ID);
-            jdbcTemplate.update("DELETE FROM journal_entries WHERE company_id = ?::uuid", TEST_COMPANY_ID);
-            
-            // 계정과목 삭제 (고유 prefix로 시작하는 것들)
-            jdbcTemplate.update("DELETE FROM chart_of_accounts WHERE account_code LIKE ?", uniqueAccountPrefix + "%");
-            
-            // 회사 데이터 삭제
-            jdbcTemplate.update("DELETE FROM companies WHERE id = ?::uuid", TEST_COMPANY_ID);
-        } catch (Exception e) {
-            System.err.println("테스트 데이터 정리 실패: " + e.getMessage());
-        }
     }
 
     private void setupTestAccounts() {

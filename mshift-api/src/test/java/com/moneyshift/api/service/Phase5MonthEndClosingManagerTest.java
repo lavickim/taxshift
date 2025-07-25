@@ -50,12 +50,10 @@ import static org.assertj.core.api.Assertions.*;
  * @version 1.0
  * @since 2025-07-24
  */
-@SpringBootTest
-@ActiveProfiles("test")
 @DisplayName("Phase 5: 월말마감(Month-End Closing) 처리 TDD 구현")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class Phase5MonthEndClosingManagerTest {
+public class Phase5MonthEndClosingManagerTest extends BaseTestClass {
 
     @Autowired
     private MonthEndClosingService monthEndClosingService;
@@ -69,15 +67,10 @@ public class Phase5MonthEndClosingManagerTest {
     @Autowired
     private ChartOfAccountsMapper chartOfAccountsMapper;
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
     // 테스트 데이터 상수
-    private String TEST_COMPANY_ID;
     private static final int TEST_FISCAL_YEAR = 2025;
     private static final int TEST_FISCAL_MONTH = 1;
     private static final LocalDate TEST_CLOSING_DATE = LocalDate.of(2025, 1, 31);
-    private String uniqueAccountPrefix;
 
     // 테스트용 계정과목 데이터
     private ChartOfAccount cashAccount;         // 1000 - 현금 (자산)
@@ -93,30 +86,11 @@ public class Phase5MonthEndClosingManagerTest {
 
     @BeforeEach
     void setUp() {
-        // 각 테스트마다 고유한 ID 생성
-        TEST_COMPANY_ID = UUID.randomUUID().toString();
-        uniqueAccountPrefix = TEST_COMPANY_ID.substring(0, 8);
-        
+        // 베이스 클래스에서 회사 설정
         setupTestCompany();
+        
         setupTestAccounts();
         setupTestGLAccounts();
-    }
-    
-
-    private void setupTestCompany() {
-        // 테스트용 회사가 이미 존재하는지 확인
-        String checkSql = "SELECT COUNT(*) FROM companies WHERE id = ?::uuid";
-        Integer count = jdbcTemplate.queryForObject(checkSql, Integer.class, TEST_COMPANY_ID);
-        
-        if (count == null || count == 0) {
-            // 고유한 사업자등록번호 생성 (UUID 기반)
-            String uniqueBusinessNumber = TEST_COMPANY_ID.substring(0, 8) + "-" + TEST_COMPANY_ID.substring(9, 13);
-            
-            // 테스트용 회사 생성
-            String insertSql = "INSERT INTO companies (id, company_name, business_registration_number, taxpayer_type) " +
-                             "VALUES (?::uuid, ?, ?, 'CORPORATION') ON CONFLICT (id) DO NOTHING";
-            jdbcTemplate.update(insertSql, TEST_COMPANY_ID, "테스트 회사 " + TEST_COMPANY_ID.substring(0, 8), uniqueBusinessNumber);
-        }
     }
 
     private void setupTestAccounts() {
