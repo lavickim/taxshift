@@ -1,5 +1,6 @@
 package com.moneyshift.api.service;
 
+import com.moneyshift.api.config.AccountCodeConfig;
 import com.moneyshift.api.mapper.ChartOfAccountsMapper;
 import com.moneyshift.api.mapper.JournalEntryMapper;
 import com.moneyshift.api.model.*;
@@ -69,23 +70,15 @@ public class Phase4JournalEntryManagerTest extends BaseTestClass {
 
     @BeforeEach
     void setUp() {
-        // 베이스 클래스에서 회사 설정
-        setupTestCompany();
-        
+        // 베이스 클래스에서 자동으로 환경 초기화됨
         setupTestAccounts();
         setupTestTransactionRequest();
     }
-    
-    @AfterEach
-    void tearDown() {
-        // 베이스 클래스의 테스트 데이터 정리 사용
-        cleanupTestData();
-    }
 
     private void setupTestAccounts() {
-        // 현금 계정 (자산)
+        // 현금 계정 (자산) - 중앙화된 설정 사용
         cashAccount = ChartOfAccount.builder()
-                .accountCode(uniqueAccountPrefix + "1000")
+                .accountCode(generateAccountCode(AccountCodeConfig.Codes.CASH))
                 .accountName("현금")
                 .accountType("자산")
                 .isDebitNormal(true)
@@ -93,9 +86,9 @@ public class Phase4JournalEntryManagerTest extends BaseTestClass {
                 .displayOrder(1)
                 .build();
 
-        // 사무용품비 계정 (비용)
+        // 사무용품비 계정 (비용) - 중앙화된 설정 사용
         expenseAccount = ChartOfAccount.builder()
-                .accountCode(uniqueAccountPrefix + "5000")
+                .accountCode(generateAccountCode(AccountCodeConfig.Codes.OFFICE_SUPPLIES_EXPENSE))
                 .accountName("사무용품비")
                 .accountType("비용")
                 .isDebitNormal(true)
@@ -105,7 +98,7 @@ public class Phase4JournalEntryManagerTest extends BaseTestClass {
 
         // 매출 계정 (수익)
         revenueAccount = ChartOfAccount.builder()
-                .accountCode(uniqueAccountPrefix + "4000")
+                .accountCode(generateAccountCode("4000"))
                 .accountName("매출")
                 .accountType("수익")
                 .isDebitNormal(false)
@@ -115,7 +108,7 @@ public class Phase4JournalEntryManagerTest extends BaseTestClass {
 
         // 미지급금 계정 (부채)
         liabilityAccount = ChartOfAccount.builder()
-                .accountCode(uniqueAccountPrefix + "2000")
+                .accountCode(generateAccountCode("2000"))
                 .accountName("미지급금")
                 .accountType("부채")
                 .isDebitNormal(false)
@@ -131,19 +124,15 @@ public class Phase4JournalEntryManagerTest extends BaseTestClass {
     }
     
     private void insertAccountIfNotExists(ChartOfAccount account) {
-        String checkSql = "SELECT COUNT(*) FROM chart_of_accounts WHERE account_code = ?";
-        Integer count = jdbcTemplate.queryForObject(checkSql, Integer.class, account.getAccountCode());
-        
-        if (count == null || count == 0) {
-            chartOfAccountsMapper.insertAccount(account);
-        }
+        createAccountIfNotExists(account.getAccountCode(), account.getAccountName(), 
+                               account.getAccountType(), account.getIsDebitNormal());
     }
 
     private void setupTestTransactionRequest() {
         // 테스트용 거래: 사무용품 현금 구매 (100,000원)
         testTransactionRequest = TransactionToJournalRequest.builder()
                 .transactionId(12345L)
-                .companyId(TEST_COMPANY_ID)
+                .companyId(testCompanyId)
                 .transactionDate(TEST_ENTRY_DATE)
                 .description("사무용품 현금 구매")
                 .amount(new BigDecimal("100000"))
@@ -173,7 +162,7 @@ public class Phase4JournalEntryManagerTest extends BaseTestClass {
         assertThat(response.getJournalEntry()).isNotNull();
         
         JournalEntry journalEntry = response.getJournalEntry();
-        assertThat(journalEntry.getCompanyId()).isEqualTo(TEST_COMPANY_ID);
+        assertThat(journalEntry.getCompanyId()).isEqualTo(testCompanyId);
         assertThat(journalEntry.getEntryDate()).isEqualTo(TEST_ENTRY_DATE);
         assertThat(journalEntry.getDescription()).contains("사무용품");
         assertThat(journalEntry.getTotalAmount()).isEqualByComparingTo(new BigDecimal("100000"));
@@ -213,7 +202,7 @@ public class Phase4JournalEntryManagerTest extends BaseTestClass {
                 .map(JournalEntryDetail::getAccountCode)
                 .collect(java.util.stream.Collectors.toSet());
         
-        assertThat(accountCodes).contains(uniqueAccountPrefix + "5000", uniqueAccountPrefix + "1000"); // 사무용품비, 현금
+        assertThat(accountCodes).contains(generateAccountCode("5000"), generateAccountCode("1000")); // 사무용품비, 현금
     }
 
     @Test
@@ -223,7 +212,7 @@ public class Phase4JournalEntryManagerTest extends BaseTestClass {
         // Given: 다양한 태그가 포함된 거래
         TransactionToJournalRequest coffeeRequest = TransactionToJournalRequest.builder()
                 .transactionId(12346L)
-                .companyId(TEST_COMPANY_ID)
+                .companyId(testCompanyId)
                 .transactionDate(TEST_ENTRY_DATE)
                 .description("스타벅스 커피 구매")
                 .amount(new BigDecimal("15000"))
@@ -259,7 +248,7 @@ public class Phase4JournalEntryManagerTest extends BaseTestClass {
     void should_RejectApproval_When_JournalEntryIsUnbalanced() {
         // Given: 불균형 분개 생성
         JournalEntry unbalancedEntry = JournalEntry.builder()
-                .companyId(TEST_COMPANY_ID)
+                .companyId(testCompanyId)
                 .entryDate(TEST_ENTRY_DATE)
                 .description("불균형 테스트 분개")
                 .totalAmount(new BigDecimal("100000"))
@@ -273,7 +262,7 @@ public class Phase4JournalEntryManagerTest extends BaseTestClass {
                 JournalEntryDetail.builder()
                         .journalEntryId(unbalancedEntry.getId())
                         .lineNumber(1)
-                        .accountCode(uniqueAccountPrefix + "5000")
+                        .accountCode(generateAccountCode("5000"))
                         .accountName("사무용품비")
                         .debitAmount(new BigDecimal("100000"))
                         .creditAmount(BigDecimal.ZERO)
@@ -282,7 +271,7 @@ public class Phase4JournalEntryManagerTest extends BaseTestClass {
                 JournalEntryDetail.builder()
                         .journalEntryId(unbalancedEntry.getId())
                         .lineNumber(2)
-                        .accountCode(uniqueAccountPrefix + "1000")
+                        .accountCode(generateAccountCode("1000"))
                         .accountName("현금")
                         .debitAmount(BigDecimal.ZERO)
                         .creditAmount(new BigDecimal("50000")) // 불균형!
@@ -416,7 +405,8 @@ public class Phase4JournalEntryManagerTest extends BaseTestClass {
         
         // Create another test company for comparison
         String anotherCompanyId = java.util.UUID.randomUUID().toString();
-        setupTestCompanyWithId(anotherCompanyId);
+        // 별도 회사는 자동 생성된 다른 테스트 회사 사용
+        String anotherCompanyId = UUID.randomUUID().toString();
         
         TransactionToJournalRequest anotherCompanyRequest = TransactionToJournalRequest.builder()
                 .transactionId(12347L)
@@ -431,11 +421,11 @@ public class Phase4JournalEntryManagerTest extends BaseTestClass {
         processTransactionToJournalEntry(anotherCompanyRequest);
 
         // When: 특정 회사의 분개 조회
-        List<JournalEntry> entries = findJournalEntriesByCompany(TEST_COMPANY_ID);
+        List<JournalEntry> entries = findJournalEntriesByCompany(testCompanyId);
 
         // Then: 해당 회사의 분개만 조회되어야 함
         assertThat(entries).isNotEmpty();
-        assertThat(entries).allMatch(entry -> TEST_COMPANY_ID.equals(entry.getCompanyId()));
+        assertThat(entries).allMatch(entry -> testCompanyId.equals(entry.getCompanyId()));
     }
 
     @Test
@@ -462,7 +452,7 @@ public class Phase4JournalEntryManagerTest extends BaseTestClass {
         // When: 특정 기간의 분개 조회
         LocalDate startDate = TEST_ENTRY_DATE.minusDays(5);
         LocalDate endDate = TEST_ENTRY_DATE.plusDays(5);
-        List<JournalEntry> entries = findJournalEntriesByDateRange(TEST_COMPANY_ID, startDate, endDate);
+        List<JournalEntry> entries = findJournalEntriesByDateRange(testCompanyId, startDate, endDate);
 
         // Then: 해당 기간의 분개만 조회되어야 함
         assertThat(entries).hasSize(1);
@@ -475,7 +465,8 @@ public class Phase4JournalEntryManagerTest extends BaseTestClass {
     void should_SearchJournalEntriesByKeyword_When_QueryingWithSearchTerm() {
         // Given: 격리된 회사에서 다양한 설명의 분개 생성
         String searchTestCompanyId = java.util.UUID.randomUUID().toString();
-        setupTestCompanyWithId(searchTestCompanyId);
+        // 검색 테스트용 별도 회사 사용
+        String searchTestCompanyId = UUID.randomUUID().toString();
         
         TransactionToJournalRequest officeRequest = testTransactionRequest.toBuilder()
                 .companyId(searchTestCompanyId)
@@ -609,18 +600,18 @@ public class Phase4JournalEntryManagerTest extends BaseTestClass {
 
     private List<JournalEntryDetail> createJournalEntryDetails(JournalEntry journalEntry, TransactionToJournalRequest request) {
         // 간단한 규칙 기반 계정과목 매핑 (prefix 사용)
-        String debitAccount = uniqueAccountPrefix + "5000"; // 기본적으로 비용 계정 (사무용품비)
-        String creditAccount = uniqueAccountPrefix + "1000"; // 기본적으로 현금 계정
+        String debitAccount = generateAccountCode("5000"); // 기본적으로 비용 계정 (사무용품비)
+        String creditAccount = generateAccountCode("1000"); // 기본적으로 현금 계정
 
         // 기본 계정과목들 생성
-        insertAccountIfNotExists(debitAccount, "사무용품비", "비용", true);
-        insertAccountIfNotExists(creditAccount, "현금", "자산", true);
+        createAccountIfNotExists(debitAccount, "사무용품비", "비용", true);
+        createAccountIfNotExists(creditAccount, "현금", "자산", true);
         
         // 태그나 카테고리에 따른 매핑
         if (request.getTags().contains("커피") || request.getTags().contains("음료")) {
-            debitAccount = uniqueAccountPrefix + "5100"; // 접대비 계정 필요시 추가 생성
+            debitAccount = generateAccountCode("5100"); // 접대비 계정 필요시 추가 생성
             // 접대비 계정도 생성
-            insertAccountIfNotExists(uniqueAccountPrefix + "5100", "접대비", "비용", true);
+            createAccountIfNotExists(generateAccountCode("5100"), "접대비", "비용", true);
         }
 
         return Arrays.asList(
