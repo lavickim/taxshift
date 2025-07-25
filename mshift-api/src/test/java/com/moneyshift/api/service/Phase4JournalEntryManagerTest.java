@@ -98,8 +98,8 @@ public class Phase4JournalEntryManagerTest extends BaseTestClass {
 
         // 매출 계정 (수익)
         revenueAccount = ChartOfAccount.builder()
-                .accountCode(generateAccountCode("4000"))
-                .accountName("매출")
+                .accountCode(generateAccountCode(AccountCodeConfig.Codes.SALES_REVENUE))
+                .accountName("매출액")
                 .accountType("수익")
                 .isDebitNormal(false)
                 .isActive(true)
@@ -108,8 +108,8 @@ public class Phase4JournalEntryManagerTest extends BaseTestClass {
 
         // 미지급금 계정 (부채)
         liabilityAccount = ChartOfAccount.builder()
-                .accountCode(generateAccountCode("2000"))
-                .accountName("미지급금")
+                .accountCode(generateAccountCode(AccountCodeConfig.Codes.ACCOUNTS_PAYABLE))
+                .accountName("매입채무")
                 .accountType("부채")
                 .isDebitNormal(false)
                 .isActive(true)
@@ -202,7 +202,7 @@ public class Phase4JournalEntryManagerTest extends BaseTestClass {
                 .map(JournalEntryDetail::getAccountCode)
                 .collect(java.util.stream.Collectors.toSet());
         
-        assertThat(accountCodes).contains(generateAccountCode("5000"), generateAccountCode("1000")); // 사무용품비, 현금
+        assertThat(accountCodes).contains(generateAccountCode(AccountCodeConfig.Codes.OFFICE_SUPPLIES_EXPENSE), generateAccountCode(AccountCodeConfig.Codes.CASH)); // 사무용품비, 현금
     }
 
     @Test
@@ -232,7 +232,7 @@ public class Phase4JournalEntryManagerTest extends BaseTestClass {
         // 접대비나 복리후생비 계정으로 매핑되어야 함
         boolean hasExpenseAccount = details.stream()
                 .anyMatch(detail -> 
-                    detail.getAccountCode().endsWith("5100") && // 접대비 계정 (커피 태그 매핑)
+                    detail.getAccountCode().endsWith(AccountCodeConfig.Codes.ENTERTAINMENT_EXPENSE) && // 접대비 계정 (커피 태그 매핑)
                     detail.getDebitAmount().compareTo(BigDecimal.ZERO) > 0);
         
         assertThat(hasExpenseAccount).isTrue();
@@ -262,8 +262,8 @@ public class Phase4JournalEntryManagerTest extends BaseTestClass {
                 JournalEntryDetail.builder()
                         .journalEntryId(unbalancedEntry.getId())
                         .lineNumber(1)
-                        .accountCode(generateAccountCode("5000"))
-                        .accountName("사무용품비")
+                        .accountCode(generateAccountCode(AccountCodeConfig.Codes.OFFICE_SUPPLIES_EXPENSE))
+                        .accountName("소모품비")
                         .debitAmount(new BigDecimal("100000"))
                         .creditAmount(BigDecimal.ZERO)
                         .description("사무용품 구매")
@@ -271,7 +271,7 @@ public class Phase4JournalEntryManagerTest extends BaseTestClass {
                 JournalEntryDetail.builder()
                         .journalEntryId(unbalancedEntry.getId())
                         .lineNumber(2)
-                        .accountCode(generateAccountCode("1000"))
+                        .accountCode(generateAccountCode(AccountCodeConfig.Codes.CASH))
                         .accountName("현금")
                         .debitAmount(BigDecimal.ZERO)
                         .creditAmount(new BigDecimal("50000")) // 불균형!
@@ -600,18 +600,18 @@ public class Phase4JournalEntryManagerTest extends BaseTestClass {
 
     private List<JournalEntryDetail> createJournalEntryDetails(JournalEntry journalEntry, TransactionToJournalRequest request) {
         // 간단한 규칙 기반 계정과목 매핑 (prefix 사용)
-        String debitAccount = generateAccountCode("5000"); // 기본적으로 비용 계정 (사무용품비)
-        String creditAccount = generateAccountCode("1000"); // 기본적으로 현금 계정
+        String debitAccount = generateAccountCode(AccountCodeConfig.Codes.OFFICE_SUPPLIES_EXPENSE); // 기본적으로 비용 계정 (소모품비)
+        String creditAccount = generateAccountCode(AccountCodeConfig.Codes.CASH); // 기본적으로 현금 계정
 
         // 기본 계정과목들 생성
-        createAccountIfNotExists(debitAccount, "사무용품비", "비용", true);
+        createAccountIfNotExists(debitAccount, "소모품비", "비용", true);
         createAccountIfNotExists(creditAccount, "현금", "자산", true);
         
         // 태그나 카테고리에 따른 매핑
         if (request.getTags().contains("커피") || request.getTags().contains("음료")) {
-            debitAccount = generateAccountCode("5100"); // 접대비 계정 필요시 추가 생성
+            debitAccount = generateAccountCode(AccountCodeConfig.Codes.ENTERTAINMENT_EXPENSE); // 접대비 계정 필요시 추가 생성
             // 접대비 계정도 생성
-            createAccountIfNotExists(generateAccountCode("5100"), "접대비", "비용", true);
+            createAccountIfNotExists(generateAccountCode(AccountCodeConfig.Codes.ENTERTAINMENT_EXPENSE), "접대비", "비용", true);
         }
 
         return Arrays.asList(

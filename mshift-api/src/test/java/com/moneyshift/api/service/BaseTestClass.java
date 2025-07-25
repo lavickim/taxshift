@@ -128,12 +128,12 @@ public abstract class BaseTestClass {
         createStandardAccount(AccountCodeConfig.Codes.SALES_REVENUE);
         createStandardAccount(AccountCodeConfig.Codes.NON_OPERATING_INCOME);
         
-        // 비용 계정
+        // 비용 계정 (확장된 판매비와 관리비)
         createStandardAccount(AccountCodeConfig.Codes.OFFICE_SUPPLIES_EXPENSE);
         createStandardAccount(AccountCodeConfig.Codes.ENTERTAINMENT_EXPENSE);
         createStandardAccount(AccountCodeConfig.Codes.WELFARE_EXPENSE);
         createStandardAccount(AccountCodeConfig.Codes.COMMUNICATION_EXPENSE);
-        createStandardAccount(AccountCodeConfig.Codes.TELEPHONE_EXPENSE);
+        createStandardAccount(AccountCodeConfig.Codes.UTILITIES_EXPENSE);
     }
 
     /**
