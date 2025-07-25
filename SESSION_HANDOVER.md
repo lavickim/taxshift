@@ -82,28 +82,66 @@ mvn test -Dtest=Phase5MonthEndClosingTest  # Phase5 테스트만
 **문제**: Docker 데몬 연결 불안정으로 개발 중단
 **해결**: manage-docker.sh 스크립트에 재시도 로직 및 자동 재시작 기능 추가
 
-## 다음 세션에서 진행할 수 있는 작업들
+## 다음 세션에서 진행할 작업 (우선순위 순)
 
-### 1. 우선순위 높음
-- **통합 테스트 실행**: `./test.sh` 실행하여 전체 시스템 통합 검증
-- **실제 거래 데이터 테스트**: 샘플 거래 데이터로 4-layer 분류 시스템 검증
-- **성능 최적화**: Redis 캐싱 레이어 성능 테스트 및 최적화
+### 1. **즉시 진행 (HIGH 우선순위)**
 
-### 2. 우선순위 중간
-- **프론트엔드 연동**: mshift-admin에서 새로운 계정과목 데이터 표시 확인
-- **모바일 앱 연동**: mshift-app에서 분개 생성 및 계정과목 조회 기능 테스트
-- **API 문서화**: Swagger UI를 통한 API 문서 업데이트
+#### 1-1. 전체 시스템 통합 테스트 실행
+```bash
+./test.sh
+```
+- **목적**: Phase1~5 완료 후 전체 시스템 연동 검증
+- **참고문서**: `/Users/lavickim/_Dev/moneyshift/CLAUDE.md` 하단 "Essential Development Commands"
+- **예상 소요시간**: 30분
+- **성공 기준**: 모든 서비스 정상 시작, API 호출 성공
 
-### 3. 장기 과제
-- **ML 모델 통합**: Layer 2 ML inference 구현
-- **Gemini AI 연동**: Layer 3 LLM fallback 최적화
-- **대용량 데이터 처리**: 실제 운영 환경 데이터 처리 성능 테스트
+#### 1-2. 재무제표 고도화 Phase 2-1 시작
+- **작업내용**: 상세 계정과목 체계 확장 (현재 109개 → 목표 200개+)
+- **참고문서**: `/Users/lavickim/_Dev/moneyshift/project-design/accounting/accounting-system-integrated-prd.md`
+  - 섹션 1.2 "경쟁사 재무제표 분석" 
+  - 섹션 4 "데이터베이스 확장 설계"
+- **현재 상태**: Phase1 TDD 완료, 기본 계정과목 109개 구축 완료
+- **다음 단계**: 
+  1. 판매관리비 20개+ 세부 항목 추가
+  2. 영업외수익/비용 세분화
+  3. 계정과목별 월별 추이 표시 준비
+
+### 2. **단기 과제 (MEDIUM 우선순위)**
+
+#### 2-1. 전표 형식 분개 출력 기능 구현
+- **참고문서**: `/Users/lavickim/_Dev/moneyshift/project-design/accounting/accounting-system-integrated-prd.md` 섹션 6.1
+- **현재 상태**: 기본 분개 생성 완료 (Phase4)
+- **구현 목표**: 경쟁사 수준의 전문적 분개장 출력
+
+#### 2-2. 월별/분기별/연간 재무제표 비교 기능
+- **참고문서**: accounting-system-integrated-prd.md 섹션 6.1.1 "계층적 구조 생성"
+- **현재 상태**: 기본 재무제표 생성 완료 (Phase5)
+- **구현 목표**: 다기간 비교 분석 기능
+
+#### 2-3. 총계정원장 및 보조원장 관리 기능 확장
+- **현재 상태**: Phase3 TDD 완료, 기본 GL 기능 구현
+- **구현 목표**: 세부 원장 관리 체계 완성
+
+### 3. **장기 과제 (LOW 우선순위)**
+- 세무 신고용 재무제표 형식 지원
+- ML 모델 통합 (Layer 2)
+- Gemini AI 연동 최적화 (Layer 3)
 
 ## 중요한 파일 위치
 
 ### 핵심 설정 파일
 - `/Users/lavickim/_Dev/moneyshift/CLAUDE.md` - 프로젝트 가이드라인
-- `/Users/lavickim/_Dev/moneyshift/project-design/accounting-improvement-todolist-v1.md` - 회계 개선 작업 체크리스트
+- `/Users/lavickim/_Dev/moneyshift/project-design/accounting-improvement-todolist-v1.md` - 회계 개선 작업 체크리스트 (완료)
+- `/Users/lavickim/_Dev/moneyshift/SESSION_HANDOVER.md` - 현재 세션 인계서 (이 파일)
+
+### 필수 참고 문서 (다음 세션에서 반드시 확인)
+- `/Users/lavickim/_Dev/moneyshift/project-design/accounting/accounting-system-integrated-prd.md` - **가장 중요** 
+  - 전체 시스템 아키텍처 설계
+  - Phase 2-1 구현 가이드라인
+  - 경쟁사 분석 및 목표 수준
+  - 상세 계정과목 체계 설계
+- `/Users/lavickim/_Dev/moneyshift/project-design/` - 전체 프로젝트 설계 문서
+- `/Users/lavickim/_Dev/moneyshift/scripts/create-chart-of-accounts.js` - 계정과목 생성 스크립트 예제
 
 ### 주요 백엔드 파일
 - `mshift-api/src/main/java/com/moneyshift/api/service/MonthEndClosingService.java` - 월말마감 서비스
@@ -147,6 +185,7 @@ mvn test -Dtest=Phase5MonthEndClosingTest  # Phase5 테스트만
 
 ## 빠른 시작 가이드 (다음 세션용)
 
+### Step 1: 환경 확인 및 복구
 ```bash
 # 1. 작업 디렉토리 이동
 cd /Users/lavickim/_Dev/moneyshift
@@ -155,17 +194,54 @@ cd /Users/lavickim/_Dev/moneyshift
 git status
 git log --oneline -5
 
-# 3. 전체 시스템 시작
-./start-all.sh
+# 3. Docker 상태 확인 (중요!)
+docker ps
+./scripts/manage-docker.sh  # Docker 데몬 문제 시 자동 복구
+```
 
-# 4. 백엔드 테스트 실행 (선택사항)
+### Step 2: 즉시 실행할 첫 번째 작업 
+```bash
+# 전체 시스템 통합 테스트 (최우선 실행)
+./test.sh
+
+# 성공 시: 모든 서비스 정상 시작 확인
+# 실패 시: 로그 확인 후 개별 서비스 디버깅
+./start-all.sh  # 개별 시작으로 문제 격리
+```
+
+### Step 3: 백엔드 검증 (선택사항)
+```bash
+# Phase5 테스트 재실행으로 현재 상태 확인
 cd mshift-api && mvn test -Dtest=Phase5MonthEndClosingTest
 
-# 5. API 서버 직접 테스트
+# API 서버 직접 테스트
 curl http://localhost:8080/api/v2/accounting/chart-of-accounts
+curl http://localhost:8080/api/v2/accounting/health
+```
 
-# 6. 다음 작업 시작
-# TODO: 필요한 작업을 여기서 계속 진행
+### Step 4: 다음 단계 작업 시작
+```bash
+# 재무제표 고도화 Phase 2-1 준비
+# 1. 설계 문서 확인
+cat /Users/lavickim/_Dev/moneyshift/project-design/accounting/accounting-system-integrated-prd.md | head -100
+
+# 2. 현재 계정과목 상태 확인  
+cd mshift-admin && yarn dev  # 관리자 패널에서 계정과목 현황 확인
+
+# 3. 추가 계정과목 생성 스크립트 준비 (필요시)
+# scripts/create-additional-chart-of-accounts.js 생성 고려
+```
+
+### Step 5: 문제 발생 시 대응 방법
+```bash
+# Docker 문제 시
+./scripts/manage-docker.sh restart
+
+# 백엔드 테스트 실패 시  
+cd mshift-api && mvn clean && mvn test
+
+# 프론트엔드 문제 시
+cd mshift-admin && yarn install && yarn dev
 ```
 
 ---
