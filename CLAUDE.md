@@ -110,3 +110,5 @@ cd mshift-api && mvn test -Dtest=ClassName # Run specific Java test
 
 ### Test Files
 - 테스트 파일은 루트에 있는 스크립트야.
+
+- 지금 커밋할때 마다 핸드오버 문서 업데이트고 있지 아까 그렇게 하라고 했다.

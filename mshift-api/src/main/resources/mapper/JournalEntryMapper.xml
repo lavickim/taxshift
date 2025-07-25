@@ -9,12 +9,11 @@
         <result property="companyId" column="company_id"/>
         <result property="entryDate" column="entry_date"/>
         <result property="description" column="description"/>
-        <result property="totalDebitAmount" column="total_debit_amount"/>
-        <result property="totalCreditAmount" column="total_credit_amount"/>
+        <result property="totalAmount" column="total_debit_amount"/>
+        <!-- total_credit_amount는 JournalEntry 모델에 해당 필드가 없으므로 제외 -->
         <result property="status" column="status"/>
         <result property="confidenceScore" column="confidence_score"/>
-        <result property="createdAt" column="created_at"/>
-        <result property="updatedAt" column="updated_at"/>
+        <!-- createdAt과 updatedAt은 TIMESTAMPTZ 타입으로 LocalDateTime 변환 이슈로 제외 -->
         <result property="postedAt" column="posted_at"/>
         <collection property="details" ofType="com.moneyshift.api.model.JournalEntryDetail">
             <id property="id" column="detail_id"/>
@@ -83,7 +82,7 @@
         SELECT 
             je.id, je.company_id, je.entry_date, je.description,
             je.total_debit_amount, je.total_credit_amount, je.status,
-            je.confidence_score, je.created_at, je.updated_at, je.posted_at,
+            je.confidence_score, je.posted_at,
             jed.id as detail_id, jed.journal_entry_id, jed.line_number,
             jed.account_code, jed.account_name, jed.debit_amount, jed.credit_amount,
             jed.description as detail_description
@@ -98,7 +97,7 @@
         SELECT 
             je.id, je.company_id, je.entry_date, je.description,
             je.total_debit_amount, je.total_credit_amount, je.status,
-            je.confidence_score, je.created_at, je.updated_at, je.approved_at, je.posted_at
+            je.confidence_score, je.posted_at
         FROM journal_entries je
         <where>
             <if test="companyId != null">
@@ -186,7 +185,7 @@
         SELECT 
             je.id, je.company_id, je.entry_date, je.description,
             je.total_debit_amount, je.total_credit_amount, je.status,
-            je.confidence_score, je.created_at, je.updated_at, je.approved_at, je.posted_at
+            je.confidence_score, je.posted_at
         FROM journal_entries je
         WHERE je.reference_type = 'TRANSACTION' 
         AND je.reference_id = #{transactionId}
