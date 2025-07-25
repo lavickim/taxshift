@@ -632,7 +632,13 @@ public class Phase3GeneralLedgerManagerTest extends BaseTestClass {
     }
 
     private void setupBalanceSheetJournalEntries() {
-        // 부채 발생 분개 (외상 구매)
+        // 필요한 계정과목 생성
+        insertAccountIfNotExists(uniqueAccountPrefix + "1000", "현금", "자산", true);
+        insertAccountIfNotExists(uniqueAccountPrefix + "1200", "사무용품", "자산", true);
+        insertAccountIfNotExists(uniqueAccountPrefix + "2000", "미지급금", "부채", false);
+        insertAccountIfNotExists(uniqueAccountPrefix + "3000", "자본금", "자본", false);
+
+        // 부채 발생 분개 (외상 구매 - 자산으로 처리)
         JournalEntry liabilityEntry = JournalEntry.builder()
                 .companyId(TEST_COMPANY_ID)
                 .entryDate(TEST_ENTRY_DATE)
@@ -647,8 +653,8 @@ public class Phase3GeneralLedgerManagerTest extends BaseTestClass {
                 JournalEntryDetail.builder()
                         .journalEntryId(liabilityEntry.getId())
                         .lineNumber(1)
-                        .accountCode(uniqueAccountPrefix + "5000")
-                        .accountName("사무용품비")
+                        .accountCode(uniqueAccountPrefix + "1200")
+                        .accountName("사무용품")
                         .debitAmount(new BigDecimal("200000"))
                         .creditAmount(BigDecimal.ZERO)
                         .description("사무용품 구매")
@@ -666,9 +672,49 @@ public class Phase3GeneralLedgerManagerTest extends BaseTestClass {
 
         liabilityDetails.forEach(journalEntryMapper::insertJournalEntryDetail);
         postJournalEntryToGeneralLedger(liabilityEntry.getId());
+
+        // 자본 계정 분개 (현금 자본금 납입)
+        JournalEntry equityEntry = JournalEntry.builder()
+                .companyId(TEST_COMPANY_ID)
+                .entryDate(TEST_ENTRY_DATE)
+                .description("자본금 납입")
+                .totalAmount(new BigDecimal("400000"))
+                .status("APPROVED")
+                .build();
+
+        journalEntryMapper.insertJournalEntry(equityEntry);
+
+        List<JournalEntryDetail> equityDetails = Arrays.asList(
+                JournalEntryDetail.builder()
+                        .journalEntryId(equityEntry.getId())
+                        .lineNumber(1)
+                        .accountCode(uniqueAccountPrefix + "1000")
+                        .accountName("현금")
+                        .debitAmount(new BigDecimal("400000"))
+                        .creditAmount(BigDecimal.ZERO)
+                        .description("현금 수취")
+                        .build(),
+                JournalEntryDetail.builder()
+                        .journalEntryId(equityEntry.getId())
+                        .lineNumber(2)
+                        .accountCode(uniqueAccountPrefix + "3000")
+                        .accountName("자본금")
+                        .debitAmount(BigDecimal.ZERO)
+                        .creditAmount(new BigDecimal("400000"))
+                        .description("자본금 납입")
+                        .build()
+        );
+
+        equityDetails.forEach(journalEntryMapper::insertJournalEntryDetail);
+        postJournalEntryToGeneralLedger(equityEntry.getId());
     }
 
     private void setupCashFlowJournalEntries() {
+        // 현금 관련 계정 생성
+        insertAccountIfNotExists(uniqueAccountPrefix + "1000", "현금", "자산", true);
+        insertAccountIfNotExists(uniqueAccountPrefix + "1100", "예금", "자산", true);
+        insertAccountIfNotExists(uniqueAccountPrefix + "4000", "매출", "수익", false);
+        
         setupMultipleJournalEntries();
         setupRevenueAndExpenseJournalEntries();
     }

@@ -87,6 +87,15 @@ public interface JournalEntryMapper {
                                @Param("status") String status);
 
     /**
+     * 분개 설명 업데이트
+     * @param journalEntryId 분개 ID
+     * @param description 새로운 설명
+     * @return 업데이트된 레코드 수
+     */
+    int updateJournalEntryDescription(@Param("journalEntryId") Long journalEntryId,
+                                    @Param("description") String description);
+
+    /**
      * 분개 균형 검증
      * @param journalEntryId 분개 ID
      * @return 균형 검증 결과 (totalDebit, totalCredit, isBalanced)

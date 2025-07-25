@@ -281,7 +281,7 @@
         WHERE gl.company_id = #{companyId}::uuid
         AND gl.fiscal_year = #{fiscalYear}
         AND gl.fiscal_month = #{fiscalMonth}
-        AND (gl.account_code LIKE '1000%' OR gl.account_code LIKE '1010%')  -- 현금성 자산
+        AND (gl.account_code LIKE '%1000' OR gl.account_code LIKE '%1010' OR gl.account_code LIKE '%1100')  -- 현금성 자산
         AND coa.is_active = true
         GROUP BY gl.account_code, coa.account_name
         ORDER BY gl.account_code
