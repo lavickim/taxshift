@@ -131,7 +131,7 @@
   },
   "permissions": {
     "allow": [
-      "Bash(git checkout:*)"
+      "Bash(psql:*)"
     ],
     "deny": []
   }

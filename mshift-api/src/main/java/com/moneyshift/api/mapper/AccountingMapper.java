@@ -41,8 +41,8 @@ public interface AccountingMapper {
      * 분개 생성
      */
     @Insert({
-        "INSERT INTO journal_entries (company_id, entry_date, description, reference_type, reference_id, total_amount, status, created_by)",
-        "VALUES (CAST(#{companyId} AS UUID), #{entryDate}, #{description}, #{referenceType}, #{referenceId}, #{totalAmount}, CAST(#{status} AS journal_entry_status_enum), #{createdBy})"
+        "INSERT INTO journal_entries (company_id, entry_date, description, reference_type, reference_id, total_debit_amount, total_credit_amount, status, confidence_score)",
+        "VALUES (CAST(#{companyId} AS UUID), #{entryDate}, #{description}, #{referenceType}, #{referenceId}, #{totalDebitAmount}, #{totalCreditAmount}, CAST(#{status} AS journal_entry_status), #{confidenceScore})"
     })
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     void insertJournalEntry(JournalEntry journalEntry);
@@ -51,8 +51,8 @@ public interface AccountingMapper {
      * 분개 상세 생성
      */
     @Insert({
-        "INSERT INTO journal_entry_details (journal_entry_id, line_number, account_code, debit_amount, credit_amount, description)",
-        "VALUES (#{journalEntryId}, #{lineNumber}, #{accountCode}, #{debitAmount}, #{creditAmount}, #{description})"
+        "INSERT INTO journal_entry_details (journal_entry_id, line_number, account_code, account_name, debit_amount, credit_amount, description)",
+        "VALUES (#{journalEntryId}, #{lineNumber}, #{accountCode}, #{accountName}, #{debitAmount}, #{creditAmount}, #{description})"
     })
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     void insertJournalEntryDetail(JournalEntryDetail detail);

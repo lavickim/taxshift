@@ -128,6 +128,7 @@ public class AccountingEngine {
             new BigDecimal(transaction.getAmount())
         );
         journalEntry.setCreatedBy("SYSTEM");
+        journalEntry.setConfidenceScore(95.0);
         
         // 분개 상세 생성
         List<JournalEntryDetail> details = generateDoubleEntry(

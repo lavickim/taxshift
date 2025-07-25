@@ -65,6 +65,12 @@ public class JournalEntry {
     @Schema(description = "총 금액", example = "50000.00")
     private BigDecimal totalAmount;
     
+    @Schema(description = "총 차변 금액", example = "50000.00")
+    private BigDecimal totalDebitAmount;
+    
+    @Schema(description = "총 대변 금액", example = "50000.00")
+    private BigDecimal totalCreditAmount;
+    
     @Builder.Default
     @Schema(description = "분개상태", example = "DRAFT", allowableValues = {"DRAFT", "APPROVED", "POSTED"}, defaultValue = "DRAFT")
     private String status = "DRAFT";
@@ -148,6 +154,8 @@ public class JournalEntry {
                 .referenceType(referenceType)
                 .referenceId(referenceId)
                 .totalAmount(totalAmount)
+                .totalDebitAmount(totalAmount)
+                .totalCreditAmount(totalAmount)
                 .status("DRAFT")
                 .createdBy("SYSTEM")
                 .createdAt(LocalDateTime.now())

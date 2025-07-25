@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,20 +34,23 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class Phase4JournalEntryTest {
+public class Phase4JournalEntryTest extends BaseTestClass {
 
     @Autowired
     private AccountingEngine accountingEngine;
 
     private TransactionEntity sampleTransaction;
-    private String companyId = "test-company";
 
     @BeforeEach
     public void setUp() {
-        // 샘플 거래 생성
+        // 실제 데이터베이스에 거래 데이터 생성
+        createTestTransaction(1L, "EXPENSE", "스타벅스 강남점", "커피전문점", 50000L);
+        createTestTransaction(2L, "INCOME", "서비스 수입", "매출", 200000L);
+        
+        // 샘플 거래 엔티티 생성 (테스트용)
         sampleTransaction = TransactionEntity.builder()
                 .id(1L)
-                .companyId(companyId)
+                .companyId(testCompanyId)
                 .amount(50000L) // 50,000원
                 .transactionDate(LocalDate.now())
                 .transactionType("EXPENSE")
@@ -62,7 +64,7 @@ public class Phase4JournalEntryTest {
     public void testJournalEntryCreation() {
         // When: 새로운 분개 생성
         JournalEntry journalEntry = JournalEntry.createDraft(
-                companyId, 
+                testCompanyId, 
                 LocalDate.now(), 
                 "사무용품 구매", 
                 "TRANSACTION", 
@@ -71,7 +73,7 @@ public class Phase4JournalEntryTest {
         );
         
         // Then: 기본값 검증
-        assertEquals(companyId, journalEntry.getCompanyId());
+        assertEquals(testCompanyId, journalEntry.getCompanyId());
         assertEquals("사무용품 구매", journalEntry.getDescription());
         assertEquals("TRANSACTION", journalEntry.getReferenceType());
         assertEquals(Long.valueOf(123L), journalEntry.getReferenceId());
@@ -129,7 +131,7 @@ public class Phase4JournalEntryTest {
     public void testBalancedJournalEntry() {
         // Given: 균형 분개 생성
         JournalEntry journalEntry = JournalEntry.createDraft(
-                companyId, LocalDate.now(), "균형 분개", "MANUAL", null, new BigDecimal("100000.00")
+                testCompanyId, LocalDate.now(), "균형 분개", "MANUAL", null, new BigDecimal("100000.00")
         );
         
         List<JournalEntryDetail> details = new ArrayList<>();
@@ -148,7 +150,7 @@ public class Phase4JournalEntryTest {
     public void testUnbalancedJournalEntry() {
         // Given: 불균형 분개 생성
         JournalEntry journalEntry = JournalEntry.createDraft(
-                companyId, LocalDate.now(), "불균형 분개", "MANUAL", null, new BigDecimal("100000.00")
+                testCompanyId, LocalDate.now(), "불균형 분개", "MANUAL", null, new BigDecimal("100000.00")
         );
         
         List<JournalEntryDetail> details = new ArrayList<>();
@@ -167,7 +169,7 @@ public class Phase4JournalEntryTest {
     public void testJournalEntryApprovalProcess() {
         // Given: 균형 분개 생성
         JournalEntry journalEntry = JournalEntry.createDraft(
-                companyId, LocalDate.now(), "승인 테스트", "MANUAL", null, new BigDecimal("50000.00")
+                testCompanyId, LocalDate.now(), "승인 테스트", "MANUAL", null, new BigDecimal("50000.00")
         );
         
         List<JournalEntryDetail> details = new ArrayList<>();
@@ -187,7 +189,7 @@ public class Phase4JournalEntryTest {
     public void testUnbalancedJournalEntryApprovalException() {
         // Given: 불균형 분개
         JournalEntry journalEntry = JournalEntry.createDraft(
-                companyId, LocalDate.now(), "불균형 분개", "MANUAL", null, new BigDecimal("100000.00")
+                testCompanyId, LocalDate.now(), "불균형 분개", "MANUAL", null, new BigDecimal("100000.00")
         );
         
         List<JournalEntryDetail> details = new ArrayList<>();
@@ -206,7 +208,7 @@ public class Phase4JournalEntryTest {
     public void testJournalEntryPostingProcess() {
         // Given: 승인된 분개
         JournalEntry journalEntry = JournalEntry.createDraft(
-                companyId, LocalDate.now(), "전기 테스트", "MANUAL", null, new BigDecimal("75000.00")
+                testCompanyId, LocalDate.now(), "전기 테스트", "MANUAL", null, new BigDecimal("75000.00")
         );
         
         List<JournalEntryDetail> details = new ArrayList<>();
@@ -230,7 +232,7 @@ public class Phase4JournalEntryTest {
     public void testDraftJournalEntryPostingException() {
         // Given: DRAFT 상태 분개
         JournalEntry journalEntry = JournalEntry.createDraft(
-                companyId, LocalDate.now(), "DRAFT 전기 테스트", "MANUAL", null, new BigDecimal("50000.00")
+                testCompanyId, LocalDate.now(), "DRAFT 전기 테스트", "MANUAL", null, new BigDecimal("50000.00")
         );
         
         // When & Then: DRAFT에서 전기 시 예외 발생
@@ -244,7 +246,7 @@ public class Phase4JournalEntryTest {
     public void testComplexJournalEntry() {
         // Given: 복합 분개 (1개 차변, 2개 대변)
         JournalEntry journalEntry = JournalEntry.createDraft(
-                companyId, LocalDate.now(), "복합 분개", "MANUAL", null, new BigDecimal("120000.00")
+                testCompanyId, LocalDate.now(), "복합 분개", "MANUAL", null, new BigDecimal("120000.00")
         );
         
         List<JournalEntryDetail> details = new ArrayList<>();
@@ -281,7 +283,7 @@ public class Phase4JournalEntryTest {
         
         // Then: 생성된 분개 검증
         assertNotNull(generatedEntry);
-        assertEquals(companyId, generatedEntry.getCompanyId());
+        assertEquals(testCompanyId, generatedEntry.getCompanyId());
         assertEquals("TRANSACTION", generatedEntry.getReferenceType());
         assertEquals(sampleTransaction.getId(), generatedEntry.getReferenceId());
         assertEquals(sampleTransaction.getRawText(), generatedEntry.getDescription());
@@ -341,7 +343,7 @@ public class Phase4JournalEntryTest {
     public void testEmptyJournalEntryDetails() {
         // Given: 상세 내역이 없는 분개
         JournalEntry journalEntry = JournalEntry.createDraft(
-                companyId, LocalDate.now(), "빈 분개", "MANUAL", null, new BigDecimal("0.00")
+                testCompanyId, LocalDate.now(), "빈 분개", "MANUAL", null, new BigDecimal("0.00")
         );
         
         // When & Then: 빈 상세 내역 검증
@@ -359,7 +361,7 @@ public class Phase4JournalEntryTest {
     public void testJournalEntryStatusConstraints() {
         // Given: 분개 생성
         JournalEntry journalEntry = JournalEntry.createDraft(
-                companyId, LocalDate.now(), "상태 테스트", "MANUAL", null, new BigDecimal("50000.00")
+                testCompanyId, LocalDate.now(), "상태 테스트", "MANUAL", null, new BigDecimal("50000.00")
         );
         
         List<JournalEntryDetail> details = new ArrayList<>();
@@ -396,7 +398,7 @@ public class Phase4JournalEntryTest {
         // Given: 수익 거래
         TransactionEntity revenueTransaction = TransactionEntity.builder()
                 .id(2L)
-                .companyId(companyId)
+                .companyId(testCompanyId)
                 .amount(200000L) // 200,000원
                 .transactionDate(LocalDate.now())
                 .transactionType("INCOME")

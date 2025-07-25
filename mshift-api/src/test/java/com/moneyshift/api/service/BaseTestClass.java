@@ -134,6 +134,12 @@ public abstract class BaseTestClass {
         createStandardAccount(AccountCodeConfig.Codes.WELFARE_EXPENSE);
         createStandardAccount(AccountCodeConfig.Codes.COMMUNICATION_EXPENSE);
         createStandardAccount(AccountCodeConfig.Codes.UTILITIES_EXPENSE);
+        
+        // AccountingEngine에서 사용하는 추가 계정들
+        createAccountIfNotExists("1120", "보통예금", "자산", true);
+        createAccountIfNotExists("5120", "복리후생비", "비용", true);
+        createAccountIfNotExists("4110", "매출", "수익", false);
+        createAccountIfNotExists("5130", "소모품비", "비용", true);
     }
 
     /**
@@ -330,6 +336,33 @@ public abstract class BaseTestClass {
             companyRegistry.put(companyId, true);
         } catch (Exception e) {
             throw new RuntimeException("추가 테스트 회사 생성 실패: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * 테스트용 거래 데이터 생성
+     */
+    protected Long createTestTransaction(Long transactionId, String transactionType, String rawText, String finalTag, Long amount) {
+        try {
+            String insertSql = """
+                INSERT INTO transactions (id, company_id, raw_text, transaction_date, amount, transaction_type, final_suggested_tag)
+                VALUES (?, ?::uuid, ?, ?, ?, ?::transaction_io_type, ?)
+                ON CONFLICT (id) DO UPDATE SET
+                    company_id = EXCLUDED.company_id,
+                    raw_text = EXCLUDED.raw_text,
+                    transaction_date = EXCLUDED.transaction_date,
+                    amount = EXCLUDED.amount,
+                    transaction_type = EXCLUDED.transaction_type,
+                    final_suggested_tag = EXCLUDED.final_suggested_tag,
+                    updated_at = NOW()
+                """;
+            
+            jdbcTemplate.update(insertSql, transactionId, testCompanyId, rawText, 
+                              TEST_ENTRY_DATE, amount, transactionType, finalTag);
+            
+            return transactionId;
+        } catch (Exception e) {
+            throw new RuntimeException("테스트 거래 생성 실패: " + e.getMessage(), e);
         }
     }
 }
