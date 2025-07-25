@@ -41,78 +41,88 @@ class Phase1ChartOfAccountsExpansionTest {
     }
 
     @Test
-    @DisplayName("TDD Red: 200+ 확장된 계정과목 시스템 초기화 - 실패 테스트")
-    void shouldFailInitializeExpandedChartOfAccounts() {
-        // Given: 아직 서비스가 구현되지 않음
-        // When & Then: 서비스 클래스가 존재하지 않으므로 컴파일 에러 발생
-        assertThatThrownBy(() -> {
+    @DisplayName("TDD Green: 200+ 확장된 계정과목 시스템 초기화 - 성공 테스트")
+    void shouldInitializeExpandedChartOfAccounts() {
+        // Given: 서비스가 구현됨
+        // When & Then: 정상적으로 초기화됨
+        assertThatCode(() -> {
             chartOfAccountsService.initializeExpandedChartOfAccounts();
-        }).isInstanceOf(RuntimeException.class);
+        }).doesNotThrowAnyException();
     }
 
     @Test
-    @DisplayName("TDD Red: 자산 계정 50개 생성 - 실패 테스트") 
-    void shouldFailCreateAssetAccounts() {
+    @DisplayName("TDD Green: 자산 계정 50개 생성 - 성공 테스트") 
+    void shouldCreateAssetAccounts() {
         // Given: 자산 계정 생성 요청
         String accountType = "자산";
         
-        // When & Then: 메소드가 구현되지 않아 실패
-        assertThatThrownBy(() -> {
-            List<ChartOfAccount> assetAccounts = chartOfAccountsService.createAccountsByType(accountType);
-            assertThat(assetAccounts).hasSize(50);
-        }).isInstanceOf(RuntimeException.class);
+        // When: 자산 계정 생성
+        List<ChartOfAccount> assetAccounts = chartOfAccountsService.createAccountsByType(accountType);
+        
+        // Then: 50개의 자산 계정이 생성됨
+        assertThat(assetAccounts).hasSize(50);
+        assertThat(assetAccounts).allMatch(account -> account.getAccountType().equals("자산"));
+        assertThat(assetAccounts).allMatch(account -> account.getAccountCode().startsWith("1"));
     }
 
     @Test
-    @DisplayName("TDD Red: 부채 계정 30개 생성 - 실패 테스트")
-    void shouldFailCreateLiabilityAccounts() {
+    @DisplayName("TDD Green: 부채 계정 30개 생성 - 성공 테스트")
+    void shouldCreateLiabilityAccounts() {
         // Given: 부채 계정 생성 요청
         String accountType = "부채";
         
-        // When & Then: 메소드가 구현되지 않아 실패
-        assertThatThrownBy(() -> {
-            List<ChartOfAccount> liabilityAccounts = chartOfAccountsService.createAccountsByType(accountType);
-            assertThat(liabilityAccounts).hasSize(30);
-        }).isInstanceOf(RuntimeException.class);
+        // When: 부채 계정 생성
+        List<ChartOfAccount> liabilityAccounts = chartOfAccountsService.createAccountsByType(accountType);
+        
+        // Then: 30개의 부채 계정이 생성됨
+        assertThat(liabilityAccounts).hasSize(30);
+        assertThat(liabilityAccounts).allMatch(account -> account.getAccountType().equals("부채"));
+        assertThat(liabilityAccounts).allMatch(account -> account.getAccountCode().startsWith("2"));
     }
 
     @Test
-    @DisplayName("TDD Red: 자본 계정 10개 생성 - 실패 테스트")
-    void shouldFailCreateEquityAccounts() {
+    @DisplayName("TDD Green: 자본 계정 10개 생성 - 성공 테스트")
+    void shouldCreateEquityAccounts() {
         // Given: 자본 계정 생성 요청
         String accountType = "자본";
         
-        // When & Then: 메소드가 구현되지 않아 실패
-        assertThatThrownBy(() -> {
-            List<ChartOfAccount> equityAccounts = chartOfAccountsService.createAccountsByType(accountType);
-            assertThat(equityAccounts).hasSize(10);
-        }).isInstanceOf(RuntimeException.class);
+        // When: 자본 계정 생성
+        List<ChartOfAccount> equityAccounts = chartOfAccountsService.createAccountsByType(accountType);
+        
+        // Then: 10개의 자본 계정이 생성됨
+        assertThat(equityAccounts).hasSize(10);
+        assertThat(equityAccounts).allMatch(account -> account.getAccountType().equals("자본"));
+        assertThat(equityAccounts).allMatch(account -> account.getAccountCode().startsWith("3"));
     }
 
     @Test
-    @DisplayName("TDD Red: 수익 계정 20개 생성 - 실패 테스트")
-    void shouldFailCreateRevenueAccounts() {
+    @DisplayName("TDD Green: 수익 계정 20개 생성 - 성공 테스트")
+    void shouldCreateRevenueAccounts() {
         // Given: 수익 계정 생성 요청
         String accountType = "수익";
         
-        // When & Then: 메소드가 구현되지 않아 실패
-        assertThatThrownBy(() -> {
-            List<ChartOfAccount> revenueAccounts = chartOfAccountsService.createAccountsByType(accountType);
-            assertThat(revenueAccounts).hasSize(20);
-        }).isInstanceOf(RuntimeException.class);
+        // When: 수익 계정 생성
+        List<ChartOfAccount> revenueAccounts = chartOfAccountsService.createAccountsByType(accountType);
+        
+        // Then: 20개의 수익 계정이 생성됨
+        assertThat(revenueAccounts).hasSize(20);
+        assertThat(revenueAccounts).allMatch(account -> account.getAccountType().equals("수익"));
+        assertThat(revenueAccounts).allMatch(account -> account.getAccountCode().startsWith("4"));
     }
 
     @Test
-    @DisplayName("TDD Red: 비용 계정 90개 생성 - 실패 테스트")
-    void shouldFailCreateExpenseAccounts() {
+    @DisplayName("TDD Green: 비용 계정 90개 생성 - 성공 테스트")
+    void shouldCreateExpenseAccounts() {
         // Given: 비용 계정 생성 요청
         String accountType = "비용";
         
-        // When & Then: 메소드가 구현되지 않아 실패
-        assertThatThrownBy(() -> {
-            List<ChartOfAccount> expenseAccounts = chartOfAccountsService.createAccountsByType(accountType);
-            assertThat(expenseAccounts).hasSize(90);
-        }).isInstanceOf(RuntimeException.class);
+        // When: 비용 계정 생성
+        List<ChartOfAccount> expenseAccounts = chartOfAccountsService.createAccountsByType(accountType);
+        
+        // Then: 90개의 비용 계정이 생성됨
+        assertThat(expenseAccounts).hasSize(90);
+        assertThat(expenseAccounts).allMatch(account -> account.getAccountType().equals("비용"));
+        assertThat(expenseAccounts).allMatch(account -> account.getAccountCode().startsWith("5"));
     }
 
     @Test

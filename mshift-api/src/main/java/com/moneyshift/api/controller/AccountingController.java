@@ -162,7 +162,7 @@ public class AccountingController {
     })
     @Timed(value = "accounting.journal.entries.list", description = "분개 목록 조회 소요시간")
     @Counted(value = "accounting.journal.entries.list.total", description = "분개 목록 조회 총 요청 수")
-    @GetMapping("/journal-entries")
+    @GetMapping("/entries")
     public ResponseEntity<List<JournalEntry>> getJournalEntries(
             @Parameter(description = "회사 ID", required = true) @RequestParam String companyId,
             @Parameter(description = "조회 시작일", required = true) @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
@@ -201,7 +201,7 @@ public class AccountingController {
     })
     @Timed(value = "accounting.chart.of.accounts.get", description = "계정과목 목록 조회 소요시간")
     @Counted(value = "accounting.chart.of.accounts.get.total", description = "계정과목 목록 조회 총 요청 수")
-    @GetMapping("/chart-of-accounts")
+    @GetMapping("/accounts")
     public ResponseEntity<List<ChartOfAccount>> getChartOfAccounts() {
         try {
             logger.debug("계정과목 목록 조회 요청");

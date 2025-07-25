@@ -117,10 +117,10 @@
                      ))
             </if>
             <if test="startDate != null">
-                AND je.entry_date >= #{startDate}
+                AND je.entry_date &gt;= #{startDate}
             </if>
             <if test="endDate != null">
-                AND je.entry_date <= #{endDate}
+                AND je.entry_date &lt;= #{endDate}
             </if>
         </where>
         ORDER BY je.entry_date DESC, je.id DESC
@@ -147,10 +147,10 @@
                      ))
             </if>
             <if test="startDate != null">
-                AND je.entry_date >= #{startDate}
+                AND je.entry_date &gt;= #{startDate}
             </if>
             <if test="endDate != null">
-                AND je.entry_date <= #{endDate}
+                AND je.entry_date &lt;= #{endDate}
             </if>
         </where>
     </select>

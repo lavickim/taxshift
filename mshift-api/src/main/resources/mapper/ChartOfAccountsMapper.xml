@@ -263,10 +263,10 @@
         LEFT JOIN journal_entries je ON jed.journal_entry_id = je.id
         WHERE coa.is_active = true
         <if test="startDate != null">
-            AND (je.entry_date IS NULL OR je.entry_date >= #{startDate})
+            AND (je.entry_date IS NULL OR je.entry_date &gt;= #{startDate})
         </if>
         <if test="endDate != null">
-            AND (je.entry_date IS NULL OR je.entry_date <= #{endDate})
+            AND (je.entry_date IS NULL OR je.entry_date &lt;= #{endDate})
         </if>
         GROUP BY coa.account_code, coa.account_name, coa.account_type
         ORDER BY usage_count DESC, coa.account_code

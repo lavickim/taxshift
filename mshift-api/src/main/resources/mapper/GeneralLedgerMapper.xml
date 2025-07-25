@@ -25,7 +25,7 @@
     </resultMap>
 
     <!-- GL Detail ResultMap -->
-    <resultMap id="GLDetailResultMap" type="com.moneyshift.api.model.GLDetail">
+    <resultMap id="GLDetailResultMap" type="com.moneyshift.api.model.GlDetail">
         <id property="id" column="id"/>
         <result property="generalLedgerId" column="general_ledger_id"/>
         <result property="journalEntryId" column="journal_entry_id"/>
@@ -130,7 +130,7 @@
     </update>
 
     <!-- GL 상세 내역 생성 -->
-    <insert id="insertGLDetail" parameterType="com.moneyshift.api.model.GLDetail"
+    <insert id="insertGLDetail" parameterType="com.moneyshift.api.model.GlDetail"
             useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO gl_details (
             general_ledger_id, journal_entry_id, posting_date,
