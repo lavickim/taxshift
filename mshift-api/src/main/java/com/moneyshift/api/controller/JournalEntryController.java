@@ -382,7 +382,7 @@ public class JournalEntryController {
             LocalDate endDateParsed = LocalDate.parse(endDate);
             
             Long unpostedCount = journalEntryMapper.findUnpostedJournalEntries(
-                companyId, startDateParsed, endDateParsed);
+                companyId.toString(), startDateParsed, endDateParsed);
             
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);

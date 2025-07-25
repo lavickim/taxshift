@@ -49,7 +49,7 @@
             total_debit_amount, total_credit_amount, 
             status, confidence_score
         ) VALUES (
-            #{companyId}, #{entryDate}, #{description},
+            #{companyId}::uuid, #{entryDate}, #{description},
             #{totalDebitAmount}, #{totalCreditAmount},
             #{status}::journal_entry_status, #{confidenceScore}
         )
@@ -103,7 +103,7 @@
         FROM journal_entries je
         <where>
             <if test="companyId != null">
-                AND je.company_id = #{companyId}
+                AND je.company_id = #{companyId}::uuid
             </if>
             <if test="status != null">
                 AND je.status = #{status}::journal_entry_status
@@ -133,7 +133,7 @@
         FROM journal_entries je
         <where>
             <if test="companyId != null">
-                AND je.company_id = #{companyId}
+                AND je.company_id = #{companyId}::uuid
             </if>
             <if test="status != null">
                 AND je.status = #{status}::journal_entry_status
@@ -218,7 +218,7 @@
     <select id="findUnpostedJournalEntries" resultType="java.lang.Long">
         SELECT COUNT(*)
         FROM journal_entries je
-        WHERE je.company_id = #{companyId}
+        WHERE je.company_id = #{companyId}::uuid
         AND je.entry_date BETWEEN #{startDate} AND #{endDate}
         AND je.status IN ('DRAFT', 'APPROVED')
     </select>

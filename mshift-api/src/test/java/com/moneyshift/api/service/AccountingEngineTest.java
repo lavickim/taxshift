@@ -51,7 +51,6 @@ class AccountingEngineTest {
         testRequest = TransactionToJournalRequest.builder()
                 .transactionId(1L)
                 .companyId("test-company")
-                .forceRegenerate(false)
                 .build();
         
         // 테스트용 거래 데이터

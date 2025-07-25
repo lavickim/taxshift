@@ -47,7 +47,7 @@
             gl.ending_debit_balance, gl.ending_credit_balance,
             gl.is_closed, gl.closed_at, gl.created_at, gl.updated_at
         FROM general_ledger gl
-        WHERE gl.company_id = #{companyId}
+        WHERE gl.company_id = #{companyId}::uuid
         AND gl.account_code = #{accountCode}
         AND gl.fiscal_year = #{fiscalYear}
         AND gl.fiscal_month = #{fiscalMonth}
@@ -65,7 +65,7 @@
         FROM general_ledger gl
         <where>
             <if test="companyId != null">
-                AND gl.company_id = #{companyId}
+                AND gl.company_id = #{companyId}::uuid
             </if>
             <if test="fiscalYear != null">
                 AND gl.fiscal_year = #{fiscalYear}
@@ -97,7 +97,7 @@
             ending_debit_balance, ending_credit_balance,
             is_closed
         ) VALUES (
-            #{companyId}, #{accountCode}, #{fiscalYear}, #{fiscalMonth},
+            #{companyId}::uuid, #{accountCode}, #{fiscalYear}, #{fiscalMonth},
             #{beginningDebitBalance}, #{beginningCreditBalance},
             #{periodDebitAmount}, #{periodCreditAmount},
             #{yearToDateDebit}, #{yearToDateCredit},
@@ -112,6 +112,8 @@
             year_to_date_credit = general_ledger.year_to_date_credit + EXCLUDED.period_credit_amount,
             ending_debit_balance = general_ledger.ending_debit_balance + EXCLUDED.period_debit_amount - EXCLUDED.period_credit_amount,
             ending_credit_balance = general_ledger.ending_credit_balance + EXCLUDED.period_credit_amount - EXCLUDED.period_debit_amount,
+            is_closed = EXCLUDED.is_closed,
+            closed_at = EXCLUDED.closed_at,
             updated_at = CURRENT_TIMESTAMP
     </insert>
 
@@ -127,6 +129,40 @@
             ending_credit_balance = ending_credit_balance + #{creditAmount} - #{debitAmount},
             updated_at = CURRENT_TIMESTAMP
         WHERE id = #{generalLedgerId}
+    </update>
+
+    <!-- GL 계정 잔액 0으로 설정 (손익 계정 마감용) -->
+    <update id="resetGeneralLedgerBalance">
+        UPDATE general_ledger 
+        SET 
+            period_debit_amount = 0,
+            period_credit_amount = 0,
+            year_to_date_debit = 0,
+            year_to_date_credit = 0,
+            ending_debit_balance = 0,
+            ending_credit_balance = 0,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE company_id = #{companyId}::uuid
+        AND account_code = #{accountCode}
+        AND fiscal_year = #{fiscalYear}
+        AND fiscal_month = #{fiscalMonth}
+    </update>
+
+    <!-- GL 계정 잔액 직접 설정 (당기순이익 계정 업데이트용) -->
+    <update id="updateGeneralLedgerBalanceDirectly">
+        UPDATE general_ledger 
+        SET 
+            period_debit_amount = #{periodDebitAmount},
+            period_credit_amount = #{periodCreditAmount},
+            year_to_date_debit = #{yearToDateDebit},
+            year_to_date_credit = #{yearToDateCredit},
+            ending_debit_balance = #{endingDebitBalance},
+            ending_credit_balance = #{endingCreditBalance},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE company_id = #{companyId}::uuid
+        AND account_code = #{accountCode}
+        AND fiscal_year = #{fiscalYear}
+        AND fiscal_month = #{fiscalMonth}
     </update>
 
     <!-- GL 상세 내역 생성 -->
@@ -162,7 +198,7 @@
             COALESCE(SUM(gl.ending_credit_balance), 0) as credit_balance
         FROM general_ledger gl
         INNER JOIN chart_of_accounts coa ON gl.account_code = coa.account_code
-        WHERE gl.company_id = #{companyId}
+        WHERE gl.company_id = #{companyId}::uuid
         AND gl.fiscal_year = #{fiscalYear}
         AND gl.fiscal_month = #{fiscalMonth}
         AND coa.is_active = true
@@ -185,7 +221,7 @@
             END as amount
         FROM general_ledger gl
         INNER JOIN chart_of_accounts coa ON gl.account_code = coa.account_code
-        WHERE gl.company_id = #{companyId}
+        WHERE gl.company_id = #{companyId}::uuid
         AND gl.fiscal_year = #{fiscalYear}
         AND gl.fiscal_month = #{fiscalMonth}
         AND coa.account_type IN ('수익', '비용')
@@ -212,7 +248,7 @@
             END as amount
         FROM general_ledger gl
         INNER JOIN chart_of_accounts coa ON gl.account_code = coa.account_code
-        WHERE gl.company_id = #{companyId}
+        WHERE gl.company_id = #{companyId}::uuid
         AND gl.fiscal_year = #{fiscalYear}
         AND gl.fiscal_month = #{fiscalMonth}
         AND coa.account_type IN ('자산', '부채', '자본')
@@ -242,7 +278,7 @@
             COALESCE(SUM(gl.period_debit_amount - gl.period_credit_amount), 0) as net_change
         FROM general_ledger gl
         INNER JOIN chart_of_accounts coa ON gl.account_code = coa.account_code
-        WHERE gl.company_id = #{companyId}
+        WHERE gl.company_id = #{companyId}::uuid
         AND gl.fiscal_year = #{fiscalYear}
         AND gl.fiscal_month = #{fiscalMonth}
         AND (gl.account_code LIKE '1000%' OR gl.account_code LIKE '1010%')  -- 현금성 자산
@@ -258,7 +294,7 @@
             is_closed = true,
             closed_at = CURRENT_TIMESTAMP,
             updated_at = CURRENT_TIMESTAMP
-        WHERE company_id = #{companyId}
+        WHERE company_id = #{companyId}::uuid
         AND fiscal_year = #{fiscalYear}
         AND fiscal_month = #{fiscalMonth}
         AND is_closed = false
@@ -271,7 +307,7 @@
             is_closed = false,
             closed_at = NULL,
             updated_at = CURRENT_TIMESTAMP
-        WHERE company_id = #{companyId}
+        WHERE company_id = #{companyId}::uuid
         AND fiscal_year = #{fiscalYear}
         AND fiscal_month = #{fiscalMonth}
         AND is_closed = true
@@ -313,7 +349,7 @@
             ending_credit_balance,
             false as is_closed
         FROM general_ledger
-        WHERE company_id = #{companyId}
+        WHERE company_id = #{companyId}::uuid
         AND fiscal_year = #{fiscalYear}
         AND fiscal_month = #{fiscalMonth}
         AND is_closed = true
@@ -329,7 +365,7 @@
             COUNT(CASE WHEN is_closed THEN 1 END) as closed_accounts,
             MAX(closed_at) as closed_at
         FROM general_ledger 
-        WHERE company_id = #{companyId}
+        WHERE company_id = #{companyId}::uuid
         GROUP BY fiscal_year, fiscal_month
         HAVING COUNT(CASE WHEN is_closed THEN 1 END) > 0
         ORDER BY fiscal_year DESC, fiscal_month DESC

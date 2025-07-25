@@ -14,9 +14,8 @@
         <result property="parentAccountId" column="parent_account_id"/>
         <result property="isActive" column="is_active"/>
         <result property="displayOrder" column="display_order"/>
-        <result property="description" column="description"/>
-        <result property="createdAt" column="created_at"/>
-        <result property="updatedAt" column="updated_at"/>
+        <result property="createdAt" column="created_at" typeHandler="com.moneyshift.api.config.LocalDateTimeTypeHandler"/>
+        <result property="updatedAt" column="updated_at" typeHandler="com.moneyshift.api.config.LocalDateTimeTypeHandler"/>
     </resultMap>
 
     <!-- 전체 활성 계정과목 조회 -->
@@ -24,7 +23,7 @@
         SELECT 
             id, account_code, account_name, account_type, account_subtype,
             is_debit_normal, parent_account_id, is_active, display_order,
-            description, created_at, updated_at
+            created_at, updated_at
         FROM chart_of_accounts
         WHERE is_active = true
         ORDER BY display_order, account_code
@@ -35,7 +34,7 @@
         SELECT 
             id, account_code, account_name, account_type, account_subtype,
             is_debit_normal, parent_account_id, is_active, display_order,
-            description, created_at, updated_at
+            created_at, updated_at
         FROM chart_of_accounts
         WHERE account_code = #{accountCode}
         AND is_active = true
@@ -46,7 +45,7 @@
         SELECT 
             id, account_code, account_name, account_type, account_subtype,
             is_debit_normal, parent_account_id, is_active, display_order,
-            description, created_at, updated_at
+            created_at, updated_at
         FROM chart_of_accounts
         WHERE id = #{id}
     </select>
@@ -56,7 +55,7 @@
         SELECT 
             id, account_code, account_name, account_type, account_subtype,
             is_debit_normal, parent_account_id, is_active, display_order,
-            description, created_at, updated_at
+            created_at, updated_at
         FROM chart_of_accounts
         WHERE account_type = #{accountType}
         AND is_active = true
@@ -68,7 +67,7 @@
         SELECT 
             id, account_code, account_name, account_type, account_subtype,
             is_debit_normal, parent_account_id, is_active, display_order,
-            description, created_at, updated_at
+            created_at, updated_at
         FROM chart_of_accounts
         WHERE account_type = #{accountType}
         <if test="accountSubtype != null">
@@ -83,7 +82,7 @@
         SELECT 
             id, account_code, account_name, account_type, account_subtype,
             is_debit_normal, parent_account_id, is_active, display_order,
-            description, created_at, updated_at
+            created_at, updated_at
         FROM chart_of_accounts
         WHERE parent_account_id = #{parentAccountId}
         AND is_active = true
@@ -95,14 +94,13 @@
         SELECT 
             id, account_code, account_name, account_type, account_subtype,
             is_debit_normal, parent_account_id, is_active, display_order,
-            description, created_at, updated_at
+            created_at, updated_at
         FROM chart_of_accounts
         WHERE is_active = true
         <if test="keyword != null and keyword != ''">
             AND (
                 account_code ILIKE '%' || #{keyword} || '%'
                 OR account_name ILIKE '%' || #{keyword} || '%'
-                OR description ILIKE '%' || #{keyword} || '%'
             )
         </if>
         <if test="accountType != null">
@@ -121,7 +119,6 @@
             AND (
                 account_code ILIKE '%' || #{keyword} || '%'
                 OR account_name ILIKE '%' || #{keyword} || '%'
-                OR description ILIKE '%' || #{keyword} || '%'
             )
         </if>
         <if test="accountType != null">
@@ -134,10 +131,10 @@
             useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO chart_of_accounts (
             account_code, account_name, account_type, account_subtype,
-            is_debit_normal, parent_account_id, is_active, display_order, description
+            is_debit_normal, parent_account_id, is_active, display_order
         ) VALUES (
-            #{accountCode}, #{accountName}, #{accountType}, #{accountSubtype},
-            #{isDebitNormal}, #{parentAccountId}, #{isActive}, #{displayOrder}, #{description}
+            #{accountCode}, #{accountName}, #{accountType}::account_type_enum, #{accountSubtype},
+            #{isDebitNormal}, #{parentAccountId}, #{isActive}, #{displayOrder}
         )
     </insert>
 
@@ -146,13 +143,12 @@
         UPDATE chart_of_accounts
         SET 
             account_name = #{accountName},
-            account_type = #{accountType},
+            account_type = #{accountType}::account_type_enum,
             account_subtype = #{accountSubtype},
             is_debit_normal = #{isDebitNormal},
             parent_account_id = #{parentAccountId},
             is_active = #{isActive},
             display_order = #{displayOrder},
-            description = #{description},
             updated_at = CURRENT_TIMESTAMP
         WHERE id = #{id}
     </update>
@@ -196,7 +192,7 @@
             SELECT 
                 id, account_code, account_name, account_type, account_subtype,
                 is_debit_normal, parent_account_id, is_active, display_order,
-                description, created_at, updated_at, 0 as level
+                created_at, updated_at, 0 as level
             FROM chart_of_accounts
             WHERE id = #{accountId}
             
@@ -206,7 +202,7 @@
             SELECT 
                 coa.id, coa.account_code, coa.account_name, coa.account_type, coa.account_subtype,
                 coa.is_debit_normal, coa.parent_account_id, coa.is_active, coa.display_order,
-                coa.description, coa.created_at, coa.updated_at, ah.level + 1
+                coa.created_at, coa.updated_at, ah.level + 1
             FROM chart_of_accounts coa
             INNER JOIN account_hierarchy ah ON coa.parent_account_id = ah.id
             WHERE coa.is_active = true
@@ -214,7 +210,7 @@
         SELECT 
             id, account_code, account_name, account_type, account_subtype,
             is_debit_normal, parent_account_id, is_active, display_order,
-            description, created_at, updated_at
+            created_at, updated_at
         FROM account_hierarchy
         ORDER BY level, display_order, account_code
     </select>
@@ -277,7 +273,7 @@
         SELECT 
             coa.id, coa.account_code, coa.account_name, coa.account_type, coa.account_subtype,
             coa.is_debit_normal, coa.parent_account_id, coa.is_active, coa.display_order,
-            coa.description, coa.created_at, coa.updated_at
+            coa.created_at, coa.updated_at
         FROM chart_of_accounts coa
         LEFT JOIN journal_entry_details jed ON coa.account_code = jed.account_code
         WHERE coa.is_active = true
@@ -289,12 +285,12 @@
     <insert id="insertAccountsBatch" parameterType="java.util.List">
         INSERT INTO chart_of_accounts (
             account_code, account_name, account_type, account_subtype,
-            is_debit_normal, parent_account_id, is_active, display_order, description
+            is_debit_normal, parent_account_id, is_active, display_order
         ) VALUES
         <foreach collection="list" item="account" separator=",">
-            (#{account.accountCode}, #{account.accountName}, #{account.accountType}, #{account.accountSubtype},
+            (#{account.accountCode}, #{account.accountName}, #{account.accountType}::account_type_enum, #{account.accountSubtype},
              #{account.isDebitNormal}, #{account.parentAccountId}, #{account.isActive}, 
-             #{account.displayOrder}, #{account.description})
+             #{account.displayOrder})
         </foreach>
     </insert>
 

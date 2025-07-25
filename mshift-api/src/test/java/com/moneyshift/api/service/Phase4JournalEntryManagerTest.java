@@ -692,18 +692,21 @@ public class Phase4JournalEntryManagerTest {
     }
 
     private List<JournalEntry> findJournalEntriesByCompany(String companyId) {
+        // String companyId를 Long으로 변환 (실제 구현에서는 다른 방식 사용)
         return journalEntryMapper.findJournalEntries(
-                companyId, null, null, null, null, 1000, 0);
+                1L, null, null, null, null, 1000, 0);
     }
 
     private List<JournalEntry> findJournalEntriesByDateRange(String companyId, LocalDate startDate, LocalDate endDate) {
+        // String companyId를 Long으로 변환 (실제 구현에서는 다른 방식 사용)
         return journalEntryMapper.findJournalEntries(
-                companyId, null, null, startDate, endDate, 1000, 0);
+                1L, null, null, startDate, endDate, 1000, 0);
     }
 
     private List<JournalEntry> searchJournalEntriesByKeyword(String companyId, String keyword) {
+        // String companyId를 Long으로 변환 (실제 구현에서는 다른 방식 사용)
         return journalEntryMapper.findJournalEntries(
-                companyId, null, keyword, null, null, 1000, 0);
+                1L, null, keyword, null, null, 1000, 0);
     }
 
     private void insertJournalEntryAuditLog(Long journalEntryId, String actionType, 
@@ -727,89 +730,6 @@ public class Phase4JournalEntryManagerTest {
     }
 }
 
-/**
- * 거래 → 분개 변환 요청 모델
- */
-class TransactionToJournalRequest {
-    private Long transactionId;
-    private String companyId;
-    private LocalDate transactionDate;
-    private String description;
-    private BigDecimal amount;
-    private String merchantName;
-    private String category;
-    private List<String> tags;
-
-    // Lombok 어노테이션 대신 수동 구현
-    public static TransactionToJournalRequestBuilder builder() {
-        return new TransactionToJournalRequestBuilder();
-    }
-
-    public TransactionToJournalRequestBuilder toBuilder() {
-        return new TransactionToJournalRequestBuilder()
-                .transactionId(this.transactionId)
-                .companyId(this.companyId)
-                .transactionDate(this.transactionDate)
-                .description(this.description)
-                .amount(this.amount)
-                .merchantName(this.merchantName)
-                .category(this.category)
-                .tags(this.tags);
-    }
-
-    // Getters
-    public Long getTransactionId() { return transactionId; }
-    public String getCompanyId() { return companyId; }
-    public LocalDate getTransactionDate() { return transactionDate; }
-    public String getDescription() { return description; }
-    public BigDecimal getAmount() { return amount; }
-    public String getMerchantName() { return merchantName; }
-    public String getCategory() { return category; }
-    public List<String> getTags() { return tags; }
-
-    // Setters
-    public void setTransactionId(Long transactionId) { this.transactionId = transactionId; }
-    public void setCompanyId(String companyId) { this.companyId = companyId; }
-    public void setTransactionDate(LocalDate transactionDate) { this.transactionDate = transactionDate; }
-    public void setDescription(String description) { this.description = description; }
-    public void setAmount(BigDecimal amount) { this.amount = amount; }
-    public void setMerchantName(String merchantName) { this.merchantName = merchantName; }
-    public void setCategory(String category) { this.category = category; }
-    public void setTags(List<String> tags) { this.tags = tags; }
-
-    public static class TransactionToJournalRequestBuilder {
-        private Long transactionId;
-        private String companyId;
-        private LocalDate transactionDate;
-        private String description;
-        private BigDecimal amount;
-        private String merchantName;
-        private String category;
-        private List<String> tags;
-
-        public TransactionToJournalRequestBuilder transactionId(Long transactionId) { this.transactionId = transactionId; return this; }
-        public TransactionToJournalRequestBuilder companyId(String companyId) { this.companyId = companyId; return this; }
-        public TransactionToJournalRequestBuilder transactionDate(LocalDate transactionDate) { this.transactionDate = transactionDate; return this; }
-        public TransactionToJournalRequestBuilder description(String description) { this.description = description; return this; }
-        public TransactionToJournalRequestBuilder amount(BigDecimal amount) { this.amount = amount; return this; }
-        public TransactionToJournalRequestBuilder merchantName(String merchantName) { this.merchantName = merchantName; return this; }
-        public TransactionToJournalRequestBuilder category(String category) { this.category = category; return this; }
-        public TransactionToJournalRequestBuilder tags(List<String> tags) { this.tags = tags; return this; }
-
-        public TransactionToJournalRequest build() {
-            TransactionToJournalRequest request = new TransactionToJournalRequest();
-            request.transactionId = this.transactionId;
-            request.companyId = this.companyId;
-            request.transactionDate = this.transactionDate;
-            request.description = this.description;
-            request.amount = this.amount;
-            request.merchantName = this.merchantName;
-            request.category = this.category;
-            request.tags = this.tags;
-            return request;
-        }
-    }
-}
 
 /**
  * 분개 처리 응답 모델

@@ -62,6 +62,44 @@ public interface GeneralLedgerMapper {
                                  @Param("creditAmount") BigDecimal creditAmount);
 
     /**
+     * GL 계정 잔액을 0으로 리셋 (손익 계정 마감용)
+     * @param companyId 회사 ID
+     * @param accountCode 계정과목 코드
+     * @param fiscalYear 회계연도
+     * @param fiscalMonth 회계월
+     * @return 업데이트된 행 수
+     */
+    int resetGeneralLedgerBalance(@Param("companyId") String companyId,
+                                @Param("accountCode") String accountCode,
+                                @Param("fiscalYear") Integer fiscalYear,
+                                @Param("fiscalMonth") Integer fiscalMonth);
+
+    /**
+     * GL 계정 잔액을 직접 설정 (당기순이익 계정 업데이트용)
+     * @param companyId 회사 ID
+     * @param accountCode 계정과목 코드
+     * @param fiscalYear 회계연도
+     * @param fiscalMonth 회계월
+     * @param periodDebitAmount 당기 차변 금액
+     * @param periodCreditAmount 당기 대변 금액
+     * @param yearToDateDebit 누계 차변 금액
+     * @param yearToDateCredit 누계 대변 금액
+     * @param endingDebitBalance 기말 차변 잔액
+     * @param endingCreditBalance 기말 대변 잔액
+     * @return 업데이트된 행 수
+     */
+    int updateGeneralLedgerBalanceDirectly(@Param("companyId") String companyId,
+                                         @Param("accountCode") String accountCode,
+                                         @Param("fiscalYear") Integer fiscalYear,
+                                         @Param("fiscalMonth") Integer fiscalMonth,
+                                         @Param("periodDebitAmount") BigDecimal periodDebitAmount,
+                                         @Param("periodCreditAmount") BigDecimal periodCreditAmount,
+                                         @Param("yearToDateDebit") BigDecimal yearToDateDebit,
+                                         @Param("yearToDateCredit") BigDecimal yearToDateCredit,
+                                         @Param("endingDebitBalance") BigDecimal endingDebitBalance,
+                                         @Param("endingCreditBalance") BigDecimal endingCreditBalance);
+
+    /**
      * GL 상세 내역 생성
      * @param glDetail GL 상세 내역
      * @return 생성된 행 수

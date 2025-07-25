@@ -128,7 +128,7 @@ public interface JournalEntryMapper {
      * @param endDate 종료 날짜
      * @return 미전기 분개 개수
      */
-    Long findUnpostedJournalEntries(@Param("companyId") Long companyId,
+    Long findUnpostedJournalEntries(@Param("companyId") String companyId,
                                   @Param("startDate") LocalDate startDate,
                                   @Param("endDate") LocalDate endDate);
 

@@ -102,3 +102,6 @@ cd mshift-api && mvn test -Dtest=ClassName # Run specific Java test
 
 ### Code Standards
 - 최신 안정화된 표준을 사용해.
+
+### Commit and Documentation
+- 구분할 만한 작업이 끝나면 작업 요약해서 머밋해 깃에 커밋해룰에 기록해놔

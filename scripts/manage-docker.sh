@@ -31,47 +31,92 @@ log_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
 
-# Docker 데몬 상태 확인
+# Docker 데몬 상태 확인 (안정화 버전)
 check_docker_daemon() {
-    if ! docker info > /dev/null 2>&1; then
-        log_error "Docker 데몬이 실행되지 않고 있습니다."
-        log_info "Docker Desktop을 시작하는 중..."
-        open -a Docker
+    local max_retries=8
+    local retry_delay=3
+    
+    for attempt in $(seq 1 $max_retries); do
+        # Docker 명령어 직접 테스트 (가장 확실한 방법)
+        if docker ps > /dev/null 2>&1; then
+            log_success "Docker 데몬이 정상 작동 중입니다."
+            return 0
+        fi
         
-        # Docker 데몬 시작 대기 (최대 60초)
-        for i in {1..30}; do
-            if docker info > /dev/null 2>&1; then
-                log_success "Docker 데몬이 시작되었습니다."
-                return 0
+        log_warning "Docker 데몬 연결 실패 (시도 $attempt/$max_retries)"
+        
+        if [ $attempt -eq 1 ]; then
+            # Docker Desktop 프로세스 상태 확인
+            if pgrep -f "Docker Desktop" > /dev/null; then
+                log_info "Docker Desktop이 실행 중이지만 데몬이 응답하지 않습니다. 재시작합니다..."
+                killall "Docker Desktop" 2>/dev/null || true
+                sleep 5
+                open -a "Docker Desktop"
+                log_info "Docker Desktop 재시작 완료. 초기화 대기 중..."
+                retry_delay=8  # 재시작 후에는 더 긴 대기 시간
+            else
+                log_info "Docker Desktop을 시작하는 중..."
+                open -a "Docker Desktop"
+                retry_delay=8
             fi
-            echo -n "."
-            sleep 2
-        done
+        elif [ $attempt -eq 4 ]; then
+            # 중간에 한 번 더 강제 재시작 시도
+            log_warning "Docker 데몬이 여전히 응답하지 않습니다. 강제 재시작을 시도합니다..."
+            killall "Docker Desktop" 2>/dev/null || true
+            sleep 3
+            open -a "Docker Desktop"
+            retry_delay=10
+        fi
         
-        log_error "Docker 데몬 시작에 실패했습니다."
-        exit 1
-    fi
+        if [ $attempt -lt $max_retries ]; then
+            log_info "${retry_delay}초 후 재시도..."
+            sleep $retry_delay
+        fi
+    done
+    
+    log_error "Docker 데몬 연결에 실패했습니다."
+    log_error "해결 방법:"
+    log_error "1. Docker Desktop을 수동으로 재시작하세요"
+    log_error "2. 시스템을 재부팅하세요"
+    log_error "3. Docker Desktop을 재설치하세요"
+    return 1
 }
 
-# 포트 정리
+# 포트 정리 (Docker 컨테이너 제외)
 cleanup_ports() {
     log_info "포트 정리 중..."
     
-    # PostgreSQL 포트 5432
+    # Docker 컨테이너가 실행 중인지 먼저 확인
+    local docker_running=false
+    if docker ps --format "{{.Names}}" 2>/dev/null | grep -q "moneyshift"; then
+        docker_running=true
+        log_info "MoneyShift Docker 컨테이너가 실행 중입니다. 포트 정리를 건너뜁니다."
+        return 0
+    fi
+    
+    # PostgreSQL 포트 5432 (Docker 컨테이너가 아닌 경우만 종료)
     local pg_pid=$(lsof -ti :5432 2>/dev/null || true)
     if [ ! -z "$pg_pid" ]; then
         log_warning "포트 5432에서 실행 중인 프로세스 종료: PID $pg_pid"
-        kill -9 $pg_pid 2>/dev/null || true
+        kill -15 $pg_pid 2>/dev/null || true  # SIGTERM 먼저 시도
+        sleep 2
+        if kill -0 $pg_pid 2>/dev/null; then
+            kill -9 $pg_pid 2>/dev/null || true  # 여전히 실행 중이면 SIGKILL
+        fi
     fi
     
-    # Redis 포트 6379
+    # Redis 포트 6379 (Docker 컨테이너가 아닌 경우만 종료)
     local redis_pid=$(lsof -ti :6379 2>/dev/null || true)
     if [ ! -z "$redis_pid" ]; then
         log_warning "포트 6379에서 실행 중인 프로세스 종료: PID $redis_pid"
-        kill -9 $redis_pid 2>/dev/null || true
+        kill -15 $redis_pid 2>/dev/null || true
+        sleep 2
+        if kill -0 $redis_pid 2>/dev/null; then
+            kill -9 $redis_pid 2>/dev/null || true
+        fi
     fi
     
-    sleep 2
+    sleep 1
 }
 
 # 기존 컨테이너 정리

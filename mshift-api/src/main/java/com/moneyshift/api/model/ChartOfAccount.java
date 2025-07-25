@@ -13,7 +13,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 /**
  * 회계 계정과목 모델 - 최신 Jackson + Validation 어노테이션 적용
@@ -76,14 +76,14 @@ public class ChartOfAccount {
     private Integer displayOrder = 999;
     
     // 메타데이터 - API 응답에는 포함하지만 입력 시는 자동 설정
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     @Builder.Default
-    @Schema(description = "생성일시", example = "2025-01-24T22:50:00", accessMode = Schema.AccessMode.READ_ONLY)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @Schema(description = "생성일시", example = "2025-01-24T22:50:00+09:00", accessMode = Schema.AccessMode.READ_ONLY)
+    private OffsetDateTime createdAt = OffsetDateTime.now();
     
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    @Schema(description = "수정일시", example = "2025-01-24T22:50:00", accessMode = Schema.AccessMode.READ_ONLY)
-    private LocalDateTime updatedAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+    @Schema(description = "수정일시", example = "2025-01-24T22:50:00+09:00", accessMode = Schema.AccessMode.READ_ONLY)
+    private OffsetDateTime updatedAt;
 
     // TDD Phase 1: Normal Balance 지원 메소드
     public String getNormalBalance() {

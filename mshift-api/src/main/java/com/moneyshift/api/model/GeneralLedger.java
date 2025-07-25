@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 /**
  * Phase 3: General Ledger 모델
@@ -39,6 +40,9 @@ import java.time.LocalDateTime;
     }
     """)
 public class GeneralLedger {
+
+    @Schema(description = "GL 레코드 ID", example = "1")
+    private Long id;
 
     @NotBlank(message = "회사 ID는 필수입니다")
     @Schema(description = "회사 ID", example = "test-company")
@@ -99,18 +103,18 @@ public class GeneralLedger {
     @Schema(description = "마감 여부", example = "false", defaultValue = "false")
     private Boolean isClosed = false;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    @Schema(description = "마감일시", example = "2025-01-31T23:59:59")
-    private LocalDateTime closedAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+    @Schema(description = "마감일시", example = "2025-01-31T23:59:59+09:00")
+    private OffsetDateTime closedAt;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     @Builder.Default
-    @Schema(description = "생성일시", example = "2025-01-24T23:10:00")
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @Schema(description = "생성일시", example = "2025-01-24T23:10:00+09:00")
+    private OffsetDateTime createdAt = OffsetDateTime.now();
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    @Schema(description = "수정일시", example = "2025-01-24T23:10:00")
-    private LocalDateTime updatedAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+    @Schema(description = "수정일시", example = "2025-01-24T23:10:00+09:00")
+    private OffsetDateTime updatedAt;
 
     // ========== 비즈니스 로직 메소드들 ==========
 
@@ -121,7 +125,7 @@ public class GeneralLedger {
     public void calculateEndingBalances() {
         this.endingDebitBalance = this.beginningDebitBalance.add(this.periodDebitAmount);
         this.endingCreditBalance = this.beginningCreditBalance.add(this.periodCreditAmount);
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = OffsetDateTime.now();
     }
 
     /**
@@ -130,7 +134,7 @@ public class GeneralLedger {
     public void updateYearToDateAmounts() {
         this.yearToDateDebit = this.beginningDebitBalance.add(this.periodDebitAmount);
         this.yearToDateCredit = this.beginningCreditBalance.add(this.periodCreditAmount);
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = OffsetDateTime.now();
     }
 
     /**
@@ -154,8 +158,8 @@ public class GeneralLedger {
         calculateEndingBalances();
         updateYearToDateAmounts();
         this.isClosed = true;
-        this.closedAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
+        this.closedAt = OffsetDateTime.now();
+        this.updatedAt = OffsetDateTime.now();
     }
 
     /**
@@ -178,7 +182,7 @@ public class GeneralLedger {
                 .endingDebitBalance(this.endingDebitBalance)
                 .endingCreditBalance(this.endingCreditBalance)
                 .isClosed(false)
-                .createdAt(LocalDateTime.now())
+                .createdAt(OffsetDateTime.now())
                 .build();
     }
 
@@ -229,7 +233,7 @@ public class GeneralLedger {
                 .endingDebitBalance(BigDecimal.ZERO)
                 .endingCreditBalance(BigDecimal.ZERO)
                 .isClosed(false)
-                .createdAt(LocalDateTime.now())
+                .createdAt(OffsetDateTime.now())
                 .build();
     }
 }

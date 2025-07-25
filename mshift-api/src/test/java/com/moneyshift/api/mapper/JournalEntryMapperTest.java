@@ -381,7 +381,7 @@ public class JournalEntryMapperTest {
         journalEntryMapper.insertJournalEntry(postedEntry);
 
         // When
-        Long unpostedCount = journalEntryMapper.findUnpostedJournalEntries(1L, startDate, endDate);
+        Long unpostedCount = journalEntryMapper.findUnpostedJournalEntries("1", startDate, endDate);
 
         // Then - DRAFT와 APPROVED 상태만 카운트됨 (POSTED 제외)
         assertThat(unpostedCount).isEqualTo(2);

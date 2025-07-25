@@ -85,6 +85,9 @@ public class JournalEntry {
     @Schema(description = "수정일시", example = "2025-01-24T10:30:00")
     private LocalDateTime updatedAt;
     
+    @Schema(description = "신뢰도 점수", example = "0.95")
+    private Double confidenceScore;
+    
     @Schema(description = "분개 상세 내역 목록")
     private List<JournalEntryDetail> details;
 
