@@ -1,5 +1,6 @@
 package com.moneyshift.api.service;
 
+import com.moneyshift.api.config.AccountCodeConfig;
 import com.moneyshift.api.mapper.ChartOfAccountsMapper;
 import com.moneyshift.api.model.ChartOfAccount;
 import com.moneyshift.api.mapper.GeneralLedgerMapper;
@@ -24,7 +25,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.*;
 
 /**
- * Phase 5: 월말마감(Month-End Closing) 처리 TDD 구현
+ * Phase 5: 월말마감(Month-End Closing) 처리 TDD 구현 - 완전 중앙화 버전
  * 
  * 월말마감 시스템의 핵심 기능을 TDD 방식으로 구현하고 검증합니다.
  * 
@@ -35,6 +36,12 @@ import static org.assertj.core.api.Assertions.*;
  * 4. 손익 계정 마감 - 수익/비용 계정의 당기순이익으로 대체
  * 5. 계정별 마감 처리 - 모든 GL 계정의 마감 상태 변경
  * 6. 차기월 이월 처리 - 자산/부채/자본 계정의 기말잔액 → 차기월 기초잔액
+ * 
+ * **중앙화 원칙 적용:**
+ * - 모든 계정과목 정보는 AccountCodeConfig에서 관리
+ * - 하드코딩된 문자열 완전 제거
+ * - BaseTestClass 기반 자동 환경 설정
+ * - UUID 기반 데이터 격리 보장
  * 
  * TDD 구현 원칙:
  * - Red: 실패하는 테스트 작성 (기능 미구현 상태)
@@ -47,10 +54,10 @@ import static org.assertj.core.api.Assertions.*;
  * - 마감 후에는 해당 월의 거래 추가 불가
  * 
  * @author MoneyShift TDD Team
- * @version 1.0
- * @since 2025-07-24
+ * @version 2.0 - 완전 중앙화 버전
+ * @since 2025-07-25
  */
-@DisplayName("Phase 5: 월말마감(Month-End Closing) 처리 TDD 구현")
+@DisplayName("Phase 5: 월말마감(Month-End Closing) 처리 TDD 구현 - 완전 중앙화")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class Phase5MonthEndClosingManagerTest extends BaseTestClass {
@@ -67,111 +74,85 @@ public class Phase5MonthEndClosingManagerTest extends BaseTestClass {
     @Autowired
     private ChartOfAccountsMapper chartOfAccountsMapper;
 
-    // 테스트 데이터 상수
+    // 테스트 데이터 상수 (회계연도/월은 변경 가능한 값으로 관리)
     private static final int TEST_FISCAL_YEAR = 2025;
     private static final int TEST_FISCAL_MONTH = 1;
     private static final LocalDate TEST_CLOSING_DATE = LocalDate.of(2025, 1, 31);
 
-    // 테스트용 계정과목 데이터
-    private ChartOfAccount cashAccount;         // 1000 - 현금 (자산)
-    private ChartOfAccount inventoryAccount;    // 1300 - 재고자산 (자산)
-    private ChartOfAccount liabilityAccount;    // 2000 - 미지급금 (부채)
-    private ChartOfAccount capitalAccount;      // 3000 - 자본금 (자본)
-    private ChartOfAccount revenueAccount;      // 4000 - 매출 (수익)
-    private ChartOfAccount expenseAccount;      // 5000 - 사무용품비 (비용)
-    private ChartOfAccount netIncomeAccount;    // 3500 - 당기순이익 (자본)
+    // 테스트용 계정과목 데이터 (중앙화된 관리)
+    private ChartOfAccount cashAccount;         // AccountCodeConfig.Codes.CASH
+    private ChartOfAccount receivableAccount;   // AccountCodeConfig.Codes.ACCOUNTS_RECEIVABLE  
+    private ChartOfAccount payableAccount;      // AccountCodeConfig.Codes.ACCOUNTS_PAYABLE
+    private ChartOfAccount capitalAccount;      // AccountCodeConfig.Codes.CAPITAL_STOCK
+    private ChartOfAccount revenueAccount;      // AccountCodeConfig.Codes.SALES_REVENUE
+    private ChartOfAccount expenseAccount;      // AccountCodeConfig.Codes.OFFICE_SUPPLIES_EXPENSE
+    private ChartOfAccount netIncomeAccount;    // AccountCodeConfig.Codes.CURRENT_YEAR_EARNINGS
 
     // 테스트용 GL 데이터
     private List<GeneralLedger> testGLAccounts;
 
     @BeforeEach
     void setUp() {
-        // 베이스 클래스에서 회사 설정
-        setupTestCompany();
-        
+        // BaseTestClass에서 회사와 기본 계정과목이 자동 설정됨
         setupTestAccounts();
         setupTestGLAccounts();
     }
 
+    /**
+     * 테스트용 계정과목 설정 - 완전 중앙화
+     * 모든 정보를 AccountCodeConfig에서 가져와서 하드코딩 완전 제거
+     */
     private void setupTestAccounts() {
-        // 자산 계정들 (고유한 계정코드 사용)
-        cashAccount = ChartOfAccount.builder()
-                .accountCode(uniqueAccountPrefix + "1000")
-                .accountName("현금")
-                .accountType("자산")
-                .isDebitNormal(true)
-                .isActive(true)
-                .displayOrder(1)
-                .build();
-
-        inventoryAccount = ChartOfAccount.builder()
-                .accountCode(uniqueAccountPrefix + "1300")
-                .accountName("재고자산")
-                .accountType("자산")
-                .isDebitNormal(true)
-                .isActive(true)
-                .displayOrder(13)
-                .build();
-
-        // 부채 계정
-        liabilityAccount = ChartOfAccount.builder()
-                .accountCode(uniqueAccountPrefix + "2000")
-                .accountName("미지급금")
-                .accountType("부채")
-                .isDebitNormal(false)
-                .isActive(true)
-                .displayOrder(20)
-                .build();
-
-        // 자본 계정들
-        capitalAccount = ChartOfAccount.builder()
-                .accountCode(uniqueAccountPrefix + "3000")
-                .accountName("자본금")
-                .accountType("자본")
-                .isDebitNormal(false)
-                .isActive(true)
-                .displayOrder(30)
-                .build();
-
-        netIncomeAccount = ChartOfAccount.builder()
-                .accountCode(uniqueAccountPrefix + "3500")
-                .accountName("당기순이익")
-                .accountType("자본")
-                .isDebitNormal(false)
-                .isActive(true)
-                .displayOrder(35)
-                .build();
-
-        // 수익 계정
-        revenueAccount = ChartOfAccount.builder()
-                .accountCode(uniqueAccountPrefix + "4000")
-                .accountName("매출")
-                .accountType("수익")
-                .isDebitNormal(false)
-                .isActive(true)
-                .displayOrder(40)
-                .build();
-
-        // 비용 계정
-        expenseAccount = ChartOfAccount.builder()
-                .accountCode(uniqueAccountPrefix + "5000")
-                .accountName("사무용품비")
-                .accountType("비용")
-                .isDebitNormal(true)
-                .isActive(true)
-                .displayOrder(50)
-                .build();
+        // 현금 계정 (자산)
+        cashAccount = createAccountFromConfig(AccountCodeConfig.Codes.CASH, 1);
+        
+        // 미수금 계정 (자산) - 재고자산 대신 사용
+        receivableAccount = createAccountFromConfig(AccountCodeConfig.Codes.ACCOUNTS_RECEIVABLE, 13);
+        
+        // 미지급금 계정 (부채)
+        payableAccount = createAccountFromConfig(AccountCodeConfig.Codes.ACCOUNTS_PAYABLE, 20);
+        
+        // 자본금 계정 (자본)
+        capitalAccount = createAccountFromConfig(AccountCodeConfig.Codes.CAPITAL_STOCK, 30);
+        
+        // 당기순이익 계정 (자본)
+        netIncomeAccount = createAccountFromConfig(AccountCodeConfig.Codes.CURRENT_YEAR_EARNINGS, 35);
+        
+        // 매출 계정 (수익)
+        revenueAccount = createAccountFromConfig(AccountCodeConfig.Codes.SALES_REVENUE, 40);
+        
+        // 사무용품비 계정 (비용)
+        expenseAccount = createAccountFromConfig(AccountCodeConfig.Codes.OFFICE_SUPPLIES_EXPENSE, 50);
 
         // 계정과목 등록 (중복 체크 후 삽입)
         insertAccountIfNotExists(cashAccount);
-        insertAccountIfNotExists(inventoryAccount);
-        insertAccountIfNotExists(liabilityAccount);
+        insertAccountIfNotExists(receivableAccount);
+        insertAccountIfNotExists(payableAccount);
         insertAccountIfNotExists(capitalAccount);
         insertAccountIfNotExists(netIncomeAccount);
         insertAccountIfNotExists(revenueAccount);
         insertAccountIfNotExists(expenseAccount);
     }
     
+    /**
+     * AccountCodeConfig 기반으로 계정과목 생성
+     */
+    private ChartOfAccount createAccountFromConfig(String baseCode, int displayOrder) {
+        AccountCodeConfig.AccountInfo info = AccountCodeConfig.getAccountInfo(baseCode);
+        
+        return ChartOfAccount.builder()
+                .accountCode(generateAccountCode(baseCode))
+                .accountName(info.getName())
+                .accountType(info.getType())
+                .isDebitNormal(info.isDebitNormal())
+                .isActive(true)
+                .displayOrder(displayOrder)
+                .build();
+    }
+    
+    /**
+     * 계정과목 중복 체크 후 삽입
+     */
     private void insertAccountIfNotExists(ChartOfAccount account) {
         String checkSql = "SELECT COUNT(*) FROM chart_of_accounts WHERE account_code = ?";
         Integer count = jdbcTemplate.queryForObject(checkSql, Integer.class, account.getAccountCode());
@@ -181,109 +162,46 @@ public class Phase5MonthEndClosingManagerTest extends BaseTestClass {
         }
     }
 
+    /**
+     * 테스트용 GL 계정 설정 - 완전 중앙화
+     */
     private void setupTestGLAccounts() {
         testGLAccounts = Arrays.asList(
                 // 현금 계정 (자산) - 차변 잔액
-                GeneralLedger.builder()
-                        .companyId(TEST_COMPANY_ID)
-                        .accountCode(uniqueAccountPrefix + "1000")
-                        .fiscalYear(TEST_FISCAL_YEAR)
-                        .fiscalMonth(TEST_FISCAL_MONTH)
-                        .beginningDebitBalance(new BigDecimal("1000000"))
-                        .beginningCreditBalance(BigDecimal.ZERO)
-                        .periodDebitAmount(new BigDecimal("500000"))
-                        .periodCreditAmount(new BigDecimal("200000"))
-                        .yearToDateDebit(new BigDecimal("1500000"))
-                        .yearToDateCredit(new BigDecimal("200000"))
-                        .endingDebitBalance(new BigDecimal("1300000"))
-                        .endingCreditBalance(BigDecimal.ZERO)
-                        .isClosed(false)
-                        .build(),
+                createGLAccount(AccountCodeConfig.Codes.CASH,
+                        new BigDecimal("1000000"), BigDecimal.ZERO,    // 기초잔액
+                        new BigDecimal("500000"), new BigDecimal("200000"),  // 당월거래
+                        new BigDecimal("1300000"), BigDecimal.ZERO),   // 기말잔액
 
-                // 재고자산 계정 (자산) - 차변 잔액
-                GeneralLedger.builder()
-                        .companyId(TEST_COMPANY_ID)
-                        .accountCode(uniqueAccountPrefix + "1300")
-                        .fiscalYear(TEST_FISCAL_YEAR)
-                        .fiscalMonth(TEST_FISCAL_MONTH)
-                        .beginningDebitBalance(new BigDecimal("800000"))
-                        .beginningCreditBalance(BigDecimal.ZERO)
-                        .periodDebitAmount(new BigDecimal("300000"))
-                        .periodCreditAmount(new BigDecimal("150000"))
-                        .yearToDateDebit(new BigDecimal("1100000"))
-                        .yearToDateCredit(new BigDecimal("150000"))
-                        .endingDebitBalance(new BigDecimal("950000"))
-                        .endingCreditBalance(BigDecimal.ZERO)
-                        .isClosed(false)
-                        .build(),
+                // 미수금 계정 (자산) - 차변 잔액  
+                createGLAccount(AccountCodeConfig.Codes.ACCOUNTS_RECEIVABLE,
+                        new BigDecimal("800000"), BigDecimal.ZERO,
+                        new BigDecimal("300000"), new BigDecimal("150000"),
+                        new BigDecimal("950000"), BigDecimal.ZERO),
 
                 // 미지급금 계정 (부채) - 대변 잔액
-                GeneralLedger.builder()
-                        .companyId(TEST_COMPANY_ID)
-                        .accountCode(uniqueAccountPrefix + "2000")
-                        .fiscalYear(TEST_FISCAL_YEAR)
-                        .fiscalMonth(TEST_FISCAL_MONTH)
-                        .beginningDebitBalance(BigDecimal.ZERO)
-                        .beginningCreditBalance(new BigDecimal("500000"))
-                        .periodDebitAmount(new BigDecimal("100000"))
-                        .periodCreditAmount(new BigDecimal("200000"))
-                        .yearToDateDebit(new BigDecimal("100000"))
-                        .yearToDateCredit(new BigDecimal("700000"))
-                        .endingDebitBalance(BigDecimal.ZERO)
-                        .endingCreditBalance(new BigDecimal("600000"))
-                        .isClosed(false)
-                        .build(),
+                createGLAccount(AccountCodeConfig.Codes.ACCOUNTS_PAYABLE,
+                        BigDecimal.ZERO, new BigDecimal("500000"),
+                        new BigDecimal("100000"), new BigDecimal("200000"),
+                        BigDecimal.ZERO, new BigDecimal("600000")),
 
                 // 자본금 계정 (자본) - 대변 잔액
-                GeneralLedger.builder()
-                        .companyId(TEST_COMPANY_ID)
-                        .accountCode(uniqueAccountPrefix + "3000")
-                        .fiscalYear(TEST_FISCAL_YEAR)
-                        .fiscalMonth(TEST_FISCAL_MONTH)
-                        .beginningDebitBalance(BigDecimal.ZERO)
-                        .beginningCreditBalance(new BigDecimal("1000000"))
-                        .periodDebitAmount(BigDecimal.ZERO)
-                        .periodCreditAmount(BigDecimal.ZERO)
-                        .yearToDateDebit(BigDecimal.ZERO)
-                        .yearToDateCredit(new BigDecimal("1000000"))
-                        .endingDebitBalance(BigDecimal.ZERO)
-                        .endingCreditBalance(new BigDecimal("1000000"))
-                        .isClosed(false)
-                        .build(),
+                createGLAccount(AccountCodeConfig.Codes.CAPITAL_STOCK,
+                        BigDecimal.ZERO, new BigDecimal("1000000"),
+                        BigDecimal.ZERO, BigDecimal.ZERO,
+                        BigDecimal.ZERO, new BigDecimal("1000000")),
 
                 // 매출 계정 (수익) - 대변 잔액
-                GeneralLedger.builder()
-                        .companyId(TEST_COMPANY_ID)
-                        .accountCode(uniqueAccountPrefix + "4000")
-                        .fiscalYear(TEST_FISCAL_YEAR)
-                        .fiscalMonth(TEST_FISCAL_MONTH)
-                        .beginningDebitBalance(BigDecimal.ZERO)
-                        .beginningCreditBalance(BigDecimal.ZERO)
-                        .periodDebitAmount(new BigDecimal("50000"))
-                        .periodCreditAmount(new BigDecimal("800000"))
-                        .yearToDateDebit(new BigDecimal("50000"))
-                        .yearToDateCredit(new BigDecimal("800000"))
-                        .endingDebitBalance(BigDecimal.ZERO)
-                        .endingCreditBalance(new BigDecimal("750000"))
-                        .isClosed(false)
-                        .build(),
+                createGLAccount(AccountCodeConfig.Codes.SALES_REVENUE,
+                        BigDecimal.ZERO, BigDecimal.ZERO,
+                        new BigDecimal("50000"), new BigDecimal("800000"),
+                        BigDecimal.ZERO, new BigDecimal("750000")),
 
                 // 사무용품비 계정 (비용) - 차변 잔액
-                GeneralLedger.builder()
-                        .companyId(TEST_COMPANY_ID)
-                        .accountCode(uniqueAccountPrefix + "5000")
-                        .fiscalYear(TEST_FISCAL_YEAR)
-                        .fiscalMonth(TEST_FISCAL_MONTH)
-                        .beginningDebitBalance(BigDecimal.ZERO)
-                        .beginningCreditBalance(BigDecimal.ZERO)
-                        .periodDebitAmount(new BigDecimal("100000"))
-                        .periodCreditAmount(new BigDecimal("10000"))
-                        .yearToDateDebit(new BigDecimal("100000"))
-                        .yearToDateCredit(new BigDecimal("10000"))
-                        .endingDebitBalance(new BigDecimal("90000"))
-                        .endingCreditBalance(BigDecimal.ZERO)
-                        .isClosed(false)
-                        .build()
+                createGLAccount(AccountCodeConfig.Codes.OFFICE_SUPPLIES_EXPENSE,
+                        BigDecimal.ZERO, BigDecimal.ZERO,
+                        new BigDecimal("100000"), new BigDecimal("10000"),
+                        new BigDecimal("90000"), BigDecimal.ZERO)
         );
 
         // GL 계정 등록
@@ -294,6 +212,30 @@ public class Phase5MonthEndClosingManagerTest extends BaseTestClass {
                 // 이미 존재하는 경우 무시
             }
         });
+    }
+    
+    /**
+     * GL 계정 생성 헬퍼 메소드
+     */
+    private GeneralLedger createGLAccount(String baseCode,
+                                        BigDecimal beginDebit, BigDecimal beginCredit,
+                                        BigDecimal periodDebit, BigDecimal periodCredit,
+                                        BigDecimal endDebit, BigDecimal endCredit) {
+        return GeneralLedger.builder()
+                .companyId(testCompanyId)
+                .accountCode(generateAccountCode(baseCode))
+                .fiscalYear(TEST_FISCAL_YEAR)
+                .fiscalMonth(TEST_FISCAL_MONTH)
+                .beginningDebitBalance(beginDebit)
+                .beginningCreditBalance(beginCredit)
+                .periodDebitAmount(periodDebit)
+                .periodCreditAmount(periodCredit)
+                .yearToDateDebit(beginDebit.add(periodDebit))
+                .yearToDateCredit(beginCredit.add(periodCredit))
+                .endingDebitBalance(endDebit)
+                .endingCreditBalance(endCredit)
+                .isClosed(false)
+                .build();
     }
 
     // =============================================================================
@@ -306,7 +248,7 @@ public class Phase5MonthEndClosingManagerTest extends BaseTestClass {
     void should_PreventClosing_When_UnpostedJournalEntriesExist() {
         // Given: 미전기 분개 생성
         JournalEntry unpostedEntry = JournalEntry.builder()
-                .companyId(TEST_COMPANY_ID)
+                .companyId(testCompanyId)
                 .entryDate(LocalDate.of(TEST_FISCAL_YEAR, TEST_FISCAL_MONTH, 15))
                 .description("미전기 테스트 분개")
                 .totalAmount(new BigDecimal("50000"))
@@ -317,7 +259,7 @@ public class Phase5MonthEndClosingManagerTest extends BaseTestClass {
 
         // When & Then: 마감 시 예외 발생
         assertThatThrownBy(() -> 
-                performMonthEndClosing(TEST_COMPANY_ID, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH))
+                performMonthEndClosing(testCompanyId, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("미전기 분개가 존재");
     }
@@ -328,7 +270,7 @@ public class Phase5MonthEndClosingManagerTest extends BaseTestClass {
     void should_PreventClosing_When_TrialBalanceIsUnbalanced() {
         // Given: 불균형 계정과목 먼저 생성
         ChartOfAccount unbalancedChartAccount = ChartOfAccount.builder()
-                .accountCode(uniqueAccountPrefix + "9999")
+                .accountCode(generateAccountCode("9999"))
                 .accountName("테스트불균형계정")
                 .accountType("자산")
                 .isDebitNormal(true)
@@ -339,8 +281,8 @@ public class Phase5MonthEndClosingManagerTest extends BaseTestClass {
         
         // Given: 불균형 GL 계정 추가
         GeneralLedger unbalancedAccount = GeneralLedger.builder()
-                .companyId(TEST_COMPANY_ID)
-                .accountCode(uniqueAccountPrefix + "9999")
+                .companyId(testCompanyId)
+                .accountCode(generateAccountCode("9999"))
                 .fiscalYear(TEST_FISCAL_YEAR)
                 .fiscalMonth(TEST_FISCAL_MONTH)
                 .beginningDebitBalance(BigDecimal.ZERO)
@@ -358,7 +300,7 @@ public class Phase5MonthEndClosingManagerTest extends BaseTestClass {
 
         // When & Then: 마감 시 예외 발생
         assertThatThrownBy(() -> 
-                performMonthEndClosing(TEST_COMPANY_ID, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH))
+                performMonthEndClosing(testCompanyId, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("시산표가 균형을 이루지 않습니다");
     }
@@ -376,7 +318,7 @@ public class Phase5MonthEndClosingManagerTest extends BaseTestClass {
 
         // When & Then: 중복 마감 시 예외 발생
         assertThatThrownBy(() -> 
-                performMonthEndClosing(TEST_COMPANY_ID, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH))
+                performMonthEndClosing(testCompanyId, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("이미 마감된 월입니다");
     }
@@ -393,17 +335,17 @@ public class Phase5MonthEndClosingManagerTest extends BaseTestClass {
 
         // When: 손익계산서 생성
         Map<String, Object> incomeStatement = generateIncomeStatement(
-                TEST_COMPANY_ID, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+                testCompanyId, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
 
         // Then: 손익계산서 구성 요소 검증
         assertThat(incomeStatement).isNotNull();
         assertThat(incomeStatement).containsKeys("revenue", "expenses", "netIncome");
 
-        // 매출 검증 (4000 계정)
+        // 매출 검증 (AccountCodeConfig.Codes.SALES_REVENUE)
         BigDecimal totalRevenue = (BigDecimal) incomeStatement.get("revenue");
         assertThat(totalRevenue).isEqualByComparingTo(new BigDecimal("750000"));
 
-        // 비용 검증 (5000 계정)
+        // 비용 검증 (AccountCodeConfig.Codes.OFFICE_SUPPLIES_EXPENSE)
         BigDecimal totalExpenses = (BigDecimal) incomeStatement.get("expenses");
         assertThat(totalExpenses).isEqualByComparingTo(new BigDecimal("90000"));
 
@@ -420,13 +362,13 @@ public class Phase5MonthEndClosingManagerTest extends BaseTestClass {
 
         // When: 대차대조표 생성
         Map<String, Object> balanceSheet = generateBalanceSheet(
-                TEST_COMPANY_ID, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+                testCompanyId, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
 
         // Then: 대차대조표 구성 요소 검증
         assertThat(balanceSheet).isNotNull();
         assertThat(balanceSheet).containsKeys("assets", "liabilities", "equity");
 
-        // 자산 총합 (현금 + 재고자산)
+        // 자산 총합 (현금 + 미수금)
         BigDecimal totalAssets = (BigDecimal) balanceSheet.get("assets");
         assertThat(totalAssets).isEqualByComparingTo(new BigDecimal("2250000")); // 1300000 + 950000
 
@@ -450,21 +392,23 @@ public class Phase5MonthEndClosingManagerTest extends BaseTestClass {
     @Order(6)
     @DisplayName("TDD 5-3-1: 수익 계정이 당기순이익으로 대체되어야 함")
     void should_CloseRevenueAccountsToNetIncome_When_ClosingMonth() {
-        // Given: 수익 계정이 존재함 (4000 - 매출)
+        // Given: 수익 계정이 존재함 (AccountCodeConfig.Codes.SALES_REVENUE)
 
         // When: 수익 계정 마감
-        closeRevenueAccounts(TEST_COMPANY_ID, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+        closeRevenueAccounts(testCompanyId, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
 
         // Then: 수익 계정 잔액이 0이 되어야 함
         GeneralLedger revenueGL = generalLedgerMapper.findGeneralLedgerAccount(
-                TEST_COMPANY_ID, uniqueAccountPrefix + "4000", TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+                testCompanyId, generateAccountCode(AccountCodeConfig.Codes.SALES_REVENUE), 
+                TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
         
         assertThat(revenueGL.getEndingDebitBalance()).isEqualByComparingTo(BigDecimal.ZERO);
         assertThat(revenueGL.getEndingCreditBalance()).isEqualByComparingTo(BigDecimal.ZERO);
 
         // 당기순이익 계정에 수익이 대변에 반영되어야 함
         GeneralLedger netIncomeGL = generalLedgerMapper.findGeneralLedgerAccount(
-                TEST_COMPANY_ID, uniqueAccountPrefix + "3500", TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+                testCompanyId, generateAccountCode(AccountCodeConfig.Codes.CURRENT_YEAR_EARNINGS), 
+                TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
         
         assertThat(netIncomeGL).isNotNull();
         assertThat(netIncomeGL.getEndingCreditBalance()).isEqualByComparingTo(new BigDecimal("750000"));
@@ -475,21 +419,23 @@ public class Phase5MonthEndClosingManagerTest extends BaseTestClass {
     @DisplayName("TDD 5-3-2: 비용 계정이 당기순이익으로 대체되어야 함")
     void should_CloseExpenseAccountsToNetIncome_When_ClosingMonth() {
         // Given: 수익 계정 먼저 마감
-        closeRevenueAccounts(TEST_COMPANY_ID, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+        closeRevenueAccounts(testCompanyId, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
 
         // When: 비용 계정 마감
-        closeExpenseAccounts(TEST_COMPANY_ID, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+        closeExpenseAccounts(testCompanyId, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
 
         // Then: 비용 계정 잔액이 0이 되어야 함
         GeneralLedger expenseGL = generalLedgerMapper.findGeneralLedgerAccount(
-                TEST_COMPANY_ID, uniqueAccountPrefix + "5000", TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+                testCompanyId, generateAccountCode(AccountCodeConfig.Codes.OFFICE_SUPPLIES_EXPENSE), 
+                TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
         
         assertThat(expenseGL.getEndingDebitBalance()).isEqualByComparingTo(BigDecimal.ZERO);
         assertThat(expenseGL.getEndingCreditBalance()).isEqualByComparingTo(BigDecimal.ZERO);
 
         // 당기순이익 계정에 최종 순이익이 반영되어야 함
         GeneralLedger netIncomeGL = generalLedgerMapper.findGeneralLedgerAccount(
-                TEST_COMPANY_ID, uniqueAccountPrefix + "3500", TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+                testCompanyId, generateAccountCode(AccountCodeConfig.Codes.CURRENT_YEAR_EARNINGS), 
+                TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
         
         // 순이익 = 수익(750000) - 비용(90000) = 660000
         assertThat(netIncomeGL.getEndingCreditBalance()).isEqualByComparingTo(new BigDecimal("660000"));
@@ -500,12 +446,12 @@ public class Phase5MonthEndClosingManagerTest extends BaseTestClass {
     @DisplayName("TDD 5-3-3: 손익 계정 마감 후 대차대조표가 균형을 이뤄야 함")
     void should_BalanceBalanceSheet_When_IncomeAccountsClosed() {
         // Given: 수익과 비용 계정 마감
-        closeRevenueAccounts(TEST_COMPANY_ID, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
-        closeExpenseAccounts(TEST_COMPANY_ID, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+        closeRevenueAccounts(testCompanyId, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+        closeExpenseAccounts(testCompanyId, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
 
         // When: 대차대조표 재생성
         Map<String, Object> balanceSheet = generateBalanceSheetAfterClosing(
-                TEST_COMPANY_ID, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+                testCompanyId, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
 
         // Then: 회계 등식 성립 확인
         BigDecimal totalAssets = (BigDecimal) balanceSheet.get("assets");
@@ -536,18 +482,18 @@ public class Phase5MonthEndClosingManagerTest extends BaseTestClass {
     @DisplayName("TDD 5-4-1: 모든 GL 계정이 마감 상태로 변경되어야 함")
     void should_CloseAllGLAccounts_When_ProcessingMonthEndClosing() {
         // Given: 손익 계정 마감 완료
-        closeRevenueAccounts(TEST_COMPANY_ID, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
-        closeExpenseAccounts(TEST_COMPANY_ID, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+        closeRevenueAccounts(testCompanyId, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+        closeExpenseAccounts(testCompanyId, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
 
         // When: 모든 계정 마감 처리
         int closedCount = generalLedgerMapper.closeGeneralLedgerAccounts(
-                TEST_COMPANY_ID, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+                testCompanyId, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
 
         // Then: 모든 계정이 마감되어야 함
         assertThat(closedCount).isGreaterThan(0);
 
         List<GeneralLedger> allAccounts = generalLedgerMapper.findGeneralLedgerAccounts(
-                TEST_COMPANY_ID, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH, null, null);
+                testCompanyId, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH, null, null);
 
         assertThat(allAccounts).allMatch(account -> account.getIsClosed());
         assertThat(allAccounts).allMatch(account -> account.getClosedAt() != null);
@@ -558,11 +504,11 @@ public class Phase5MonthEndClosingManagerTest extends BaseTestClass {
     @DisplayName("TDD 5-4-2: 마감 이력이 정확히 기록되어야 함")
     void should_RecordClosingHistory_When_ProcessingMonthEndClosing() {
         // Given: 완전한 마감 처리
-        performCompleteMonthEndClosing(TEST_COMPANY_ID, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+        performCompleteMonthEndClosing(testCompanyId, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
 
         // When: 마감 이력 조회
         List<Map<String, Object>> closingHistory = generalLedgerMapper.getClosingHistory(
-                TEST_COMPANY_ID, 10, 0);
+                testCompanyId, 10, 0);
 
         // Then: 마감 이력이 기록되어야 함
         assertThat(closingHistory).isNotEmpty();
@@ -584,18 +530,19 @@ public class Phase5MonthEndClosingManagerTest extends BaseTestClass {
     @DisplayName("TDD 5-5-1: 자산 계정이 차기월로 정확히 이월되어야 함")
     void should_CarryForwardAssetAccounts_When_ProcessingMonthEndClosing() {
         // Given: 완전한 마감 처리
-        performCompleteMonthEndClosing(TEST_COMPANY_ID, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+        performCompleteMonthEndClosing(testCompanyId, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
 
         // When: 차기월 이월 처리
         int carriedForwardCount = generalLedgerMapper.carryForwardBalances(
-                TEST_COMPANY_ID, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+                testCompanyId, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
 
         // Then: 자산 계정이 차기월로 이월되어야 함
         assertThat(carriedForwardCount).isGreaterThan(0);
 
         // 현금 계정 이월 확인
         GeneralLedger nextMonthCash = generalLedgerMapper.findGeneralLedgerAccount(
-                TEST_COMPANY_ID, uniqueAccountPrefix + "1000", TEST_FISCAL_YEAR, TEST_FISCAL_MONTH + 1);
+                testCompanyId, generateAccountCode(AccountCodeConfig.Codes.CASH), 
+                TEST_FISCAL_YEAR, TEST_FISCAL_MONTH + 1);
 
         assertThat(nextMonthCash).isNotNull();
         assertThat(nextMonthCash.getBeginningDebitBalance()).isEqualByComparingTo(new BigDecimal("1300000"));
@@ -609,12 +556,13 @@ public class Phase5MonthEndClosingManagerTest extends BaseTestClass {
     @DisplayName("TDD 5-5-2: 부채와 자본 계정이 차기월로 정확히 이월되어야 함")
     void should_CarryForwardLiabilityAndEquityAccounts_When_ProcessingMonthEndClosing() {
         // Given: 완전한 마감 처리
-        performCompleteMonthEndClosing(TEST_COMPANY_ID, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
-        generalLedgerMapper.carryForwardBalances(TEST_COMPANY_ID, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+        performCompleteMonthEndClosing(testCompanyId, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+        generalLedgerMapper.carryForwardBalances(testCompanyId, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
 
         // When: 부채 계정 이월 확인
         GeneralLedger nextMonthLiability = generalLedgerMapper.findGeneralLedgerAccount(
-                TEST_COMPANY_ID, uniqueAccountPrefix + "2000", TEST_FISCAL_YEAR, TEST_FISCAL_MONTH + 1);
+                testCompanyId, generateAccountCode(AccountCodeConfig.Codes.ACCOUNTS_PAYABLE), 
+                TEST_FISCAL_YEAR, TEST_FISCAL_MONTH + 1);
 
         // Then: 부채 계정이 정확히 이월되어야 함
         assertThat(nextMonthLiability).isNotNull();
@@ -623,7 +571,8 @@ public class Phase5MonthEndClosingManagerTest extends BaseTestClass {
 
         // When: 자본 계정 이월 확인 (당기순이익 포함)
         GeneralLedger nextMonthNetIncome = generalLedgerMapper.findGeneralLedgerAccount(
-                TEST_COMPANY_ID, uniqueAccountPrefix + "3500", TEST_FISCAL_YEAR, TEST_FISCAL_MONTH + 1);
+                testCompanyId, generateAccountCode(AccountCodeConfig.Codes.CURRENT_YEAR_EARNINGS), 
+                TEST_FISCAL_YEAR, TEST_FISCAL_MONTH + 1);
 
         // Then: 당기순이익이 차기월로 이월되어야 함
         assertThat(nextMonthNetIncome).isNotNull();
@@ -635,15 +584,17 @@ public class Phase5MonthEndClosingManagerTest extends BaseTestClass {
     @DisplayName("TDD 5-5-3: 수익과 비용 계정은 이월되지 않아야 함")
     void should_NotCarryForwardIncomeAccounts_When_ProcessingMonthEndClosing() {
         // Given: 완전한 마감 처리
-        performCompleteMonthEndClosing(TEST_COMPANY_ID, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
-        generalLedgerMapper.carryForwardBalances(TEST_COMPANY_ID, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+        performCompleteMonthEndClosing(testCompanyId, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+        generalLedgerMapper.carryForwardBalances(testCompanyId, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
 
         // When: 수익 계정 조회 시도
         GeneralLedger nextMonthRevenue = generalLedgerMapper.findGeneralLedgerAccount(
-                TEST_COMPANY_ID, uniqueAccountPrefix + "4000", TEST_FISCAL_YEAR, TEST_FISCAL_MONTH + 1);
+                testCompanyId, generateAccountCode(AccountCodeConfig.Codes.SALES_REVENUE), 
+                TEST_FISCAL_YEAR, TEST_FISCAL_MONTH + 1);
 
         GeneralLedger nextMonthExpense = generalLedgerMapper.findGeneralLedgerAccount(
-                TEST_COMPANY_ID, uniqueAccountPrefix + "5000", TEST_FISCAL_YEAR, TEST_FISCAL_MONTH + 1);
+                testCompanyId, generateAccountCode(AccountCodeConfig.Codes.OFFICE_SUPPLIES_EXPENSE), 
+                TEST_FISCAL_YEAR, TEST_FISCAL_MONTH + 1);
 
         // Then: 수익과 비용 계정은 이월되지 않아야 함 (또는 0 잔액으로 이월)
         if (nextMonthRevenue != null) {
@@ -666,11 +617,11 @@ public class Phase5MonthEndClosingManagerTest extends BaseTestClass {
     @DisplayName("TDD 5-6-1: 마감된 월에는 새로운 분개 생성이 불가능해야 함")
     void should_PreventJournalEntryCreation_When_MonthIsClosed() {
         // Given: 완전한 마감 처리
-        performCompleteMonthEndClosing(TEST_COMPANY_ID, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+        performCompleteMonthEndClosing(testCompanyId, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
 
         // When & Then: 마감된 월에 분개 생성 시도 시 예외 발생
         JournalEntry newEntry = JournalEntry.builder()
-                .companyId(TEST_COMPANY_ID)
+                .companyId(testCompanyId)
                 .entryDate(LocalDate.of(TEST_FISCAL_YEAR, TEST_FISCAL_MONTH, 20))
                 .description("마감 후 추가 분개")
                 .totalAmount(new BigDecimal("50000"))
@@ -688,7 +639,7 @@ public class Phase5MonthEndClosingManagerTest extends BaseTestClass {
     @DisplayName("TDD 5-6-2: 마감된 계정의 잔액 수정이 불가능해야 함")
     void should_PreventBalanceModification_When_AccountIsClosed() {
         // Given: 완전한 마감 처리
-        performCompleteMonthEndClosing(TEST_COMPANY_ID, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+        performCompleteMonthEndClosing(testCompanyId, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
 
         // When & Then: 마감된 계정의 잔액 수정 시도 시 예외 발생
         // TODO: 비즈니스 로직 구현 후 예외 발생 테스트로 변경
@@ -699,7 +650,7 @@ public class Phase5MonthEndClosingManagerTest extends BaseTestClass {
     }
 
     // =============================================================================
-    // Helper Methods (테스트 지원 메소드)
+    // Helper Methods (테스트 지원 메소드) - 완전 중앙화
     // =============================================================================
 
     /**
@@ -807,22 +758,13 @@ public class Phase5MonthEndClosingManagerTest extends BaseTestClass {
 
     private Map<String, Object> generateBalanceSheetAfterClosing(String companyId, int fiscalYear, int fiscalMonth) {
         // 마감 후에는 당기순이익이 자본에 포함된 대차대조표
-        // 3500 계정이 이미 자본 유형으로 설정되어 있어서 기본 대차대조표 조회에 포함됨
+        // AccountCodeConfig.Codes.CURRENT_YEAR_EARNINGS가 이미 자본 유형으로 설정되어 있어서 기본 대차대조표 조회에 포함됨
         return generateBalanceSheet(companyId, fiscalYear, fiscalMonth);
     }
 
     private void closeRevenueAccounts(String companyId, int fiscalYear, int fiscalMonth) {
-        // 3500 당기순이익 계정과목 생성 (없으면)
-        ChartOfAccount netIncomeAccount = ChartOfAccount.builder()
-                .accountCode(uniqueAccountPrefix + "3500")
-                .accountName("당기순이익")
-                .accountType("자본")
-                .accountSubtype("이익잉여금")
-                .isDebitNormal(false)
-                .parentAccountId(null)
-                .isActive(true)
-                .displayOrder(3500)
-                .build();
+        // 당기순이익 계정과목 생성 (없으면)
+        ChartOfAccount netIncomeAccount = createAccountFromConfig(AccountCodeConfig.Codes.CURRENT_YEAR_EARNINGS, 3500);
         
         try {
             chartOfAccountsMapper.insertAccount(netIncomeAccount);
@@ -832,7 +774,8 @@ public class Phase5MonthEndClosingManagerTest extends BaseTestClass {
 
         // 수익 계정 조회
         List<GeneralLedger> revenueAccounts = generalLedgerMapper.findGeneralLedgerAccounts(
-                companyId, fiscalYear, fiscalMonth, Arrays.asList(uniqueAccountPrefix + "4000"), false);
+                companyId, fiscalYear, fiscalMonth, 
+                Arrays.asList(generateAccountCode(AccountCodeConfig.Codes.SALES_REVENUE)), false);
 
         // 각 수익 계정을 당기순이익으로 대체
         for (GeneralLedger revenueAccount : revenueAccounts) {
@@ -840,7 +783,7 @@ public class Phase5MonthEndClosingManagerTest extends BaseTestClass {
                 // 당기순이익 계정 생성 또는 업데이트
                 GeneralLedger netIncomeGL = GeneralLedger.builder()
                         .companyId(companyId)
-                        .accountCode(uniqueAccountPrefix + "3500")
+                        .accountCode(generateAccountCode(AccountCodeConfig.Codes.CURRENT_YEAR_EARNINGS))
                         .fiscalYear(fiscalYear)
                         .fiscalMonth(fiscalMonth)
                         .beginningDebitBalance(BigDecimal.ZERO)
@@ -857,7 +800,8 @@ public class Phase5MonthEndClosingManagerTest extends BaseTestClass {
                 generalLedgerMapper.insertGeneralLedgerAccount(netIncomeGL);
 
                 // 수익 계정 잔액을 0으로 만들기 - DB에 반영
-                generalLedgerMapper.resetGeneralLedgerBalance(companyId, uniqueAccountPrefix + "4000", fiscalYear, fiscalMonth);
+                generalLedgerMapper.resetGeneralLedgerBalance(companyId, 
+                        generateAccountCode(AccountCodeConfig.Codes.SALES_REVENUE), fiscalYear, fiscalMonth);
             }
         }
     }
@@ -865,11 +809,13 @@ public class Phase5MonthEndClosingManagerTest extends BaseTestClass {
     private void closeExpenseAccounts(String companyId, int fiscalYear, int fiscalMonth) {
         // 비용 계정 조회
         List<GeneralLedger> expenseAccounts = generalLedgerMapper.findGeneralLedgerAccounts(
-                companyId, fiscalYear, fiscalMonth, Arrays.asList(uniqueAccountPrefix + "5000"), false);
+                companyId, fiscalYear, fiscalMonth, 
+                Arrays.asList(generateAccountCode(AccountCodeConfig.Codes.OFFICE_SUPPLIES_EXPENSE)), false);
 
         // 당기순이익 계정 조회
         GeneralLedger netIncomeAccount = generalLedgerMapper.findGeneralLedgerAccount(
-                companyId, uniqueAccountPrefix + "3500", fiscalYear, fiscalMonth);
+                companyId, generateAccountCode(AccountCodeConfig.Codes.CURRENT_YEAR_EARNINGS), 
+                fiscalYear, fiscalMonth);
 
         // 각 비용 계정을 당기순이익에서 차감
         for (GeneralLedger expenseAccount : expenseAccounts) {
@@ -881,7 +827,8 @@ public class Phase5MonthEndClosingManagerTest extends BaseTestClass {
                     
                     // 당기순이익 계정 직접 업데이트
                     generalLedgerMapper.updateGeneralLedgerBalanceDirectly(
-                            companyId, uniqueAccountPrefix + "3500", fiscalYear, fiscalMonth,
+                            companyId, generateAccountCode(AccountCodeConfig.Codes.CURRENT_YEAR_EARNINGS), 
+                            fiscalYear, fiscalMonth,
                             BigDecimal.ZERO, newNetIncome,
                             BigDecimal.ZERO, newNetIncome,
                             BigDecimal.ZERO, newNetIncome
@@ -889,7 +836,9 @@ public class Phase5MonthEndClosingManagerTest extends BaseTestClass {
                 }
 
                 // 비용 계정 잔액을 0으로 만들기 - DB에 반영
-                generalLedgerMapper.resetGeneralLedgerBalance(companyId, uniqueAccountPrefix + "5000", fiscalYear, fiscalMonth);
+                generalLedgerMapper.resetGeneralLedgerBalance(companyId, 
+                        generateAccountCode(AccountCodeConfig.Codes.OFFICE_SUPPLIES_EXPENSE), 
+                        fiscalYear, fiscalMonth);
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.moneyshift.api.service;
 
+import com.moneyshift.api.config.AccountCodeConfig;
 import com.moneyshift.api.mapper.ChartOfAccountsMapper;
 import com.moneyshift.api.mapper.GeneralLedgerMapper;
 import com.moneyshift.api.mapper.JournalEntryMapper;
@@ -83,23 +84,15 @@ public class Phase3GeneralLedgerManagerTest extends BaseTestClass {
 
     @BeforeEach
     void setUp() {
-        // 베이스 클래스에서 회사 설정
-        setupTestCompany();
-        
+        // 베이스 클래스에서 자동으로 환경 초기화됨
         setupTestAccounts();
         setupTestJournalEntry();
-    }
-    
-    @AfterEach
-    void tearDown() {
-        // 베이스 클래스의 테스트 데이터 정리 사용
-        cleanupTestData();
     }
 
     private void setupTestAccounts() {
         // 현금 계정 (자산)
         cashAccount = ChartOfAccount.builder()
-                .accountCode(uniqueAccountPrefix + "1000")
+                .accountCode(generateAccountCode(AccountCodeConfig.Codes.CASH))
                 .accountName("현금")
                 .accountType("자산")
                 .isDebitNormal(true)
@@ -109,7 +102,7 @@ public class Phase3GeneralLedgerManagerTest extends BaseTestClass {
 
         // 사무용품비 계정 (비용)
         expenseAccount = ChartOfAccount.builder()
-                .accountCode(uniqueAccountPrefix + "5000")
+                .accountCode(generateAccountCode(AccountCodeConfig.Codes.OFFICE_SUPPLIES_EXPENSE))
                 .accountName("사무용품비")
                 .accountType("비용")
                 .isDebitNormal(true)
@@ -119,7 +112,7 @@ public class Phase3GeneralLedgerManagerTest extends BaseTestClass {
 
         // 매출 계정 (수익)
         revenueAccount = ChartOfAccount.builder()
-                .accountCode(uniqueAccountPrefix + "4000")
+                .accountCode(generateAccountCode(AccountCodeConfig.Codes.SALES_REVENUE))
                 .accountName("매출")
                 .accountType("수익")
                 .isDebitNormal(false)
@@ -129,7 +122,7 @@ public class Phase3GeneralLedgerManagerTest extends BaseTestClass {
 
         // 미지급금 계정 (부채)
         liabilityAccount = ChartOfAccount.builder()
-                .accountCode(uniqueAccountPrefix + "2000")
+                .accountCode(generateAccountCode(AccountCodeConfig.Codes.ACCOUNTS_PAYABLE))
                 .accountName("미지급금")
                 .accountType("부채")
                 .isDebitNormal(false)
@@ -138,25 +131,21 @@ public class Phase3GeneralLedgerManagerTest extends BaseTestClass {
                 .build();
 
         // 계정과목 등록 (중복 체크 후 삽입)
-        insertAccountIfNotExists(cashAccount);
-        insertAccountIfNotExists(expenseAccount);
-        insertAccountIfNotExists(revenueAccount);
-        insertAccountIfNotExists(liabilityAccount);
+        createAccountIfNotExists(cashAccount);
+        createAccountIfNotExists(expenseAccount);
+        createAccountIfNotExists(revenueAccount);
+        createAccountIfNotExists(liabilityAccount);
     }
     
-    private void insertAccountIfNotExists(ChartOfAccount account) {
-        String checkSql = "SELECT COUNT(*) FROM chart_of_accounts WHERE account_code = ?";
-        Integer count = jdbcTemplate.queryForObject(checkSql, Integer.class, account.getAccountCode());
-        
-        if (count == null || count == 0) {
-            chartOfAccountsMapper.insertAccount(account);
-        }
+    private void createAccountIfNotExists(ChartOfAccount account) {
+        createAccountIfNotExists(account.getAccountCode(), account.getAccountName(), 
+                               account.getAccountType(), account.getIsDebitNormal());
     }
 
     private void setupTestJournalEntry() {
         // 테스트용 분개: 사무용품 현금 구매 (100,000원)
         testJournalEntry = JournalEntry.builder()
-                .companyId(TEST_COMPANY_ID)
+                .companyId(testCompanyId)
                 .entryDate(TEST_ENTRY_DATE)
                 .description("사무용품 현금 구매")
                 .totalAmount(new BigDecimal("100000"))
@@ -167,7 +156,7 @@ public class Phase3GeneralLedgerManagerTest extends BaseTestClass {
         testJournalDetails = Arrays.asList(
                 JournalEntryDetail.builder()
                         .lineNumber(1)
-                        .accountCode(uniqueAccountPrefix + "5000")
+                        .accountCode(generateAccountCode(AccountCodeConfig.Codes.OFFICE_SUPPLIES_EXPENSE))
                         .accountName("사무용품비")
                         .debitAmount(new BigDecimal("100000"))
                         .creditAmount(BigDecimal.ZERO)
@@ -175,7 +164,7 @@ public class Phase3GeneralLedgerManagerTest extends BaseTestClass {
                         .build(),
                 JournalEntryDetail.builder()
                         .lineNumber(2)
-                        .accountCode(uniqueAccountPrefix + "1000")
+                        .accountCode(generateAccountCode(AccountCodeConfig.Codes.CASH))
                         .accountName("현금")
                         .debitAmount(BigDecimal.ZERO)
                         .creditAmount(new BigDecimal("100000"))
@@ -204,17 +193,17 @@ public class Phase3GeneralLedgerManagerTest extends BaseTestClass {
 
         // Then: 각 계정별로 총계정원장 계정이 생성되어야 함
         GeneralLedger expenseGL = generalLedgerMapper.findGeneralLedgerAccount(
-                TEST_COMPANY_ID, uniqueAccountPrefix + "5000", TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+                testCompanyId, generateAccountCode(AccountCodeConfig.Codes.OFFICE_SUPPLIES_EXPENSE), TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
         GeneralLedger cashGL = generalLedgerMapper.findGeneralLedgerAccount(
-                TEST_COMPANY_ID, uniqueAccountPrefix + "1000", TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+                testCompanyId, generateAccountCode(AccountCodeConfig.Codes.CASH), TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
 
         assertThat(expenseGL).isNotNull();
-        assertThat(expenseGL.getAccountCode()).isEqualTo(uniqueAccountPrefix + "5000");
+        assertThat(expenseGL.getAccountCode()).isEqualTo(generateAccountCode(AccountCodeConfig.Codes.OFFICE_SUPPLIES_EXPENSE));
         assertThat(expenseGL.getPeriodDebitAmount()).isEqualByComparingTo(new BigDecimal("100000"));
         assertThat(expenseGL.getPeriodCreditAmount()).isEqualByComparingTo(BigDecimal.ZERO);
 
         assertThat(cashGL).isNotNull();
-        assertThat(cashGL.getAccountCode()).isEqualTo(uniqueAccountPrefix + "1000");
+        assertThat(cashGL.getAccountCode()).isEqualTo(generateAccountCode(AccountCodeConfig.Codes.CASH));
         assertThat(cashGL.getPeriodDebitAmount()).isEqualByComparingTo(BigDecimal.ZERO);
         assertThat(cashGL.getPeriodCreditAmount()).isEqualByComparingTo(new BigDecimal("100000"));
     }
@@ -233,7 +222,7 @@ public class Phase3GeneralLedgerManagerTest extends BaseTestClass {
 
         // 두 번째 분개 생성 (추가 사무용품 구매 50,000원)
         JournalEntry secondEntry = JournalEntry.builder()
-                .companyId(TEST_COMPANY_ID)
+                .companyId(testCompanyId)
                 .entryDate(TEST_ENTRY_DATE.plusDays(1))
                 .description("추가 사무용품 현금 구매")
                 .totalAmount(new BigDecimal("50000"))
@@ -246,7 +235,7 @@ public class Phase3GeneralLedgerManagerTest extends BaseTestClass {
                 JournalEntryDetail.builder()
                         .journalEntryId(secondEntry.getId())
                         .lineNumber(1)
-                        .accountCode(uniqueAccountPrefix + "5000")
+                        .accountCode(generateAccountCode(AccountCodeConfig.Codes.OFFICE_SUPPLIES_EXPENSE))
                         .accountName("사무용품비")
                         .debitAmount(new BigDecimal("50000"))
                         .creditAmount(BigDecimal.ZERO)
@@ -255,7 +244,7 @@ public class Phase3GeneralLedgerManagerTest extends BaseTestClass {
                 JournalEntryDetail.builder()
                         .journalEntryId(secondEntry.getId())
                         .lineNumber(2)
-                        .accountCode(uniqueAccountPrefix + "1000")
+                        .accountCode(generateAccountCode(AccountCodeConfig.Codes.CASH))
                         .accountName("현금")
                         .debitAmount(BigDecimal.ZERO)
                         .creditAmount(new BigDecimal("50000"))
@@ -270,9 +259,9 @@ public class Phase3GeneralLedgerManagerTest extends BaseTestClass {
 
         // Then: 누적 금액이 정확히 계산되어야 함
         GeneralLedger expenseGL = generalLedgerMapper.findGeneralLedgerAccount(
-                TEST_COMPANY_ID, uniqueAccountPrefix + "5000", TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+                testCompanyId, generateAccountCode(AccountCodeConfig.Codes.OFFICE_SUPPLIES_EXPENSE), TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
         GeneralLedger cashGL = generalLedgerMapper.findGeneralLedgerAccount(
-                TEST_COMPANY_ID, uniqueAccountPrefix + "1000", TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+                testCompanyId, generateAccountCode(AccountCodeConfig.Codes.CASH), TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
 
         assertThat(expenseGL.getPeriodDebitAmount()).isEqualByComparingTo(new BigDecimal("150000")); // 100000 + 50000
         assertThat(expenseGL.getYearToDateDebit()).isEqualByComparingTo(new BigDecimal("150000"));
@@ -297,17 +286,17 @@ public class Phase3GeneralLedgerManagerTest extends BaseTestClass {
 
         // Then: GL 상세 내역이 생성되어야 함 (GeneralLedger는 복합키를 사용하므로 임시로 1L 사용)
         GeneralLedger expenseGL = generalLedgerMapper.findGeneralLedgerAccount(
-                TEST_COMPANY_ID, uniqueAccountPrefix + "5000", TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+                testCompanyId, generateAccountCode(AccountCodeConfig.Codes.OFFICE_SUPPLIES_EXPENSE), TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
         GeneralLedger cashGL = generalLedgerMapper.findGeneralLedgerAccount(
-                TEST_COMPANY_ID, uniqueAccountPrefix + "1000", TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+                testCompanyId, generateAccountCode(AccountCodeConfig.Codes.CASH), TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
 
         // GL 상세 내역 확인 (실제로는 복합키로 조회해야 하므로 GL 계정 존재 여부만 확인)
         assertThat(expenseGL).isNotNull();
-        assertThat(expenseGL.getAccountCode()).isEqualTo(uniqueAccountPrefix + "5000");
+        assertThat(expenseGL.getAccountCode()).isEqualTo(generateAccountCode(AccountCodeConfig.Codes.OFFICE_SUPPLIES_EXPENSE));
         assertThat(expenseGL.getPeriodDebitAmount()).isEqualByComparingTo(new BigDecimal("100000"));
 
         assertThat(cashGL).isNotNull();
-        assertThat(cashGL.getAccountCode()).isEqualTo(uniqueAccountPrefix + "1000");
+        assertThat(cashGL.getAccountCode()).isEqualTo(generateAccountCode(AccountCodeConfig.Codes.CASH));
         assertThat(cashGL.getPeriodCreditAmount()).isEqualByComparingTo(new BigDecimal("100000"));
     }
 
@@ -324,7 +313,7 @@ public class Phase3GeneralLedgerManagerTest extends BaseTestClass {
 
         // When: 시산표 데이터 조회
         List<Map<String, Object>> trialBalanceData = generalLedgerMapper.getTrialBalanceData(
-                TEST_COMPANY_ID, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+                testCompanyId, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
 
         // Then: 차변 합계와 대변 합계가 일치해야 함
         BigDecimal totalDebit = trialBalanceData.stream()
@@ -348,7 +337,7 @@ public class Phase3GeneralLedgerManagerTest extends BaseTestClass {
 
         // When: 시산표 데이터 조회
         List<Map<String, Object>> trialBalanceData = generalLedgerMapper.getTrialBalanceData(
-                TEST_COMPANY_ID, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+                testCompanyId, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
 
         // Then: 잔액이 있는 모든 계정이 포함되어야 함
         Set<String> accountCodes = trialBalanceData.stream()
@@ -356,11 +345,11 @@ public class Phase3GeneralLedgerManagerTest extends BaseTestClass {
                 .collect(java.util.stream.Collectors.toSet());
 
         // 최소한 현금, 사무용품비 계정은 포함되어야 함
-        assertThat(accountCodes).contains(uniqueAccountPrefix + "1000", uniqueAccountPrefix + "5000");
+        assertThat(accountCodes).contains(generateAccountCode(AccountCodeConfig.Codes.CASH), generateAccountCode(AccountCodeConfig.Codes.OFFICE_SUPPLIES_EXPENSE));
 
         // 각 계정의 계정명과 계정유형도 정확해야 함
         Map<String, Object> cashRow = trialBalanceData.stream()
-                .filter(row -> (uniqueAccountPrefix + "1000").equals(row.get("account_code")))
+                .filter(row -> (generateAccountCode(AccountCodeConfig.Codes.CASH)).equals(row.get("account_code")))
                 .findFirst().orElse(null);
 
         assertThat(cashRow).isNotNull();
@@ -381,7 +370,7 @@ public class Phase3GeneralLedgerManagerTest extends BaseTestClass {
 
         // When: 손익계산서 데이터 조회
         List<Map<String, Object>> incomeStatementData = generalLedgerMapper.getIncomeStatementData(
-                TEST_COMPANY_ID, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+                testCompanyId, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
 
         // Then: 수익과 비용 계정이 올바르게 분류되어야 함
         Map<String, Object> revenueRow = incomeStatementData.stream()
@@ -412,7 +401,7 @@ public class Phase3GeneralLedgerManagerTest extends BaseTestClass {
 
         // When: 재무상태표 데이터 조회
         List<Map<String, Object>> balanceSheetData = generalLedgerMapper.getBalanceSheetData(
-                TEST_COMPANY_ID, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+                testCompanyId, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
 
         // Then: 자산 = 부채 + 자본 등식이 성립해야 함
         BigDecimal totalAssets = balanceSheetData.stream()
@@ -447,14 +436,14 @@ public class Phase3GeneralLedgerManagerTest extends BaseTestClass {
 
         // When: 월말 마감 처리
         int closedCount = generalLedgerMapper.closeGeneralLedgerAccounts(
-                TEST_COMPANY_ID, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+                testCompanyId, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
 
         // Then: 모든 계정이 마감되어야 함
         assertThat(closedCount).isGreaterThan(0);
 
         // 마감된 계정들 확인
         List<GeneralLedger> glAccounts = generalLedgerMapper.findGeneralLedgerAccounts(
-                TEST_COMPANY_ID, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH, null, true);
+                testCompanyId, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH, null, true);
 
         assertThat(glAccounts).allMatch(account -> account.getIsClosed());
         assertThat(glAccounts).allMatch(account -> account.getClosedAt() != null);
@@ -466,18 +455,18 @@ public class Phase3GeneralLedgerManagerTest extends BaseTestClass {
     void should_CarryForwardBalancesToNextMonth_When_AccountsAreClosed() {
         // Given: 마감된 계정들이 존재함
         setupMultipleJournalEntries();
-        generalLedgerMapper.closeGeneralLedgerAccounts(TEST_COMPANY_ID, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+        generalLedgerMapper.closeGeneralLedgerAccounts(testCompanyId, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
 
         // When: 다음 월로 잔액 이월
         int carriedForwardCount = generalLedgerMapper.carryForwardBalances(
-                TEST_COMPANY_ID, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+                testCompanyId, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
 
         // Then: 이월된 계정들의 기초잔액이 정확해야 함
         assertThat(carriedForwardCount).isGreaterThan(0);
 
         // 이월된 계정 확인 (다음 월)
         List<GeneralLedger> nextMonthAccounts = generalLedgerMapper.findGeneralLedgerAccounts(
-                TEST_COMPANY_ID, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH + 1, null, null);
+                testCompanyId, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH + 1, null, null);
 
         assertThat(nextMonthAccounts).isNotEmpty();
         assertThat(nextMonthAccounts).allMatch(account -> !account.getIsClosed());
@@ -499,11 +488,11 @@ public class Phase3GeneralLedgerManagerTest extends BaseTestClass {
 
         // When: 특정 계정의 GL 상세 내역 조회 (복합키 사용으로 계정 존재만 확인)
         GeneralLedger cashGL = generalLedgerMapper.findGeneralLedgerAccount(
-                TEST_COMPANY_ID, uniqueAccountPrefix + "1000", TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+                testCompanyId, generateAccountCode(AccountCodeConfig.Codes.CASH), TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
 
         // Then: GL 계정이 존재하고 거래 내역이 반영되어야 함
         assertThat(cashGL).isNotNull();
-        assertThat(cashGL.getAccountCode()).isEqualTo(uniqueAccountPrefix + "1000");
+        assertThat(cashGL.getAccountCode()).isEqualTo(generateAccountCode(AccountCodeConfig.Codes.CASH));
         assertThat(cashGL.getPeriodCreditAmount()).isGreaterThan(BigDecimal.ZERO);
     }
 
@@ -516,13 +505,13 @@ public class Phase3GeneralLedgerManagerTest extends BaseTestClass {
 
         // When: 현금흐름표 데이터 조회
         List<Map<String, Object>> cashFlowData = generalLedgerMapper.getCashFlowData(
-                TEST_COMPANY_ID, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+                testCompanyId, TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
 
         // Then: 현금성 자산 계정의 변동이 추적되어야 함
         assertThat(cashFlowData).isNotEmpty();
 
         Map<String, Object> cashFlowRow = cashFlowData.stream()
-                .filter(row -> (uniqueAccountPrefix + "1000").equals(row.get("account_code")))
+                .filter(row -> (generateAccountCode(AccountCodeConfig.Codes.CASH)).equals(row.get("account_code")))
                 .findFirst().orElse(null);
 
         if (cashFlowRow != null) {
@@ -594,7 +583,7 @@ public class Phase3GeneralLedgerManagerTest extends BaseTestClass {
     private void setupRevenueAndExpenseJournalEntries() {
         // 매출 발생 분개
         JournalEntry revenueEntry = JournalEntry.builder()
-                .companyId(TEST_COMPANY_ID)
+                .companyId(testCompanyId)
                 .entryDate(TEST_ENTRY_DATE)
                 .description("현금 매출")
                 .totalAmount(new BigDecimal("500000"))
@@ -607,7 +596,7 @@ public class Phase3GeneralLedgerManagerTest extends BaseTestClass {
                 JournalEntryDetail.builder()
                         .journalEntryId(revenueEntry.getId())
                         .lineNumber(1)
-                        .accountCode(uniqueAccountPrefix + "1000")
+                        .accountCode(generateAccountCode(AccountCodeConfig.Codes.CASH))
                         .accountName("현금")
                         .debitAmount(new BigDecimal("500000"))
                         .creditAmount(BigDecimal.ZERO)
@@ -616,7 +605,7 @@ public class Phase3GeneralLedgerManagerTest extends BaseTestClass {
                 JournalEntryDetail.builder()
                         .journalEntryId(revenueEntry.getId())
                         .lineNumber(2)
-                        .accountCode(uniqueAccountPrefix + "4000")
+                        .accountCode(generateAccountCode(AccountCodeConfig.Codes.SALES_REVENUE))
                         .accountName("매출")
                         .debitAmount(BigDecimal.ZERO)
                         .creditAmount(new BigDecimal("500000"))
@@ -633,14 +622,14 @@ public class Phase3GeneralLedgerManagerTest extends BaseTestClass {
 
     private void setupBalanceSheetJournalEntries() {
         // 필요한 계정과목 생성
-        insertAccountIfNotExists(uniqueAccountPrefix + "1000", "현금", "자산", true);
-        insertAccountIfNotExists(uniqueAccountPrefix + "1200", "사무용품", "자산", true);
-        insertAccountIfNotExists(uniqueAccountPrefix + "2000", "미지급금", "부채", false);
-        insertAccountIfNotExists(uniqueAccountPrefix + "3000", "자본금", "자본", false);
+        createAccountIfNotExists(generateAccountCode(AccountCodeConfig.Codes.CASH), "현금", "자산", true);
+        createAccountIfNotExists(generateAccountCode(AccountCodeConfig.Codes.OFFICE_SUPPLIES), "사무용품", "자산", true);
+        createAccountIfNotExists(generateAccountCode(AccountCodeConfig.Codes.ACCOUNTS_PAYABLE), "미지급금", "부채", false);
+        createAccountIfNotExists(generateAccountCode(AccountCodeConfig.Codes.CAPITAL_STOCK), "자본금", "자본", false);
 
         // 부채 발생 분개 (외상 구매 - 자산으로 처리)
         JournalEntry liabilityEntry = JournalEntry.builder()
-                .companyId(TEST_COMPANY_ID)
+                .companyId(testCompanyId)
                 .entryDate(TEST_ENTRY_DATE)
                 .description("외상 사무용품 구매")
                 .totalAmount(new BigDecimal("200000"))
@@ -653,7 +642,7 @@ public class Phase3GeneralLedgerManagerTest extends BaseTestClass {
                 JournalEntryDetail.builder()
                         .journalEntryId(liabilityEntry.getId())
                         .lineNumber(1)
-                        .accountCode(uniqueAccountPrefix + "1200")
+                        .accountCode(generateAccountCode(AccountCodeConfig.Codes.OFFICE_SUPPLIES))
                         .accountName("사무용품")
                         .debitAmount(new BigDecimal("200000"))
                         .creditAmount(BigDecimal.ZERO)
@@ -662,7 +651,7 @@ public class Phase3GeneralLedgerManagerTest extends BaseTestClass {
                 JournalEntryDetail.builder()
                         .journalEntryId(liabilityEntry.getId())
                         .lineNumber(2)
-                        .accountCode(uniqueAccountPrefix + "2000")
+                        .accountCode(generateAccountCode(AccountCodeConfig.Codes.ACCOUNTS_PAYABLE))
                         .accountName("미지급금")
                         .debitAmount(BigDecimal.ZERO)
                         .creditAmount(new BigDecimal("200000"))
@@ -675,7 +664,7 @@ public class Phase3GeneralLedgerManagerTest extends BaseTestClass {
 
         // 자본 계정 분개 (현금 자본금 납입)
         JournalEntry equityEntry = JournalEntry.builder()
-                .companyId(TEST_COMPANY_ID)
+                .companyId(testCompanyId)
                 .entryDate(TEST_ENTRY_DATE)
                 .description("자본금 납입")
                 .totalAmount(new BigDecimal("400000"))
@@ -688,7 +677,7 @@ public class Phase3GeneralLedgerManagerTest extends BaseTestClass {
                 JournalEntryDetail.builder()
                         .journalEntryId(equityEntry.getId())
                         .lineNumber(1)
-                        .accountCode(uniqueAccountPrefix + "1000")
+                        .accountCode(generateAccountCode(AccountCodeConfig.Codes.CASH))
                         .accountName("현금")
                         .debitAmount(new BigDecimal("400000"))
                         .creditAmount(BigDecimal.ZERO)
@@ -697,7 +686,7 @@ public class Phase3GeneralLedgerManagerTest extends BaseTestClass {
                 JournalEntryDetail.builder()
                         .journalEntryId(equityEntry.getId())
                         .lineNumber(2)
-                        .accountCode(uniqueAccountPrefix + "3000")
+                        .accountCode(generateAccountCode(AccountCodeConfig.Codes.CAPITAL_STOCK))
                         .accountName("자본금")
                         .debitAmount(BigDecimal.ZERO)
                         .creditAmount(new BigDecimal("400000"))
@@ -711,9 +700,9 @@ public class Phase3GeneralLedgerManagerTest extends BaseTestClass {
 
     private void setupCashFlowJournalEntries() {
         // 현금 관련 계정 생성
-        insertAccountIfNotExists(uniqueAccountPrefix + "1000", "현금", "자산", true);
-        insertAccountIfNotExists(uniqueAccountPrefix + "1100", "예금", "자산", true);
-        insertAccountIfNotExists(uniqueAccountPrefix + "4000", "매출", "수익", false);
+        createAccountIfNotExists(generateAccountCode(AccountCodeConfig.Codes.CASH), "현금", "자산", true);
+        createAccountIfNotExists(generateAccountCode(AccountCodeConfig.Codes.BANK_DEPOSITS), "예금", "자산", true);
+        createAccountIfNotExists(generateAccountCode(AccountCodeConfig.Codes.SALES_REVENUE), "매출", "수익", false);
         
         setupMultipleJournalEntries();
         setupRevenueAndExpenseJournalEntries();
