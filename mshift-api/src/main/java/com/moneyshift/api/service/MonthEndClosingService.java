@@ -433,7 +433,7 @@ public class MonthEndClosingService {
         Map<String, BigDecimal> assets = new HashMap<>();
         assets.put("현금", new BigDecimal("5000000"));
         assets.put("매출채권", new BigDecimal("3000000"));
-        assets.put("재고자산", new BigDecimal("2000000"));
+        assets.put("재고자산", new BigDecimal("3000000")); // 2M -> 3M으로 증가하여 회계등식 균형 맞춤
         return assets;
     }
 
@@ -447,7 +447,7 @@ public class MonthEndClosingService {
     private Map<String, BigDecimal> createSampleEquityData() {
         Map<String, BigDecimal> equity = new HashMap<>();
         equity.put("자본금", new BigDecimal("5000000"));
-        equity.put("이익잉여금", new BigDecimal("2000000"));
+        equity.put("이익잉여금", new BigDecimal("1900000")); // 당기순이익 1.1M을 고려하여 조정
         return equity;
     }
 

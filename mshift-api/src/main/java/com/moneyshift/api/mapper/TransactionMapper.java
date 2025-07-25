@@ -18,7 +18,7 @@ public interface TransactionMapper {
     @Select({
         "SELECT id, company_id, raw_text, transaction_date, amount,",
         "       final_suggested_tag, final_debit_account, final_credit_account,",
-        "       transaction_type, status",
+        "       transaction_type",
         "FROM transactions",
         "WHERE id = #{id}"
     })
@@ -30,7 +30,7 @@ public interface TransactionMapper {
     @Select({
         "SELECT id, company_id, raw_text, transaction_date, amount,",
         "       final_suggested_tag, final_debit_account, final_credit_account,",
-        "       transaction_type, status",
+        "       transaction_type",
         "FROM transactions",
         "WHERE company_id = #{companyId}",
         "ORDER BY transaction_date DESC, id DESC",
@@ -48,7 +48,7 @@ public interface TransactionMapper {
     @Select({
         "SELECT id, company_id, raw_text, transaction_date, amount,",
         "       final_suggested_tag, final_debit_account, final_credit_account,",
-        "       transaction_type, status",
+        "       transaction_type",
         "FROM transactions",
         "WHERE company_id = #{companyId}",
         "AND transaction_date BETWEEN #{startDate} AND #{endDate}",
@@ -66,7 +66,7 @@ public interface TransactionMapper {
     @Select({
         "SELECT id, company_id, raw_text, transaction_date, amount,",
         "       final_suggested_tag, final_debit_account, final_credit_account,",
-        "       transaction_type, status",
+        "       transaction_type",
         "FROM transactions",
         "WHERE company_id = #{companyId}",
         "AND final_suggested_tag IS NOT NULL",
