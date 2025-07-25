@@ -128,7 +128,7 @@ public class JournalEntryController {
     @GetMapping
     public ResponseEntity<Map<String, Object>> getJournalEntries(
             @Parameter(description = "회사 ID")
-            @RequestParam(required = false) Long companyId,
+            @RequestParam(required = false) String companyId,
             @Parameter(description = "분개 상태 (DRAFT, APPROVED, POSTED)")
             @RequestParam(required = false) String status,
             @Parameter(description = "검색어 (적요 또는 계정명)")

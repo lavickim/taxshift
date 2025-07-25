@@ -213,7 +213,7 @@ public class Phase4JournalEntryManagerTest extends BaseTestClass {
                 .map(JournalEntryDetail::getAccountCode)
                 .collect(java.util.stream.Collectors.toSet());
         
-        assertThat(accountCodes).contains("5000", "1000"); // 사무용품비, 현금
+        assertThat(accountCodes).contains(uniqueAccountPrefix + "5000", uniqueAccountPrefix + "1000"); // 사무용품비, 현금
     }
 
     @Test
@@ -414,9 +414,13 @@ public class Phase4JournalEntryManagerTest extends BaseTestClass {
         // Given: 여러 회사의 분개 생성
         processTransactionToJournalEntry(testTransactionRequest);
         
+        // Create another test company for comparison
+        String anotherCompanyId = java.util.UUID.randomUUID().toString();
+        setupTestCompanyWithId(anotherCompanyId);
+        
         TransactionToJournalRequest anotherCompanyRequest = TransactionToJournalRequest.builder()
                 .transactionId(12347L)
-                .companyId("another-company")
+                .companyId(anotherCompanyId)
                 .transactionDate(TEST_ENTRY_DATE)
                 .description("다른 회사 거래")
                 .amount(new BigDecimal("50000"))
@@ -576,6 +580,8 @@ public class Phase4JournalEntryManagerTest extends BaseTestClass {
                     .build();
 
         } catch (Exception e) {
+            System.err.println("분개 생성 중 오류 발생: " + e.getMessage());
+            e.printStackTrace();
             return JournalEntryResponse.builder()
                     .success(false)
                     .message("분개 생성 실패: " + e.getMessage())
@@ -584,13 +590,15 @@ public class Phase4JournalEntryManagerTest extends BaseTestClass {
     }
 
     private List<JournalEntryDetail> createJournalEntryDetails(JournalEntry journalEntry, TransactionToJournalRequest request) {
-        // 간단한 규칙 기반 계정과목 매핑
-        String debitAccount = "5000"; // 기본적으로 비용 계정
-        String creditAccount = "1000"; // 기본적으로 현금 계정
+        // 간단한 규칙 기반 계정과목 매핑 (prefix 사용)
+        String debitAccount = uniqueAccountPrefix + "5000"; // 기본적으로 비용 계정 (사무용품비)
+        String creditAccount = uniqueAccountPrefix + "1000"; // 기본적으로 현금 계정
 
         // 태그나 카테고리에 따른 매핑
         if (request.getTags().contains("커피") || request.getTags().contains("음료")) {
-            debitAccount = "5100"; // 접대비
+            debitAccount = uniqueAccountPrefix + "5100"; // 접대비 계정 필요시 추가 생성
+            // 접대비 계정도 생성
+            insertAccountIfNotExists(uniqueAccountPrefix + "5100", "접대비", "비용", true);
         }
 
         return Arrays.asList(
@@ -616,7 +624,10 @@ public class Phase4JournalEntryManagerTest extends BaseTestClass {
     }
 
     private String getAccountNameByCode(String accountCode) {
-        switch (accountCode) {
+        // prefix를 제거하고 마지막 4자리로 판단
+        String baseCode = accountCode.length() > 4 ? accountCode.substring(accountCode.length() - 4) : accountCode;
+        
+        switch (baseCode) {
             case "1000": return "현금";
             case "5000": return "사무용품비";
             case "5100": return "접대비";
@@ -701,21 +712,21 @@ public class Phase4JournalEntryManagerTest extends BaseTestClass {
     }
 
     private List<JournalEntry> findJournalEntriesByCompany(String companyId) {
-        // String companyId를 Long으로 변환 (실제 구현에서는 다른 방식 사용)
+        // companyId를 String UUID로 사용
         return journalEntryMapper.findJournalEntries(
-                1L, null, null, null, null, 1000, 0);
+                companyId, null, null, null, null, 1000, 0);
     }
 
     private List<JournalEntry> findJournalEntriesByDateRange(String companyId, LocalDate startDate, LocalDate endDate) {
-        // String companyId를 Long으로 변환 (실제 구현에서는 다른 방식 사용)
+        // companyId를 String UUID로 사용
         return journalEntryMapper.findJournalEntries(
-                1L, null, null, startDate, endDate, 1000, 0);
+                companyId, null, null, startDate, endDate, 1000, 0);
     }
 
     private List<JournalEntry> searchJournalEntriesByKeyword(String companyId, String keyword) {
-        // String companyId를 Long으로 변환 (실제 구현에서는 다른 방식 사용)
+        // companyId를 String UUID로 사용
         return journalEntryMapper.findJournalEntries(
-                1L, null, keyword, null, null, 1000, 0);
+                companyId, null, keyword, null, null, 1000, 0);
     }
 
     private void insertJournalEntryAuditLog(Long journalEntryId, String actionType, 

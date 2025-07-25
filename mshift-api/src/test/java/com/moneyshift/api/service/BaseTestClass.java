@@ -57,6 +57,25 @@ public abstract class BaseTestClass {
     }
 
     /**
+     * 특정 ID로 테스트용 회사 설정
+     */
+    protected void setupTestCompanyWithId(String companyId) {
+        // 테스트용 회사가 이미 존재하는지 확인
+        String checkSql = "SELECT COUNT(*) FROM companies WHERE id = ?::uuid";
+        Integer count = jdbcTemplate.queryForObject(checkSql, Integer.class, companyId);
+        
+        if (count == null || count == 0) {
+            // 고유한 사업자등록번호 생성 (UUID 기반)
+            String uniqueBusinessNumber = companyId.substring(0, 8) + "-" + companyId.substring(9, 13);
+            
+            // 테스트용 회사 생성
+            String insertSql = "INSERT INTO companies (id, company_name, business_registration_number, taxpayer_type) " +
+                             "VALUES (?::uuid, ?, ?, 'CORPORATION') ON CONFLICT (id) DO NOTHING";
+            jdbcTemplate.update(insertSql, companyId, "테스트 회사 " + companyId.substring(0, 8), uniqueBusinessNumber);
+        }
+    }
+
+    /**
      * 테스트 데이터 정리
      * 테스트 완료 후 생성된 데이터를 안전하게 정리합니다.
      */
@@ -99,7 +118,7 @@ public abstract class BaseTestClass {
         
         if (count == null || count == 0) {
             String insertSql = "INSERT INTO chart_of_accounts (account_code, account_name, account_type, is_debit_normal, is_active, display_order) " +
-                             "VALUES (?, ?, ?, ?, true, 1) ON CONFLICT (account_code) DO NOTHING";
+                             "VALUES (?, ?, ?::account_type_enum, ?, true, 1)";
             jdbcTemplate.update(insertSql, accountCode, accountName, accountType, isDebitNormal);
         }
     }

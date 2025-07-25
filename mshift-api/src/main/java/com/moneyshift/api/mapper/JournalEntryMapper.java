@@ -54,7 +54,7 @@ public interface JournalEntryMapper {
      * @param offset 시작 위치
      * @return 분개 목록
      */
-    List<JournalEntry> findJournalEntries(@Param("companyId") Long companyId,
+    List<JournalEntry> findJournalEntries(@Param("companyId") String companyId,
                                          @Param("status") String status,
                                          @Param("search") String search,
                                          @Param("startDate") LocalDate startDate,
@@ -71,7 +71,7 @@ public interface JournalEntryMapper {
      * @param endDate 종료 날짜 (선택적)
      * @return 총 개수
      */
-    Long countJournalEntries(@Param("companyId") Long companyId,
+    Long countJournalEntries(@Param("companyId") String companyId,
                            @Param("status") String status,
                            @Param("search") String search,
                            @Param("startDate") LocalDate startDate,

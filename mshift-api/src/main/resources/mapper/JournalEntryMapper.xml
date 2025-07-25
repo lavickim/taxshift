@@ -168,16 +168,23 @@
 
     <!-- 분개 균형 검증 -->
     <select id="validateJournalEntryBalance" parameterType="java.lang.Long" resultType="java.util.Map">
+        WITH balance_check AS (
+            SELECT 
+                COALESCE(SUM(debit_amount), 0) as totalDebit,
+                COALESCE(SUM(credit_amount), 0) as totalCredit,
+                COUNT(*) as detail_count
+            FROM journal_entry_details 
+            WHERE journal_entry_id = #{journalEntryId}
+        )
         SELECT 
-            COALESCE(SUM(debit_amount), 0) as totalDebit,
-            COALESCE(SUM(credit_amount), 0) as totalCredit,
+            totalDebit,
+            totalCredit,
             CASE 
-                WHEN COALESCE(SUM(debit_amount), 0) = COALESCE(SUM(credit_amount), 0) 
-                THEN true 
+                WHEN detail_count = 0 THEN false
+                WHEN totalDebit = totalCredit THEN true 
                 ELSE false 
             END as isBalanced
-        FROM journal_entry_details 
-        WHERE journal_entry_id = #{journalEntryId}
+        FROM balance_check
     </select>
 
     <!-- 거래 ID로 분개 조회 (중복 방지) -->
