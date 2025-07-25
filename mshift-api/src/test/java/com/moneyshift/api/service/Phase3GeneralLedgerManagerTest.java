@@ -544,7 +544,7 @@ public class Phase3GeneralLedgerManagerTest {
 
         // When: 특정 계정의 GL 상세 내역 조회 (복합키 사용으로 계정 존재만 확인)
         GeneralLedger cashGL = generalLedgerMapper.findGeneralLedgerAccount(
-                TEST_COMPANY_ID, "1000", TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
+                TEST_COMPANY_ID, uniqueAccountPrefix + "1000", TEST_FISCAL_YEAR, TEST_FISCAL_MONTH);
 
         // Then: GL 계정이 존재하고 거래 내역이 반영되어야 함
         assertThat(cashGL).isNotNull();
