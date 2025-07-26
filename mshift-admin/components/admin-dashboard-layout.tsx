@@ -12,11 +12,12 @@ import { TestAndRuleExpansion } from "@/components/test-and-rule-expansion";
 import DynamicSystemMonitoring from "@/components/dynamic-system-monitoring";
 import { AccountingEngineManagement } from "@/components/accounting-engine-management";
 import { RegexPreprocessingManagement } from "@/components/regex-preprocessing-management";
+import { IntegratedTransactionTest } from "@/components/integrated-transaction-test";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, Clock, Rocket, BarChart3, Settings, Sparkles, Hash, Cpu, Building, Monitor, Calculator, Regex } from "lucide-react";
+import { CheckCircle, Clock, Rocket, BarChart3, Settings, Sparkles, Hash, Cpu, Building, Monitor, Calculator, Regex, Zap } from "lucide-react";
 
 export function AdminDashboardLayout() {
   const [activeTab, setActiveTab] = useState("home");
@@ -74,6 +75,14 @@ export function AdminDashboardLayout() {
             >
               <Regex className="mr-2 h-4 w-4" />
               정규식 전처리 관리
+            </Button>
+            <Button
+              variant={activeTab === "integrated-test" ? "secondary" : "ghost"}
+              className="w-full justify-start"
+              onClick={() => setActiveTab("integrated-test")}
+            >
+              <Zap className="mr-2 h-4 w-4" />
+              통합 처리 테스트
             </Button>
             <Button
               variant={activeTab === "test-and-rule-expansion" ? "secondary" : "ghost"}
@@ -213,6 +222,18 @@ export function AdminDashboardLayout() {
           {activeTab === "keyword-rules" && <TagMappingManagement />}
           
           {activeTab === "regex-preprocessing" && <RegexPreprocessingManagement />}
+          
+          {activeTab === "integrated-test" && (
+            <div className="space-y-6">
+              <div>
+                <h1 className="text-3xl font-bold">통합 거래 처리 테스트</h1>
+                <p className="text-muted-foreground mt-2">
+                  정규식 전처리 + 키워드 추출 통합 파이프라인 성능 테스트
+                </p>
+              </div>
+              <IntegratedTransactionTest />
+            </div>
+          )}
           
           {activeTab === "test-and-rule-expansion" && <TestAndRuleExpansion />}
           
