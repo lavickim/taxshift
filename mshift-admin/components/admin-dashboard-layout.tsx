@@ -11,11 +11,12 @@ import TagMappingManagement from "@/components/tag-mapping-management";
 import { TestAndRuleExpansion } from "@/components/test-and-rule-expansion";
 import DynamicSystemMonitoring from "@/components/dynamic-system-monitoring";
 import { AccountingEngineManagement } from "@/components/accounting-engine-management";
+import { RegexPreprocessingManagement } from "@/components/regex-preprocessing-management";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, Clock, Rocket, BarChart3, Settings, Sparkles, Hash, Cpu, Building, Monitor, Calculator } from "lucide-react";
+import { CheckCircle, Clock, Rocket, BarChart3, Settings, Sparkles, Hash, Cpu, Building, Monitor, Calculator, Regex } from "lucide-react";
 
 export function AdminDashboardLayout() {
   const [activeTab, setActiveTab] = useState("home");
@@ -67,12 +68,20 @@ export function AdminDashboardLayout() {
               룰엔진
             </Button>
             <Button
+              variant={activeTab === "regex-preprocessing" ? "secondary" : "ghost"}
+              className="w-full justify-start"
+              onClick={() => setActiveTab("regex-preprocessing")}
+            >
+              <Regex className="mr-2 h-4 w-4" />
+              정규식 전처리 관리
+            </Button>
+            <Button
               variant={activeTab === "test-and-rule-expansion" ? "secondary" : "ghost"}
               className="w-full justify-start"
               onClick={() => setActiveTab("test-and-rule-expansion")}
             >
               <CheckCircle className="mr-2 h-4 w-4" />
-              테스트 및 룰확장
+              테스트/키워드 확장
             </Button>
             <Button
               variant={activeTab === "llm" ? "secondary" : "ghost"}
@@ -202,6 +211,8 @@ export function AdminDashboardLayout() {
           {activeTab === "data-analysis" && <DataAnalysisContent />}
 
           {activeTab === "keyword-rules" && <TagMappingManagement />}
+          
+          {activeTab === "regex-preprocessing" && <RegexPreprocessingManagement />}
           
           {activeTab === "test-and-rule-expansion" && <TestAndRuleExpansion />}
           

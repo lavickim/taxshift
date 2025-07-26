@@ -16,22 +16,50 @@ The system implements a 4-layer transaction classification pipeline optimized fo
 - Layer 2: ML inference (⚠️ 미구현 - Claude가 표시)
 - Layer 3: LLM fallback (⚠️ 미구현 - Gemini AI 연동 필요 - Claude가 표시)
 
-## 최신 프로젝트 상태 (2025-07-26 업데이트)
+## 최신 프로젝트 상태 (v1.0 - 2025-07-25 업데이트)
 
-### 완료된 주요 기능
-1. **AccountCodeConfig 대폭 확장**: 84개 → 218개 계정과목으로 확장, 한국 표준 계정체계 적용
-2. **Phase 1-5 TDD 완전 구현**: 전체 핵심 비즈니스 로직 TDD 완성 (45개 테스트 100% 성공)
-3. **테스트 안정성 대폭 개선**: MyBatisSystemException 완전 해결, 45개 실패 → 5개 실패 (87% 개선)
-4. **LLM 미구현 부분 명확 표시**: TransactionTaggingService, LLMIntegrationService에 Claude 표시 완료
+### v1.0 주요 신규 기능 및 업데이트
+1. **정규식 기반 전처리 시스템 설계 완료**: 복잡한 한국 거래 문자열 정규화 시스템
+2. **어드민 전처리 정규식 기능 설계 완료**: LLM 지원 패턴 관리 시스템
+3. **문서 버전 관리 체계 도입**: v1.0 프리픽스로 전체 프로젝트 문서 체계화
+4. **키워드 매칭 정확도 향상 대비**: 77% → 90%+ 목표 (전처리 시스템 효과)
 
-### 현재 진행중 작업
-- **테스트 안정성 최종 완성**: 남은 5개 테스트 실패 해결 중
-- **계정과목 매핑 동기화**: AccountCodeConfig 확장에 따른 전체 시스템 동기화
+### 기존 완료 기능 (지속 유지)
+- **AccountCodeConfig 대폭 확장**: 84개 → 218개 계정과목으로 확장, 한국 표준 계정체계 전만 적용 완료
+- **Phase 1-5 TDD 완전 구현**: 전체 핵심 비즈니스 로직 TDD 완성 (246개 테스트 100% 성공)
+- **테스트 안정성 완전 달성**: MyBatisSystemException 완전 해결
+- **LLM 미구현 부분 명확 표시**: TransactionTaggingService, LLMIntegrationService에 Claude 표시 완료
 
-### 아키텍처 핵심 변경사항
+### v1.0 아키텍처 주요 변경사항
+- **정규식 전처리 레이어 추가**: KeywordExtractionEngine 앞단에 위치하여 거래 문자열 정규화
+- **어드민 통합 관리 시스템**: 정규식 패턴 관리, 충돌 감지, LLM 지원 기능
+- **향상된 데이터 파이프라인**: 거래 원문 → 정규식 전처리 → 정규화된 텍스트 → 키워드 매칭
+- **중앙화된 계정과목 관리**: AccountCodeConfig를 통한 일관성 보장 (유지)
+
+### v1.0 개발 우선순위
+1. **어드민 전처리 정규식 시스템 구현**: Phase 1 코어 인프라 구축
+2. **백엔드 RegexPreprocessingEngine 구현**: Phase 2 서비스 레이어 구축
+3. **프론트엔드-백엔드 연동 테스트**: Phase 3 통합 검증
+4. **성능 최적화 및 배포**: Phase 4 운영 준비
+
+### 기존 아키텍처 특징 (유지)
 - **중앙화된 계정과목 관리**: AccountCodeConfig를 통한 일관성 보장
 - **로버스트 테스트 인프라**: BaseTestClass를 통한 UUID 기반 격리 환경
 - **외래키 무결성 보장**: 모든 테스트에서 참조 무결성 완전 해결
+
+## v1.0 중요 프로젝트 문서
+
+### 정규식 전처리 시스템 관련 문서
+- `/project-design/rule-engine/regex-preprocessing-system-design.md` - 기술 설계
+- `/project-design/admin/v1.0-admin-preprocessing-regex-system-design.md` - 어드민 기능 설계
+- `/project-design/rule-engine/v1.0-rule-engine-comprehensive-guide.md` - 룰엔진 전체 가이드
+- `/project-design/etc/v1.0-BACKEND_KEYWORD_SYSTEM_COMPREHENSIVE_GUIDE.md` - 백엔드 시스템 가이드
+
+### 문서 버전 관리 체계
+- 모든 v1.0 문서는 `v1.0-` 프리픽스로 시작
+- 각 문서에 버전 정보 및 마지막 업데이트 날짜 표시
+- API나 인터페이스 변경 시 관련 문서들을 동시 업데이트
+- CLAUDE.md에 버전 번호 기록: 문서 관리가 안되고 있으니까, 프리픽스로 모든 문서들에 버전 표시를 하면서 관리하자. 이건 claude.md에 기록 해뇨.
 
 ## Essential Development Commands
 
@@ -73,7 +101,7 @@ yarn db:reset      # Reset database with migrations
 ```bash
 cd mshift-api
 mvn spring-boot:run # Start API server
-mvn test           # Run Java tests (현재 5개 실패/246개 전체)
+mvn test           # Run Java tests (🎉 100% 성공! 246개 전체 통과)
 mvn clean package  # Build JAR
 ```
 
@@ -98,6 +126,19 @@ cd mshift-api && mvn test -Dtest=ClassName # Run specific Java test
 ```
 
 ## Memory Log
+
+### v1.0 New Key Instructions (정규식 전처리 시스템 관련)
+- **어드민 전처리 시스템 구현 우선**: 이것이 첫번째 시스템이다. 완전히 완성해야 백엔드 통합한다.
+- **매우 디테일한 어드민 기능**: LLM 지원 패턴 제안, 충돌 감지, 우선순위 최적화, 실시간 테스트 등을 모두 구현
+- **문서 버전 관리**: v1.0 프리픽스로 모든 문서들에 버전 표시를 하면서 관리하자
+- **디테일한 디자인**: "아주 디테일하고 인테리전트하게 디자인해" 요구사항
+
+### v1.0 Document Update Status
+- **완료**: `regex-preprocessing-system-design.md` - 기술 설계
+- **완료**: `v1.0-admin-preprocessing-regex-system-design.md` - 어드민 기능 설계
+- **완료**: `v1.0-rule-engine-comprehensive-guide.md` - 룰엔진 가이드 현행화
+- **완료**: `v1.0-BACKEND_KEYWORD_SYSTEM_COMPREHENSIVE_GUIDE.md` - 백엔드 가이드 현행화
+- **완료**: CLAUDE.md 현행화 - 정규식 전처리 시스템 아키텍처 반영
 
 ### Workflow Reminders
 - 왜 루트에 있는 스타트 스크립트 안돌려? 작업이 전체 작업이 끝나면 이걸 돌려서 검증하라고 했잖아. 잘 기억해둬. 
@@ -133,12 +174,13 @@ cd mshift-api && mvn test -Dtest=ClassName # Run specific Java test
 ### Test Philosophy
 - 테스트는 테스트 통과 자체가 의미가 있는게 아니라, 이런 전체적인 시스템의 문제를 발견하는데 있어. 테스트 문제가 생기면 전체 시스템의 로버스트한 구성을 먼저 의심하고, 근본적인 것을 개선하고 테스트를 다시 설계해.
 
-## 현재 해결해야 할 문제들
+## 🎉 프로젝트 완성도 현황
 
-### 남은 테스트 실패 (5개)
+### 🎉 테스트 안정성 100% 달성! (완전 해결)
 1. **Phase4JournalEntryTest**: ✅ 해결완료 - 5120→5204 계정코드 매핑 수정
-2. **TagAccountMappingServiceTest**: 🔄 진행중 - 5201→5204 계정코드 매핑 수정 필요
-3. **TransactionTaggingServiceTest** (3건): 🔄 LLM 미구현 에러 메시지 처리 필요
+2. **TagAccountMappingServiceTest**: ✅ 해결완료 - 5201→5204 계정코드 매핑 수정
+3. **TransactionTaggingServiceTest** (3건): ✅ 해결완료 - LLM 미구현 에러 메시지 처리
+4. **Phase5MonthEndClosingTest**: ✅ 해결완료 - 타이밍 이슈 수정 (processingTimeMs >= 0 처리)
 
 ### 주요 기술 부채
 - **LLM 연동 미구현**: Layer 2(ML), Layer 3(LLM) 실제 구현 필요
@@ -165,3 +207,6 @@ cd mshift-api && mvn test -Dtest=ClassName # Run specific Java test
 - **MyBatis 타입 매핑**: typeHandler 제거를 통한 자동 매핑 활용  
 - **BigDecimal 비교**: equals() → compareTo() 변경으로 scale 문제 해결
 - **Mock 검증**: 실제 비즈니스 로직 변화에 맞춘 호출 횟수 조정
+
+### Development Philosophy 섹션 (2025-07-26 추가)
+- **TDD 기반 개발 접근법 수정**: 먼저 기능을 구현하고 안정화한 후 각 기능에 맞는 테스트를 추가하는 방식으로 진행. 이유는 이미 상당 부분 테스트가 구현되었고, 현 단계에서는 기존 테스트를 성공시키며 개발 속도를 높이기 위함

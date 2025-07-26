@@ -208,3 +208,64 @@ enum JournalEntryApprovalStatus {
 
   @@map("journal_entry_approval_status_enum")
 }
+
+// === 정규식 전처리 시스템 모델 ===
+
+model RegexPreprocessingRule {
+  id              BigInt   @id @default(autoincrement())
+  ruleName        String   @map("rule_name") @db.VarChar(100)
+  description     String?
+  category        String   @db.VarChar(50)
+  inputPattern    String   @map("input_pattern") @db.Text
+  outputTemplate  String   @map("output_template") @db.Text
+  priority        Int      @default(100)
+  isActive        Boolean  @default(true) @map("is_active")
+  metadataTags    Json?    @map("metadata_tags")
+  testCases       Json?    @map("test_cases")
+  usageCount      BigInt   @default(0) @map("usage_count")
+  successRate     Decimal? @map("success_rate") @db.Decimal(5, 2)
+  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  category_ref    RegexPreprocessingCategory @relation(fields: [category], references: [categoryName], onDelete: NoAction, onUpdate: NoAction)
+  processingLogs  RegexPreprocessingLog[]
+
+  @@index([category], map: "idx_regex_rules_category")
+  @@index([priority], map: "idx_regex_rules_priority")
+  @@index([isActive], map: "idx_regex_rules_active")
+  @@map("regex_preprocessing_rules")
+}
+
+model RegexPreprocessingCategory {
+  id           BigInt  @id @default(autoincrement())
+  categoryName String  @unique @map("category_name") @db.VarChar(50)
+  description  String?
+  displayOrder Int     @default(0) @map("display_order")
+  iconName     String? @map("icon_name") @db.VarChar(50)
+  colorHex     String? @map("color_hex") @db.VarChar(7)
+  isActive     Boolean @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  rules        RegexPreprocessingRule[]
+
+  @@map("regex_preprocessing_categories")
+}
+
+model RegexPreprocessingLog {
+  id                 BigInt   @id @default(autoincrement())
+  originalText       String   @map("original_text") @db.Text
+  normalizedText     String?  @map("normalized_text") @db.Text
+  appliedRuleId      BigInt?  @map("applied_rule_id")
+  appliedRuleName    String?  @map("applied_rule_name") @db.VarChar(100)
+  extractedMetadata  Json?    @map("extracted_metadata")
+  processingTimeMs   Int?     @map("processing_time_ms")
+  success            Boolean  @default(true)
+  errorMessage       String?  @map("error_message") @db.Text
+  createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  appliedRule        RegexPreprocessingRule? @relation(fields: [appliedRuleId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([createdAt], map: "idx_regex_logs_created_at")
+  @@index([appliedRuleId], map: "idx_regex_logs_rule_id")
+  @@map("regex_preprocessing_logs")
+}
