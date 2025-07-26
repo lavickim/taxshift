@@ -2,22 +2,20 @@
 
 import { useState } from 'react';
 import { ThemeSwitcher } from "@/components/theme-switcher";
-import { AdminTestDashboard } from "@/components/admin-test-dashboard";
 
 import { DataAnalysisContent } from "@/components/data-analysis-content";
 import { LLMManagement } from "@/components/llm-management";
-import { GuideContent } from "@/components/guide-content";
 import TagMappingManagement from "@/components/tag-mapping-management";
 import { TestAndRuleExpansion } from "@/components/test-and-rule-expansion";
-import DynamicSystemMonitoring from "@/components/dynamic-system-monitoring";
 import { AccountingEngineManagement } from "@/components/accounting-engine-management";
 import { RegexPreprocessingManagement } from "@/components/regex-preprocessing-management";
 import { IntegratedTransactionTest } from "@/components/integrated-transaction-test";
+import { RealTimeSystemDashboard } from "@/components/real-time-system-dashboard";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, Clock, Rocket, BarChart3, Settings, Sparkles, Hash, Cpu, Building, Monitor, Calculator, Regex, Zap } from "lucide-react";
+import { CheckCircle, Clock, Rocket, BarChart3, Sparkles, Hash, Calculator, Regex, Zap, Activity, TrendingUp, AlertCircle, Cpu, Database, Gauge } from "lucide-react";
 
 export function AdminDashboardLayout() {
   const [activeTab, setActiveTab] = useState("home");
@@ -61,52 +59,20 @@ export function AdminDashboardLayout() {
             </Button>
 
             <Button
-              variant={activeTab === "keyword-rules" ? "secondary" : "ghost"}
-              className="w-full justify-start"
-              onClick={() => setActiveTab("keyword-rules")}
-            >
-              <Hash className="mr-2 h-4 w-4" />
-              룰엔진
-            </Button>
-            <Button
               variant={activeTab === "regex-preprocessing" ? "secondary" : "ghost"}
               className="w-full justify-start"
               onClick={() => setActiveTab("regex-preprocessing")}
             >
               <Regex className="mr-2 h-4 w-4" />
-              정규식 전처리 관리
+              정규식전처리엔진
             </Button>
             <Button
-              variant={activeTab === "integrated-test" ? "secondary" : "ghost"}
+              variant={activeTab === "keyword-rules" ? "secondary" : "ghost"}
               className="w-full justify-start"
-              onClick={() => setActiveTab("integrated-test")}
+              onClick={() => setActiveTab("keyword-rules")}
             >
-              <Zap className="mr-2 h-4 w-4" />
-              통합 처리 테스트
-            </Button>
-            <Button
-              variant={activeTab === "test-and-rule-expansion" ? "secondary" : "ghost"}
-              className="w-full justify-start"
-              onClick={() => setActiveTab("test-and-rule-expansion")}
-            >
-              <CheckCircle className="mr-2 h-4 w-4" />
-              테스트/키워드 확장
-            </Button>
-            <Button
-              variant={activeTab === "llm" ? "secondary" : "ghost"}
-              className="w-full justify-start"
-              onClick={() => setActiveTab("llm")}
-            >
-              <Sparkles className="mr-2 h-4 w-4" />
-              LLM 관리
-            </Button>
-            <Button
-              variant={activeTab === "system-monitoring" ? "secondary" : "ghost"}
-              className="w-full justify-start"
-              onClick={() => setActiveTab("system-monitoring")}
-            >
-              <Monitor className="mr-2 h-4 w-4" />
-              시스템 모니터링
+              <Hash className="mr-2 h-4 w-4" />
+              키워드처리엔진
             </Button>
             <Button
               variant={activeTab === "accounting-engine" ? "secondary" : "ghost"}
@@ -117,105 +83,35 @@ export function AdminDashboardLayout() {
               복식부기엔진
             </Button>
             <Button
-              variant={activeTab === "admin-test" ? "secondary" : "ghost"}
+              variant={activeTab === "test-and-rule-expansion" ? "secondary" : "ghost"}
               className="w-full justify-start"
-              onClick={() => setActiveTab("admin-test")}
+              onClick={() => setActiveTab("test-and-rule-expansion")}
             >
-              <Settings className="mr-2 h-4 w-4" />
-              관리자 테스트
+              <CheckCircle className="mr-2 h-4 w-4" />
+              테스트/엔진데이터 확장
+            </Button>
+            <Button
+              variant={activeTab === "integrated-test" ? "secondary" : "ghost"}
+              className="w-full justify-start"
+              onClick={() => setActiveTab("integrated-test")}
+            >
+              <Zap className="mr-2 h-4 w-4" />
+              통합 처리 테스트
+            </Button>
+            <Button
+              variant={activeTab === "llm" ? "secondary" : "ghost"}
+              className="w-full justify-start"
+              onClick={() => setActiveTab("llm")}
+            >
+              <Sparkles className="mr-2 h-4 w-4" />
+              LLM 관리
             </Button>
           </nav>
         </aside>
 
         {/* 메인 콘텐츠 */}
         <main className="flex-1 p-6">
-          {activeTab === "home" && (
-            <div className="space-y-6">
-              <div>
-                <h1 className="text-3xl font-bold">MoneyShift AI 관리자 대시보드</h1>
-                <p className="text-muted-foreground mt-2">
-                  데이터 분석, 관리를 위한 통합 관리 시스템
-                </p>
-              </div>
-              
-              {/* 상태 카드들 */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">수집 데이터 현황</CardTitle>
-                    <BarChart3 className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold text-blue-600">준비</div>
-                    <Badge variant="secondary" className="mt-2">
-                      <Clock className="mr-1 h-3 w-3" />
-                      대기 중
-                    </Badge>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">규칙 엔진</CardTitle>
-                    <Cpu className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold text-purple-600">활성</div>
-                    <Badge variant="secondary" className="mt-2">
-                      <CheckCircle className="mr-1 h-3 w-3" />
-                      정상 운영
-                    </Badge>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">시스템 상태</CardTitle>
-                    <Settings className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold text-green-600">정상</div>
-                    <Badge variant="secondary" className="mt-2">
-                      <CheckCircle className="mr-1 h-3 w-3" />
-                      모든 서비스 정상
-                    </Badge>
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* 최근 활동 */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>최근 활동</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex items-center space-x-4">
-                      <div className="flex-shrink-0">
-                        <CheckCircle className="h-4 w-4 text-green-500" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                          Docker PostgreSQL 연결 완료
-                        </p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                          데이터베이스가 성공적으로 연결되었습니다.
-                        </p>
-                      </div>
-                      <div className="flex-shrink-0 text-sm text-gray-500">
-                        방금 전
-                      </div>
-                    </div>
-                    
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* 시스템 PRD */}
-              <GuideContent />
-            </div>
-          )}
+          {activeTab === "home" && <RealTimeSystemDashboard />}
           
           {activeTab === "data-analysis" && <DataAnalysisContent />}
 
@@ -239,21 +135,7 @@ export function AdminDashboardLayout() {
           
           {activeTab === "llm" && <LLMManagement />}
           
-          {activeTab === "system-monitoring" && (
-            <div className="space-y-6">
-              <div>
-                <h1 className="text-3xl font-bold">시스템 모니터링</h1>
-                <p className="text-muted-foreground mt-2">
-                  동적 키워드 시스템 성능 모니터링 및 브랜드 사용 통계 분석
-                </p>
-              </div>
-              <DynamicSystemMonitoring />
-            </div>
-          )}
-          
           {activeTab === "accounting-engine" && <AccountingEngineManagement />}
-          
-          {activeTab === "admin-test" && <AdminTestDashboard />}
         </main>
       </div>
     </main>

@@ -131,7 +131,7 @@
   },
   "permissions": {
     "allow": [
-      "Bash(yarn db:push:*)"
+      "Bash(git add:*)"
     ],
     "deny": []
   }

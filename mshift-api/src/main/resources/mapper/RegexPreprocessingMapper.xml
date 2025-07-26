@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.moneyshift.api.mapper.RegexPreprocessingMapper">
+
+    <!-- 정규식 전처리 규칙 ResultMap -->
+    <resultMap id="RegexPreprocessingRuleResultMap" type="com.moneyshift.api.model.RegexPreprocessingRule">
+        <id property="id" column="id"/>
+        <result property="ruleName" column="rule_name"/>
+        <result property="description" column="description"/>
+        <result property="category" column="category"/>
+        <result property="inputPattern" column="input_pattern"/>
+        <result property="outputTemplate" column="output_template"/>
+        <result property="priority" column="priority"/>
+        <result property="isActive" column="is_active"/>
+        <result property="metadataTags" column="metadata_tags" typeHandler="com.moneyshift.api.config.JsonTypeHandler"/>
+        <result property="testCases" column="test_cases" typeHandler="com.moneyshift.api.config.TestCaseListTypeHandler"/>
+        <result property="usageCount" column="usage_count"/>
+        <result property="successRate" column="success_rate"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <!-- 정규식 전처리 카테고리 ResultMap -->
+    <resultMap id="RegexPreprocessingCategoryResultMap" type="com.moneyshift.api.model.RegexPreprocessingCategory">
+        <id property="id" column="id"/>
+        <result property="categoryName" column="category_name"/>
+        <result property="description" column="description"/>
+        <result property="colorCode" column="color_code"/>
+        <result property="isActive" column="is_active"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <!-- ==================== 규칙 관리 쿼리 ==================== -->
+
+    <!-- 모든 활성 규칙 조회 (우선순위 순) -->
+    <select id="findAllActiveRules" resultMap="RegexPreprocessingRuleResultMap">
+        SELECT id, rule_name, description, category, input_pattern, output_template,
+               priority, is_active, metadata_tags, test_cases, usage_count, 
+               success_rate, created_at, updated_at
+        FROM regex_preprocessing_rules
+        WHERE is_active = true
+        ORDER BY priority DESC, created_at DESC
+    </select>
+
+    <!-- 카테고리별 활성 규칙 조회 -->
+    <select id="findActiveRulesByCategory" resultMap="RegexPreprocessingRuleResultMap">
+        SELECT id, rule_name, description, category, input_pattern, output_template,
+               priority, is_active, metadata_tags, test_cases, usage_count, 
+               success_rate, created_at, updated_at
+        FROM regex_preprocessing_rules
+        WHERE is_active = true AND category = #{category}
+        ORDER BY priority DESC, created_at DESC
+    </select>
+
+    <!-- 규칙 ID로 조회 -->
+    <select id="findById" resultMap="RegexPreprocessingRuleResultMap">
+        SELECT id, rule_name, description, category, input_pattern, output_template,
+               priority, is_active, metadata_tags, test_cases, usage_count, 
+               success_rate, created_at, updated_at
+        FROM regex_preprocessing_rules
+        WHERE id = #{id}
+    </select>
+
+    <!-- 필터링된 규칙 목록 조회 -->
+    <select id="findRulesWithFilters" resultMap="RegexPreprocessingRuleResultMap">
+        SELECT id, rule_name, description, category, input_pattern, output_template,
+               priority, is_active, metadata_tags, test_cases, usage_count, 
+               success_rate, created_at, updated_at
+        FROM regex_preprocessing_rules
+        <where>
+            <if test="category != null and category != ''">
+                AND category = #{category}
+            </if>
+            <if test="isActive != null">
+                AND is_active = #{isActive}
+            </if>
+        </where>
+        <choose>
+            <when test="sortBy == 'priority'">
+                ORDER BY priority DESC, created_at DESC
+            </when>
+            <when test="sortBy == 'usage_count'">
+                ORDER BY usage_count DESC, created_at DESC
+            </when>
+            <when test="sortBy == 'success_rate'">
+                ORDER BY success_rate DESC, created_at DESC
+            </when>
+            <when test="sortBy == 'created_at'">
+                ORDER BY created_at DESC
+            </when>
+            <otherwise>
+                ORDER BY priority DESC, created_at DESC
+            </otherwise>
+        </choose>
+        <if test="limit != null">
+            LIMIT #{limit}
+        </if>
+        <if test="offset != null">
+            OFFSET #{offset}
+        </if>
+    </select>
+
+    <!-- 규칙 개수 조회 -->
+    <select id="countRules" resultType="Long">
+        SELECT COUNT(*)
+        FROM regex_preprocessing_rules
+        <where>
+            <if test="category != null and category != ''">
+                AND category = #{category}
+            </if>
+            <if test="isActive != null">
+                AND is_active = #{isActive}
+            </if>
+        </where>
+    </select>
+
+    <!-- 규칙 생성 -->
+    <insert id="insertRule" parameterType="com.moneyshift.api.model.RegexPreprocessingRule" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO regex_preprocessing_rules (
+            rule_name, description, category, input_pattern, output_template,
+            priority, is_active, metadata_tags, test_cases, usage_count, success_rate
+        ) VALUES (
+            #{ruleName}, #{description}, #{category}, #{inputPattern}, #{outputTemplate},
+            #{priority}, #{isActive}, 
+            #{metadataTags, typeHandler=com.moneyshift.api.config.JsonTypeHandler},
+            #{testCases, typeHandler=com.moneyshift.api.config.TestCaseListTypeHandler},
+            #{usageCount}, #{successRate}
+        )
+    </insert>
+
+    <!-- 규칙 수정 -->
+    <update id="updateRule" parameterType="com.moneyshift.api.model.RegexPreprocessingRule">
+        UPDATE regex_preprocessing_rules
+        SET rule_name = #{ruleName},
+            description = #{description},
+            category = #{category},
+            input_pattern = #{inputPattern},
+            output_template = #{outputTemplate},
+            priority = #{priority},
+            is_active = #{isActive},
+            metadata_tags = #{metadataTags, typeHandler=com.moneyshift.api.config.JsonTypeHandler},
+            test_cases = #{testCases, typeHandler=com.moneyshift.api.config.TestCaseListTypeHandler},
+            success_rate = #{successRate},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+
+    <!-- 규칙 삭제 -->
+    <delete id="deleteRule">
+        DELETE FROM regex_preprocessing_rules WHERE id = #{id}
+    </delete>
+
+    <!-- 규칙 사용 통계 업데이트 -->
+    <update id="updateUsageStats">
+        UPDATE regex_preprocessing_rules
+        SET usage_count = #{usageCount},
+            success_rate = #{successRate},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+
+    <!-- ==================== 카테고리 관리 쿼리 ==================== -->
+
+    <!-- 모든 활성 카테고리 조회 -->
+    <select id="findAllActiveCategories" resultMap="RegexPreprocessingCategoryResultMap">
+        SELECT id, category_name, description, color_code, is_active, created_at
+        FROM regex_preprocessing_categories
+        WHERE is_active = true
+        ORDER BY category_name
+    </select>
+
+    <!-- 카테고리 생성 -->
+    <insert id="insertCategory" parameterType="com.moneyshift.api.model.RegexPreprocessingCategory" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO regex_preprocessing_categories (category_name, description, color_code, is_active)
+        VALUES (#{categoryName}, #{description}, #{colorCode}, #{isActive})
+    </insert>
+
+    <!-- 카테고리 수정 -->
+    <update id="updateCategory" parameterType="com.moneyshift.api.model.RegexPreprocessingCategory">
+        UPDATE regex_preprocessing_categories
+        SET category_name = #{categoryName},
+            description = #{description},
+            color_code = #{colorCode},
+            is_active = #{isActive}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 카테고리 삭제 -->
+    <delete id="deleteCategory">
+        DELETE FROM regex_preprocessing_categories WHERE id = #{id}
+    </delete>
+
+</mapper>

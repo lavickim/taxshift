@@ -62,11 +62,40 @@ The system implements a 4-layer transaction classification pipeline optimized fo
 - **완전한 데이터 파이프라인**: 거래 원문 → 정규식 전처리 → 정규화된 텍스트 → 키워드 매칭
 - **중앙화된 계정과목 관리**: AccountCodeConfig를 통한 일관성 보장 (유지)
 
+### ✅ KeywordExtractionEngine 통합 완료 (2025-07-26 추가)
+
+**🎉 정규식 전처리 시스템과 키워드 추출 엔진 통합 완료**
+
+#### 통합 아키텍처 실현
+- **정규식 전처리 → 키워드 추출 파이프라인**: 완전한 데이터 처리 흐름 구현
+- **백엔드 서비스 통합**: RegexPreprocessingEngine과 KeywordExtractionEngine 연결
+- **테스트 케이스 완성**: 통합 시나리오 검증 및 TDD 스크립트 포함
+- **데이터베이스 스키마**: moneyshift, moneyshift_test 모든 환경에 정규식 테이블 생성
+
+#### 구현된 주요 기능
+- **API 엔드포인트**: `/v2/regex-preprocessing/test`, `/v2/regex-preprocessing/refresh`
+- **실시간 전처리**: "(주)코드쉬프트" → "코드쉬프트", "(유)부자마트" → "부자마트" 변환 성공
+- **캐시 시스템**: Redis 기반 전처리 결과 캐싱
+- **사용 통계**: 규칙별 사용 횟수 및 성공률 추적
+- **메타데이터 추출**: 법인 구조, 카테고리 정보 자동 추출
+- **null/빈 문자열 처리**: 안전한 예외 처리 구현
+
+#### 테스트 검증 완료
+- **RegexPreprocessingEngineTest**: 7개 테스트 케이스 100% 통과 (법인구조, null처리, 빈문자열, 복합문자열 등)
+- **RegexPreprocessingControllerTest**: 3개 API 엔드포인트 테스트 통과 (전처리, 새로고침, 통합API)
+- **TDD 스크립트 통합**: 백엔드 테스트 자동화에 포함, 개별 테스트 성공
+- **dev/test 프로필 지원**: 양쪽 환경 모두 정상 작동, 데이터베이스 분리 완료
+
+#### 데이터베이스 개선
+- **9개 정규식 규칙**: 법인구조(주식회사, 유한회사), 주유소, 대형마트, 해외서비스 등 추가
+- **테스트 데이터베이스**: moneyshift_test 환경 완전 분리 및 스키마 동기화
+- **TypeHandler 완성**: JSONB 필드 정상 매핑, Map/List 타입 지원
+
 ### 다음 단계 개발 우선순위
-1. **KeywordExtractionEngine 통합**: 전처리 시스템과 기존 키워드 엔진 연결
-2. **실제 LLM 연동**: Gemini API 연결로 Mock에서 실제 AI 패턴 생성으로 전환
-3. **성능 최적화**: Redis 캐싱, 배치 처리 최적화
-4. **운영 모니터링**: 실시간 대시보드 데이터 연동
+1. **실제 LLM 연동**: Gemini API 연결로 Mock에서 실제 AI 패턴 생성으로 전환
+2. **성능 최적화**: Redis 캐싱, 배치 처리 최적화
+3. **운영 모니터링**: 실시간 대시보드 데이터 연동
+4. **ML 레이어 구현**: Layer 2 ML inference 실제 구현
 
 ### 기존 아키텍처 특징 (유지)
 - **중앙화된 계정과목 관리**: AccountCodeConfig를 통한 일관성 보장
@@ -236,3 +265,8 @@ cd mshift-api && mvn test -Dtest=ClassName # Run specific Java test
 
 ### Development Philosophy 섹션 (2025-07-26 추가)
 - **TDD 기반 개발 접근법 수정**: 먼저 기능을 구현하고 안정화한 후 각 기능에 맞는 테스트를 추가하는 방식으로 진행. 이유는 이미 상당 부분 테스트가 구현되었고, 현 단계에서는 기존 테스트를 성공시키며 개발 속도를 높이기 위함
+
+## Memory Log
+
+### TDD 실행 전략 (2025-07-26 추가)
+- 앞으로 풀 tdd는 백엔드만 하는 걸로 해. 어드민하고 모바일은 엔드포인트 체크만 하는 것만 tdd하는걸로 해.

@@ -37,6 +37,7 @@ public class RedisCacheService {
     public static final String CACHE_KEY_TRANSACTION_RESULT_PREFIX = "transaction_result:";
     public static final String CACHE_KEY_STATS_PREFIX = "stats:";
     public static final String CACHE_KEY_PATTERN_MATCHES_PREFIX = "pattern_matches:";
+    public static final String CACHE_KEY_PREPROCESSING_RESULT_PREFIX = "preprocessing_result:";
     
     // TTL 상수 (초)
     private static final long TTL_KEYWORD_GROUPS = 3600; // 1시간
@@ -44,6 +45,7 @@ public class RedisCacheService {
     private static final long TTL_TRANSACTION_RESULTS = 300; // 5분
     private static final long TTL_STATS = 600; // 10분
     private static final long TTL_PATTERN_MATCHES = 86400; // 24시간
+    private static final long TTL_PREPROCESSING_RESULTS = 300; // 5분
 
     /**
      * 키워드 그룹 캐싱
@@ -409,6 +411,36 @@ public class RedisCacheService {
             return null;
         } catch (Exception e) {
             log.error("분류 결과 캐시 조회 실패: key={}", cacheKey, e);
+            return null;
+        }
+    }
+    
+    /**
+     * 정규식 전처리 결과 캐시 저장
+     */
+    public void savePreprocessingResult(String cacheKey, RegexPreprocessingEngine.PreprocessingResult result, int ttlSeconds) {
+        try {
+            redisTemplate.opsForValue().set(cacheKey, result, ttlSeconds, TimeUnit.SECONDS);
+            log.debug("전처리 결과 캐시 저장: key={}", cacheKey);
+        } catch (Exception e) {
+            log.error("전처리 결과 캐시 저장 실패: key={}", cacheKey, e);
+        }
+    }
+    
+    /**
+     * 정규식 전처리 결과 캐시 조회
+     */
+    public RegexPreprocessingEngine.PreprocessingResult getPreprocessingResult(String cacheKey) {
+        try {
+            Object cached = redisTemplate.opsForValue().get(cacheKey);
+            if (cached instanceof RegexPreprocessingEngine.PreprocessingResult) {
+                log.debug("전처리 결과 캐시 히트: key={}", cacheKey);
+                return (RegexPreprocessingEngine.PreprocessingResult) cached;
+            }
+            log.debug("전처리 결과 캐시 미스: key={}", cacheKey);
+            return null;
+        } catch (Exception e) {
+            log.error("전처리 결과 캐시 조회 실패: key={}", cacheKey, e);
             return null;
         }
     }

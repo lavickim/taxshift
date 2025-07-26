@@ -25,6 +25,7 @@ public class KeywordExtractionEngine {
     private final TagAccountMappingService tagAccountMappingService;
     private final RedisCacheService redisCacheService;
     private final DynamicBrandService dynamicBrandService;
+    private final RegexPreprocessingEngine regexPreprocessingEngine;
     
     /**
      * 간단한 키워드 추출 (테스트용)
@@ -98,19 +99,27 @@ public class KeywordExtractionEngine {
                 return cachedResult;
             }
             
-            // 2. 키워드 추출
-            List<String> extractedKeywords = extractKeywords(transactionText);
+            // 2. 정규식 전처리 (새로 추가!)
+            RegexPreprocessingEngine.PreprocessingResult preprocessingResult = 
+                    regexPreprocessingEngine.preprocess(transactionText);
             
-            // 3. 키워드 그룹 매칭 (기존 키워드 그룹 우선)
-            List<KeywordGroup> matchedGroups = matchKeywordGroups(transactionText, extractedKeywords);
+            // 전처리된 텍스트 사용 (원본 대신)
+            String processedText = preprocessingResult.getNormalizedText();
+            log.debug("전처리 완료: {} -> {}", transactionText, processedText);
             
-            // 4. 키워드 그룹 매칭 실패 시 동적 브랜드 검색
+            // 3. 키워드 추출 (전처리된 텍스트 사용)
+            List<String> extractedKeywords = extractKeywords(processedText);
+            
+            // 4. 키워드 그룹 매칭 (전처리된 텍스트 사용)
+            List<KeywordGroup> matchedGroups = matchKeywordGroups(processedText, extractedKeywords);
+            
+            // 5. 키워드 그룹 매칭 실패 시 동적 브랜드 검색
             if (matchedGroups.isEmpty()) {
                 log.debug("기존 키워드 그룹 매칭 실패, 브랜드 테이블 검색 시도");
-                return tryBrandMatching(transactionText, extractedKeywords);
+                return tryBrandMatching(processedText, extractedKeywords);
             }
             
-            // 5. 태그 결정
+            // 6. 태그 결정
             Tag bestTag = determineBestTag(matchedGroups);
             
             if (bestTag == null) {
@@ -123,10 +132,10 @@ public class KeywordExtractionEngine {
                         .build();
             }
             
-            // 6. 계정과목 매핑
+            // 7. 계정과목 매핑
             List<TagAccountMapping> accountMappings = tagAccountMappingService.getMappingsByTagId(bestTag.getId());
             
-            // 7. 결과 생성
+            // 8. 결과 생성
             LayerProcessingResult result = LayerProcessingResult.builder()
                     .matched(true)
                     .processingPath("KEYWORD_ENGINE")
@@ -139,7 +148,7 @@ public class KeywordExtractionEngine {
                     .accountName(accountMappings.isEmpty() ? null : accountMappings.get(0).getAccountName())
                     .build();
             
-            // 8. 캐시 저장
+            // 9. 캐시 저장
             redisCacheService.saveClassificationResult(cacheKey, result);
             
             log.debug("거래 분류 완료: tag={}, confidence={}", result.getTag(), result.getConfidence());
