@@ -20,6 +20,7 @@ export interface RegexRule {
   isActive: boolean;
   metadataTags?: Record<string, any>;
   testCases?: TestCase[];
+  testExamples?: string[];
   usageCount: number;
   successRate?: number;
   createdAt: string;
@@ -289,6 +290,7 @@ export class RegexPreprocessingEngine {
       isActive: rule.isActive,
       metadataTags: rule.metadataTags as Record<string, any> || undefined,
       testCases: rule.testCases as TestCase[] || undefined,
+      testExamples: rule.testExamples as string[] || undefined,
       usageCount: Number(rule.usageCount),
       successRate: rule.successRate ? Number(rule.successRate) : undefined,
       createdAt: rule.createdAt.toISOString(),
@@ -413,6 +415,7 @@ export class RegexRuleManagementService {
       isActive: rule.isActive,
       metadataTags: rule.metadataTags as Record<string, any> || undefined,
       testCases: rule.testCases as TestCase[] || undefined,
+      testExamples: rule.testExamples as string[] || undefined,
       usageCount: Number(rule.usageCount),
       successRate: rule.successRate ? Number(rule.successRate) : undefined,
       createdAt: rule.createdAt.toISOString(),
@@ -463,6 +466,7 @@ export class RegexRuleManagementService {
       isActive: rule.isActive,
       metadataTags: rule.metadataTags as Record<string, any> || undefined,
       testCases: rule.testCases as TestCase[] || undefined,
+      testExamples: rule.testExamples as string[] || undefined,
       usageCount: Number(rule.usageCount),
       successRate: rule.successRate ? Number(rule.successRate) : undefined,
       createdAt: rule.createdAt.toISOString(),
@@ -558,6 +562,7 @@ export class RegexRuleManagementService {
       isActive: rule.isActive,
       metadataTags: rule.metadataTags as Record<string, any> || undefined,
       testCases: rule.testCases as TestCase[] || undefined,
+      testExamples: rule.testExamples as string[] || undefined,
       usageCount: Number(rule.usageCount),
       successRate: rule.successRate ? Number(rule.successRate) : undefined,
       createdAt: rule.createdAt.toISOString(),
@@ -686,6 +691,7 @@ export class RegexRuleManagementService {
       isActive: rule.isActive,
       metadataTags: rule.metadataTags as Record<string, any> || undefined,
       testCases: rule.testCases as TestCase[] || undefined,
+      testExamples: rule.testExamples as string[] || undefined,
       usageCount: Number(rule.usageCount),
       successRate: rule.successRate ? Number(rule.successRate) : undefined,
       createdAt: rule.createdAt.toISOString(),

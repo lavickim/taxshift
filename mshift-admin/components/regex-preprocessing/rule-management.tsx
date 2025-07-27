@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { RegexRuleManagementService, RegexRule } from '@/lib/services/regex-preprocessing.service';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -23,101 +24,79 @@ import {
 } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
-interface RegexRule {
-  id: number;
-  ruleName: string;
-  category: string;
-  inputPattern: string;
-  outputTemplate: string;
-  priority: number;
-  isActive: boolean;
+interface UIRegexRule extends RegexRule {
   testCases: number;
-  successRate: number;
-  usageCount: number;
   hasConflict: boolean;
   lastModified: string;
   isNew?: boolean;
 }
 
 export function RegexRuleManagement() {
-  const [rules, setRules] = useState<RegexRule[]>([
-    {
-      id: 1,
-      ruleName: "주유소 상하행선 분리",
-      category: "주유소",
-      inputPattern: "(\\S+)\\s*\\((상|하)\\)주\\s*(-?\\d+)",
-      outputTemplate: "$1 $2행선 주유소",
-      priority: 150,
-      isActive: true,
-      testCases: 15,
-      successRate: 93.3,
-      usageCount: 1247,
-      hasConflict: true,
-      lastModified: "2시간 전"
-    },
-    {
-      id: 2,
-      ruleName: "주식회사 표시 제거",
-      category: "법인구조",
-      inputPattern: "주식회사\\s*(.+)",
-      outputTemplate: "$1",
-      priority: 145,
-      isActive: true,
-      testCases: 8,
-      successRate: 100,
-      usageCount: 2156,
-      hasConflict: false,
-      lastModified: "1일 전"
-    },
-    {
-      id: 3,
-      ruleName: "Claude AI 정규화",
-      category: "해외서비스",
-      inputPattern: "CLAUDE\\.AI\\s+SUBSCRIPTION.*",
-      outputTemplate: "Claude AI",
-      priority: 140,
-      isActive: true,
-      testCases: 3,
-      successRate: 100,
-      usageCount: 89,
-      hasConflict: false,
-      lastModified: "30분 전",
-      isNew: true
-    },
-    {
-      id: 4,
-      ruleName: "이마트 지점 분리",
-      category: "대형마트",
-      inputPattern: "(이마트)\\s*(\\S+점)",
-      outputTemplate: "$1 $2",
-      priority: 135,
-      isActive: true,
-      testCases: 12,
-      successRate: 95.8,
-      usageCount: 3421,
-      hasConflict: false,
-      lastModified: "3시간 전"
-    },
-    {
-      id: 5,
-      ruleName: "GS25 편의점 정규화",
-      category: "편의점",
-      inputPattern: "GS25\\s*(.+)",
-      outputTemplate: "GS25 $1",
-      priority: 130,
-      isActive: false,
-      testCases: 6,
-      successRate: 87.5,
-      usageCount: 892,
-      hasConflict: false,
-      lastModified: "1주 전"
-    }
-  ]);
+  const [rules, setRules] = useState<UIRegexRule[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [sortBy, setSortBy] = useState("priority");
+
+  // 데이터 로딩
+  useEffect(() => {
+    loadRules();
+  }, []);
+
+  const loadRules = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const ruleManagementService = RegexRuleManagementService.getInstance();
+      const fetchedRules = await ruleManagementService.getRules({
+        sortBy: 'priority'
+      });
+      
+      // RegexRule을 UIRegexRule로 변환
+      const uiRules: UIRegexRule[] = fetchedRules.map(rule => ({
+        ...rule,
+        testCases: rule.testCases?.length || 0,
+        hasConflict: false, // TODO: 실제 충돌 감지 서비스와 연동
+        lastModified: getRelativeTime(rule.updatedAt),
+        isNew: isRecentlyCreated(rule.createdAt),
+        testExamples: rule.testExamples || []
+      }));
+      
+      setRules(uiRules);
+    } catch (err) {
+      console.error('Failed to load rules:', err);
+      setError(err instanceof Error ? err.message : '규칙을 불러오는데 실패했습니다.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 상대 시간 계산
+  const getRelativeTime = (dateString: string): string => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMins / 60);
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffMins < 60) return `${diffMins}분 전`;
+    if (diffHours < 24) return `${diffHours}시간 전`;
+    if (diffDays < 7) return `${diffDays}일 전`;
+    return `${Math.floor(diffDays / 7)}주 전`;
+  };
+
+  // 최근 생성 여부 확인 (24시간 이내)
+  const isRecentlyCreated = (dateString: string): boolean => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    return diffMs < 24 * 60 * 60 * 1000; // 24시간
+  };
 
   const categories = ["all", "법인구조", "주유소", "대형마트", "해외서비스", "편의점", "공공기관"];
   const statusOptions = ["all", "active", "inactive"];
@@ -155,6 +134,38 @@ export function RegexRuleManagement() {
     console.log(`${action} rule with ID: ${ruleId}`);
     // TODO: Implement actual actions
   };
+
+  // 로딩 상태
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-center p-8">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-muted-foreground">규칙을 불러오는 중...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 에러 상태
+  if (error) {
+    return (
+      <div className="space-y-6">
+        <Card className="border-red-200">
+          <CardContent className="p-6 text-center">
+            <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-red-700 mb-2">데이터 로딩 실패</h3>
+            <p className="text-red-600 mb-4">{error}</p>
+            <Button onClick={loadRules} variant="outline">
+              다시 시도
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -265,6 +276,7 @@ export function RegexRuleManagement() {
                 <TableHead>규칙명</TableHead>
                 <TableHead>카테고리</TableHead>
                 <TableHead>패턴</TableHead>
+                <TableHead>테스트 예시</TableHead>
                 <TableHead className="text-center">우선순위</TableHead>
                 <TableHead className="text-center">성공률</TableHead>
                 <TableHead className="text-center">사용 횟수</TableHead>
@@ -307,6 +319,20 @@ export function RegexRuleManagement() {
                         ? `${rule.inputPattern.substring(0, 30)}...` 
                         : rule.inputPattern}
                     </code>
+                  </TableCell>
+                  <TableCell>
+                    <div className="space-y-1">
+                      {rule.testExamples.slice(0, 2).map((example, index) => (
+                        <div key={index} className="text-xs bg-blue-50 dark:bg-blue-950/20 px-2 py-1 rounded border">
+                          {example.length > 20 ? `${example.substring(0, 20)}...` : example}
+                        </div>
+                      ))}
+                      {rule.testExamples.length > 2 && (
+                        <div className="text-xs text-muted-foreground">
+                          +{rule.testExamples.length - 2}개 더
+                        </div>
+                      )}
+                    </div>
                   </TableCell>
                   <TableCell className="text-center">
                     <Badge variant={rule.priority >= 150 ? "default" : "secondary"}>

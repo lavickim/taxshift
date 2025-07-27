@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { RegexPerformanceService, PerformanceStats } from '@/lib/services/regex-preprocessing.service';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -18,70 +19,190 @@ import {
   BarChart3
 } from "lucide-react";
 
-interface ProcessingStats {
-  totalRules: number;
-  activeRules: number;
-  processingAccuracy: number;
-  averageProcessingTime: number;
-  dailyProcessedCount: number;
-  conflictsDetected: number;
-  weeklyTrend: {
-    accuracy: number;
-    processingTime: number;
-    ruleCount: number;
-    dailyCount: number;
-  };
+interface RecentActivity {
+  id: number;
+  time: string;
+  user: string;
+  action: string;
+  status: 'success' | 'info' | 'warning' | 'error';
 }
 
 export function RegexPreprocessingDashboard() {
-  const [stats, setStats] = useState<ProcessingStats>({
-    totalRules: 247,
-    activeRules: 231,
-    processingAccuracy: 94.3,
-    averageProcessingTime: 3.2,
-    dailyProcessedCount: 1247,
-    conflictsDetected: 3,
-    weeklyTrend: {
-      accuracy: 2.1,
-      processingTime: -0.3,
-      ruleCount: 12,
-      dailyCount: 8
-    }
-  });
+  const [stats, setStats] = useState<PerformanceStats | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [period, setPeriod] = useState<'1d' | '7d' | '30d'>('7d');
 
-  const [recentActivity, setRecentActivity] = useState([
-    {
-      id: 1,
-      time: "09:23",
-      user: "김관리자",
-      action: "편의점 규칙 수정",
-      status: "success"
-    },
-    {
-      id: 2,
-      time: "09:15",
-      user: "시스템",
-      action: "새 패턴 5개 LLM 제안",
-      status: "info"
-    },
-    {
-      id: 3,
-      time: "08:44",
-      user: "이개발자",
-      action: "카페 테스트 완료",
-      status: "success"
-    },
-    {
-      id: 4,
-      time: "08:30",
-      user: "시스템",
-      action: "주간 성능 리포트 생성",
-      status: "info"
+  const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([]);
+
+  // 실시간 데이터 로딩
+  useEffect(() => {
+    loadDashboardData();
+  }, [period]);
+
+  const loadDashboardData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      // 성능 통계 API 호출
+      const response = await fetch(`/api/regex-preprocessing/performance?period=${period}`);
+      const result = await response.json();
+
+      if (result.success) {
+        setStats(result.data);
+      } else {
+        throw new Error(result.error || 'Failed to load performance stats');
+      }
+
+      // TODO: 실제 활동 로그 API 연동
+      setRecentActivity([
+        {
+          id: 1,
+          time: new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }),
+          user: "시스템",
+          action: "성능 통계 업데이트",
+          status: "success"
+        },
+        {
+          id: 2,
+          time: "09:15",
+          user: "시스템",
+          action: "정규식 규칙 캐시 갱신",
+          status: "info"
+        }
+      ]);
+
+    } catch (err) {
+      console.error('Failed to load dashboard data:', err);
+      setError(err instanceof Error ? err.message : '대시보드 데이터를 불러오는데 실패했습니다.');
+    } finally {
+      setLoading(false);
     }
-  ]);
+  };
+
+  // 로딩 상태
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-center p-8">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-muted-foreground">대시보드 데이터를 불러오는 중...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 에러 상태
+  if (error) {
+    return (
+      <div className="space-y-6">
+        <Card className="border-red-200">
+          <CardContent className="p-6 text-center">
+            <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-red-700 mb-2">데이터 로딩 실패</h3>
+            <p className="text-red-600 mb-4">{error}</p>
+            <Button onClick={loadDashboardData} variant="outline">
+              다시 시도
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (!stats) {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardContent className="p-6 text-center">
+            <p className="text-muted-foreground">통계 데이터가 없습니다.</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
+      {/* 기간 선택 헤더 */}
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold">정규식 전처리 대시보드</h2>
+          <p className="text-muted-foreground">실시간 성능 모니터링 및 통계</p>
+        </div>
+        <div className="flex gap-2">
+          {(['1d', '7d', '30d'] as const).map((p) => (
+            <Button
+              key={p}
+              variant={period === p ? "default" : "outline"}
+              size="sm"
+              onClick={() => setPeriod(p)}
+            >
+              {p === '1d' ? '1일' : p === '7d' ? '7일' : '30일'}
+            </Button>
+          ))}
+        </div>
+      </div>
+
+      {/* 주요 통계 카드 */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">총 규칙 수</CardTitle>
+            <FileText className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-blue-600">{stats.totalRules}</div>
+            <Badge variant="secondary" className="mt-2">
+              활성: {stats.activeRules}
+            </Badge>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">처리 정확도</CardTitle>
+            <CheckCircle className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-green-600">{stats.processingAccuracy.toFixed(1)}%</div>
+            <Badge variant={stats.processingAccuracy >= 90 ? "default" : "secondary"} className="mt-2">
+              <TrendingUp className="mr-1 h-3 w-3" />
+              {stats.errorRate < 10 ? '양호' : '개선 필요'}
+            </Badge>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">평균 처리 시간</CardTitle>
+            <Clock className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-purple-600">{stats.averageProcessingTime.toFixed(1)}ms</div>
+            <Badge variant="secondary" className="mt-2">
+              {stats.averageProcessingTime < 5 ? '빠름' : '보통'}
+            </Badge>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">일일 처리량</CardTitle>
+            <Activity className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-orange-600">{stats.dailyProcessingCount.toLocaleString()}</div>
+            <Badge variant="secondary" className="mt-2">
+              오늘
+            </Badge>
+          </CardContent>
+        </Card>
+      </div>
+
       {/* 성능 그래프 섹션 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* 성공률 추이 */}
@@ -221,31 +342,36 @@ export function RegexPreprocessingDashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {[
-                { name: '법인구조', count: 45, active: 42, color: 'bg-blue-500' },
-                { name: '주유소', count: 38, active: 35, color: 'bg-green-500' },
-                { name: '대형마트', count: 52, active: 48, color: 'bg-purple-500' },
-                { name: '해외서비스', count: 28, active: 26, color: 'bg-orange-500' },
-                { name: '공공기관', count: 34, active: 32, color: 'bg-cyan-500' },
-                { name: '기타', count: 50, active: 48, color: 'bg-gray-500' }
-              ].map((category) => (
-                <div key={category.name} className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-3 h-3 rounded-full ${category.color}`} />
-                    <span className="text-sm font-medium">{category.name}</span>
+              {stats.topCategories.length > 0 ? stats.topCategories.map((category, index) => {
+                const colors = ['bg-blue-500', 'bg-green-500', 'bg-purple-500', 'bg-orange-500', 'bg-cyan-500', 'bg-gray-500'];
+                const allActive = category.averageSuccessRate >= 95;
+                
+                return (
+                  <div key={category.category} className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-3 h-3 rounded-full ${colors[index % colors.length]}`} />
+                      <span className="text-sm font-medium">{category.category}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline" className="text-xs">
+                        {category.ruleCount}개 규칙
+                      </Badge>
+                      <Badge variant="outline" className="text-xs">
+                        성공률 {category.averageSuccessRate.toFixed(1)}%
+                      </Badge>
+                      {allActive ? (
+                        <CheckCircle className="h-4 w-4 text-green-500" />
+                      ) : (
+                        <AlertTriangle className="h-4 w-4 text-orange-500" />
+                      )}
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Badge variant="outline" className="text-xs">
-                      {category.active}/{category.count}
-                    </Badge>
-                    {category.active === category.count ? (
-                      <CheckCircle className="h-4 w-4 text-green-500" />
-                    ) : (
-                      <AlertTriangle className="h-4 w-4 text-orange-500" />
-                    )}
-                  </div>
+                );
+              }) : (
+                <div className="text-center text-muted-foreground py-4">
+                  카테고리별 통계가 없습니다.
                 </div>
-              ))}
+              )}
             </div>
           </CardContent>
         </Card>
@@ -254,27 +380,48 @@ export function RegexPreprocessingDashboard() {
       {/* 빠른 액션 */}
       <Card>
         <CardHeader>
-          <CardTitle>빠른 액션</CardTitle>
+          <CardTitle className="flex items-center justify-between">
+            빠른 액션
+            <Button variant="ghost" size="sm" onClick={loadDashboardData}>
+              <Activity className="h-4 w-4 mr-2" />
+              새로고침
+            </Button>
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-            <Button variant="outline" className="flex items-center gap-2">
+            <Button variant="outline" className="flex items-center gap-2" onClick={() => {
+              // TODO: 새 규칙 추가 모달 열기
+              console.log('새 규칙 추가');
+            }}>
               <FileText className="h-4 w-4" />
               새 규칙 추가
             </Button>
-            <Button variant="outline" className="flex items-center gap-2">
+            <Button variant="outline" className="flex items-center gap-2" onClick={() => {
+              // TODO: 대량 테스트 탭으로 이동
+              console.log('대량 테스트로 이동');
+            }}>
               <Activity className="h-4 w-4" />
               대량 테스트
             </Button>
-            <Button variant="outline" className="flex items-center gap-2">
+            <Button variant="outline" className="flex items-center gap-2" onClick={() => {
+              // TODO: 충돌 관리 탭으로 이동
+              console.log('충돌 관리로 이동');
+            }}>
               <Zap className="h-4 w-4" />
-              패턴 최적화
+              충돌 관리
             </Button>
-            <Button variant="outline" className="flex items-center gap-2">
+            <Button variant="outline" className="flex items-center gap-2" onClick={() => {
+              // 현재 대시보드 새로고침
+              loadDashboardData();
+            }}>
               <BarChart3 className="h-4 w-4" />
-              성능 분석
+              성능 갱신
             </Button>
-            <Button variant="outline" className="flex items-center gap-2">
+            <Button variant="outline" className="flex items-center gap-2" onClick={() => {
+              // TODO: LLM 생성 탭으로 이동
+              console.log('LLM 생성으로 이동');
+            }}>
               <Users className="h-4 w-4" />
               LLM 패턴 생성
             </Button>
