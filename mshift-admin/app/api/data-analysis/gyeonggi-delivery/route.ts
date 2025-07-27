@@ -102,8 +102,8 @@ export async function GET(request: NextRequest) {
         const industryFilter = searchParams.get('industry') || ''
         const regionFilter = searchParams.get('region') || ''
 
-        let whereConditions = []
-        let queryParams = []
+        const whereConditions = []
+        const queryParams = []
 
         if (searchTerm) {
           whereConditions.push(`(store_name ILIKE $${queryParams.length + 1} OR business_reg_no ILIKE $${queryParams.length + 1})`)

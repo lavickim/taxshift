@@ -756,7 +756,7 @@ export class RegexRuleManagementService {
    */
   private invalidateCache(): void {
     const engine = RegexPreprocessingEngine.getInstance();
-    // @ts-ignore - private 메서드 접근
+    // @ts-expect-error - private 메서드 접근
     engine.rulesCache.clear();
   }
 }

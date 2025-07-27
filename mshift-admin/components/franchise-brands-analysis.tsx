@@ -204,7 +204,7 @@ export function FranchiseBrandsAnalysis() {
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-300">최초 연도</p>
-                <p className="text-sm font-bold text-white">{overviewData.yearRange.minYear}</p>
+                <p className="text-sm font-bold text-white">{overviewData.yearRange?.minYear || 'N/A'}</p>
               </div>
             </div>
           </div>
@@ -218,7 +218,7 @@ export function FranchiseBrandsAnalysis() {
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-300">최근 연도</p>
-                <p className="text-sm font-bold text-white">{overviewData.yearRange.maxYear}</p>
+                <p className="text-sm font-bold text-white">{overviewData.yearRange?.maxYear || 'N/A'}</p>
               </div>
             </div>
           </div>

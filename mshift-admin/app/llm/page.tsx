@@ -1,4 +1,4 @@
-import { LlmManagement } from "@/components/llm-management"
+import { LLMManagement } from "@/components/llm-management"
 
 export default function LlmPage() {
   return (
@@ -9,7 +9,7 @@ export default function LlmPage() {
           AI 기반 규칙 학습, 하이브리드 처리, 그리고 LLM 추론 기능을 관리합니다.
         </p>
       </div>
-      <LlmManagement />
+      <LLMManagement />
     </div>
   )
 }

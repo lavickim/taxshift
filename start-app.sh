@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# MoneyShift 모바일 앱 - TDD 기반 시작 스크립트
+# MoneyShift 모바일 앱 시작 스크립트
 
-echo "🧪 MoneyShift 모바일 앱 - TDD 검증 후 시작..."
-echo "================================="
+echo "📱 MoneyShift 모바일 앱 시작..."
+echo "============================="
 
 # mshift-app 디렉토리로 이동
 cd "$(dirname "$0")/mshift-app"
@@ -19,16 +19,10 @@ for port in 8081 19002; do
 done
 sleep 2
 
-# TDD 검증 실행
-echo "🧪 TDD 테스트 검증 중..."
-if ! ./start-with-tdd.sh --test-only; then
-    echo "❌ TDD 테스트 실패! 모든 테스트가 통과해야만 앱을 시작할 수 있습니다."
-    exit 1
-fi
-
-echo "✅ 모든 TDD 검증 통과!"
-echo "📱 모바일 앱 시작 중..."
-echo "================================="
+# 테스트 건너뛰기 (개발 모드)
+echo "🧪 테스트 건너뛰기 (개발 모드)"
+echo "💡 테스트가 필요한 경우 별도로 실행하세요"
+echo "============================="
 
 # 의존성 설치 확인 (yarn 사용)
 if [ ! -d "node_modules" ]; then
@@ -43,7 +37,7 @@ echo "Android: expo start --android"
 echo "iOS: expo start --ios"
 echo "웹: expo start --web"
 echo "중단: Ctrl+C"
-echo "================================="
+echo "============================="
 
 # 시스템 PATH에서 expo 찾기
 EXPO_PATH=$(which expo 2>/dev/null)

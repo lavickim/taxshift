@@ -36,21 +36,15 @@ async function getOverviewData() {
   try {
     console.log('Overview data query started...')
     
-    const [totalBrands, totalCompanies, industryCount, yearRange] = await Promise.all([
-      prisma.$queryRaw`SELECT COUNT(*) as count FROM franchise_brands`,
-      prisma.$queryRaw`SELECT COUNT(DISTINCT company_name) as count FROM franchise_brands WHERE company_name IS NOT NULL AND company_name != ''`,
-      prisma.$queryRaw`SELECT COUNT(DISTINCT industry_large_category) as count FROM franchise_brands WHERE industry_large_category IS NOT NULL AND industry_large_category != ''`,
-      prisma.$queryRaw`SELECT MIN(business_year) as min_year, MAX(business_year) as max_year FROM franchise_brands WHERE business_year IS NOT NULL AND business_year != ''`
+    const [totalBrands, totalCategories] = await Promise.all([
+      prisma.$queryRaw`SELECT COUNT(*) as count FROM datacollection_franchise_brands`,
+      prisma.$queryRaw`SELECT COUNT(DISTINCT category) as count FROM datacollection_franchise_brands WHERE category IS NOT NULL AND category != ''`
     ])
 
     const data = {
       totalBrands: Number((totalBrands as any)[0]?.count || 0),
-      totalCompanies: Number((totalCompanies as any)[0]?.count || 0),
-      industryCount: Number((industryCount as any)[0]?.count || 0),
-      yearRange: {
-        minYear: (yearRange as any)[0]?.min_year || '2024',
-        maxYear: (yearRange as any)[0]?.max_year || '2024'
-      }
+      totalCategories: Number((totalCategories as any)[0]?.count || 0),
+      dataSource: 'datacollection_franchise_brands'
     }
 
     console.log('Real database data:', data)
@@ -65,11 +59,11 @@ async function getIndustryData() {
   try {
     const data = await prisma.$queryRaw`
       SELECT 
-        industry_large_category as category,
+        category,
         COUNT(*) as count
-      FROM franchise_brands 
-      WHERE industry_large_category IS NOT NULL AND industry_large_category != ''
-      GROUP BY industry_large_category 
+      FROM datacollection_franchise_brands 
+      WHERE category IS NOT NULL AND category != ''
+      GROUP BY category 
       ORDER BY count DESC
       LIMIT 20
     `
@@ -82,7 +76,7 @@ async function getIndustryData() {
       }))
     })
   } catch (error) {
-    console.error('업종별 데이터 조회 오류:', error)
+    console.error('카테고리별 데이터 조회 오류:', error)
     throw error
   }
 }
@@ -91,24 +85,26 @@ async function getCompanyData() {
   try {
     const data = await prisma.$queryRaw`
       SELECT 
-        company_name as company,
-        COUNT(*) as brand_count
-      FROM franchise_brands 
-      WHERE company_name IS NOT NULL AND company_name != ''
-      GROUP BY company_name 
-      ORDER BY brand_count DESC
+        brand_name,
+        priority,
+        COUNT(*) as count
+      FROM datacollection_franchise_brands 
+      WHERE brand_name IS NOT NULL AND brand_name != ''
+      GROUP BY brand_name, priority 
+      ORDER BY priority DESC, count DESC
       LIMIT 20
     `
 
     return Response.json({ 
       success: true, 
       data: (data as any[]).map(row => ({
-        company: row.company,
-        brandCount: Number(row.brand_count)
+        brandName: row.brand_name,
+        priority: row.priority,
+        count: Number(row.count)
       }))
     })
   } catch (error) {
-    console.error('회사별 데이터 조회 오류:', error)
+    console.error('브랜드별 데이터 조회 오류:', error)
     throw error
   }
 }
@@ -117,23 +113,23 @@ async function getYearData() {
   try {
     const data = await prisma.$queryRaw`
       SELECT 
-        business_year as year,
+        priority,
         COUNT(*) as count
-      FROM franchise_brands 
-      WHERE business_year IS NOT NULL AND business_year != ''
-      GROUP BY business_year 
-      ORDER BY business_year DESC
+      FROM datacollection_franchise_brands 
+      WHERE priority IS NOT NULL
+      GROUP BY priority 
+      ORDER BY priority DESC
     `
 
     return Response.json({ 
       success: true, 
       data: (data as any[]).map(row => ({
-        year: row.year,
+        priority: row.priority,
         count: Number(row.count)
       }))
     })
   } catch (error) {
-    console.error('연도별 데이터 조회 오류:', error)
+    console.error('우선순위별 데이터 조회 오류:', error)
     throw error
   }
 }
@@ -150,38 +146,26 @@ async function getDetailData(searchParams: URLSearchParams) {
     const offset = (page - 1) * limit
 
     // 필터 조건 구성
-    let whereConditions = []
-    let params: any[] = []
+    const whereConditions = []
+    const params: any[] = []
     let paramIndex = 1
 
     if (search) {
-      whereConditions.push(`(brand_name ILIKE $${paramIndex} OR company_name ILIKE $${paramIndex + 1})`)
+      whereConditions.push(`(brand_name ILIKE $${paramIndex} OR category ILIKE $${paramIndex + 1})`)
       params.push(`%${search}%`, `%${search}%`)
       paramIndex += 2
     }
 
     if (industry) {
-      whereConditions.push(`industry_large_category = $${paramIndex}`)
+      whereConditions.push(`category = $${paramIndex}`)
       params.push(industry)
-      paramIndex++
-    }
-
-    if (company) {
-      whereConditions.push(`company_name = $${paramIndex}`)
-      params.push(company)
-      paramIndex++
-    }
-
-    if (year) {
-      whereConditions.push(`business_year = $${paramIndex}`)
-      params.push(year)
       paramIndex++
     }
 
     const whereClause = whereConditions.length > 0 ? `WHERE ${whereConditions.join(' AND ')}` : ''
 
     // 전체 카운트 조회
-    const countQuery = `SELECT COUNT(*) as count FROM franchise_brands ${whereClause}`
+    const countQuery = `SELECT COUNT(*) as count FROM datacollection_franchise_brands ${whereClause}`
     const countResult = await prisma.$queryRawUnsafe(countQuery, ...params)
     const total = Number((countResult as any)[0]?.count || 0)
 
@@ -189,17 +173,13 @@ async function getDetailData(searchParams: URLSearchParams) {
     const dataQuery = `
       SELECT 
         brand_name,
-        company_name,
-        industry_large_category,
-        industry_medium_category,
-        main_product,
-        business_year,
-        business_start_date,
-        representative_name,
+        brand_name_english,
+        category,
+        priority,
         created_at
-      FROM franchise_brands 
+      FROM datacollection_franchise_brands 
       ${whereClause}
-      ORDER BY id DESC
+      ORDER BY priority DESC, id DESC
       LIMIT $${paramIndex} OFFSET $${paramIndex + 1}
     `
     

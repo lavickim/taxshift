@@ -16,6 +16,7 @@ import java.util.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.lenient;
 
 /**
  * TDD: KeywordExtractionEngine 테스트 - 키워드 추출 및 거래 분류 시스템 검증
@@ -46,6 +47,9 @@ class KeywordExtractionEngineTest {
     @Mock
     private DynamicBrandService dynamicBrandService;
     
+    @Mock
+    private RegexPreprocessingEngine regexPreprocessingEngine;
+    
     @InjectMocks
     private KeywordExtractionEngine keywordExtractionEngine;
     
@@ -57,6 +61,21 @@ class KeywordExtractionEngineTest {
 
     @BeforeEach
     void setUp() {
+        // RegexPreprocessingEngine Mock 설정 (모든 텍스트를 그대로 반환) - lenient로 설정
+        lenient().when(regexPreprocessingEngine.preprocess(anyString())).thenAnswer(invocation -> {
+            String inputText = invocation.getArgument(0);
+            return RegexPreprocessingEngine.PreprocessingResult.builder()
+                .originalText(inputText)
+                .normalizedText(inputText)  // 그대로 반환
+                .appliedRuleId(null)
+                .appliedRuleName(null)
+                .extractedMetadata(new HashMap<>())
+                .processingTimeMs(0L)
+                .success(true)
+                .errorMessage(null)
+                .build();
+        });
+        
         // 테스트용 키워드 그룹
         testKeywordGroup = KeywordGroup.builder()
                 .id(1L)

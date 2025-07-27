@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import KeywordGraphSection from './keyword-graph/KeywordGraphSection'
 import {
   BarChart,
   Bar,
@@ -247,7 +248,8 @@ export function NationalPensionAnalysis() {
               { id: 'industry', name: '🏭 업종별', icon: '🏭' },
               { id: 'size', name: '📈 규모별', icon: '📈' },
               { id: 'companies', name: '🏆 주요기업', icon: '🏆' },
-              { id: 'all-companies', name: '🏢 전체기업', icon: '🏢' }
+              { id: 'all-companies', name: '🏢 전체기업', icon: '🏢' },
+              { id: 'keyword-graph', name: '🕸️ 키워드그래프', icon: '🕸️' }
             ].map(tab => (
               <button
                 key={tab.id}
@@ -875,6 +877,12 @@ export function NationalPensionAnalysis() {
                 </div>
               )}
             </div>
+          </div>
+        )}
+
+        {activeTab === 'keyword-graph' && (
+          <div className="space-y-8">
+            <KeywordGraphSection className="bg-gray-800 p-6 rounded-xl shadow-xl border border-gray-700" />
           </div>
         )}
       </div>

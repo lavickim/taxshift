@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.moneyshift.api.mapper.KeywordAnalysisMapper">
+
+    <!-- ====== IndustryKeyword ResultMap ====== -->
+    <resultMap id="IndustryKeywordResultMap" type="com.moneyshift.api.model.IndustryKeyword">
+        <id property="id" column="id"/>
+        <result property="keyword" column="keyword"/>
+        <result property="category" column="category"/>
+        <result property="frequency" column="frequency"/>
+        <result property="confidence" column="confidence"/>
+        <result property="isActive" column="is_active"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="metadata" column="metadata" typeHandler="com.moneyshift.api.config.JsonTypeHandler"/>
+    </resultMap>
+
+    <!-- ====== KeywordRelationship ResultMap ====== -->
+    <resultMap id="KeywordRelationshipResultMap" type="com.moneyshift.api.model.KeywordRelationship">
+        <id property="id" column="id"/>
+        <result property="sourceKeywordId" column="source_keyword_id"/>
+        <result property="targetKeywordId" column="target_keyword_id"/>
+        <result property="relationshipType" column="relationship_type"/>
+        <result property="strength" column="strength"/>
+        <result property="coOccurrenceCount" column="co_occurrence_count"/>
+        <result property="pmiScore" column="pmi_score"/>
+        <result property="confidenceScore" column="confidence_score"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <!-- 조인된 키워드 정보 -->
+        <result property="sourceKeyword" column="source_keyword"/>
+        <result property="targetKeyword" column="target_keyword"/>
+        <result property="sourceCategory" column="source_category"/>
+        <result property="targetCategory" column="target_category"/>
+    </resultMap>
+
+    <!-- ====== 키워드 관리 ====== -->
+    
+    <!-- 키워드 upsert -->
+    <insert id="upsertKeyword" parameterType="com.moneyshift.api.model.IndustryKeyword">
+        INSERT INTO industry_keywords (keyword, category, frequency, confidence, is_active, created_at, updated_at, metadata)
+        VALUES (#{keyword}, #{category}, #{frequency}, #{confidence}, #{isActive}, #{createdAt}, #{updatedAt}, #{metadata,typeHandler=com.moneyshift.api.config.JsonTypeHandler})
+        ON CONFLICT (keyword) DO UPDATE SET
+            category = EXCLUDED.category,
+            frequency = EXCLUDED.frequency,
+            confidence = EXCLUDED.confidence,
+            is_active = EXCLUDED.is_active,
+            updated_at = EXCLUDED.updated_at,
+            metadata = EXCLUDED.metadata
+    </insert>
+
+    <!-- 키워드 ID로 조회 -->
+    <select id="getKeywordById" resultMap="IndustryKeywordResultMap">
+        SELECT id, keyword, category, frequency, confidence, is_active, created_at, updated_at, metadata
+        FROM industry_keywords
+        WHERE id = #{id}
+    </select>
+
+    <!-- 키워드명으로 조회 -->
+    <select id="getKeywordByName" resultMap="IndustryKeywordResultMap">
+        SELECT id, keyword, category, frequency, confidence, is_active, created_at, updated_at, metadata
+        FROM industry_keywords
+        WHERE keyword = #{keyword}
+    </select>
+
+    <!-- 모든 키워드 조회 -->
+    <select id="getAllKeywords" resultMap="IndustryKeywordResultMap">
+        SELECT id, keyword, category, frequency, confidence, is_active, created_at, updated_at, metadata
+        FROM industry_keywords
+        WHERE is_active = true
+        ORDER BY frequency DESC, created_at DESC
+    </select>
+
+    <!-- 카테고리별 키워드 조회 -->
+    <select id="getKeywordsByCategory" resultMap="IndustryKeywordResultMap">
+        SELECT id, keyword, category, frequency, confidence, is_active, created_at, updated_at, metadata
+        FROM industry_keywords
+        WHERE category = #{category} AND is_active = true
+        ORDER BY frequency DESC, confidence DESC
+    </select>
+
+    <!-- 키워드 검색 -->
+    <select id="searchKeywords" resultMap="IndustryKeywordResultMap">
+        SELECT id, keyword, category, frequency, confidence, is_active, created_at, updated_at, metadata
+        FROM industry_keywords
+        WHERE keyword ILIKE '%' || #{searchTerm} || '%' AND is_active = true
+        ORDER BY frequency DESC, confidence DESC
+        <if test="limit != null">
+            LIMIT #{limit}
+        </if>
+    </select>
+
+    <!-- ====== 키워드 관계 관리 ====== -->
+    
+    <!-- 키워드 관계 upsert -->
+    <insert id="upsertKeywordRelationship" parameterType="com.moneyshift.api.model.KeywordRelationship">
+        INSERT INTO keyword_relationships (source_keyword_id, target_keyword_id, relationship_type, strength, co_occurrence_count, pmi_score, confidence_score, created_at, updated_at)
+        VALUES (
+            (SELECT id FROM industry_keywords WHERE keyword = #{sourceKeyword} LIMIT 1),
+            (SELECT id FROM industry_keywords WHERE keyword = #{targetKeyword} LIMIT 1),
+            #{relationshipType}, #{strength}, #{coOccurrenceCount}, #{pmiScore}, #{confidenceScore}, #{createdAt}, #{updatedAt}
+        )
+        ON CONFLICT (source_keyword_id, target_keyword_id) DO UPDATE SET
+            relationship_type = EXCLUDED.relationship_type,
+            strength = EXCLUDED.strength,
+            co_occurrence_count = EXCLUDED.co_occurrence_count,
+            pmi_score = EXCLUDED.pmi_score,
+            confidence_score = EXCLUDED.confidence_score,
+            updated_at = EXCLUDED.updated_at
+    </insert>
+
+    <!-- 키워드 관계 조회 (ID 기준) -->
+    <select id="getRelationshipById" resultMap="KeywordRelationshipResultMap">
+        SELECT 
+            kr.id, kr.source_keyword_id, kr.target_keyword_id, kr.relationship_type, 
+            kr.strength, kr.co_occurrence_count, kr.pmi_score, kr.confidence_score,
+            kr.created_at, kr.updated_at,
+            sk.keyword as source_keyword, sk.category as source_category,
+            tk.keyword as target_keyword, tk.category as target_category
+        FROM keyword_relationships kr
+        LEFT JOIN industry_keywords sk ON kr.source_keyword_id = sk.id
+        LEFT JOIN industry_keywords tk ON kr.target_keyword_id = tk.id
+        WHERE kr.id = #{id}
+    </select>
+
+    <!-- 두 키워드 간의 관계 조회 -->
+    <select id="getRelationshipByKeywords" resultMap="KeywordRelationshipResultMap">
+        SELECT 
+            kr.id, kr.source_keyword_id, kr.target_keyword_id, kr.relationship_type, 
+            kr.strength, kr.co_occurrence_count, kr.pmi_score, kr.confidence_score,
+            kr.created_at, kr.updated_at,
+            sk.keyword as source_keyword, sk.category as source_category,
+            tk.keyword as target_keyword, tk.category as target_category
+        FROM keyword_relationships kr
+        LEFT JOIN industry_keywords sk ON kr.source_keyword_id = sk.id
+        LEFT JOIN industry_keywords tk ON kr.target_keyword_id = tk.id
+        WHERE (sk.keyword = #{keyword1} AND tk.keyword = #{keyword2})
+           OR (sk.keyword = #{keyword2} AND tk.keyword = #{keyword1})
+    </select>
+
+    <!-- 특정 키워드와 관련된 모든 관계 조회 -->
+    <select id="getRelationshipsByKeyword" resultMap="KeywordRelationshipResultMap">
+        SELECT 
+            kr.id, kr.source_keyword_id, kr.target_keyword_id, kr.relationship_type, 
+            kr.strength, kr.co_occurrence_count, kr.pmi_score, kr.confidence_score,
+            kr.created_at, kr.updated_at,
+            sk.keyword as source_keyword, sk.category as source_category,
+            tk.keyword as target_keyword, tk.category as target_category
+        FROM keyword_relationships kr
+        LEFT JOIN industry_keywords sk ON kr.source_keyword_id = sk.id
+        LEFT JOIN industry_keywords tk ON kr.target_keyword_id = tk.id
+        WHERE sk.keyword = #{keyword} OR tk.keyword = #{keyword}
+        ORDER BY kr.strength DESC, kr.confidence_score DESC
+        <if test="limit != null">
+            LIMIT #{limit}
+        </if>
+    </select>
+
+    <!-- 강도 기준 상위 관계 조회 -->
+    <select id="getTopRelationshipsByStrength" resultMap="KeywordRelationshipResultMap">
+        SELECT 
+            kr.id, kr.source_keyword_id, kr.target_keyword_id, kr.relationship_type, 
+            kr.strength, kr.co_occurrence_count, kr.pmi_score, kr.confidence_score,
+            kr.created_at, kr.updated_at,
+            sk.keyword as source_keyword, sk.category as source_category,
+            tk.keyword as target_keyword, tk.category as target_category
+        FROM keyword_relationships kr
+        LEFT JOIN industry_keywords sk ON kr.source_keyword_id = sk.id
+        LEFT JOIN industry_keywords tk ON kr.target_keyword_id = tk.id
+        ORDER BY kr.strength DESC, kr.confidence_score DESC
+        <if test="limit != null">
+            LIMIT #{limit}
+        </if>
+    </select>
+
+    <!-- 관계 타입별 조회 -->
+    <select id="getRelationshipsByType" resultMap="KeywordRelationshipResultMap">
+        SELECT 
+            kr.id, kr.source_keyword_id, kr.target_keyword_id, kr.relationship_type, 
+            kr.strength, kr.co_occurrence_count, kr.pmi_score, kr.confidence_score,
+            kr.created_at, kr.updated_at,
+            sk.keyword as source_keyword, sk.category as source_category,
+            tk.keyword as target_keyword, tk.category as target_category
+        FROM keyword_relationships kr
+        LEFT JOIN industry_keywords sk ON kr.source_keyword_id = sk.id
+        LEFT JOIN industry_keywords tk ON kr.target_keyword_id = tk.id
+        WHERE kr.relationship_type = #{relationshipType}
+        ORDER BY kr.strength DESC, kr.confidence_score DESC
+        <if test="limit != null">
+            LIMIT #{limit}
+        </if>
+    </select>
+
+    <!-- 모든 키워드 관계 조회 (페이징) -->
+    <select id="getAllRelationships" resultMap="KeywordRelationshipResultMap">
+        SELECT 
+            kr.id, kr.source_keyword_id, kr.target_keyword_id, kr.relationship_type, 
+            kr.strength, kr.co_occurrence_count, kr.pmi_score, kr.confidence_score,
+            kr.created_at, kr.updated_at,
+            sk.keyword as source_keyword, sk.category as source_category,
+            tk.keyword as target_keyword, tk.category as target_category
+        FROM keyword_relationships kr
+        LEFT JOIN industry_keywords sk ON kr.source_keyword_id = sk.id
+        LEFT JOIN industry_keywords tk ON kr.target_keyword_id = tk.id
+        ORDER BY kr.strength DESC, kr.confidence_score DESC
+        <if test="offset != null">
+            OFFSET #{offset}
+        </if>
+        <if test="limit != null">
+            LIMIT #{limit}
+        </if>
+    </select>
+
+    <!-- ====== 통계 및 분석 ====== -->
+    
+    <!-- 키워드 네트워크 통계 -->
+    <select id="getKeywordNetworkStatistics" resultType="Map">
+        SELECT 
+            COUNT(DISTINCT sk.keyword) as total_keywords,
+            COUNT(kr.id) as total_relationships,
+            AVG(kr.strength) as avg_strength,
+            MAX(kr.strength) as max_strength,
+            MIN(kr.strength) as min_strength,
+            AVG(kr.confidence_score) as avg_confidence,
+            COUNT(DISTINCT sk.category) as total_categories
+        FROM keyword_relationships kr
+        LEFT JOIN industry_keywords sk ON kr.source_keyword_id = sk.id
+        LEFT JOIN industry_keywords tk ON kr.target_keyword_id = tk.id
+        WHERE sk.is_active = true AND tk.is_active = true
+    </select>
+
+    <!-- 키워드별 관계 수 통계 -->
+    <select id="getKeywordRelationshipCounts" resultType="Map">
+        WITH keyword_counts AS (
+            SELECT sk.keyword, sk.category, COUNT(*) as relationship_count
+            FROM keyword_relationships kr
+            LEFT JOIN industry_keywords sk ON kr.source_keyword_id = sk.id
+            WHERE sk.is_active = true
+            GROUP BY sk.keyword, sk.category
+            UNION
+            SELECT tk.keyword, tk.category, COUNT(*) as relationship_count
+            FROM keyword_relationships kr
+            LEFT JOIN industry_keywords tk ON kr.target_keyword_id = tk.id
+            WHERE tk.is_active = true
+            GROUP BY tk.keyword, tk.category
+        )
+        SELECT keyword, category, SUM(relationship_count) as total_relationships
+        FROM keyword_counts
+        GROUP BY keyword, category
+        ORDER BY total_relationships DESC
+        <if test="limit != null">
+            LIMIT #{limit}
+        </if>
+    </select>
+
+    <!-- 카테고리별 키워드 분포 -->
+    <select id="getCategoryDistribution" resultType="Map">
+        SELECT 
+            category,
+            COUNT(*) as keyword_count,
+            AVG(frequency) as avg_frequency,
+            AVG(confidence) as avg_confidence
+        FROM industry_keywords
+        WHERE is_active = true
+        GROUP BY category
+        ORDER BY keyword_count DESC
+    </select>
+
+    <!-- 최근 추가된 키워드 -->
+    <select id="getRecentKeywords" resultMap="IndustryKeywordResultMap">
+        SELECT id, keyword, category, frequency, confidence, is_active, created_at, updated_at, metadata
+        FROM industry_keywords
+        WHERE is_active = true
+        ORDER BY created_at DESC
+        <if test="limit != null">
+            LIMIT #{limit}
+        </if>
+    </select>
+
+    <!-- 최근 생성된 관계 -->
+    <select id="getRecentRelationships" resultMap="KeywordRelationshipResultMap">
+        SELECT 
+            kr.id, kr.source_keyword_id, kr.target_keyword_id, kr.relationship_type, 
+            kr.strength, kr.co_occurrence_count, kr.pmi_score, kr.confidence_score,
+            kr.created_at, kr.updated_at,
+            sk.keyword as source_keyword, sk.category as source_category,
+            tk.keyword as target_keyword, tk.category as target_category
+        FROM keyword_relationships kr
+        LEFT JOIN industry_keywords sk ON kr.source_keyword_id = sk.id
+        LEFT JOIN industry_keywords tk ON kr.target_keyword_id = tk.id
+        ORDER BY kr.created_at DESC
+        <if test="limit != null">
+            LIMIT #{limit}
+        </if>
+    </select>
+
+    <!-- ====== 배치 작업 ====== -->
+    
+    <!-- 키워드 배치 삽입 -->
+    <insert id="insertKeywordsBatch" parameterType="java.util.List">
+        INSERT INTO industry_keywords (keyword, category, frequency, confidence, is_active, created_at, updated_at, metadata)
+        VALUES
+        <foreach collection="keywords" item="keyword" separator=",">
+            (#{keyword.keyword}, #{keyword.category}, #{keyword.frequency}, #{keyword.confidence}, 
+             #{keyword.isActive}, #{keyword.createdAt}, #{keyword.updatedAt}, 
+             #{keyword.metadata,typeHandler=com.moneyshift.api.config.JsonTypeHandler})
+        </foreach>
+        ON CONFLICT (keyword) DO UPDATE SET
+            category = EXCLUDED.category,
+            frequency = EXCLUDED.frequency,
+            confidence = EXCLUDED.confidence,
+            is_active = EXCLUDED.is_active,
+            updated_at = EXCLUDED.updated_at,
+            metadata = EXCLUDED.metadata
+    </insert>
+
+    <!-- 관계 배치 삽입 -->
+    <insert id="insertRelationshipsBatch" parameterType="java.util.List">
+        INSERT INTO keyword_relationships (source_keyword_id, target_keyword_id, relationship_type, strength, co_occurrence_count, pmi_score, confidence_score, created_at, updated_at)
+        VALUES
+        <foreach collection="relationships" item="relationship" separator=",">
+            (#{relationship.sourceKeywordId}, #{relationship.targetKeywordId}, #{relationship.relationshipType}, 
+             #{relationship.strength}, #{relationship.coOccurrenceCount}, #{relationship.pmiScore}, #{relationship.confidenceScore},
+             #{relationship.createdAt}, #{relationship.updatedAt})
+        </foreach>
+        ON CONFLICT (source_keyword_id, target_keyword_id) DO UPDATE SET
+            relationship_type = EXCLUDED.relationship_type,
+            strength = EXCLUDED.strength,
+            co_occurrence_count = EXCLUDED.co_occurrence_count,
+            pmi_score = EXCLUDED.pmi_score,
+            confidence_score = EXCLUDED.confidence_score,
+            updated_at = EXCLUDED.updated_at
+    </insert>
+
+    <!-- 키워드 사용 통계 업데이트 -->
+    <update id="updateKeywordUsageStats">
+        UPDATE industry_keywords 
+        SET frequency = frequency + 1, updated_at = NOW()
+        WHERE keyword = #{keyword}
+    </update>
+
+    <!-- ====== 데이터 정리 ====== -->
+    
+    <!-- 낮은 신뢰도 관계 삭제 -->
+    <delete id="deleteWeakRelationships">
+        DELETE FROM keyword_relationships
+        WHERE confidence_score &lt; #{minConfidence}
+    </delete>
+
+    <!-- 사용되지 않는 키워드 삭제 -->
+    <delete id="deleteUnusedKeywords">
+        DELETE FROM industry_keywords
+        WHERE frequency = 0 AND is_active = false
+    </delete>
+
+</mapper>

@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.moneyshift.api.mapper.NationalPensionMapper">
+
+    <!-- 회원 수 기준 상위 업종 조회 -->
+    <select id="getTopIndustriesByMemberCount" resultType="Map">
+        SELECT 
+            industry_name,
+            COUNT(*) as workplace_count,
+            SUM(member_count) as total_members,
+            AVG(member_count) as avg_members_per_workplace,
+            MAX(member_count) as max_members,
+            COUNT(DISTINCT sido_code) as region_count
+        FROM datacollection_national_pension 
+        WHERE workplace_status_code = '1' 
+            AND industry_name IS NOT NULL 
+            AND industry_name != 'BIZ_NO미존재사업장'
+            AND industry_name != '해당없음'
+            AND member_count >= #{minMemberCount}
+        GROUP BY industry_name 
+        HAVING SUM(member_count) >= #{minMemberCount}
+        ORDER BY total_members DESC, workplace_count DESC
+        LIMIT #{limit}
+    </select>
+
+    <!-- 업종별 총 회원 수 조회 -->
+    <select id="getIndustryMemberStatistics" resultType="Map">
+        SELECT 
+            industry_name,
+            industry_code,
+            COUNT(*) as workplace_count,
+            SUM(member_count) as total_members,
+            AVG(member_count) as avg_members,
+            MIN(member_count) as min_members,
+            MAX(member_count) as max_members,
+            STDDEV(member_count) as stddev_members
+        FROM datacollection_national_pension 
+        WHERE workplace_status_code = '1' 
+            AND industry_name IS NOT NULL 
+            AND industry_name != 'BIZ_NO미존재사업장'
+            AND industry_name != '해당없음'
+        GROUP BY industry_name, industry_code
+        ORDER BY total_members DESC
+    </select>
+
+    <!-- 배치 처리용: 모든 업종명 조회 (페이징) -->
+    <select id="getAllIndustryNamesBatch" resultType="String">
+        SELECT DISTINCT industry_name
+        FROM datacollection_national_pension 
+        WHERE workplace_status_code = '1' 
+            AND industry_name IS NOT NULL 
+            AND industry_name != 'BIZ_NO미존재사업장'
+            AND industry_name != '해당없음'
+            AND member_count >= #{minMemberCount}
+        ORDER BY industry_name
+        LIMIT #{batchSize} OFFSET #{offset}
+    </select>
+
+    <!-- 배치 처리용: 총 업종 수 조회 -->
+    <select id="getIndustryCount" resultType="int">
+        SELECT COUNT(DISTINCT industry_name)
+        FROM datacollection_national_pension 
+        WHERE workplace_status_code = '1' 
+            AND industry_name IS NOT NULL 
+            AND industry_name != 'BIZ_NO미존재사업장'
+            AND industry_name != '해당없음'
+            AND member_count >= #{minMemberCount}
+    </select>
+
+    <!-- 배치 처리용: 업종별 상세 정보 조회 -->
+    <select id="getIndustryDetailsBatch" resultType="Map">
+        SELECT 
+            industry_name,
+            industry_code,
+            workplace_name,
+            sido_code as sido_name,
+            sigungu_code as sigungu_name,
+            member_count,
+            business_registration_number
+        FROM datacollection_national_pension 
+        WHERE workplace_status_code = '1' 
+            AND industry_name IN 
+            <foreach collection="industryNames" item="name" open="(" separator="," close=")">
+                #{name}
+            </foreach>
+        ORDER BY industry_name, member_count DESC
+    </select>
+
+    <!-- 활성 사업장의 업종별 통계 -->
+    <select id="getActiveWorkplacesByIndustry" resultType="Map">
+        SELECT 
+            industry_name,
+            COUNT(*) as active_workplaces,
+            SUM(member_count) as total_active_members,
+            AVG(monthly_notice_amount) as avg_notice_amount,
+            COUNT(DISTINCT SUBSTRING(address_road FROM '^[^ ]+')) as region_diversity
+        FROM datacollection_national_pension 
+        WHERE workplace_status_code = '1' 
+            AND industry_name IS NOT NULL 
+            AND industry_name != 'BIZ_NO미존재사업장'
+            AND industry_name != '해당없음'
+        GROUP BY industry_name 
+        HAVING COUNT(*) >= 10  -- 최소 10개 사업장
+        ORDER BY total_active_members DESC
+        LIMIT 50
+    </select>
+
+    <!-- 지역별 업종 분포 -->
+    <select id="getIndustryDistributionByRegion" resultType="Map">
+        SELECT 
+            industry_name,
+            sido_code,
+            COUNT(*) as workplace_count,
+            SUM(member_count) as total_members,
+            AVG(member_count) as avg_members
+        FROM datacollection_national_pension 
+        WHERE workplace_status_code = '1' 
+            AND industry_name IS NOT NULL 
+            AND industry_name != 'BIZ_NO미존재사업장'
+            AND industry_name != '해당없음'
+            <if test="sidoCode != null">
+                AND sido_code = #{sidoCode}
+            </if>
+        GROUP BY industry_name, sido_code
+        HAVING COUNT(*) >= 5  -- 최소 5개 사업장
+        ORDER BY total_members DESC
+    </select>
+
+    <!-- 특정 업종의 상위 사업장 -->
+    <select id="getTopWorkplacesByIndustry" resultType="Map">
+        SELECT 
+            workplace_name,
+            business_registration_number,
+            member_count,
+            monthly_notice_amount,
+            address_road,
+            sido_code,
+            sigungu_code,
+            application_date
+        FROM datacollection_national_pension 
+        WHERE workplace_status_code = '1' 
+            AND industry_name = #{industryName}
+            AND member_count > 0
+        ORDER BY member_count DESC, monthly_notice_amount DESC
+        LIMIT #{limit}
+    </select>
+
+    <!-- 업종 코드별 매핑 정보 -->
+    <select id="getIndustryCodeMapping" resultType="Map">
+        SELECT DISTINCT
+            industry_code,
+            industry_name,
+            COUNT(*) as usage_count,
+            SUM(member_count) as total_members_in_code
+        FROM datacollection_national_pension 
+        WHERE workplace_status_code = '1' 
+            AND industry_name IS NOT NULL 
+            AND industry_code IS NOT NULL
+            AND industry_name != 'BIZ_NO미존재사업장'
+            AND industry_name != '해당없음'
+        GROUP BY industry_code, industry_name
+        ORDER BY industry_code, total_members_in_code DESC
+    </select>
+
+    <!-- 키워드 그래프용 업종 데이터 (빈도와 회원 수 포함) -->
+    <select id="getIndustryDataForKeywordGraph" resultType="Map">
+        SELECT 
+            industry_name,
+            industry_code,
+            COUNT(*) as workplace_frequency,
+            SUM(member_count) as total_members,
+            AVG(member_count) as avg_members_per_workplace,
+            MAX(member_count) as max_workplace_size,
+            COUNT(DISTINCT sido_code) as geographic_spread,
+            -- 키워드 추출용 추가 정보
+            STRING_AGG(DISTINCT SUBSTRING(address_road FROM '^[^ ]+'), ',') as representative_regions,
+            AVG(monthly_notice_amount) as avg_monthly_amount,
+            -- 업종 특성 분석용
+            CASE 
+                WHEN industry_name LIKE '%제조%' OR industry_name LIKE '%생산%' THEN '제조업'
+                WHEN industry_name LIKE '%소프트웨어%' OR industry_name LIKE '%전자%' OR industry_name LIKE '%컴퓨터%' OR industry_name LIKE '%정보%' THEN 'IT'
+                WHEN industry_name LIKE '%건설%' OR industry_name LIKE '%공사%' OR industry_name LIKE '%시공%' THEN '건설'
+                WHEN industry_name LIKE '%도매%' OR industry_name LIKE '%소매%' OR industry_name LIKE '%판매%' THEN '유통'
+                WHEN industry_name LIKE '%서비스%' OR industry_name LIKE '%지원%' OR industry_name LIKE '%상담%' THEN '서비스업'
+                WHEN industry_name LIKE '%의료%' OR industry_name LIKE '%병원%' OR industry_name LIKE '%약%' THEN '의료'
+                WHEN industry_name LIKE '%금융%' OR industry_name LIKE '%보험%' OR industry_name LIKE '%투자%' THEN '금융'
+                WHEN industry_name LIKE '%운송%' OR industry_name LIKE '%물류%' OR industry_name LIKE '%배송%' THEN '운송'
+                WHEN industry_name LIKE '%교육%' OR industry_name LIKE '%학원%' OR industry_name LIKE '%연구%' THEN '교육'
+                ELSE '기타'
+            END as inferred_category,
+            -- 데이터 품질 지표
+            COUNT(*) * SUM(member_count) as relevance_score
+        FROM datacollection_national_pension 
+        WHERE workplace_status_code = '1' 
+            AND industry_name IS NOT NULL 
+            AND industry_name != 'BIZ_NO미존재사업장'
+            AND industry_name != '해당없음'
+            AND member_count >= #{minMemberCount}
+            AND industry_name != ''
+            AND LENGTH(industry_name) >= 3  -- 최소 3글자 업종명
+        GROUP BY industry_name, industry_code
+        HAVING SUM(member_count) >= #{minMemberCount} * 2  -- 충분한 데이터
+            AND COUNT(*) >= 3  -- 최소 3개 사업장
+        ORDER BY relevance_score DESC, total_members DESC
+        LIMIT #{limit}
+    </select>
+
+</mapper>

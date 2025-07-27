@@ -15,6 +15,7 @@ public class KeywordRelationship {
     private BigDecimal strength;
     private Integer coOccurrenceCount;
     private BigDecimal pmiScore;
+    private BigDecimal confidenceScore;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -143,6 +144,39 @@ public class KeywordRelationship {
         this.targetCategory = targetCategory;
     }
 
+    public BigDecimal getConfidenceScore() {
+        return confidenceScore;
+    }
+
+    public void setConfidenceScore(BigDecimal confidenceScore) {
+        this.confidenceScore = confidenceScore;
+    }
+
+    // 편의 메서드 (서비스에서 사용하는 메서드명과 호환)
+    public String getKeyword1() {
+        return sourceKeyword;
+    }
+
+    public void setKeyword1(String keyword1) {
+        this.sourceKeyword = keyword1;
+    }
+
+    public String getKeyword2() {
+        return targetKeyword;
+    }
+
+    public void setKeyword2(String keyword2) {
+        this.targetKeyword = keyword2;
+    }
+
+    public Integer getCooccurrenceCount() {
+        return coOccurrenceCount;
+    }
+
+    public void setCooccurrenceCount(Integer cooccurrenceCount) {
+        this.coOccurrenceCount = cooccurrenceCount;
+    }
+
     @Override
     public String toString() {
         return "KeywordRelationship{" +
@@ -152,6 +186,8 @@ public class KeywordRelationship {
                 ", relationshipType='" + relationshipType + '\'' +
                 ", strength=" + strength +
                 ", coOccurrenceCount=" + coOccurrenceCount +
+                ", sourceKeyword='" + sourceKeyword + '\'' +
+                ", targetKeyword='" + targetKeyword + '\'' +
                 '}';
     }
 }

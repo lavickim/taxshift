@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS regex_preprocessing_rules (
     is_active BOOLEAN DEFAULT true,
     metadata_tags JSONB,
     test_cases JSONB,
+    test_examples TEXT[],
     usage_count BIGINT DEFAULT 0,
     success_rate DECIMAL(5,2),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -64,15 +65,15 @@ INSERT INTO regex_preprocessing_categories (category_name, description, color_co
 ON CONFLICT (category_name) DO NOTHING;
 
 -- 샘플 정규식 전처리 규칙 삽입  
-INSERT INTO regex_preprocessing_rules (rule_name, description, category, input_pattern, output_template, priority, metadata_tags, test_cases) VALUES
-('법인구조_주식회사', '(주) 표시 제거', '법인구조', '\\(주\\)(.+)', '$1', 200, '{"type":"corporate","structure":"corporation"}', '[{"input":"(주)코드쉬프트","expected":"코드쉬프트"}]'),
-('법인구조_유한회사', '(유) 표시 제거', '법인구조', '\\(유\\)(.+)', '$1', 200, '{"type":"corporate","structure":"limited"}', '[{"input":"(유)부자마트","expected":"부자마트"}]'),
-('주유소_상행선', '상행선 주유소 정규화', '주유소', '(.+)\\(상\\)주', '$1 상행선 주유소', 180, '{"type":"gas_station","direction":"upward"}', '[{"input":"(주)부자 충주(상)주","expected":"부자 충주 상행선 주유소"}]'),
-('주유소_하행선', '하행선 주유소 정규화', '주유소', '(.+)\\(하\\)주', '$1 하행선 주유소', 180, '{"type":"gas_station","direction":"downward"}', '[{"input":"SK에너지 서울(하)주","expected":"SK에너지 서울 하행선 주유소"}]'),
-('대형마트_이마트', '이마트 브랜드명 정규화', '대형마트', 'E-?MART|이마트 에브리데이|이마트24', '이마트', 160, '{"type":"mart","brand":"emart"}', '[{"input":"이마트 에브리데이 서","expected":"이마트"}]'),
-('해외서비스_Claude', 'Claude AI 서비스 정규화', '해외서비스', 'CLAUDE\\.AI.*|ANTHROPIC.*', 'Claude AI', 150, '{"type":"subscription","service":"ai"}', '[{"input":"CLAUDE.AI SUBSCRIPTION SAN FRANCISCO USA","expected":"Claude AI"}]'),
-('정부기관_국민연금', '국민연금 기관명 정규화', '정부기관', '국민연금관리공단|국민연금공단', '국민연금', 140, '{"type":"government","service":"pension"}', '[{"input":"국민연금관리공단","expected":"국민연금"}]'),
-('편의점_GS25', 'GS25 브랜드명 정규화', '편의점', 'GS25|GS 25|지에스25', 'GS25', 120, '{"type":"convenience","brand":"gs25"}', '[{"input":"GS25 강남점","expected":"GS25"}]')
+INSERT INTO regex_preprocessing_rules (rule_name, description, category, input_pattern, output_template, priority, metadata_tags, test_cases, test_examples) VALUES
+('법인구조_주식회사', '(주) 표시 제거', '법인구조', '\\(주\\)(.+)', '$1', 200, '{"type":"corporate","structure":"corporation"}', '[{"input":"(주)코드쉬프트","expected":"코드쉬프트"}]', ARRAY['(주)삼성전자', '(주)네이버', '(주)카카오']),
+('법인구조_유한회사', '(유) 표시 제거', '법인구조', '\\(유\\)(.+)', '$1', 200, '{"type":"corporate","structure":"limited"}', '[{"input":"(유)부자마트","expected":"부자마트"}]', ARRAY['(유)부자마트', '(유)한국마트']),
+('주유소_상행선', '상행선 주유소 정규화', '주유소', '(.+)\\(상\\)주', '$1 상행선 주유소', 180, '{"type":"gas_station","direction":"upward"}', '[{"input":"(주)부자 충주(상)주","expected":"부자 충주 상행선 주유소"}]', ARRAY['SK에너지 서울(상)주', '(주)부자 충주(상)주']),
+('주유소_하행선', '하행선 주유소 정규화', '주유소', '(.+)\\(하\\)주', '$1 하행선 주유소', 180, '{"type":"gas_station","direction":"downward"}', '[{"input":"SK에너지 서울(하)주","expected":"SK에너지 서울 하행선 주유소"}]', ARRAY['SK에너지 서울(하)주', '현대오일뱅크 부산(하)주']),
+('대형마트_이마트', '이마트 브랜드명 정규화', '대형마트', 'E-?MART|이마트 에브리데이|이마트24', '이마트', 160, '{"type":"mart","brand":"emart"}', '[{"input":"이마트 에브리데이 서","expected":"이마트"}]', ARRAY['이마트 에브리데이 서', 'E-MART 강남점', '이마트24']),
+('해외서비스_Claude', 'Claude AI 서비스 정규화', '해외서비스', 'CLAUDE\\.AI.*|ANTHROPIC.*', 'Claude AI', 150, '{"type":"subscription","service":"ai"}', '[{"input":"CLAUDE.AI SUBSCRIPTION SAN FRANCISCO USA","expected":"Claude AI"}]', ARRAY['CLAUDE.AI SUBSCRIPTION SAN FRANCISCO USA', 'ANTHROPIC PAYMENT']),
+('정부기관_국민연금', '국민연금 기관명 정규화', '정부기관', '국민연금관리공단|국민연금공단', '국민연금', 140, '{"type":"government","service":"pension"}', '[{"input":"국민연금관리공단","expected":"국민연금"}]', ARRAY['국민연금관리공단', '국민연금공단']),
+('편의점_GS25', 'GS25 브랜드명 정규화', '편의점', 'GS25|GS 25|지에스25', 'GS25', 120, '{"type":"convenience","brand":"gs25"}', '[{"input":"GS25 강남점","expected":"GS25"}]', ARRAY['GS25 강남점', 'GS 25', '지에스25'])
 ON CONFLICT DO NOTHING;
 
 -- 기존 샘플 규칙

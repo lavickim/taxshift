@@ -79,6 +79,15 @@ public class KeywordExtractionResult {
             this.reason = reason;
         }
 
+        // 편의 메서드 (서비스 호환용)
+        public String getSource() {
+            return reason;
+        }
+
+        public void setSource(String source) {
+            this.reason = source;
+        }
+
         @Override
         public String toString() {
             return "ExtractedKeyword{" +

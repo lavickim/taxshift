@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -25,39 +26,39 @@ public class IndustryKeywordExtractionService {
     );
     
     // 산업 분류 사전
-    private static final Map<String, String> INDUSTRY_DICTIONARY = Map.of(
-        "제조", "제조업",
-        "컴퓨터", "IT",
-        "전자", "IT",
-        "소프트웨어", "IT",
-        "자동차", "제조업",
-        "기계", "제조업",
-        "화학", "제조업",
-        "식품", "제조업",
-        "의료", "의료",
-        "교육", "교육",
-        "금융", "금융",
-        "보험", "금융",
-        "건설", "건설",
-        "부동산", "건설",
-        "운송", "운송",
-        "물류", "운송",
-        "유통", "유통",
-        "판매", "유통",
-        "서비스", "서비스업",
-        "음식", "서비스업",
-        "숙박", "서비스업"
-    );
+    private static final Map<String, String> INDUSTRY_DICTIONARY = new HashMap<String, String>() {{
+        put("제조", "제조업");
+        put("컴퓨터", "IT");
+        put("전자", "IT");
+        put("소프트웨어", "IT");
+        put("자동차", "제조업");
+        put("기계", "제조업");
+        put("화학", "제조업");
+        put("식품", "제조업");
+        put("의료", "의료");
+        put("교육", "교육");
+        put("금융", "금융");
+        put("보험", "금융");
+        put("건설", "건설");
+        put("부동산", "건설");
+        put("운송", "운송");
+        put("물류", "운송");
+        put("유통", "유통");
+        put("판매", "유통");
+        put("서비스", "서비스업");
+        put("음식", "서비스업");
+        put("숙박", "서비스업");
+    }};
     
     // 복합어 패턴
-    private static final Map<String, List<String>> COMPOUND_PATTERNS = Map.of(
-        "자동차제조", Arrays.asList("자동차", "제조"),
-        "전자기기", Arrays.asList("전자", "기기"),
-        "소프트웨어개발", Arrays.asList("소프트웨어", "개발"),
-        "식품가공", Arrays.asList("식품", "가공"),
-        "화학제품", Arrays.asList("화학", "제품"),
-        "의료기기", Arrays.asList("의료", "기기")
-    );
+    private static final Map<String, List<String>> COMPOUND_PATTERNS = new HashMap<String, List<String>>() {{
+        put("자동차제조", Arrays.asList("자동차", "제조"));
+        put("전자기기", Arrays.asList("전자", "기기"));
+        put("소프트웨어개발", Arrays.asList("소프트웨어", "개발"));
+        put("식품가공", Arrays.asList("식품", "가공"));
+        put("화학제품", Arrays.asList("화학", "제품"));
+        put("의료기기", Arrays.asList("의료", "기기"));
+    }};
 
     /**
      * 업종명에서 키워드를 추출합니다.
@@ -265,5 +266,207 @@ public class IndustryKeywordExtractionService {
         return industryNames.stream()
                 .map(this::extractKeywords)
                 .collect(Collectors.toList());
+    }
+    
+    // ====== 키워드 관계 분석 기능 (PMI 기반) ======
+    
+    /**
+     * 키워드 간 관계를 분석합니다 (PMI - Pointwise Mutual Information 사용)
+     * 
+     * @param keywordResults 키워드 추출 결과 리스트
+     * @return 키워드 관계 리스트
+     */
+    public List<KeywordRelationship> analyzeKeywordRelationships(List<KeywordExtractionResult> keywordResults) {
+        long startTime = System.currentTimeMillis();
+        
+        // 1. 동시 출현 행렬 계산
+        Map<String, Set<String>> keywordCooccurrence = buildCooccurrenceMatrix(keywordResults);
+        
+        // 2. 키워드 빈도 계산
+        Map<String, Integer> keywordFrequency = calculateKeywordFrequency(keywordResults);
+        
+        // 3. PMI 계산 및 관계 생성
+        List<KeywordRelationship> relationships = new ArrayList<>();
+        int totalDocuments = keywordResults.size();
+        
+        for (Map.Entry<String, Set<String>> entry : keywordCooccurrence.entrySet()) {
+            String keyword1 = entry.getKey();
+            int freq1 = keywordFrequency.get(keyword1);
+            
+            for (String keyword2 : entry.getValue()) {
+                if (keyword1.compareTo(keyword2) < 0) { // 중복 방지
+                    int freq2 = keywordFrequency.get(keyword2);
+                    int cooccurrenceCount = countCooccurrence(keyword1, keyword2, keywordResults);
+                    
+                    // PMI 계산
+                    double pmi = calculatePMI(freq1, freq2, cooccurrenceCount, totalDocuments);
+                    
+                    if (pmi > 0) { // 양의 상관관계만 저장
+                        KeywordRelationship relationship = new KeywordRelationship();
+                        relationship.setKeyword1(keyword1);
+                        relationship.setKeyword2(keyword2);
+                        relationship.setRelationshipType("COOCCURRENCE");
+                        relationship.setStrength(BigDecimal.valueOf(pmi).setScale(4, RoundingMode.HALF_UP));
+                        relationship.setCooccurrenceCount(cooccurrenceCount);
+                        relationship.setConfidenceScore(calculateConfidenceScore(pmi, cooccurrenceCount));
+                        relationship.setCreatedAt(LocalDateTime.now());
+                        relationship.setUpdatedAt(LocalDateTime.now());
+                        
+                        relationships.add(relationship);
+                    }
+                }
+            }
+        }
+        
+        // 4. 강도 기준 정렬 및 상위 관계만 반환
+        return relationships.stream()
+                .sorted((a, b) -> b.getStrength().compareTo(a.getStrength()))
+                .limit(1000) // 상위 1000개 관계만 저장
+                .collect(Collectors.toList());
+    }
+    
+    /**
+     * 동시 출현 행렬 구축
+     */
+    private Map<String, Set<String>> buildCooccurrenceMatrix(List<KeywordExtractionResult> keywordResults) {
+        Map<String, Set<String>> cooccurrenceMatrix = new HashMap<>();
+        
+        for (KeywordExtractionResult result : keywordResults) {
+            List<String> keywords = result.getExtractedKeywords().stream()
+                    .map(ExtractedKeyword::getKeyword)
+                    .collect(Collectors.toList());
+            
+            // 키워드 쌍의 동시 출현 기록
+            for (int i = 0; i < keywords.size(); i++) {
+                String keyword1 = keywords.get(i);
+                cooccurrenceMatrix.putIfAbsent(keyword1, new HashSet<>());
+                
+                for (int j = i + 1; j < keywords.size(); j++) {
+                    String keyword2 = keywords.get(j);
+                    cooccurrenceMatrix.get(keyword1).add(keyword2);
+                    
+                    cooccurrenceMatrix.putIfAbsent(keyword2, new HashSet<>());
+                    cooccurrenceMatrix.get(keyword2).add(keyword1);
+                }
+            }
+        }
+        
+        return cooccurrenceMatrix;
+    }
+    
+    /**
+     * 키워드 빈도 계산
+     */
+    private Map<String, Integer> calculateKeywordFrequency(List<KeywordExtractionResult> keywordResults) {
+        Map<String, Integer> frequency = new HashMap<>();
+        
+        for (KeywordExtractionResult result : keywordResults) {
+            for (ExtractedKeyword keyword : result.getExtractedKeywords()) {
+                frequency.merge(keyword.getKeyword(), 1, Integer::sum);
+            }
+        }
+        
+        return frequency;
+    }
+    
+    /**
+     * 두 키워드의 동시 출현 횟수 계산
+     */
+    private int countCooccurrence(String keyword1, String keyword2, List<KeywordExtractionResult> keywordResults) {
+        int count = 0;
+        
+        for (KeywordExtractionResult result : keywordResults) {
+            Set<String> keywordsInDocument = result.getExtractedKeywords().stream()
+                    .map(ExtractedKeyword::getKeyword)
+                    .collect(Collectors.toSet());
+            
+            if (keywordsInDocument.contains(keyword1) && keywordsInDocument.contains(keyword2)) {
+                count++;
+            }
+        }
+        
+        return count;
+    }
+    
+    /**
+     * PMI (Pointwise Mutual Information) 계산
+     * PMI(x,y) = log2(P(x,y) / (P(x) * P(y)))
+     */
+    private double calculatePMI(int freq1, int freq2, int cooccurrenceCount, int totalDocuments) {
+        double p_x = (double) freq1 / totalDocuments;
+        double p_y = (double) freq2 / totalDocuments;
+        double p_xy = (double) cooccurrenceCount / totalDocuments;
+        
+        if (p_xy == 0 || p_x == 0 || p_y == 0) {
+            return 0.0;
+        }
+        
+        return Math.log(p_xy / (p_x * p_y)) / Math.log(2);
+    }
+    
+    /**
+     * 신뢰도 점수 계산 (PMI와 동시 출현 횟수 기반)
+     */
+    private BigDecimal calculateConfidenceScore(double pmi, int cooccurrenceCount) {
+        // PMI 값과 동시 출현 횟수를 결합한 신뢰도 계산
+        double normalizedPMI = Math.max(0, Math.min(pmi / 10.0, 1.0)); // PMI 정규화 (0-1)
+        double normalizedCount = Math.max(0, Math.min(cooccurrenceCount / 100.0, 1.0)); // 횟수 정규화 (0-1)
+        
+        double confidence = (normalizedPMI * 0.7) + (normalizedCount * 0.3); // 가중평균
+        return BigDecimal.valueOf(confidence).setScale(4, RoundingMode.HALF_UP);
+    }
+    
+    /**
+     * 특정 키워드와 관련된 상위 관계 조회
+     */
+    public List<KeywordRelationship> getTopRelatedKeywords(String targetKeyword, 
+                                                         List<KeywordRelationship> allRelationships, 
+                                                         int limit) {
+        return allRelationships.stream()
+                .filter(rel -> rel.getKeyword1().equals(targetKeyword) || 
+                              rel.getKeyword2().equals(targetKeyword))
+                .sorted((a, b) -> b.getStrength().compareTo(a.getStrength()))
+                .limit(limit)
+                .collect(Collectors.toList());
+    }
+    
+    /**
+     * 키워드 네트워크 통계 계산
+     */
+    public Map<String, Object> calculateNetworkStatistics(List<KeywordRelationship> relationships) {
+        Map<String, Object> stats = new HashMap<>();
+        
+        // 총 관계 수
+        stats.put("totalRelationships", relationships.size());
+        
+        // 고유 키워드 수
+        Set<String> uniqueKeywords = new HashSet<>();
+        for (KeywordRelationship rel : relationships) {
+            uniqueKeywords.add(rel.getKeyword1());
+            uniqueKeywords.add(rel.getKeyword2());
+        }
+        stats.put("uniqueKeywords", uniqueKeywords.size());
+        
+        // 평균 강도
+        double avgStrength = relationships.stream()
+                .mapToDouble(rel -> rel.getStrength().doubleValue())
+                .average()
+                .orElse(0.0);
+        stats.put("averageStrength", BigDecimal.valueOf(avgStrength).setScale(4, RoundingMode.HALF_UP));
+        
+        // 최대/최소 강도
+        OptionalDouble maxStrength = relationships.stream()
+                .mapToDouble(rel -> rel.getStrength().doubleValue())
+                .max();
+        OptionalDouble minStrength = relationships.stream()
+                .mapToDouble(rel -> rel.getStrength().doubleValue())
+                .min();
+        
+        stats.put("maxStrength", maxStrength.isPresent() ? 
+                BigDecimal.valueOf(maxStrength.getAsDouble()).setScale(4, RoundingMode.HALF_UP) : BigDecimal.ZERO);
+        stats.put("minStrength", minStrength.isPresent() ? 
+                BigDecimal.valueOf(minStrength.getAsDouble()).setScale(4, RoundingMode.HALF_UP) : BigDecimal.ZERO);
+        
+        return stats;
     }
 }

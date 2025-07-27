@@ -2,6 +2,7 @@ package com.moneyshift.api.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 /**
  * 업종 키워드 모델
@@ -14,6 +15,8 @@ public class IndustryKeyword {
     private Integer frequency;
     private BigDecimal confidenceScore;
     private String extractionMethod;
+    private Boolean isActive;
+    private Map<String, Object> metadata;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -27,6 +30,7 @@ public class IndustryKeyword {
         this.frequency = frequency;
         this.confidenceScore = confidenceScore;
         this.extractionMethod = "nlp";
+        this.isActive = true;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
@@ -96,6 +100,31 @@ public class IndustryKeyword {
         this.updatedAt = updatedAt;
     }
 
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    public Map<String, Object> getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(Map<String, Object> metadata) {
+        this.metadata = metadata;
+    }
+
+    // 편의 메서드 (서비스 호환용)
+    public BigDecimal getConfidence() {
+        return confidenceScore;
+    }
+
+    public void setConfidence(BigDecimal confidence) {
+        this.confidenceScore = confidence;
+    }
+
     @Override
     public String toString() {
         return "IndustryKeyword{" +
@@ -105,6 +134,7 @@ public class IndustryKeyword {
                 ", frequency=" + frequency +
                 ", confidenceScore=" + confidenceScore +
                 ", extractionMethod='" + extractionMethod + '\'' +
+                ", isActive=" + isActive +
                 '}';
     }
 }

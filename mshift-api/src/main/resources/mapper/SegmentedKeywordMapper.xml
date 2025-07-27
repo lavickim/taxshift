@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.moneyshift.api.mapper.SegmentedKeywordMapper">
+
+    <!-- 세그먼트별 상위 키워드 조회 -->
+    <select id="getTopKeywordsBySegment" resultType="Map">
+        SELECT 
+            keyword,
+            total_count as count,
+            confidence_score as confidence,
+            segment_name as segment,
+            member_count,
+            workplace_count
+        FROM keyword_segments
+        WHERE segment_type = #{segmentType}
+          <if test="segmentName != null and segmentName != ''">
+              AND segment_name = #{segmentName}
+          </if>
+        ORDER BY total_count DESC, confidence_score DESC
+        LIMIT #{limit}
+    </select>
+
+    <!-- 키워드 관련어 조회 -->
+    <select id="getRelatedKeywords" resultType="Map">
+        SELECT 
+            CASE 
+                WHEN keyword1 = #{keyword} THEN keyword2
+                ELSE keyword1
+            END as related_keyword,
+            relationship_strength as strength,
+            co_occurrence_count as co_occurrence,
+            pmi_score
+        FROM keyword_relationships_summary
+        WHERE (keyword1 = #{keyword} OR keyword2 = #{keyword})
+          AND segment_filter = 'all'
+        ORDER BY relationship_strength DESC
+        LIMIT #{limit}
+    </select>
+
+    <!-- 세그먼트 통계 조회 -->
+    <select id="getSegmentStatistics" resultType="Map">
+        SELECT 
+            segment_type,
+            COUNT(DISTINCT segment_name) as segment_count,
+            COUNT(*) as keyword_count,
+            ROUND(AVG(confidence_score), 3) as avg_confidence,
+            SUM(total_count) as total_frequency,
+            MAX(total_count) as max_frequency
+        FROM keyword_segments
+        GROUP BY segment_type
+        ORDER BY keyword_count DESC
+    </select>
+
+    <!-- 세그먼트 목록 조회 -->
+    <select id="getSegmentList" resultType="Map">
+        SELECT 
+            segment_name,
+            COUNT(*) as keyword_count,
+            SUM(total_count) as total_frequency,
+            ROUND(AVG(confidence_score), 3) as avg_confidence
+        FROM keyword_segments
+        WHERE segment_type = #{segmentType}
+        GROUP BY segment_name
+        ORDER BY total_frequency DESC
+    </select>
+
+    <!-- 특정 세그먼트의 키워드 수 조회 -->
+    <select id="getKeywordCountBySegment" resultType="int">
+        SELECT COUNT(*)
+        FROM keyword_segments
+        WHERE segment_type = #{segmentType}
+          AND segment_name = #{segmentName}
+    </select>
+
+    <!-- 키워드 검색 (세그먼트 필터링 지원) -->
+    <select id="searchKeywords" resultType="Map">
+        SELECT 
+            keyword,
+            segment_type,
+            segment_name,
+            total_count as count,
+            confidence_score as confidence,
+            member_count,
+            workplace_count
+        FROM keyword_segments
+        WHERE keyword LIKE CONCAT('%', #{searchTerm}, '%')
+          <if test="segmentType != null and segmentType != ''">
+              AND segment_type = #{segmentType}
+          </if>
+          <if test="segmentName != null and segmentName != ''">
+              AND segment_name = #{segmentName}
+          </if>
+        ORDER BY total_count DESC, confidence_score DESC
+        LIMIT #{limit}
+    </select>
+
+    <!-- 세그먼트별 키워드 관계 조회 -->
+    <select id="getSegmentKeywordRelationships" resultType="Map">
+        WITH segment_keywords AS (
+            SELECT DISTINCT keyword
+            FROM keyword_segments
+            WHERE segment_type = #{segmentType}
+              <if test="segmentName != null and segmentName != ''">
+                  AND segment_name = #{segmentName}
+              </if>
+        )
+        SELECT 
+            krs.keyword1,
+            krs.keyword2,
+            krs.relationship_strength as strength,
+            krs.co_occurrence_count as co_occurrence,
+            krs.pmi_score
+        FROM keyword_relationships_summary krs
+        WHERE (krs.keyword1 IN (SELECT keyword FROM segment_keywords)
+               OR krs.keyword2 IN (SELECT keyword FROM segment_keywords))
+          AND krs.segment_filter = 'all'
+        ORDER BY krs.relationship_strength DESC
+        LIMIT #{limit}
+    </select>
+
+    <!-- 세그먼트 통계 대시보드용 상세 정보 -->
+    <select id="getSegmentDashboardStats" resultType="Map">
+        SELECT 
+            segment_type,
+            segment_name,
+            COUNT(*) as keyword_count,
+            SUM(total_count) as total_frequency,
+            AVG(confidence_score) as avg_confidence,
+            MAX(total_count) as top_keyword_frequency,
+            SUM(member_count) as total_members,
+            COUNT(DISTINCT 
+                CASE WHEN total_count >= 10 THEN keyword END
+            ) as high_frequency_keywords
+        FROM keyword_segments
+        GROUP BY segment_type, segment_name
+        ORDER BY segment_type, total_frequency DESC
+    </select>
+
+    <!-- 카테고리별 키워드 분포 (차트용) -->
+    <select id="getCategoryKeywordDistribution" resultType="Map">
+        SELECT 
+            segment_name as category,
+            COUNT(*) as keyword_count,
+            SUM(total_count) as total_frequency,
+            ROUND(AVG(confidence_score), 3) as avg_confidence
+        FROM keyword_segments
+        WHERE segment_type = 'category'
+        GROUP BY segment_name
+        ORDER BY total_frequency DESC
+        LIMIT 15
+    </select>
+
+    <!-- 지역별 키워드 분포 (차트용) -->
+    <select id="getRegionKeywordDistribution" resultType="Map">
+        SELECT 
+            segment_name as region_code,
+            CASE 
+                WHEN segment_name = '11' THEN '서울특별시'
+                WHEN segment_name = '26' THEN '부산광역시'
+                WHEN segment_name = '27' THEN '대구광역시'
+                WHEN segment_name = '28' THEN '인천광역시'
+                WHEN segment_name = '29' THEN '광주광역시'
+                WHEN segment_name = '30' THEN '대전광역시'
+                WHEN segment_name = '31' THEN '울산광역시'
+                WHEN segment_name = '41' THEN '경기도'
+                WHEN segment_name = '42' THEN '강원도'
+                WHEN segment_name = '43' THEN '충청북도'
+                WHEN segment_name = '44' THEN '충청남도'
+                WHEN segment_name = '45' THEN '전라북도'
+                WHEN segment_name = '46' THEN '전라남도'
+                WHEN segment_name = '47' THEN '경상북도'
+                WHEN segment_name = '48' THEN '경상남도'
+                WHEN segment_name = '50' THEN '제주특별자치도'
+                ELSE segment_name
+            END as region_name,
+            COUNT(*) as keyword_count,
+            SUM(total_count) as total_frequency,
+            SUM(member_count) as total_members
+        FROM keyword_segments
+        WHERE segment_type = 'region'
+        GROUP BY segment_name
+        ORDER BY total_frequency DESC
+    </select>
+
+    <!-- 빈도별 키워드 분포 (차트용) -->
+    <select id="getFrequencyKeywordDistribution" resultType="Map">
+        SELECT 
+            segment_name as frequency_level,
+            COUNT(*) as keyword_count,
+            SUM(total_count) as total_frequency,
+            MIN(total_count) as min_frequency,
+            MAX(total_count) as max_frequency,
+            ROUND(AVG(total_count), 2) as avg_frequency
+        FROM keyword_segments
+        WHERE segment_type = 'frequency'
+        GROUP BY segment_name
+        ORDER BY 
+            CASE segment_name
+                WHEN 'TOP' THEN 1
+                WHEN 'HIGH' THEN 2
+                WHEN 'MEDIUM' THEN 3
+                WHEN 'LOW' THEN 4
+                ELSE 5
+            END
+    </select>
+
+</mapper>

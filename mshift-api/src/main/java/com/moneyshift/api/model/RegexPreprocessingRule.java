@@ -47,6 +47,9 @@ public class RegexPreprocessingRule {
     @JsonProperty("testCases")
     private List<TestCase> testCases;
     
+    @JsonProperty("testExamples")
+    private List<String> testExamples;
+    
     @JsonProperty("usageCount")
     private Long usageCount;
     

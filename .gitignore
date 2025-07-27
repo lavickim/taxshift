@@ -155,6 +155,9 @@ data/source/*
 *.dump
 *.sql.gz
 
+# Raw data collection directory
+mshift-data/
+
 # Script generated files
 analyze-*.js
 apply-*.js
