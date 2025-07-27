@@ -112,7 +112,7 @@ export function AdminDashboardLayout() {
               onClick={() => setActiveTab('test-and-rule-expansion')}
             >
               <CheckCircle className='mr-2 h-4 w-4' />
-              테스트/엔진데이터 확장
+              거래 테스트 시스템
             </Button>
             <Button
               variant={activeTab === 'integrated-test' ? 'secondary' : 'ghost'}
