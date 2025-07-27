@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.moneyshift.api.mapper.TransactionTestDataMapper">
+
+    <!-- Result Map for TransactionTestData -->
+    <resultMap id="TransactionTestDataResult" type="com.moneyshift.api.model.TransactionTestData">
+        <id property="id" column="id"/>
+        <result property="transactionText" column="transaction_text"/>
+        <result property="amount" column="amount"/>
+        <result property="transactionDate" column="transaction_date"/>
+        <result property="sourceType" column="source_type"/>
+        <result property="expectedCategory" column="expected_category"/>
+        <result property="expectedAccountCode" column="expected_account_code"/>
+        <result property="expectedDescription" column="expected_description"/>
+        <result property="expectedCompanyName" column="expected_company_name"/>
+        <result property="expectedKeywords" column="expected_keywords" typeHandler="com.moneyshift.api.config.StringArrayTypeHandler"/>
+        <result property="testCategory" column="test_category"/>
+        <result property="businessType" column="business_type"/>
+        <result property="region" column="region"/>
+        <result property="difficultyLevel" column="difficulty_level"/>
+        <result property="testTags" column="test_tags" typeHandler="com.moneyshift.api.config.StringArrayTypeHandler"/>
+        <result property="processingResults" column="processing_results" typeHandler="com.moneyshift.api.config.JsonTypeHandler"/>
+        <result property="testPassed" column="test_passed"/>
+        <result property="testScore" column="test_score"/>
+        <result property="testNotes" column="test_notes"/>
+        <result property="lastTestedAt" column="last_tested_at"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <!-- Result Map for TestBatchExecution -->
+    <resultMap id="TestBatchExecutionResult" type="com.moneyshift.api.model.TestBatchExecution">
+        <id property="id" column="id"/>
+        <result property="batchName" column="batch_name"/>
+        <result property="testDataCount" column="test_data_count"/>
+        <result property="executionStatus" column="execution_status"/>
+        <result property="startTime" column="start_time"/>
+        <result property="endTime" column="end_time"/>
+        <result property="totalProcessingTimeMs" column="total_processing_time_ms"/>
+        <result property="passedCount" column="passed_count"/>
+        <result property="failedCount" column="failed_count"/>
+        <result property="successRate" column="success_rate"/>
+        <result property="averageScore" column="average_score"/>
+        <result property="layer0Hits" column="layer_0_hits"/>
+        <result property="layer1Hits" column="layer_1_hits"/>
+        <result property="layer2Hits" column="layer_2_hits"/>
+        <result property="layer3Hits" column="layer_3_hits"/>
+        <result property="layerPerformance" column="layer_performance" typeHandler="com.moneyshift.api.config.JsonTypeHandler"/>
+        <result property="errorPatterns" column="error_patterns" typeHandler="com.moneyshift.api.config.JsonTypeHandler"/>
+        <result property="improvementSuggestions" column="improvement_suggestions" typeHandler="com.moneyshift.api.config.StringArrayTypeHandler"/>
+        <result property="executionNotes" column="execution_notes"/>
+        <result property="createdBy" column="created_by"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <!-- ==================== -->
+    <!-- 기본 CRUD 작업 -->
+    <!-- ==================== -->
+
+    <!-- 테스트 데이터 전체 조회 (페이징 지원) -->
+    <select id="findAll" resultMap="TransactionTestDataResult">
+        SELECT * FROM transaction_test_data
+        <where>
+            <if test="sourceType != null and sourceType != ''">
+                AND source_type = #{sourceType}
+            </if>
+            <if test="testCategory != null and testCategory != ''">
+                AND test_category = #{testCategory}
+            </if>
+            <if test="difficultyLevel != null">
+                AND difficulty_level = #{difficultyLevel}
+            </if>
+        </where>
+        ORDER BY id ASC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 테스트 데이터 개별 조회 -->
+    <select id="findById" resultMap="TransactionTestDataResult">
+        SELECT * FROM transaction_test_data WHERE id = #{id}
+    </select>
+
+    <!-- 테스트 데이터 전체 개수 조회 -->
+    <select id="countAll" resultType="int">
+        SELECT COUNT(*) FROM transaction_test_data
+        <where>
+            <if test="sourceType != null and sourceType != ''">
+                AND source_type = #{sourceType}
+            </if>
+            <if test="testCategory != null and testCategory != ''">
+                AND test_category = #{testCategory}
+            </if>
+            <if test="difficultyLevel != null">
+                AND difficulty_level = #{difficultyLevel}
+            </if>
+        </where>
+    </select>
+
+    <!-- 테스트 데이터 생성 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO transaction_test_data (
+            transaction_text, amount, transaction_date, source_type,
+            expected_category, expected_account_code, expected_description, expected_company_name,
+            expected_keywords, test_category, business_type, region, difficulty_level, test_tags,
+            processing_results, test_passed, test_score, test_notes, created_at, updated_at
+        ) VALUES (
+            #{transactionText}, #{amount}, #{transactionDate}, #{sourceType},
+            #{expectedCategory}, #{expectedAccountCode}, #{expectedDescription}, #{expectedCompanyName},
+            #{expectedKeywords, typeHandler=com.moneyshift.api.config.StringArrayTypeHandler},
+            #{testCategory}, #{businessType}, #{region}, #{difficultyLevel},
+            #{testTags, typeHandler=com.moneyshift.api.config.StringArrayTypeHandler},
+            #{processingResults, typeHandler=com.moneyshift.api.config.JsonTypeHandler},
+            #{testPassed}, #{testScore}, #{testNotes}, NOW(), NOW()
+        )
+    </insert>
+
+    <!-- 테스트 데이터 수정 -->
+    <update id="update">
+        UPDATE transaction_test_data SET
+            transaction_text = #{transactionText},
+            amount = #{amount},
+            transaction_date = #{transactionDate},
+            source_type = #{sourceType},
+            expected_category = #{expectedCategory},
+            expected_account_code = #{expectedAccountCode},
+            expected_description = #{expectedDescription},
+            expected_company_name = #{expectedCompanyName},
+            expected_keywords = #{expectedKeywords, typeHandler=com.moneyshift.api.config.StringArrayTypeHandler},
+            test_category = #{testCategory},
+            business_type = #{businessType},
+            region = #{region},
+            difficulty_level = #{difficultyLevel},
+            test_tags = #{testTags, typeHandler=com.moneyshift.api.config.StringArrayTypeHandler},
+            processing_results = #{processingResults, typeHandler=com.moneyshift.api.config.JsonTypeHandler},
+            test_passed = #{testPassed},
+            test_score = #{testScore},
+            test_notes = #{testNotes},
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <!-- 테스트 데이터 삭제 -->
+    <delete id="deleteById">
+        DELETE FROM transaction_test_data WHERE id = #{id}
+    </delete>
+
+    <!-- 테스트 데이터 일괄 삭제 -->
+    <delete id="deleteByIds">
+        DELETE FROM transaction_test_data WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- ==================== -->
+    <!-- 검색 및 필터링 -->
+    <!-- ==================== -->
+
+    <!-- 텍스트 검색 -->
+    <select id="searchByText" resultMap="TransactionTestDataResult">
+        SELECT * FROM transaction_test_data
+        WHERE transaction_text ILIKE '%' || #{searchText} || '%'
+           OR expected_company_name ILIKE '%' || #{searchText} || '%'
+           OR expected_description ILIKE '%' || #{searchText} || '%'
+        ORDER BY id ASC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 날짜 범위로 검색 -->
+    <select id="findByDateRange" resultMap="TransactionTestDataResult">
+        SELECT * FROM transaction_test_data
+        WHERE transaction_date BETWEEN #{startDate} AND #{endDate}
+        ORDER BY transaction_date ASC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 금액 범위로 검색 -->
+    <select id="findByAmountRange" resultMap="TransactionTestDataResult">
+        SELECT * FROM transaction_test_data
+        WHERE amount BETWEEN #{minAmount}::decimal AND #{maxAmount}::decimal
+        ORDER BY amount ASC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 비즈니스 타입별 조회 -->
+    <select id="findByBusinessType" resultMap="TransactionTestDataResult">
+        SELECT * FROM transaction_test_data
+        WHERE business_type = #{businessType}
+        ORDER BY id ASC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 지역별 조회 -->
+    <select id="findByRegion" resultMap="TransactionTestDataResult">
+        SELECT * FROM transaction_test_data
+        WHERE region = #{region}
+        ORDER BY id ASC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- ==================== -->
+    <!-- 테스트 결과 관리 -->
+    <!-- ==================== -->
+
+    <!-- 테스트 결과 업데이트 -->
+    <update id="updateTestResult">
+        UPDATE transaction_test_data SET
+            processing_results = #{processingResults, typeHandler=com.moneyshift.api.config.JsonTypeHandler},
+            test_passed = #{testPassed},
+            test_score = #{testScore}::decimal,
+            test_notes = #{testNotes},
+            last_tested_at = NOW(),
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <!-- 테스트 통과/실패 상태별 조회 -->
+    <select id="findByTestStatus" resultMap="TransactionTestDataResult">
+        SELECT * FROM transaction_test_data
+        WHERE test_passed = #{testPassed}
+        ORDER BY last_tested_at DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 점수 범위별 조회 -->
+    <select id="findByScoreRange" resultMap="TransactionTestDataResult">
+        SELECT * FROM transaction_test_data
+        WHERE test_score BETWEEN #{minScore}::decimal AND #{maxScore}::decimal
+        ORDER BY test_score DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- ==================== -->
+    <!-- 통계 및 분석 -->
+    <!-- ==================== -->
+
+    <!-- 기본 통계 조회 -->
+    <select id="getBasicStatistics" resultType="map">
+        SELECT 
+            COUNT(*) as total_records,
+            COUNT(*) FILTER (WHERE source_type = 'BANK') as bank_transactions,
+            COUNT(*) FILTER (WHERE source_type = 'CARD') as card_transactions,
+            COUNT(DISTINCT test_category) as unique_categories,
+            COUNT(DISTINCT business_type) as unique_business_types,
+            COUNT(DISTINCT region) as unique_regions,
+            MIN(amount) as min_amount,
+            MAX(amount) as max_amount,
+            ROUND(AVG(amount)::numeric, 2) as avg_amount,
+            COUNT(*) FILTER (WHERE difficulty_level = 1) as easy_cases,
+            COUNT(*) FILTER (WHERE difficulty_level = 2) as medium_cases,
+            COUNT(*) FILTER (WHERE difficulty_level = 3) as hard_cases,
+            COUNT(*) FILTER (WHERE difficulty_level = 4) as very_hard_cases,
+            COUNT(*) FILTER (WHERE test_passed = true) as passed_tests,
+            COUNT(*) FILTER (WHERE test_passed = false) as failed_tests,
+            COUNT(*) FILTER (WHERE test_passed IS NOT NULL) as tested_count,
+            ROUND(AVG(test_score)::numeric, 2) as avg_test_score
+        FROM transaction_test_data
+    </select>
+
+    <!-- 소스 타입별 통계 -->
+    <select id="getStatisticsBySourceType" resultType="map">
+        SELECT 
+            source_type,
+            COUNT(*) as count,
+            ROUND(AVG(amount)::numeric, 2) as avg_amount,
+            MIN(amount) as min_amount,
+            MAX(amount) as max_amount,
+            COUNT(*) FILTER (WHERE test_passed = true) as passed_count,
+            COUNT(*) FILTER (WHERE test_passed = false) as failed_count,
+            ROUND(AVG(test_score)::numeric, 2) as avg_score
+        FROM transaction_test_data
+        GROUP BY source_type
+        ORDER BY count DESC
+    </select>
+
+    <!-- 테스트 카테고리별 통계 -->
+    <select id="getStatisticsByTestCategory" resultType="map">
+        SELECT 
+            test_category,
+            COUNT(*) as count,
+            ROUND(AVG(amount)::numeric, 2) as avg_amount,
+            COUNT(*) FILTER (WHERE test_passed = true) as passed_count,
+            COUNT(*) FILTER (WHERE test_passed = false) as failed_count,
+            ROUND(AVG(test_score)::numeric, 2) as avg_score
+        FROM transaction_test_data
+        GROUP BY test_category
+        ORDER BY count DESC
+    </select>
+
+    <!-- 난이도별 통계 -->
+    <select id="getStatisticsByDifficultyLevel" resultType="map">
+        SELECT 
+            difficulty_level,
+            COUNT(*) as count,
+            ROUND(AVG(amount)::numeric, 2) as avg_amount,
+            COUNT(*) FILTER (WHERE test_passed = true) as passed_count,
+            COUNT(*) FILTER (WHERE test_passed = false) as failed_count,
+            ROUND(AVG(test_score)::numeric, 2) as avg_score
+        FROM transaction_test_data
+        GROUP BY difficulty_level
+        ORDER BY difficulty_level ASC
+    </select>
+
+    <!-- 지역별 통계 -->
+    <select id="getStatisticsByRegion" resultType="map">
+        SELECT 
+            region,
+            COUNT(*) as count,
+            ROUND(AVG(amount)::numeric, 2) as avg_amount,
+            COUNT(*) FILTER (WHERE test_passed = true) as passed_count,
+            COUNT(*) FILTER (WHERE test_passed = false) as failed_count,
+            ROUND(AVG(test_score)::numeric, 2) as avg_score
+        FROM transaction_test_data
+        GROUP BY region
+        ORDER BY count DESC
+        LIMIT 20
+    </select>
+
+    <!-- 비즈니스 타입별 통계 -->
+    <select id="getStatisticsByBusinessType" resultType="map">
+        SELECT 
+            business_type,
+            COUNT(*) as count,
+            ROUND(AVG(amount)::numeric, 2) as avg_amount,
+            COUNT(*) FILTER (WHERE test_passed = true) as passed_count,
+            COUNT(*) FILTER (WHERE test_passed = false) as failed_count,
+            ROUND(AVG(test_score)::numeric, 2) as avg_score
+        FROM transaction_test_data
+        GROUP BY business_type
+        ORDER BY count DESC
+        LIMIT 20
+    </select>
+
+    <!-- 테스트 성과 통계 -->
+    <select id="getTestPerformanceStatistics" resultType="map">
+        SELECT 
+            COUNT(*) FILTER (WHERE test_passed IS NOT NULL) as total_tested,
+            COUNT(*) FILTER (WHERE test_passed = true) as total_passed,
+            COUNT(*) FILTER (WHERE test_passed = false) as total_failed,
+            ROUND(COUNT(*) FILTER (WHERE test_passed = true) * 100.0 / NULLIF(COUNT(*) FILTER (WHERE test_passed IS NOT NULL), 0), 2) as success_rate,
+            ROUND(AVG(test_score)::numeric, 2) as overall_avg_score,
+            MIN(test_score) as min_score,
+            MAX(test_score) as max_score,
+            COUNT(*) FILTER (WHERE test_score &gt;= 0.9) as excellent_count,
+            COUNT(*) FILTER (WHERE test_score &gt;= 0.7 AND test_score &lt; 0.9) as good_count,
+            COUNT(*) FILTER (WHERE test_score &gt;= 0.5 AND test_score &lt; 0.7) as fair_count,
+            COUNT(*) FILTER (WHERE test_score &lt; 0.5) as poor_count
+        FROM transaction_test_data
+        WHERE test_passed IS NOT NULL
+    </select>
+
+    <!-- ==================== -->
+    <!-- 배치 실행 관리 -->
+    <!-- ==================== -->
+
+    <!-- 배치 실행 생성 -->
+    <insert id="insertBatchExecution" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO test_batch_execution (
+            batch_name, test_data_count, execution_status, start_time, created_by, created_at
+        ) VALUES (
+            #{batchName}, #{testDataCount}, #{executionStatus}, #{startTime}, #{createdBy}, NOW()
+        )
+    </insert>
+
+    <!-- 배치 실행 상태 업데이트 -->
+    <update id="updateBatchExecutionStatus">
+        UPDATE test_batch_execution SET
+            execution_status = #{executionStatus},
+            end_time = #{endTime}::timestamp,
+            total_processing_time_ms = #{totalProcessingTimeMs}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 배치 실행 결과 업데이트 -->
+    <update id="updateBatchExecutionResults">
+        UPDATE test_batch_execution SET
+            passed_count = #{passedCount},
+            failed_count = #{failedCount},
+            success_rate = #{successRate}::decimal,
+            average_score = #{averageScore}::decimal,
+            layer_0_hits = #{layer0Hits},
+            layer_1_hits = #{layer1Hits},
+            layer_2_hits = #{layer2Hits},
+            layer_3_hits = #{layer3Hits},
+            layer_performance = #{layerPerformance, typeHandler=com.moneyshift.api.config.JsonTypeHandler},
+            error_patterns = #{errorPatterns, typeHandler=com.moneyshift.api.config.JsonTypeHandler}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 배치 실행 이력 조회 -->
+    <select id="findBatchExecutions" resultMap="TestBatchExecutionResult">
+        SELECT * FROM test_batch_execution
+        ORDER BY created_at DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 배치 실행 개별 조회 -->
+    <select id="findBatchExecutionById" resultMap="TestBatchExecutionResult">
+        SELECT * FROM test_batch_execution WHERE id = #{id}
+    </select>
+
+    <!-- 배치 실행 삭제 -->
+    <delete id="deleteBatchExecutionById">
+        DELETE FROM test_batch_execution WHERE id = #{id}
+    </delete>
+
+    <!-- ==================== -->
+    <!-- 대량 작업 -->
+    <!-- ==================== -->
+
+    <!-- 대량 테스트 데이터 삽입 -->
+    <insert id="insertBatch">
+        INSERT INTO transaction_test_data (
+            transaction_text, amount, transaction_date, source_type,
+            expected_category, expected_account_code, expected_description, expected_company_name,
+            expected_keywords, test_category, business_type, region, difficulty_level, test_tags,
+            created_at, updated_at
+        ) VALUES
+        <foreach collection="testDataList" item="item" separator=",">
+            (
+                #{item.transactionText}, #{item.amount}, #{item.transactionDate}, #{item.sourceType},
+                #{item.expectedCategory}, #{item.expectedAccountCode}, #{item.expectedDescription}, 
+                #{item.expectedCompanyName},
+                #{item.expectedKeywords, typeHandler=com.moneyshift.api.config.StringArrayTypeHandler},
+                #{item.testCategory}, #{item.businessType}, #{item.region}, #{item.difficultyLevel},
+                #{item.testTags, typeHandler=com.moneyshift.api.config.StringArrayTypeHandler},
+                NOW(), NOW()
+            )
+        </foreach>
+    </insert>
+
+    <!-- 테스트 데이터 초기화 (전체 삭제) -->
+    <delete id="truncateTestData">
+        TRUNCATE TABLE transaction_test_data RESTART IDENTITY CASCADE
+    </delete>
+
+    <!-- 특정 조건의 테스트 데이터 일괄 업데이트 -->
+    <update id="updateBatchByCondition">
+        UPDATE transaction_test_data SET
+        <foreach collection="updateFields" index="key" item="value" separator=",">
+            ${key} = #{value}
+        </foreach>
+        , updated_at = NOW()
+        <where>
+            <if test="sourceType != null and sourceType != ''">
+                AND source_type = #{sourceType}
+            </if>
+            <if test="testCategory != null and testCategory != ''">
+                AND test_category = #{testCategory}
+            </if>
+        </where>
+    </update>
+
+</mapper>
