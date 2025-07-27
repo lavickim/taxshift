@@ -2,7 +2,7 @@ const { PrismaClient } = require('./lib/generated/prisma');
 
 async function checkBrandDetails() {
   const prisma = new PrismaClient();
-  
+
   try {
     const brand = await prisma.franchiseBrands.findUnique({
       where: { id: 12079 },
@@ -20,13 +20,13 @@ async function checkBrandDetails() {
         testPassed: true,
         lastTestAt: true,
         testResult: true,
-        tagGenerationReason: true
-      }
+        tagGenerationReason: true,
+      },
     });
-    
+
     console.log('오로지라멘 브랜드 전체 데이터:');
     console.log(JSON.stringify(brand, null, 2));
-    
+
     // 라멘 관련 다른 브랜드들 확인
     const ramenBrands = await prisma.franchiseBrands.findMany({
       where: {
@@ -34,8 +34,8 @@ async function checkBrandDetails() {
           { brandName: { contains: '라멘', mode: 'insensitive' } },
           { brandName: { contains: '라면', mode: 'insensitive' } },
           { mainProduct: { contains: '라멘', mode: 'insensitive' } },
-          { mainProduct: { contains: '라면', mode: 'insensitive' } }
-        ]
+          { mainProduct: { contains: '라면', mode: 'insensitive' } },
+        ],
       },
       select: {
         id: true,
@@ -43,16 +43,17 @@ async function checkBrandDetails() {
         primaryTag: true,
         secondaryTag: true,
         tertiaryTag: true,
-        testPassed: true
+        testPassed: true,
       },
-      take: 10
+      take: 10,
     });
-    
+
     console.log('\n라멘 관련 다른 브랜드들:');
     ramenBrands.forEach(b => {
-      console.log(`${b.brandName}: [${b.primaryTag}, ${b.secondaryTag}, ${b.tertiaryTag}] - 테스트: ${b.testPassed}`);
+      console.log(
+        `${b.brandName}: [${b.primaryTag}, ${b.secondaryTag}, ${b.tertiaryTag}] - 테스트: ${b.testPassed}`
+      );
     });
-    
   } catch (error) {
     console.error('Error:', error);
   } finally {

@@ -64,8 +64,10 @@ function createFailedBrandAnalysisPrompt(brand) {
 
 // 키워드 그룹 확장 프롬프트
 function createGroupExpansionPrompt(failedBrands, category) {
-  const brandList = failedBrands.map(b => `${b.brandName} (${b.mainProduct || '미상'})`).join('\n');
-  
+  const brandList = failedBrands
+    .map(b => `${b.brandName} (${b.mainProduct || '미상'})`)
+    .join('\n');
+
   return `
 당신은 한국 키워드 시스템 아키텍트입니다. ${category} 카테고리에서 분류 실패하는 브랜드들을 분석하여 
 키워드 그룹을 확장해주세요.
@@ -124,13 +126,15 @@ ${brandList}
 // 실패 브랜드 개별 분석
 async function analyzeFailedBrand(brand) {
   console.log(`\n🔍 실패 브랜드 분석: ${brand.brandName}`);
-  
+
   const prompt = createFailedBrandAnalysisPrompt(brand);
   const analysis = await simulateFailedBrandAnalysis(prompt, brand);
-  
+
   console.log(`   ✓ 분석 완료: ${analysis.recommendedTag} 태그 추천`);
-  console.log(`   ✓ 핵심 키워드: ${analysis.brandAnalysis.coreKeywords.join(', ')}`);
-  
+  console.log(
+    `   ✓ 핵심 키워드: ${analysis.brandAnalysis.coreKeywords.join(', ')}`
+  );
+
   return analysis;
 }
 
@@ -139,16 +143,16 @@ async function simulateFailedBrandAnalysis(prompt, brand) {
   const brandName = brand.brandName;
   const mainProduct = brand.mainProduct || '';
   const category = brand.industryMediumCategory || '';
-  
+
   // 브랜드명 분석
   const coreKeywords = [brandName];
   const brandVariations = [brandName];
-  
+
   // 주요상품 기반 분석
   let recommendedTag = '음식점기타';
   let productKeywords = [];
-  let confidenceBase = 0.70;
-  
+  let confidenceBase = 0.7;
+
   if (mainProduct.includes('냉면') || brandName.includes('냉면')) {
     recommendedTag = '한식전문점';
     productKeywords = ['냉면', '물냉면', '비빔냉면', '국수'];
@@ -169,12 +173,20 @@ async function simulateFailedBrandAnalysis(prompt, brand) {
     productKeywords = ['피자', 'PIZZA', 'pizza'];
     coreKeywords.push('피자');
     confidenceBase = 0.91;
-  } else if (mainProduct.includes('치킨') || brandName.includes('치킨') || mainProduct.includes('닭')) {
+  } else if (
+    mainProduct.includes('치킨') ||
+    brandName.includes('치킨') ||
+    mainProduct.includes('닭')
+  ) {
     recommendedTag = '치킨전문점';
     productKeywords = ['치킨', 'chicken', '닭', '닭강정', '닭갈비'];
     coreKeywords.push('치킨');
-    confidenceBase = 0.80;
-  } else if (mainProduct.includes('커피') || brandName.includes('커피') || category === '커피') {
+    confidenceBase = 0.8;
+  } else if (
+    mainProduct.includes('커피') ||
+    brandName.includes('커피') ||
+    category === '커피'
+  ) {
     recommendedTag = '커피전문점';
     productKeywords = ['커피', 'coffee', '카페', '라떼', '아메리카노'];
     coreKeywords.push('커피');
@@ -185,13 +197,13 @@ async function simulateFailedBrandAnalysis(prompt, brand) {
     coreKeywords.push('국밥');
     confidenceBase = 0.89;
   }
-  
+
   return {
     brandAnalysis: {
       coreKeywords: [...new Set(coreKeywords)],
       brandVariations: [brandName, brandName.replace(/[0-9]/g, '')],
       productKeywords: [...new Set(productKeywords)],
-      transactionPatterns: [brandName, `${brandName}*`, `*${brandName}*`]
+      transactionPatterns: [brandName, `${brandName}*`, `*${brandName}*`],
     },
     recommendedTag,
     newKeywordGroup: {
@@ -199,40 +211,46 @@ async function simulateFailedBrandAnalysis(prompt, brand) {
       primaryKeyword: coreKeywords[1] || brandName,
       synonyms: [...new Set([...productKeywords, ...brandVariations])],
       confidenceBase,
-      category: recommendedTag
+      category: recommendedTag,
     },
     ruleExpansion: {
       addToExistingGroup: `기존_${recommendedTag}_그룹`,
       newKeywordsToAdd: [...new Set([...coreKeywords, ...productKeywords])],
-      priorityLevel: 1
+      priorityLevel: 1,
     },
     businessContext: `${brandName}은 ${category} 업종의 특화된 키워드가 필요한 브랜드`,
-    implementationNotes: '한국어 음성학적 변화와 줄임말 패턴 고려 필요'
+    implementationNotes: '한국어 음성학적 변화와 줄임말 패턴 고려 필요',
   };
 }
 
 // 카테고리별 그룹 확장 분석
 async function analyzeCategoryExpansion(failedBrands, category) {
-  console.log(`\n📊 ${category} 카테고리 확장 분석 (${failedBrands.length}개 브랜드)`);
-  
+  console.log(
+    `\n📊 ${category} 카테고리 확장 분석 (${failedBrands.length}개 브랜드)`
+  );
+
   const prompt = createGroupExpansionPrompt(failedBrands, category);
-  const expansion = await simulateCategoryExpansion(prompt, failedBrands, category);
-  
+  const expansion = await simulateCategoryExpansion(
+    prompt,
+    failedBrands,
+    category
+  );
+
   console.log(`   ✓ 확장 계획: ${expansion.expansionPlan.length}개 그룹 확장`);
   console.log(`   ✓ 신규 그룹: ${expansion.newGroups.length}개`);
   console.log(`   ✓ 예상 성공률 향상: ${expansion.expectedSuccessRate}`);
-  
+
   return expansion;
 }
 
 async function simulateCategoryExpansion(prompt, failedBrands, category) {
   const brandNames = failedBrands.map(b => b.brandName);
   const products = failedBrands.map(b => b.mainProduct).filter(p => p);
-  
+
   // 공통 패턴 분석
   const commonPatterns = [];
   const missingKeywords = [];
-  
+
   if (category === '한식') {
     commonPatterns.push('전통 한국 음식', '국물 요리', '고기 요리');
     missingKeywords.push('냉면', '갈비', '곱창', '국밥');
@@ -243,20 +261,20 @@ async function simulateCategoryExpansion(prompt, failedBrands, category) {
     commonPatterns.push('음료', '카페', '디저트');
     missingKeywords.push('커피', '라떼', '아메리카노');
   }
-  
+
   return {
     categoryAnalysis: {
       commonPatterns,
       missingKeywords,
-      coverageGaps: `${category} 카테고리에서 ${failedBrands.length}개 브랜드가 분류 실패`
+      coverageGaps: `${category} 카테고리에서 ${failedBrands.length}개 브랜드가 분류 실패`,
     },
     expansionPlan: [
       {
         groupName: `${category}_키워드그룹`,
         newKeywords: missingKeywords,
         reason: '실패 브랜드 분석 결과 누락된 핵심 키워드',
-        expectedImprovement: '20-30% 성공률 향상'
-      }
+        expectedImprovement: '20-30% 성공률 향상',
+      },
     ],
     newGroups: [
       {
@@ -264,67 +282,69 @@ async function simulateCategoryExpansion(prompt, failedBrands, category) {
         primaryKeyword: missingKeywords[0] || category,
         synonyms: [...missingKeywords, ...brandNames.slice(0, 3)],
         category,
-        confidenceBase: 0.80,
-        targetBrands: brandNames.slice(0, 5)
-      }
+        confidenceBase: 0.8,
+        targetBrands: brandNames.slice(0, 5),
+      },
     ],
     implementationPriority: '높음',
     expectedSuccessRate: '25% 향상',
-    koreanSpecificOptimizations: '한국어 음성 변화, 지역별 방언, 세대별 표현 차이 반영'
+    koreanSpecificOptimizations:
+      '한국어 음성 변화, 지역별 방언, 세대별 표현 차이 반영',
   };
 }
 
 // 백엔드 룰 생성 및 적용
 async function generateBackendRules(analyses) {
   console.log('\n🔧 백엔드 룰 생성 중...');
-  
+
   const newKeywordGroups = [];
   const keywordExpansions = [];
   const newTagMappings = [];
-  
+
   for (const analysis of analyses) {
     // 새로운 키워드 그룹 추가
     if (analysis.newKeywordGroup) {
       newKeywordGroups.push(analysis.newKeywordGroup);
     }
-    
+
     // 기존 그룹 확장
     if (analysis.ruleExpansion.newKeywordsToAdd.length > 0) {
       keywordExpansions.push({
         targetGroup: analysis.ruleExpansion.addToExistingGroup,
         newKeywords: analysis.ruleExpansion.newKeywordsToAdd,
-        priority: analysis.ruleExpansion.priorityLevel
+        priority: analysis.ruleExpansion.priorityLevel,
       });
     }
-    
+
     // 태그 매핑 추가
     newTagMappings.push({
       tag: analysis.recommendedTag,
       keywords: analysis.brandAnalysis.coreKeywords,
-      confidence: analysis.newKeywordGroup.confidenceBase
+      confidence: analysis.newKeywordGroup.confidenceBase,
     });
   }
-  
+
   return {
     newKeywordGroups,
     keywordExpansions,
-    newTagMappings
+    newTagMappings,
   };
 }
 
 // 백엔드에 룰 적용
 async function applyRulesToBackend(rules) {
   console.log('\n💾 백엔드 룰 적용 중...');
-  
+
   let appliedCount = 0;
-  
+
   try {
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async tx => {
       // 1. 새로운 키워드 그룹 추가
       for (const group of rules.newKeywordGroups) {
-        const existingMaxId = await tx.$queryRaw`SELECT COALESCE(MAX(id), 0) as max_id FROM keyword_groups`;
+        const existingMaxId =
+          await tx.$queryRaw`SELECT COALESCE(MAX(id), 0) as max_id FROM keyword_groups`;
         const newId = parseInt(existingMaxId[0].max_id) + 1;
-        
+
         await tx.$executeRaw`
           INSERT INTO keyword_groups (id, group_name, primary_keyword, synonyms, category, confidence_base, is_active, created_at, updated_at)
           VALUES (${newId}, ${group.groupName}, ${group.primaryKeyword}, ${group.synonyms}::varchar[], ${group.category}, ${group.confidenceBase}, true, NOW(), NOW())
@@ -333,17 +353,18 @@ async function applyRulesToBackend(rules) {
             confidence_base = EXCLUDED.confidence_base,
             updated_at = NOW()
         `;
-        
+
         console.log(`   ✓ 키워드 그룹 추가: ${group.groupName}`);
         appliedCount++;
       }
-      
+
       // 2. 태그 매핑 업데이트는 기존 시스템과 호환되도록 skip
-      console.log(`   ℹ️ 태그 매핑은 기존 시스템 호환성을 위해 키워드 그룹으로 대체`);
+      console.log(
+        `   ℹ️ 태그 매핑은 기존 시스템 호환성을 위해 키워드 그룹으로 대체`
+      );
     });
-    
+
     console.log(`\n✅ 총 ${appliedCount}개 룰이 백엔드에 적용되었습니다`);
-    
   } catch (error) {
     console.error('❌ 백엔드 룰 적용 중 오류:', error);
     throw error;
@@ -354,31 +375,34 @@ async function applyRulesToBackend(rules) {
 async function executeFailedBrandRuleExpansion() {
   console.log('🎯 실패 브랜드 기반 룰 확장 시작');
   console.log('💡 프롬프트 기반 분석으로 백엔드 키워드 시스템 강화\n');
-  
+
   try {
     // 1. 최근 실패한 브랜드 조회
     console.log('1️⃣ 실패 브랜드 조회...');
     const failedBrands = await prisma.franchiseBrands.findMany({
       where: { testPassed: false },
       orderBy: { lastTestAt: 'desc' },
-      take: 30 // 프롬프트 기반이므로 적정 수량
+      take: 30, // 프롬프트 기반이므로 적정 수량
     });
-    
+
     console.log(`   📊 분석 대상: ${failedBrands.length}개 실패 브랜드`);
-    
+
     // 2. 브랜드별 개별 분석
     console.log('\n2️⃣ 브랜드별 프롬프트 분석...');
     const brandAnalyses = [];
-    
-    for (const brand of failedBrands.slice(0, 15)) { // 맥스 플랜 고려
+
+    for (const brand of failedBrands.slice(0, 15)) {
+      // 맥스 플랜 고려
       const analysis = await analyzeFailedBrand(brand);
       brandAnalyses.push(analysis);
-      
+
       if (brandAnalyses.length % 5 === 0) {
-        console.log(`   📈 진행률: ${brandAnalyses.length}/${Math.min(15, failedBrands.length)}`);
+        console.log(
+          `   📈 진행률: ${brandAnalyses.length}/${Math.min(15, failedBrands.length)}`
+        );
       }
     }
-    
+
     // 3. 카테고리별 확장 분석
     console.log('\n3️⃣ 카테고리별 확장 분석...');
     const categoryGroups = {};
@@ -387,41 +411,41 @@ async function executeFailedBrandRuleExpansion() {
       if (!categoryGroups[category]) categoryGroups[category] = [];
       categoryGroups[category].push(brand);
     });
-    
+
     const expansionAnalyses = [];
     for (const [category, brands] of Object.entries(categoryGroups)) {
-      if (brands.length >= 2) { // 2개 이상인 카테고리만 분석
+      if (brands.length >= 2) {
+        // 2개 이상인 카테고리만 분석
         const expansion = await analyzeCategoryExpansion(brands, category);
         expansionAnalyses.push(expansion);
       }
     }
-    
+
     // 4. 백엔드 룰 생성
     console.log('\n4️⃣ 백엔드 룰 생성...');
     const rules = await generateBackendRules(brandAnalyses);
-    
-    console.log(`   🔧 생성된 룰:`)
+
+    console.log(`   🔧 생성된 룰:`);
     console.log(`     - 새 키워드 그룹: ${rules.newKeywordGroups.length}개`);
     console.log(`     - 키워드 확장: ${rules.keywordExpansions.length}개`);
     console.log(`     - 태그 매핑: ${rules.newTagMappings.length}개`);
-    
+
     // 5. 백엔드에 룰 적용
     console.log('\n5️⃣ 백엔드 룰 적용...');
     await applyRulesToBackend(rules);
-    
+
     // 6. 성과 요약
     console.log('\n🎉 실패 브랜드 기반 룰 확장 완료!');
     console.log(`📊 분석 브랜드: ${brandAnalyses.length}개`);
     console.log(`📈 카테고리 분석: ${expansionAnalyses.length}개`);
     console.log(`🔧 적용된 룰: ${rules.newKeywordGroups.length}개`);
     console.log('💡 백엔드 키워드 시스템이 강화되었습니다');
-    
+
     return {
       analyzedBrands: brandAnalyses.length,
       appliedRules: rules.newKeywordGroups.length,
-      expandedCategories: expansionAnalyses.length
+      expandedCategories: expansionAnalyses.length,
     };
-    
   } catch (error) {
     console.error('❌ 실행 중 오류 발생:', error);
     throw error;

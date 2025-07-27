@@ -1,10 +1,9 @@
 // Transaction Classifier - 통합 분류 서비스
 // Cache (Layer 0) → Regex (Layer 1) → ML (Layer 2) → LLM (Layer 3)
-
-import { TransactionCacheService } from './transaction-cache';
 import { CsvRegexRuleEngine } from './csv-regex-rule-engine';
-import { MLInferenceService } from './ml-inference';
 import { LLMInferenceService } from './llm-inference';
+import { MLInferenceService } from './ml-inference';
+import { TransactionCacheService } from './transaction-cache';
 
 export interface ClassificationRequest {
   text: string;
@@ -59,7 +58,7 @@ export class TransactionClassifier {
   private regexEngine: CsvRegexRuleEngine;
   private mlService: MLInferenceService;
   private llmService: LLMInferenceService;
-  
+
   // 통계 추적
   private stats: ClassificationStats = {
     totalRequests: 0,
@@ -72,8 +71,8 @@ export class TransactionClassifier {
       cache: 0,
       regex: 0,
       ml: 0,
-      llm: 0
-    }
+      llm: 0,
+    },
   };
 
   private constructor() {
@@ -93,13 +92,15 @@ export class TransactionClassifier {
   /**
    * 전체 4레이어 파이프라인을 통한 거래 텍스트 분류
    */
-  public async classify(request: ClassificationRequest): Promise<ClassificationResult> {
+  public async classify(
+    request: ClassificationRequest
+  ): Promise<ClassificationResult> {
     const startTime = Date.now();
     const layerResults: any = {};
 
     try {
       this.stats.totalRequests++;
-      
+
       const text = request.text.trim();
       const cacheKey = this.generateCacheKey(text, request.context);
 
@@ -119,8 +120,8 @@ export class TransactionClassifier {
             ...cachedResult,
             source: 'cache',
             processingTime,
-            layerResults
-          }
+            layerResults,
+          },
         };
       }
 
@@ -140,7 +141,7 @@ export class TransactionClassifier {
           description: '정규식 매칭 결과',
           originalText: text,
           source: 'regex' as const,
-          processingTime: Date.now() - startTime
+          processingTime: Date.now() - startTime,
         };
 
         // 캐시에 저장
@@ -151,15 +152,15 @@ export class TransactionClassifier {
           success: true,
           data: {
             ...result,
-            layerResults
-          }
+            layerResults,
+          },
         };
       }
 
       // Layer 2: ML 추론 (더미 - 항상 매치되지 않음)
       const mlResult = await this.mlService.inferCategory({
         text: text,
-        originalText: text
+        originalText: text,
       });
       layerResults.ml = mlResult;
 
@@ -175,7 +176,7 @@ export class TransactionClassifier {
           description: mlResult.data.description,
           originalText: text,
           source: 'ml' as const,
-          processingTime: Date.now() - startTime
+          processingTime: Date.now() - startTime,
         };
 
         // 캐시에 저장 (ML 결과는 짧은 시간 캐시)
@@ -186,8 +187,8 @@ export class TransactionClassifier {
           success: true,
           data: {
             ...result,
-            layerResults
-          }
+            layerResults,
+          },
         };
       }
 
@@ -195,7 +196,7 @@ export class TransactionClassifier {
       const llmResult = await this.llmService.inferCategory({
         text: text,
         originalText: text,
-        context: request.context
+        context: request.context,
       });
       layerResults.llm = llmResult;
 
@@ -212,7 +213,7 @@ export class TransactionClassifier {
           originalText: text,
           source: 'llm' as const,
           processingTime: Date.now() - startTime,
-          reasoning: llmResult.data?.reasoning
+          reasoning: llmResult.data?.reasoning,
         };
 
         // LLM 결과도 캐시에 저장 (더 짧은 시간)
@@ -225,8 +226,8 @@ export class TransactionClassifier {
           success: true,
           data: {
             ...result,
-            layerResults
-          }
+            layerResults,
+          },
         };
       }
 
@@ -246,10 +247,9 @@ export class TransactionClassifier {
           originalText: text,
           source: 'llm',
           processingTime,
-          layerResults
-        }
+          layerResults,
+        },
       };
-
     } catch (error) {
       const processingTime = Date.now() - startTime;
       this.updateAverageProcessingTime(processingTime);
@@ -267,8 +267,8 @@ export class TransactionClassifier {
           originalText: request.text,
           source: 'llm',
           processingTime,
-          layerResults
-        }
+          layerResults,
+        },
       };
     }
   }
@@ -285,8 +285,10 @@ export class TransactionClassifier {
    * 평균 처리 시간 업데이트
    */
   private updateAverageProcessingTime(processingTime: number) {
-    const totalTime = this.stats.averageProcessingTime * (this.stats.totalRequests - 1);
-    this.stats.averageProcessingTime = (totalTime + processingTime) / this.stats.totalRequests;
+    const totalTime =
+      this.stats.averageProcessingTime * (this.stats.totalRequests - 1);
+    this.stats.averageProcessingTime =
+      (totalTime + processingTime) / this.stats.totalRequests;
   }
 
   /**
@@ -311,8 +313,8 @@ export class TransactionClassifier {
         cache: 0,
         regex: 0,
         ml: 0,
-        llm: 0
-      }
+        llm: 0,
+      },
     };
   }
 
@@ -329,12 +331,13 @@ export class TransactionClassifier {
     };
   }> {
     try {
-      const [cacheHealthy, regexHealthy, mlHealthy, llmHealthy] = await Promise.all([
-        this.cacheService.healthCheck(),
-        this.regexEngine.isLoaded,
-        this.mlService.isModelLoaded(),
-        this.llmService.healthCheck()
-      ]);
+      const [cacheHealthy, regexHealthy, mlHealthy, llmHealthy] =
+        await Promise.all([
+          this.cacheService.healthCheck(),
+          this.regexEngine.isLoaded,
+          this.mlService.isModelLoaded(),
+          this.llmService.healthCheck(),
+        ]);
 
       return {
         overall: cacheHealthy && regexHealthy && mlHealthy && llmHealthy,
@@ -342,8 +345,8 @@ export class TransactionClassifier {
           cache: cacheHealthy,
           regex: regexHealthy,
           ml: mlHealthy,
-          llm: llmHealthy
-        }
+          llm: llmHealthy,
+        },
       };
     } catch (error) {
       console.error('헬스체크 오류:', error);
@@ -353,9 +356,9 @@ export class TransactionClassifier {
           cache: false,
           regex: false,
           ml: false,
-          llm: false
-        }
+          llm: false,
+        },
       };
     }
   }
-} 
+}

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+
 import { PrismaClient } from '@/lib/generated/prisma';
 
 const prisma = new PrismaClient();
@@ -7,7 +8,7 @@ const FRONTEND_URL = process.env.NEXTAUTH_URL || 'http://localhost:3000';
 export async function POST(request: NextRequest) {
   try {
     const { brandId } = await request.json();
-    
+
     if (!brandId) {
       return NextResponse.json(
         { error: 'Brand ID is required' },
@@ -24,15 +25,12 @@ export async function POST(request: NextRequest) {
         generatedTransactionString: true,
         primaryTag: true,
         secondaryTag: true,
-        tertiaryTag: true
-      }
+        tertiaryTag: true,
+      },
     });
 
     if (!brand) {
-      return NextResponse.json(
-        { error: 'Brand not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Brand not found' }, { status: 404 });
     }
 
     if (!brand.generatedTransactionString) {
@@ -44,15 +42,15 @@ export async function POST(request: NextRequest) {
 
     // 키워드 분류 테스트 수행
     const testResult = await testBrandTransaction(brand);
-    
+
     // 결과 저장
     await prisma.franchiseBrands.update({
       where: { id: brandId },
       data: {
         testPassed: testResult.matched,
         lastTestAt: new Date(),
-        testResult: testResult
-      }
+        testResult: testResult,
+      },
     });
 
     return NextResponse.json({
@@ -60,9 +58,8 @@ export async function POST(request: NextRequest) {
       brandId,
       brandName: brand.brandName,
       testPassed: testResult.matched,
-      testResult
+      testResult,
     });
-
   } catch (error) {
     console.error('Error testing single brand:', error);
     return NextResponse.json(
@@ -79,21 +76,25 @@ async function testBrandTransaction(brand: any) {
 
   try {
     // 키워드 분류 테스트 수행 (로컬 API 호출)
+
     const requestBody = {
       description: brand.generatedTransactionString,
-      amount: 35500
+      amount: 35500,
     };
-    
+
     console.log('Sending request to keyword API:', requestBody);
-    
-    const response = await fetch(`${FRONTEND_URL}/api/v2/keyword-test/classify`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(requestBody)
-    });
-    
+
+    const response = await fetch(
+      `${FRONTEND_URL}/api/v2/keyword-test/classify`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      }
+    );
+
     console.log('Response status:', response.status);
 
     if (!response.ok) {
@@ -101,9 +102,13 @@ async function testBrandTransaction(brand: any) {
     }
 
     const result = await response.json();
-    
+
     // 결과 매칭 확인 (우선순위 태그 중 하나라도 매칭되면 성공)
-    const expectedTags = [brand.primaryTag, brand.secondaryTag, brand.tertiaryTag].filter(Boolean);
+    const expectedTags = [
+      brand.primaryTag,
+      brand.secondaryTag,
+      brand.tertiaryTag,
+    ].filter(Boolean);
     const matched = result.matched && expectedTags.includes(result.tag);
 
     return {
@@ -115,15 +120,18 @@ async function testBrandTransaction(brand: any) {
       confidence: result.confidence,
       processingPath: result.processingPath,
       processingTime: result.processingTime,
-      rawResult: result
+      rawResult: result,
     };
-
   } catch (error) {
     return {
       matched: false,
       error: error instanceof Error ? error.message : 'Unknown error',
       inputText: brand.generatedTransactionString,
-      expectedTags: [brand.primaryTag, brand.secondaryTag, brand.tertiaryTag].filter(Boolean)
+      expectedTags: [
+        brand.primaryTag,
+        brand.secondaryTag,
+        brand.tertiaryTag,
+      ].filter(Boolean),
     };
   }
 }

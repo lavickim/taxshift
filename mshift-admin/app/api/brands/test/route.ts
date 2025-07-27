@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@/lib/generated/prisma';
 
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/db/client';
 
 export async function GET(request: NextRequest) {
   try {
@@ -15,7 +14,7 @@ export async function GET(request: NextRequest) {
 
     // 필터 조건 구성
     const where: any = {};
-    
+
     if (testStatus !== 'all') {
       switch (testStatus) {
         case 'tested':
@@ -44,21 +43,23 @@ export async function GET(request: NextRequest) {
     if (search) {
       where.OR = [
         { brandName: { contains: search, mode: 'insensitive' } },
-        { companyName: { contains: search, mode: 'insensitive' } }
+        { companyName: { contains: search, mode: 'insensitive' } },
       ];
     }
 
     // 총 개수 조회
-    const totalItems = await prisma.franchiseBrands.count({ where });
+    const totalItems = await prisma.datacollection_franchise_brands.count({
+      where,
+    });
 
     // 페이지네이션 적용하여 데이터 조회
-    const brands = await prisma.franchiseBrands.findMany({
+    const brands = await prisma.datacollection_franchise_brands.findMany({
       where,
       skip: (page - 1) * limit,
       take: limit,
       orderBy: [
         { testPassed: 'asc' }, // 미테스트 -> 실패 -> 성공 순
-        { lastTestAt: 'desc' }
+        { lastTestAt: 'desc' },
       ],
       select: {
         id: true,
@@ -74,8 +75,8 @@ export async function GET(request: NextRequest) {
         testPassed: true,
         lastTestAt: true,
         testResult: true,
-        tagGenerationReason: true
-      }
+        tagGenerationReason: true,
+      },
     });
 
     const totalPages = Math.ceil(totalItems / limit);
@@ -86,10 +87,9 @@ export async function GET(request: NextRequest) {
         currentPage: page,
         totalPages,
         totalItems,
-        itemsPerPage: limit
-      }
+        itemsPerPage: limit,
+      },
     });
-
   } catch (error) {
     console.error('Error fetching brands:', error);
     return NextResponse.json(

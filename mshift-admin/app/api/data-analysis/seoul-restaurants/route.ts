@@ -1,31 +1,38 @@
-import { NextRequest } from 'next/server'
-import { prisma } from '@/lib/db/client'
+import { NextRequest } from 'next/server';
+
+import { prisma } from '@/lib/db/client';
 
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
-    const type = searchParams.get('type') || 'overview'
+    const { searchParams } = new URL(request.url);
+    const type = searchParams.get('type') || 'overview';
 
     switch (type) {
       case 'overview':
-        return await getOverviewData()
+        return await getOverviewData();
       case 'business_type':
-        return await getBusinessTypeData()
+        return await getBusinessTypeData();
       case 'business_status':
-        return await getBusinessStatusData()
+        return await getBusinessStatusData();
       case 'timeline':
-        return await getTimelineData()
+        return await getTimelineData();
       case 'details':
-        return await getDetailData(searchParams)
+        return await getDetailData(searchParams);
       default:
-        return Response.json({ success: false, error: '유효하지 않은 타입입니다.' }, { status: 400 })
+        return Response.json(
+          { success: false, error: '유효하지 않은 타입입니다.' },
+          { status: 400 }
+        );
     }
   } catch (error) {
-    console.error('API 오류:', error)
-    return Response.json({ 
-      success: false, 
-      error: '데이터를 불러오는 중 오류가 발생했습니다.' 
-    }, { status: 500 })
+    console.error('API 오류:', error);
+    return Response.json(
+      {
+        success: false,
+        error: '데이터를 불러오는 중 오류가 발생했습니다.',
+      },
+      { status: 500 }
+    );
   }
 }
 
@@ -36,27 +43,34 @@ async function getOverviewData() {
       batchCount,
       firstCollection,
       lastCollection,
-      activeBusinesses
+      activeBusinesses,
     ] = await Promise.all([
       prisma.$queryRaw`SELECT COUNT(*) as count FROM datacollection_seoul_restaurants`,
       prisma.$queryRaw`SELECT COUNT(DISTINCT collection_batch_id) as count FROM datacollection_seoul_restaurants WHERE collection_batch_id IS NOT NULL`,
       prisma.$queryRaw`SELECT MIN(created_at) as date FROM datacollection_seoul_restaurants`,
       prisma.$queryRaw`SELECT MAX(created_at) as date FROM datacollection_seoul_restaurants`,
-      prisma.$queryRaw`SELECT COUNT(*) as count FROM datacollection_seoul_restaurants WHERE business_status_name = '영업'`
-    ])
+      prisma.$queryRaw`SELECT COUNT(*) as count FROM datacollection_seoul_restaurants WHERE business_status_name = '영업'`,
+    ]);
 
     const data = {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       totalRecords: Number((totalRecords as any)[0]?.count || 0),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       batchCount: Number((batchCount as any)[0]?.count || 0),
-      firstCollection: (firstCollection as any)[0]?.date || new Date().toISOString(),
-      lastCollection: (lastCollection as any)[0]?.date || new Date().toISOString(),
-      activeBusinesses: Number((activeBusinesses as any)[0]?.count || 0)
-    }
+      firstCollection:
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (firstCollection as any)[0]?.date || new Date().toISOString(),
+      lastCollection:
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (lastCollection as any)[0]?.date || new Date().toISOString(),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      activeBusinesses: Number((activeBusinesses as any)[0]?.count || 0),
+    };
 
-    return Response.json({ success: true, data })
+    return Response.json({ success: true, data });
   } catch (error) {
-    console.error('개요 데이터 조회 오류:', error)
-    throw error
+    console.error('개요 데이터 조회 오류:', error);
+    throw error;
   }
 }
 
@@ -71,18 +85,19 @@ async function getBusinessTypeData() {
       GROUP BY business_type 
       ORDER BY count DESC
       LIMIT 20
-    `
+    `;
 
-    return Response.json({ 
-      success: true, 
+    return Response.json({
+      success: true,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       data: (data as any[]).map(row => ({
         type: row.type,
-        count: Number(row.count)
-      }))
-    })
+        count: Number(row.count),
+      })),
+    });
   } catch (error) {
-    console.error('업종별 데이터 조회 오류:', error)
-    throw error
+    console.error('업종별 데이터 조회 오류:', error);
+    throw error;
   }
 }
 
@@ -97,18 +112,19 @@ async function getBusinessStatusData() {
       GROUP BY business_status_name 
       ORDER BY count DESC
       LIMIT 10
-    `
+    `;
 
-    return Response.json({ 
-      success: true, 
+    return Response.json({
+      success: true,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       data: (data as any[]).map(row => ({
         status: row.status,
-        count: Number(row.count)
-      }))
-    })
+        count: Number(row.count),
+      })),
+    });
   } catch (error) {
-    console.error('영업상태별 데이터 조회 오류:', error)
-    throw error
+    console.error('영업상태별 데이터 조회 오류:', error);
+    throw error;
   }
 }
 
@@ -122,60 +138,68 @@ async function getTimelineData() {
       WHERE created_at >= CURRENT_DATE - INTERVAL '30 days'
       GROUP BY DATE(created_at)
       ORDER BY date DESC
-    `
+    `;
 
-    return Response.json({ 
-      success: true, 
+    return Response.json({
+      success: true,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       data: (data as any[]).map(row => ({
         date: row.date,
-        count: Number(row.count)
-      }))
-    })
+        count: Number(row.count),
+      })),
+    });
   } catch (error) {
-    console.error('시간별 데이터 조회 오류:', error)
-    throw error
+    console.error('시간별 데이터 조회 오류:', error);
+    throw error;
   }
 }
 
 async function getDetailData(searchParams: URLSearchParams) {
   try {
-    const page = parseInt(searchParams.get('page') || '1')
-    const limit = parseInt(searchParams.get('limit') || '50')
-    const search = searchParams.get('search') || ''
-    const businessType = searchParams.get('business_type') || ''
-    const businessStatus = searchParams.get('business_status') || ''
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '50');
+    const search = searchParams.get('search') || '';
+    const businessType = searchParams.get('business_type') || '';
+    const businessStatus = searchParams.get('business_status') || '';
 
-    const offset = (page - 1) * limit
+    const offset = (page - 1) * limit;
 
     // 필터 조건 구성
-    let whereConditions = []
-    let params: any[] = []
-    let paramIndex = 1
+    const whereConditions = [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const params: any[] = [];
+    let paramIndex = 1;
 
     if (search) {
-      whereConditions.push(`(business_name ILIKE $${paramIndex} OR management_number ILIKE $${paramIndex + 1})`)
-      params.push(`%${search}%`, `%${search}%`)
-      paramIndex += 2
+      whereConditions.push(
+        `(business_name ILIKE $${paramIndex} OR management_number ILIKE $${paramIndex + 1})`
+      );
+      params.push(`%${search}%`, `%${search}%`);
+      paramIndex += 2;
     }
 
     if (businessType) {
-      whereConditions.push(`business_type = $${paramIndex}`)
-      params.push(businessType)
-      paramIndex++
+      whereConditions.push(`business_type = $${paramIndex}`);
+      params.push(businessType);
+      paramIndex++;
     }
 
     if (businessStatus) {
-      whereConditions.push(`business_status_name = $${paramIndex}`)
-      params.push(businessStatus)
-      paramIndex++
+      whereConditions.push(`business_status_name = $${paramIndex}`);
+      params.push(businessStatus);
+      paramIndex++;
     }
 
-    const whereClause = whereConditions.length > 0 ? `WHERE ${whereConditions.join(' AND ')}` : ''
+    const whereClause =
+      whereConditions.length > 0
+        ? `WHERE ${whereConditions.join(' AND ')}`
+        : '';
 
     // 전체 카운트 조회
-    const countQuery = `SELECT COUNT(*) as count FROM datacollection_seoul_restaurants ${whereClause}`
-    const countResult = await prisma.$queryRawUnsafe(countQuery, ...params)
-    const total = Number((countResult as any)[0]?.count || 0)
+    const countQuery = `SELECT COUNT(*) as count FROM datacollection_seoul_restaurants ${whereClause}`;
+    const countResult = await prisma.$queryRawUnsafe(countQuery, ...params);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const total = Number((countResult as any)[0]?.count || 0);
 
     // 데이터 조회
     const dataQuery = `
@@ -193,11 +217,16 @@ async function getDetailData(searchParams: URLSearchParams) {
       ${whereClause}
       ORDER BY created_at DESC
       LIMIT $${paramIndex} OFFSET $${paramIndex + 1}
-    `
-    
-    const items = await prisma.$queryRawUnsafe(dataQuery, ...params, limit, offset)
+    `;
 
-    const pages = Math.ceil(total / limit)
+    const items = await prisma.$queryRawUnsafe(
+      dataQuery,
+      ...params,
+      limit,
+      offset
+    );
+
+    const pages = Math.ceil(total / limit);
 
     return Response.json({
       success: true,
@@ -207,12 +236,12 @@ async function getDetailData(searchParams: URLSearchParams) {
           page,
           limit,
           total,
-          pages
-        }
-      }
-    })
+          pages,
+        },
+      },
+    });
   } catch (error) {
-    console.error('상세 데이터 조회 오류:', error)
-    throw error
+    console.error('상세 데이터 조회 오류:', error);
+    throw error;
   }
-} 
+}

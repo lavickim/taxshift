@@ -16,12 +16,12 @@ export async function POST(req: NextRequest) {
     const classification = {
       category: 'general',
       confidence: 0.8,
-      tags: ['expense']
+      tags: ['expense'],
     };
 
     return NextResponse.json({
       success: true,
-      classification
+      classification,
     });
   } catch (error) {
     console.error('Classification error:', error);
@@ -37,25 +37,28 @@ export async function GET(req: NextRequest) {
   try {
     // 인증 체크
     const supabase = await createClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+
     if (authError || !user) {
       return NextResponse.json(
-        { 
-          success: false, 
-          error: "인증이 필요합니다" 
+        {
+          success: false,
+          error: '인증이 필요합니다',
         },
         { status: 401 }
       );
     }
 
     // 관리자 권한 체크 (특정 이메일만 허용)
-    const allowedEmail = "lavic.kim@gmail.com";
+    const allowedEmail = 'lavic.kim@gmail.com';
     if (user.email !== allowedEmail) {
       return NextResponse.json(
-        { 
-          success: false, 
-          error: "통계 조회 권한이 없습니다" 
+        {
+          success: false,
+          error: '통계 조회 권한이 없습니다',
         },
         { status: 403 }
       );
@@ -65,21 +68,23 @@ export async function GET(req: NextRequest) {
     const stats = classifier.getStats();
     const healthCheck = await classifier.healthCheck();
 
-    return NextResponse.json({
-      success: true,
-      data: {
-        stats,
-        healthCheck,
-        timestamp: new Date().toISOString()
-      }
-    }, { status: 200 });
-
+    return NextResponse.json(
+      {
+        success: true,
+        data: {
+          stats,
+          healthCheck,
+          timestamp: new Date().toISOString(),
+        },
+      },
+      { status: 200 }
+    );
   } catch (error) {
     console.error('통계 조회 API 오류:', error);
     return NextResponse.json(
-      { 
-        success: false, 
-        error: '통계 조회 중 오류가 발생했습니다' 
+      {
+        success: false,
+        error: '통계 조회 중 오류가 발생했습니다',
       },
       { status: 500 }
     );
@@ -92,30 +97,35 @@ export async function OPTIONS() {
     const classifier = TransactionClassifier.getInstance();
     const healthCheck = await classifier.healthCheck();
 
-    return NextResponse.json({
-      success: true,
-      data: {
-        healthy: healthCheck.overall,
-        layers: healthCheck.layers,
-        timestamp: new Date().toISOString()
-      }
-    }, { status: 200 });
-
+    return NextResponse.json(
+      {
+        success: true,
+        data: {
+          healthy: healthCheck.overall,
+          layers: healthCheck.layers,
+          timestamp: new Date().toISOString(),
+        },
+      },
+      { status: 200 }
+    );
   } catch (error) {
     console.error('헬스체크 API 오류:', error);
-    return NextResponse.json({
-      success: false,
-      error: '헬스체크 실패'
-    }, { status: 500 });
+    return NextResponse.json(
+      {
+        success: false,
+        error: '헬스체크 실패',
+      },
+      { status: 500 }
+    );
   }
 }
 
 // 지원하지 않는 HTTP 메서드
 export async function PUT() {
   return NextResponse.json(
-    { 
-      success: false, 
-      error: 'PUT 메서드는 지원하지 않습니다.' 
+    {
+      success: false,
+      error: 'PUT 메서드는 지원하지 않습니다.',
     },
     { status: 405 }
   );
@@ -123,10 +133,10 @@ export async function PUT() {
 
 export async function DELETE() {
   return NextResponse.json(
-    { 
-      success: false, 
-      error: 'DELETE 메서드는 지원하지 않습니다.' 
+    {
+      success: false,
+      error: 'DELETE 메서드는 지원하지 않습니다.',
     },
     { status: 405 }
   );
-} 
+}

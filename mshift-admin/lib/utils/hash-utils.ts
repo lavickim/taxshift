@@ -32,4 +32,4 @@ export function normalizeText(text: string): string {
     .replace(/[\t\n\r]/g, ' ') // 탭, 줄바꿈을 공백으로 변환
     .replace(/\s+/g, ' ') // 연속된 공백을 하나로 통일
     .trim(); // 앞뒤 공백 제거
-} 
+}

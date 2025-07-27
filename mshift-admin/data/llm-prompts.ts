@@ -18,16 +18,17 @@ export interface ClassificationPromptContext {
  * 사용처: lib/services/llm-inference.ts
  */
 export function buildTransactionClassificationPrompt(
-  text: string, 
+  text: string,
   context?: ClassificationPromptContext
 ): string {
-  const contextInfo = context ? 
-    `거래 컨텍스트:
+  const contextInfo = context
+    ? `거래 컨텍스트:
     - 금액: ${context.amount || '알 수 없음'}
     - 날짜: ${context.date || '알 수 없음'}
     - 위치: ${context.location || '알 수 없음'}
     
-    ` : '';
+    `
+    : '';
 
   return `당신은 한국어 금융 거래 텍스트를 분석하는 전문가입니다.
 
@@ -243,9 +244,9 @@ export function combinePromptWithData(basePrompt: string, data: any[]): string {
 /**
  * 지원되는 프롬프트 타입들
  */
-export type PromptType = 
-  | 'transaction-classification' 
-  | 'transaction-normalization' 
+export type PromptType =
+  | 'transaction-classification'
+  | 'transaction-normalization'
   | 'rule-generation';
 
 /**
@@ -257,22 +258,22 @@ export const PROMPT_METADATA = {
     model: 'gemini-2.0-flash',
     version: 'v1.0',
     usage: 'Layer 3 LLM 분류 시스템',
-    file: 'lib/services/llm-inference.ts'
+    file: 'lib/services/llm-inference.ts',
   },
   'transaction-normalization': {
     name: '거래 내역 정규화',
     model: 'gemini-1.5-flash',
-    version: 'v1.0', 
+    version: 'v1.0',
     usage: '거래 분석 API - 1단계',
-    file: 'app/api/transactions-analysis/route.ts'
+    file: 'app/api/transactions-analysis/route.ts',
   },
   'rule-generation': {
     name: '룰베이스 구축 분석',
     model: 'gemini-2.0-flash',
     version: 'v3.0',
     usage: '거래 분석 API - 2단계',
-    file: 'app/api/transactions-analysis/route.ts'
-  }
+    file: 'app/api/transactions-analysis/route.ts',
+  },
 } as const;
 
 /**
@@ -282,11 +283,14 @@ export const PROMPT_CHANGELOG = {
   '2024-01-15': {
     type: 'transaction-classification',
     changes: ['Initial implementation with 11 Korean categories'],
-    version: 'v1.0'
+    version: 'v1.0',
   },
   '2024-01-20': {
-    type: 'rule-generation', 
-    changes: ['Upgraded to v3.0 with context-aware analysis', 'Added smart option generation for ambiguous transactions'],
-    version: 'v3.0'
-  }
-} as const; 
+    type: 'rule-generation',
+    changes: [
+      'Upgraded to v3.0 with context-aware analysis',
+      'Added smart option generation for ambiguous transactions',
+    ],
+    version: 'v3.0',
+  },
+} as const;

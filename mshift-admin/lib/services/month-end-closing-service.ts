@@ -105,13 +105,17 @@ export class MonthEndClosingService {
     companyId: string,
     fiscalYear: number,
     fiscalMonth: number
-  ): Promise<{ success: boolean; closingResult?: ClosingResult; message?: string }> {
+  ): Promise<{
+    success: boolean;
+    closingResult?: ClosingResult;
+    message?: string;
+  }> {
     const response = await fetch(`${this.baseUrl}/month-end-closing`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ companyId, fiscalYear, fiscalMonth })
+      body: JSON.stringify({ companyId, fiscalYear, fiscalMonth }),
     });
-    
+
     return await response.json();
   }
 
@@ -126,7 +130,7 @@ export class MonthEndClosingService {
     const params = new URLSearchParams({
       companyId,
       fiscalYear: fiscalYear.toString(),
-      fiscalMonth: fiscalMonth.toString()
+      fiscalMonth: fiscalMonth.toString(),
     });
 
     const response = await fetch(`${this.baseUrl}/trial-balance?${params}`);
@@ -144,9 +148,9 @@ export class MonthEndClosingService {
     const response = await fetch(`${this.baseUrl}/income-statement`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ companyId, fiscalYear, fiscalMonth })
+      body: JSON.stringify({ companyId, fiscalYear, fiscalMonth }),
     });
-    
+
     return await response.json();
   }
 
@@ -162,9 +166,9 @@ export class MonthEndClosingService {
     const response = await fetch(`${this.baseUrl}/balance-sheet`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ companyId, fiscalYear, fiscalMonth, netIncome })
+      body: JSON.stringify({ companyId, fiscalYear, fiscalMonth, netIncome }),
     });
-    
+
     return await response.json();
   }
 
@@ -179,9 +183,9 @@ export class MonthEndClosingService {
     const response = await fetch(`${this.baseUrl}/cash-flow-statement`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ companyId, fiscalYear, fiscalMonth })
+      body: JSON.stringify({ companyId, fiscalYear, fiscalMonth }),
     });
-    
+
     return await response.json();
   }
 
@@ -193,12 +197,15 @@ export class MonthEndClosingService {
     fiscalYear: number,
     fiscalMonth: number
   ): Promise<{ validation: ValidationResult }> {
-    const response = await fetch(`${this.baseUrl}/validate-accounting-equation`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ companyId, fiscalYear, fiscalMonth })
-    });
-    
+    const response = await fetch(
+      `${this.baseUrl}/validate-accounting-equation`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ companyId, fiscalYear, fiscalMonth }),
+      }
+    );
+
     return await response.json();
   }
 
@@ -213,9 +220,9 @@ export class MonthEndClosingService {
     const response = await fetch(`${this.baseUrl}/closing-report`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ companyId, fiscalYear, fiscalMonth })
+      body: JSON.stringify({ companyId, fiscalYear, fiscalMonth }),
     });
-    
+
     return await response.json();
   }
 
@@ -230,7 +237,9 @@ export class MonthEndClosingService {
     if (params?.limit) queryParams.append('limit', params.limit.toString());
     if (params?.offset) queryParams.append('offset', params.offset.toString());
 
-    const response = await fetch(`${this.baseUrl}/closing-history?${queryParams}`);
+    const response = await fetch(
+      `${this.baseUrl}/closing-history?${queryParams}`
+    );
     return await response.json();
   }
 
@@ -245,9 +254,9 @@ export class MonthEndClosingService {
     const response = await fetch(`${this.baseUrl}/reopen-period`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ companyId, fiscalYear, fiscalMonth })
+      body: JSON.stringify({ companyId, fiscalYear, fiscalMonth }),
     });
-    
+
     return await response.json();
   }
 
@@ -262,10 +271,12 @@ export class MonthEndClosingService {
     const params = new URLSearchParams({
       companyId,
       fiscalYear: fiscalYear.toString(),
-      fiscalMonth: fiscalMonth.toString()
+      fiscalMonth: fiscalMonth.toString(),
     });
 
-    const response = await fetch(`${this.baseUrl}/closing-report/pdf?${params}`);
+    const response = await fetch(
+      `${this.baseUrl}/closing-report/pdf?${params}`
+    );
     return await response.blob();
   }
 }

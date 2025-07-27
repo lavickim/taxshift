@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+
 import { prisma } from '@/lib/db/client';
 
 export async function GET(req: NextRequest) {
@@ -18,62 +19,67 @@ export async function GET(req: NextRequest) {
             totalTransactions,
             totalCompanies,
             totalRules,
-            lastUpdated: new Date().toISOString()
-          }
+            lastUpdated: new Date().toISOString(),
+          },
         });
 
       case 'categories':
         const categoryStats = await prisma.transaction.groupBy({
           by: ['finalDebitAccount'],
           _count: {
-            _all: true
+            _all: true,
           },
           orderBy: {
             _count: {
-              _all: 'desc'
-            }
+              _all: 'desc',
+            },
           },
-          take: 10
+          take: 10,
         });
 
         return NextResponse.json({
           success: true,
           data: categoryStats.map(stat => ({
             account: stat.finalDebitAccount,
-            count: stat._count._all
-          }))
+            count: stat._count._all,
+          })),
         });
 
       case 'monthly':
         const monthlyStats = await prisma.transaction.groupBy({
           by: ['transactionDate'],
           _count: {
-            _all: true
+            _all: true,
           },
           orderBy: {
-            transactionDate: 'desc'
+            transactionDate: 'desc',
           },
-          take: 12
+          take: 12,
         });
 
         return NextResponse.json({
           success: true,
-          data: monthlyStats
+          data: monthlyStats,
         });
 
       default:
-        return NextResponse.json({
-          success: false,
-          error: 'Invalid analysis type'
-        }, { status: 400 });
+        return NextResponse.json(
+          {
+            success: false,
+            error: 'Invalid analysis type',
+          },
+          { status: 400 }
+        );
     }
-
   } catch (error) {
     console.error('Transactions analysis error:', error);
-    return NextResponse.json({
-      success: false,
-      error: 'Analysis failed'
-    }, { status: 500 });
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Analysis failed',
+      },
+      { status: 500 }
+    );
   }
 }
 
@@ -81,38 +87,46 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { transactions } = body;
-    
+
     if (!transactions || !Array.isArray(transactions)) {
-      return NextResponse.json({
-        success: false,
-        error: 'transactions 배열이 필요합니다'
-      }, { status: 400 });
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'transactions 배열이 필요합니다',
+        },
+        { status: 400 }
+      );
     }
 
     if (transactions.length === 0) {
-      return NextResponse.json({
-        success: false,
-        error: '거래 내역이 비어있습니다'
-      }, { status: 400 });
+      return NextResponse.json(
+        {
+          success: false,
+          error: '거래 내역이 비어있습니다',
+        },
+        { status: 400 }
+      );
     }
 
     // Simple analysis for now
     const analysis = {
       total_transactions: transactions.length,
       categories: [],
-      suggestions: []
+      suggestions: [],
     };
 
     return NextResponse.json({
       success: true,
-      data: analysis
+      data: analysis,
     });
-
   } catch (error) {
     console.error('Transaction analysis error:', error);
-    return NextResponse.json({
-      success: false,
-      error: 'Analysis failed'
-    }, { status: 500 });
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Analysis failed',
+      },
+      { status: 500 }
+    );
   }
-} 
+}

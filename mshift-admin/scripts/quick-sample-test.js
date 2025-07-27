@@ -7,14 +7,14 @@ const KEYWORD_CLASSIFY_API = 'http://localhost:8080/v2/keyword-system/classify';
 
 async function quickSampleTest() {
   console.log('🚀 샘플 테스트 시작 (상위 1000개 브랜드)...');
-  
+
   try {
     // 상위 1000개 브랜드만 테스트
     const sampleBrands = await prisma.franchiseBrands.findMany({
       where: {
         generatedTransactionString: {
-          not: null
-        }
+          not: null,
+        },
       },
       select: {
         id: true,
@@ -25,16 +25,16 @@ async function quickSampleTest() {
         generatedTransactionString: true,
         primaryTag: true,
         secondaryTag: true,
-        tertiaryTag: true
+        tertiaryTag: true,
       },
       orderBy: {
-        id: 'asc'
+        id: 'asc',
       },
-      take: 1000  // 상위 1000개만
+      take: 1000, // 상위 1000개만
     });
 
     console.log(`📊 샘플 테스트 대상: ${sampleBrands.length}개 브랜드`);
-    
+
     let totalTested = 0;
     let totalMatched = 0;
     let categoryStats = {};
@@ -42,8 +42,8 @@ async function quickSampleTest() {
 
     // 모든 브랜드를 병렬로 테스트 (빠른 결과를 위해)
     console.log('🔄 전체 브랜드 병렬 테스트 중...');
-    
-    const promises = sampleBrands.map(async (brand) => {
+
+    const promises = sampleBrands.map(async brand => {
       try {
         const response = await fetch(KEYWORD_CLASSIFY_API, {
           method: 'POST',
@@ -52,8 +52,8 @@ async function quickSampleTest() {
           },
           body: JSON.stringify({
             description: brand.generatedTransactionString,
-            amount: 10000
-          })
+            amount: 10000,
+          }),
         });
 
         if (!response.ok) {
@@ -61,7 +61,7 @@ async function quickSampleTest() {
         }
 
         const result = await response.json();
-        
+
         const testResult = {
           brandId: brand.id,
           brandName: brand.brandName,
@@ -73,11 +73,10 @@ async function quickSampleTest() {
           extractedKeywords: result.extractedKeywords || [],
           processingPath: result.processingPath || '',
           primaryTag: brand.primaryTag,
-          expectedMatch: brand.primaryTag !== '기타'
+          expectedMatch: brand.primaryTag !== '기타',
         };
 
         return testResult;
-        
       } catch (error) {
         return {
           brandId: brand.id,
@@ -91,18 +90,18 @@ async function quickSampleTest() {
           processingPath: 'ERROR',
           error: error.message,
           primaryTag: brand.primaryTag,
-          expectedMatch: brand.primaryTag !== '기타'
+          expectedMatch: brand.primaryTag !== '기타',
         };
       }
     });
 
     // 모든 결과 수집
     results = await Promise.all(promises);
-    
+
     // 통계 계산
     for (const result of results) {
       totalTested++;
-      
+
       if (result.matched) {
         totalMatched++;
       }
@@ -119,15 +118,18 @@ async function quickSampleTest() {
     }
 
     // 최종 결과 계산
-    const finalAccuracy = (totalMatched / totalTested * 100).toFixed(2);
-    
+    const finalAccuracy = ((totalMatched / totalTested) * 100).toFixed(2);
+
     // 카테고리별 성공률 계산
     const categoryAccuracy = {};
     for (const [category, stats] of Object.entries(categoryStats)) {
       categoryAccuracy[category] = {
         total: stats.total,
         matched: stats.matched,
-        accuracy: stats.total > 0 ? (stats.matched / stats.total * 100).toFixed(2) : 0
+        accuracy:
+          stats.total > 0
+            ? ((stats.matched / stats.total) * 100).toFixed(2)
+            : 0,
       };
     }
 
@@ -141,33 +143,40 @@ async function quickSampleTest() {
     const sortedCategories = Object.entries(categoryAccuracy)
       .sort((a, b) => b[1].total - a[1].total)
       .slice(0, 10);
-    
+
     for (const [category, stats] of sortedCategories) {
-      console.log(`   ${category}: ${stats.accuracy}% (${stats.matched}/${stats.total})`);
+      console.log(
+        `   ${category}: ${stats.accuracy}% (${stats.matched}/${stats.total})`
+      );
     }
 
     // 성공 예시 몇 개 보여주기
     const successCases = results.filter(r => r.matched).slice(0, 10);
     console.log(`\n✅ 성공 예시 (상위 10개):`);
     for (const result of successCases) {
-      console.log(`   "${result.generatedString}" → ${result.tag} (키워드: ${result.extractedKeywords.join(', ')})`);
+      console.log(
+        `   "${result.generatedString}" → ${result.tag} (키워드: ${result.extractedKeywords.join(', ')})`
+      );
     }
 
     console.log(`\n🎯 목표 달성 여부:`);
     if (parseFloat(finalAccuracy) >= 75) {
-      console.log(`✅ 목표 달성! 현재 정확도 ${finalAccuracy}%가 목표 75% 이상입니다.`);
+      console.log(
+        `✅ 목표 달성! 현재 정확도 ${finalAccuracy}%가 목표 75% 이상입니다.`
+      );
     } else {
       console.log(`⚠️  목표 근접! 현재 정확도 ${finalAccuracy}%`);
-      console.log(`   목표 75%까지 ${(75 - parseFloat(finalAccuracy)).toFixed(2)}% 더 필요합니다.`);
+      console.log(
+        `   목표 75%까지 ${(75 - parseFloat(finalAccuracy)).toFixed(2)}% 더 필요합니다.`
+      );
     }
 
     return {
       accuracy: parseFloat(finalAccuracy),
       totalTested,
       totalMatched,
-      categoryStats: categoryAccuracy
+      categoryStats: categoryAccuracy,
     };
-
   } catch (error) {
     console.error('❌ 샘플 테스트 실행 중 오류:', error);
     throw error;
@@ -179,11 +188,11 @@ async function quickSampleTest() {
 // 실행
 if (require.main === module) {
   quickSampleTest()
-    .then((result) => {
+    .then(result => {
       console.log('\n✅ 샘플 테스트 완료');
       process.exit(0);
     })
-    .catch((error) => {
+    .catch(error => {
       console.error('❌ 샘플 테스트 실패:', error);
       process.exit(1);
     });

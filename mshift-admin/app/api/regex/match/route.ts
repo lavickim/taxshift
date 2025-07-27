@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const JAVA_API_BASE_URL = process.env.JAVA_API_BASE_URL || 'http://localhost:8080/mshift-api';
+const JAVA_API_BASE_URL =
+  process.env.JAVA_API_BASE_URL || 'http://localhost:8080/mshift-api';
 
 /**
  * 요청 본문 검증
@@ -40,9 +41,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          error: 'JSON 파싱 오류: 요청 본문이 유효한 JSON이 아닙니다'
+          error: 'JSON 파싱 오류: 요청 본문이 유효한 JSON이 아닙니다',
         },
-        { 
+        {
           status: 400,
           headers: {
             'Content-Type': 'application/json',
@@ -57,9 +58,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          error: validation.error
+          error: validation.error,
         },
-        { 
+        {
           status: 400,
           headers: {
             'Content-Type': 'application/json',
@@ -80,7 +81,7 @@ export async function POST(request: NextRequest) {
         body: JSON.stringify({
           inputText: text,
           category: category,
-          returnAllMatches: true
+          returnAllMatches: true,
         }),
       });
 
@@ -94,24 +95,23 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           success: true,
-          response: javaResult
+          response: javaResult,
         },
-        { 
+        {
           status: 200,
           headers: {
             'Content-Type': 'application/json',
           },
         }
       );
-
     } catch (error) {
       console.error('Java API 호출 오류:', error);
       return NextResponse.json(
         {
           success: false,
-          error: '규칙 엔진 서비스에 연결할 수 없습니다'
+          error: '규칙 엔진 서비스에 연결할 수 없습니다',
         },
-        { 
+        {
           status: 503,
           headers: {
             'Content-Type': 'application/json',
@@ -119,15 +119,14 @@ export async function POST(request: NextRequest) {
         }
       );
     }
-
   } catch (error) {
     console.error('예상치 못한 서버 오류:', error);
     return NextResponse.json(
       {
         success: false,
-        error: '내부 서버 오류가 발생했습니다'
+        error: '내부 서버 오류가 발생했습니다',
       },
-      { 
+      {
         status: 500,
         headers: {
           'Content-Type': 'application/json',
@@ -144,13 +143,13 @@ export async function GET() {
   return NextResponse.json(
     {
       success: false,
-      error: 'GET 메서드는 지원되지 않습니다. POST 요청을 사용해주세요.'
+      error: 'GET 메서드는 지원되지 않습니다. POST 요청을 사용해주세요.',
     },
-    { 
+    {
       status: 405,
       headers: {
         'Content-Type': 'application/json',
-        'Allow': 'POST',
+        Allow: 'POST',
       },
     }
   );
@@ -160,13 +159,13 @@ export async function PUT() {
   return NextResponse.json(
     {
       success: false,
-      error: 'PUT 메서드는 지원되지 않습니다. POST 요청을 사용해주세요.'
+      error: 'PUT 메서드는 지원되지 않습니다. POST 요청을 사용해주세요.',
     },
-    { 
+    {
       status: 405,
       headers: {
         'Content-Type': 'application/json',
-        'Allow': 'POST',
+        Allow: 'POST',
       },
     }
   );
@@ -176,13 +175,13 @@ export async function DELETE() {
   return NextResponse.json(
     {
       success: false,
-      error: 'DELETE 메서드는 지원되지 않습니다. POST 요청을 사용해주세요.'
+      error: 'DELETE 메서드는 지원되지 않습니다. POST 요청을 사용해주세요.',
     },
-    { 
+    {
       status: 405,
       headers: {
         'Content-Type': 'application/json',
-        'Allow': 'POST',
+        Allow: 'POST',
       },
     }
   );

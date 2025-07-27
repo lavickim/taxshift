@@ -1,11 +1,13 @@
 import { NextRequest } from 'next/server';
+
 import { GET } from '@/app/api/cache/lookup/route';
-import { TransactionCacheService } from '@/lib/services/transaction-cache';
 import { prisma } from '@/lib/db/client';
+import { TransactionCacheService } from '@/lib/services/transaction-cache';
 
 // TransactionCacheService 모킹
 jest.mock('@/lib/services/transaction-cache');
-const MockedTransactionCacheService = TransactionCacheService as jest.MockedClass<typeof TransactionCacheService>;
+const MockedTransactionCacheService =
+  TransactionCacheService as jest.MockedClass<typeof TransactionCacheService>;
 
 describe('/api/cache/lookup API 테스트', () => {
   let mockService: jest.Mocked<TransactionCacheService>;
@@ -13,12 +15,12 @@ describe('/api/cache/lookup API 테스트', () => {
   beforeEach(() => {
     // 모든 모킹 초기화
     jest.clearAllMocks();
-    
+
     // TransactionCacheService 인스턴스 모킹
     mockService = {
       findByHash: jest.fn(),
     } as any;
-    
+
     MockedTransactionCacheService.mockImplementation(() => mockService);
 
     // 데이터베이스 정리
@@ -37,14 +39,17 @@ describe('/api/cache/lookup API 테스트', () => {
         rawTextHash: testHash,
         rawText: '박광업 (대림카센터)',
         uniqueKey: '카센터_대림카센터_박광업',
-        createdAt: new Date('2024-01-01T00:00:00Z')
+        createdAt: new Date('2024-01-01T00:00:00Z'),
       };
 
       // 모킹 설정: 캐시 HIT
       mockService.findByHash.mockResolvedValue(cachedData);
 
       // API 요청 생성
-      const request = new NextRequest(`http://localhost:3000/api/cache/lookup?hash=${testHash}`);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const request = new NextRequest(
+        `http://localhost:3000/api/cache/lookup?hash=${testHash}`
+      );
 
       // API 호출
       const response = await GET(request);
@@ -58,9 +63,9 @@ describe('/api/cache/lookup API 테스트', () => {
           rawTextHash: testHash,
           rawText: '박광업 (대림카센터)',
           uniqueKey: '카센터_대림카센터_박광업',
-          createdAt: '2024-01-01T00:00:00.000Z'
+          createdAt: '2024-01-01T00:00:00.000Z',
         },
-        processingTime: expect.any(Number)
+        processingTime: expect.any(Number),
       });
 
       // 서비스 메소드 호출 검증
@@ -75,7 +80,10 @@ describe('/api/cache/lookup API 테스트', () => {
       mockService.findByHash.mockResolvedValue(null);
 
       // API 요청 생성
-      const request = new NextRequest(`http://localhost:3000/api/cache/lookup?hash=${testHash}`);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const request = new NextRequest(
+        `http://localhost:3000/api/cache/lookup?hash=${testHash}`
+      );
 
       // API 호출
       const response = await GET(request);
@@ -86,7 +94,7 @@ describe('/api/cache/lookup API 테스트', () => {
       expect(responseData).toEqual({
         hit: false,
         data: null,
-        processingTime: expect.any(Number)
+        processingTime: expect.any(Number),
       });
 
       // 서비스 메소드 호출 검증
@@ -96,6 +104,7 @@ describe('/api/cache/lookup API 테스트', () => {
 
     it('해시 파라미터가 없을 때 400 에러를 반환해야 함', async () => {
       // API 요청 생성 (해시 파라미터 없음)
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const request = new NextRequest('http://localhost:3000/api/cache/lookup');
 
       // API 호출
@@ -106,7 +115,7 @@ describe('/api/cache/lookup API 테스트', () => {
       expect(response.status).toBe(400);
       expect(responseData).toEqual({
         error: 'hash 파라미터가 필요합니다',
-        code: 'MISSING_HASH_PARAMETER'
+        code: 'MISSING_HASH_PARAMETER',
       });
 
       // 서비스 메소드가 호출되지 않아야 함
@@ -117,10 +126,15 @@ describe('/api/cache/lookup API 테스트', () => {
       const invalidHash = 'invalid_hash';
 
       // 모킹 설정: 유효성 검증 에러
-      mockService.findByHash.mockRejectedValue(new Error('해시는 64자리 16진수여야 합니다'));
+      mockService.findByHash.mockRejectedValue(
+        new Error('해시는 64자리 16진수여야 합니다')
+      );
 
       // API 요청 생성
-      const request = new NextRequest(`http://localhost:3000/api/cache/lookup?hash=${invalidHash}`);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const request = new NextRequest(
+        `http://localhost:3000/api/cache/lookup?hash=${invalidHash}`
+      );
 
       // API 호출
       const response = await GET(request);
@@ -130,7 +144,7 @@ describe('/api/cache/lookup API 테스트', () => {
       expect(response.status).toBe(400);
       expect(responseData).toEqual({
         error: '해시는 64자리 16진수여야 합니다',
-        code: 'INVALID_HASH_FORMAT'
+        code: 'INVALID_HASH_FORMAT',
       });
 
       // 서비스 메소드 호출 검증
@@ -141,10 +155,15 @@ describe('/api/cache/lookup API 테스트', () => {
       const testHash = 'c'.repeat(64);
 
       // 모킹 설정: 데이터베이스 에러
-      mockService.findByHash.mockRejectedValue(new Error('Database connection failed'));
+      mockService.findByHash.mockRejectedValue(
+        new Error('Database connection failed')
+      );
 
       // API 요청 생성
-      const request = new NextRequest(`http://localhost:3000/api/cache/lookup?hash=${testHash}`);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const request = new NextRequest(
+        `http://localhost:3000/api/cache/lookup?hash=${testHash}`
+      );
 
       // API 호출
       const response = await GET(request);
@@ -154,7 +173,7 @@ describe('/api/cache/lookup API 테스트', () => {
       expect(response.status).toBe(500);
       expect(responseData).toEqual({
         error: '캐시 조회 중 오류가 발생했습니다',
-        code: 'CACHE_LOOKUP_ERROR'
+        code: 'CACHE_LOOKUP_ERROR',
       });
 
       // 서비스 메소드 호출 검증
@@ -167,14 +186,17 @@ describe('/api/cache/lookup API 테스트', () => {
         rawTextHash: testHash,
         rawText: '성능 테스트',
         uniqueKey: '성능테스트키',
-        createdAt: new Date()
+        createdAt: new Date(),
       };
 
       // 모킹 설정: 빠른 응답
       mockService.findByHash.mockResolvedValue(cachedData);
 
       // API 요청 생성
-      const request = new NextRequest(`http://localhost:3000/api/cache/lookup?hash=${testHash}`);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const request = new NextRequest(
+        `http://localhost:3000/api/cache/lookup?hash=${testHash}`
+      );
 
       // 성능 측정
       const startTime = Date.now();
@@ -189,7 +211,7 @@ describe('/api/cache/lookup API 테스트', () => {
     });
 
     it('대량 요청 처리 성능 테스트 (100건)', async () => {
-      const testHashes = Array.from({ length: 100 }, (_, i) => 
+      const testHashes = Array.from({ length: 100 }, (_, i) =>
         i.toString().padStart(64, '0')
       );
 
@@ -199,14 +221,16 @@ describe('/api/cache/lookup API 테스트', () => {
           rawTextHash: hash,
           rawText: `테스트 데이터 ${index}`,
           uniqueKey: `테스트키${index}`,
-          createdAt: new Date()
+          createdAt: new Date(),
         };
         mockService.findByHash.mockResolvedValueOnce(cachedData);
       });
 
       // 대량 요청 생성
-      const requests = testHashes.map(hash => 
-        new NextRequest(`http://localhost:3000/api/cache/lookup?hash=${hash}`)
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const requests = testHashes.map(
+        hash =>
+          new NextRequest(`http://localhost:3000/api/cache/lookup?hash=${hash}`)
       );
 
       // 성능 측정
@@ -234,7 +258,7 @@ describe('/api/cache/lookup API 테스트', () => {
         rawTextHash: testHash,
         rawText: '동시성 테스트',
         uniqueKey: '동시성테스트키',
-        createdAt: new Date()
+        createdAt: new Date(),
       };
 
       // 모킹 설정: 동일한 데이터 반복 반환
@@ -242,7 +266,10 @@ describe('/api/cache/lookup API 테스트', () => {
 
       // 50개의 동시 요청 생성
       const simultaneousRequests = Array.from({ length: 50 }, () => {
-        const request = new NextRequest(`http://localhost:3000/api/cache/lookup?hash=${testHash}`);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const request = new NextRequest(
+          `http://localhost:3000/api/cache/lookup?hash=${testHash}`
+        );
         return GET(request);
       });
 
@@ -267,14 +294,17 @@ describe('/api/cache/lookup API 테스트', () => {
         rawTextHash: testHash,
         rawText: '데이터 형식 테스트',
         uniqueKey: '데이터형식테스트키',
-        createdAt: new Date('2024-06-07T12:00:00Z')
+        createdAt: new Date('2024-06-07T12:00:00Z'),
       };
 
       // 모킹 설정
       mockService.findByHash.mockResolvedValue(cachedData);
 
       // API 요청 생성
-      const request = new NextRequest(`http://localhost:3000/api/cache/lookup?hash=${testHash}`);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const request = new NextRequest(
+        `http://localhost:3000/api/cache/lookup?hash=${testHash}`
+      );
 
       // API 호출
       const response = await GET(request);
@@ -298,4 +328,4 @@ describe('/api/cache/lookup API 테스트', () => {
       expect(responseData.data.createdAt).toBe('2024-06-07T12:00:00.000Z');
     });
   });
-}); 
+});

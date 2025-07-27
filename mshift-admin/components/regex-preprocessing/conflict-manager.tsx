@@ -1,15 +1,31 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { Progress } from "@/components/ui/progress";
-import { 
-  AlertTriangle, Shield, AlertCircle, Info, Zap, 
-  RefreshCw, ChevronDown, ChevronRight, Eye, Settings
-} from "lucide-react";
+import React, { useEffect, useState } from 'react';
+
+import {
+  AlertCircle,
+  AlertTriangle,
+  ChevronDown,
+  ChevronRight,
+  Eye,
+  Info,
+  RefreshCw,
+  Settings,
+  Shield,
+  Zap,
+} from 'lucide-react';
+
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+// import { Progress } from '@/components/ui/progress';
+import { Separator } from '@/components/ui/separator';
 
 interface ConflictAnalysis {
   ruleId: number;
@@ -43,7 +59,9 @@ export function RegexConflictManager() {
   const [conflicts, setConflicts] = useState<ConflictAnalysis[]>([]);
   const [summary, setSummary] = useState<ConflictSummary | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [expandedConflicts, setExpandedConflicts] = useState<Set<string>>(new Set());
+  const [expandedConflicts, setExpandedConflicts] = useState<Set<string>>(
+    new Set()
+  );
 
   useEffect(() => {
     loadConflicts();
@@ -54,7 +72,7 @@ export function RegexConflictManager() {
     try {
       const response = await fetch('/api/regex-preprocessing/conflicts');
       const result = await response.json();
-      
+
       if (result.success) {
         setConflicts(result.data.conflicts);
         setSummary(result.data.summary);
@@ -81,13 +99,13 @@ export function RegexConflictManager() {
   const getImpactIcon = (level: string) => {
     switch (level) {
       case 'critical':
-        return <AlertCircle className="h-4 w-4 text-red-600" />;
+        return <AlertCircle className='h-4 w-4 text-red-600' />;
       case 'warning':
-        return <AlertTriangle className="h-4 w-4 text-yellow-600" />;
+        return <AlertTriangle className='h-4 w-4 text-yellow-600' />;
       case 'info':
-        return <Info className="h-4 w-4 text-blue-600" />;
+        return <Info className='h-4 w-4 text-blue-600' />;
       default:
-        return <Info className="h-4 w-4 text-gray-600" />;
+        return <Info className='h-4 w-4 text-gray-600' />;
     }
   };
 
@@ -118,25 +136,25 @@ export function RegexConflictManager() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className='space-y-6'>
       {/* 개요 및 통계 */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Shield className="h-5 w-5" />
+          <CardTitle className='flex items-center justify-between'>
+            <div className='flex items-center gap-2'>
+              <Shield className='h-5 w-5' />
               패턴 충돌 관리 및 우선순위 최적화
             </div>
-            <Button 
-              onClick={loadConflicts} 
+            <Button
+              onClick={loadConflicts}
               disabled={isLoading}
-              variant="outline"
-              size="sm"
+              variant='outline'
+              size='sm'
             >
               {isLoading ? (
-                <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                <RefreshCw className='mr-2 h-4 w-4 animate-spin' />
               ) : (
-                <RefreshCw className="h-4 w-4 mr-2" />
+                <RefreshCw className='mr-2 h-4 w-4' />
               )}
               {isLoading ? '분석 중...' : '충돌 재분석'}
             </Button>
@@ -147,30 +165,30 @@ export function RegexConflictManager() {
         </CardHeader>
         <CardContent>
           {summary && (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="text-center p-4 border rounded-lg">
-                <div className="text-2xl font-bold text-blue-600">
+            <div className='grid grid-cols-2 gap-4 md:grid-cols-4'>
+              <div className='rounded-lg border p-4 text-center'>
+                <div className='text-2xl font-bold text-blue-600'>
                   {summary.totalConflicts}
                 </div>
-                <div className="text-sm text-gray-600">총 충돌</div>
+                <div className='text-sm text-gray-600'>총 충돌</div>
               </div>
-              <div className="text-center p-4 border rounded-lg">
-                <div className="text-2xl font-bold text-red-600">
+              <div className='rounded-lg border p-4 text-center'>
+                <div className='text-2xl font-bold text-red-600'>
                   {summary.criticalConflicts}
                 </div>
-                <div className="text-sm text-gray-600">Critical</div>
+                <div className='text-sm text-gray-600'>Critical</div>
               </div>
-              <div className="text-center p-4 border rounded-lg">
-                <div className="text-2xl font-bold text-yellow-600">
+              <div className='rounded-lg border p-4 text-center'>
+                <div className='text-2xl font-bold text-yellow-600'>
                   {summary.warningConflicts}
                 </div>
-                <div className="text-sm text-gray-600">Warning</div>
+                <div className='text-sm text-gray-600'>Warning</div>
               </div>
-              <div className="text-center p-4 border rounded-lg">
-                <div className="text-2xl font-bold text-gray-600">
+              <div className='rounded-lg border p-4 text-center'>
+                <div className='text-2xl font-bold text-gray-600'>
                   {summary.averageOverlapPercentage.toFixed(1)}%
                 </div>
-                <div className="text-sm text-gray-600">평균 겹침률</div>
+                <div className='text-sm text-gray-600'>평균 겹침률</div>
               </div>
             </div>
           )}
@@ -183,123 +201,151 @@ export function RegexConflictManager() {
           <CardHeader>
             <CardTitle>감지된 충돌 목록</CardTitle>
             <CardDescription>
-              심각도 순으로 정렬된 패턴 충돌들입니다. 각 충돌을 클릭하여 상세 정보를 확인하세요.
+              심각도 순으로 정렬된 패턴 충돌들입니다. 각 충돌을 클릭하여 상세
+              정보를 확인하세요.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className='space-y-4'>
               {conflicts.map((conflict, index) => {
                 const conflictId = `${conflict.ruleId}-${conflict.conflictingRuleId}`;
                 const isExpanded = expandedConflicts.has(conflictId);
-                
+
                 return (
                   <div
                     key={conflictId}
-                    className={`border rounded-lg p-4 ${
-                      conflict.impactLevel === 'critical' 
-                        ? 'border-red-200 bg-red-50' 
+                    className={`rounded-lg border p-4 ${
+                      conflict.impactLevel === 'critical'
+                        ? 'border-red-200 bg-red-50'
                         : conflict.impactLevel === 'warning'
-                        ? 'border-yellow-200 bg-yellow-50'
-                        : 'border-gray-200 bg-gray-50'
+                          ? 'border-yellow-200 bg-yellow-50'
+                          : 'border-gray-200 bg-gray-50'
                     }`}
                   >
-                    <div 
-                      className="flex items-center justify-between cursor-pointer"
+                    <div
+                      className='flex cursor-pointer items-center justify-between'
                       onClick={() => toggleConflictExpansion(conflictId)}
                     >
-                      <div className="flex items-center gap-3">
+                      <div className='flex items-center gap-3'>
                         {isExpanded ? (
-                          <ChevronDown className="h-4 w-4" />
+                          <ChevronDown className='h-4 w-4' />
                         ) : (
-                          <ChevronRight className="h-4 w-4" />
+                          <ChevronRight className='h-4 w-4' />
                         )}
                         {getImpactIcon(conflict.impactLevel)}
                         <div>
-                          <div className="font-medium">
-                            {conflict.ruleName} ↔ {conflict.conflictingRuleName}
+                          <div className='font-medium'>
+                            {conflict.ruleName} ↔{' '}
+                            {conflict.conflictingRuleName}
                           </div>
-                          <div className="text-sm text-gray-600">
-                            {getConflictTypeLabel(conflict.conflictType)} • 
-                            겹침률: {conflict.overlapPercentage.toFixed(1)}% • 
+                          <div className='text-sm text-gray-600'>
+                            {getConflictTypeLabel(conflict.conflictType)} •
+                            겹침률: {conflict.overlapPercentage.toFixed(1)}% •
                             일일 영향: {conflict.affectedTransactionsPerDay}건
                           </div>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Badge variant={getImpactColor(conflict.impactLevel) as any}>
+                      <div className='flex items-center gap-2'>
+                        <Badge
+                          variant={getImpactColor(conflict.impactLevel) as any}
+                        >
                           {conflict.impactLevel.toUpperCase()}
                         </Badge>
-                        <div className="text-right">
-                          <div className="text-lg font-bold">
+                        <div className='text-right'>
+                          <div className='text-lg font-bold'>
                             {conflict.overlapPercentage.toFixed(1)}%
                           </div>
-                          <div className="text-xs text-gray-500">겹침률</div>
+                          <div className='text-xs text-gray-500'>겹침률</div>
                         </div>
                       </div>
                     </div>
 
                     {isExpanded && (
-                      <div className="mt-4 space-y-4">
+                      <div className='mt-4 space-y-4'>
                         <Separator />
-                        
+
                         {/* 해결 방안 */}
                         <div>
-                          <h4 className="font-medium mb-2 flex items-center gap-2">
-                            <Zap className="h-4 w-4" />
+                          <h4 className='mb-2 flex items-center gap-2 font-medium'>
+                            <Zap className='h-4 w-4' />
                             제안된 해결 방안
                           </h4>
-                          <ul className="space-y-1">
-                            {conflict.suggestedResolution.map((suggestion, idx) => (
-                              <li key={idx} className="text-sm text-gray-700 flex items-start gap-2">
-                                <span className="text-blue-500 mt-1">•</span>
-                                {suggestion}
-                              </li>
-                            ))}
+                          <ul className='space-y-1'>
+                            {conflict.suggestedResolution.map(
+                              (suggestion, idx) => (
+                                <li
+                                  key={idx}
+                                  className='flex items-start gap-2 text-sm text-gray-700'
+                                >
+                                  <span className='mt-1 text-blue-500'>•</span>
+                                  {suggestion}
+                                </li>
+                              )
+                            )}
                           </ul>
                         </div>
 
                         {/* 테스트 샘플 */}
                         {conflict.testSamples.length > 0 && (
                           <div>
-                            <h4 className="font-medium mb-2 flex items-center gap-2">
-                              <Eye className="h-4 w-4" />
+                            <h4 className='mb-2 flex items-center gap-2 font-medium'>
+                              <Eye className='h-4 w-4' />
                               충돌 샘플 ({conflict.testSamples.length}개)
                             </h4>
-                            <div className="space-y-2">
-                              {conflict.testSamples.slice(0, 3).map((sample, idx) => (
-                                <div key={idx} className="text-sm border rounded p-3 bg-white">
-                                  <div className="font-mono text-gray-800 mb-2">
-                                    입력: {sample.input}
-                                  </div>
-                                  <div className="grid grid-cols-2 gap-4 text-xs">
-                                    <div>
-                                      <span className="text-gray-600">규칙 1 출력:</span>
-                                      <div className={`font-mono ${
-                                        sample.winningRule === conflict.ruleId 
-                                          ? 'text-green-700 font-semibold' 
-                                          : 'text-gray-500'
-                                      }`}>
-                                        {sample.rule1Output}
-                                        {sample.winningRule === conflict.ruleId && ' ← 적용됨'}
+                            <div className='space-y-2'>
+                              {conflict.testSamples
+                                .slice(0, 3)
+                                .map((sample, idx) => (
+                                  <div
+                                    key={idx}
+                                    className='rounded border bg-white p-3 text-sm'
+                                  >
+                                    <div className='mb-2 font-mono text-gray-800'>
+                                      입력: {sample.input}
+                                    </div>
+                                    <div className='grid grid-cols-2 gap-4 text-xs'>
+                                      <div>
+                                        <span className='text-gray-600'>
+                                          규칙 1 출력:
+                                        </span>
+                                        <div
+                                          className={`font-mono ${
+                                            sample.winningRule ===
+                                            conflict.ruleId
+                                              ? 'font-semibold text-green-700'
+                                              : 'text-gray-500'
+                                          }`}
+                                        >
+                                          {sample.rule1Output}
+                                          {sample.winningRule ===
+                                            conflict.ruleId && ' ← 적용됨'}
+                                        </div>
+                                      </div>
+                                      <div>
+                                        <span className='text-gray-600'>
+                                          규칙 2 출력:
+                                        </span>
+                                        <div
+                                          className={`font-mono ${
+                                            sample.winningRule ===
+                                            conflict.conflictingRuleId
+                                              ? 'font-semibold text-green-700'
+                                              : 'text-gray-500'
+                                          }`}
+                                        >
+                                          {sample.rule2Output}
+                                          {sample.winningRule ===
+                                            conflict.conflictingRuleId &&
+                                            ' ← 적용됨'}
+                                        </div>
                                       </div>
                                     </div>
-                                    <div>
-                                      <span className="text-gray-600">규칙 2 출력:</span>
-                                      <div className={`font-mono ${
-                                        sample.winningRule === conflict.conflictingRuleId 
-                                          ? 'text-green-700 font-semibold' 
-                                          : 'text-gray-500'
-                                      }`}>
-                                        {sample.rule2Output}
-                                        {sample.winningRule === conflict.conflictingRuleId && ' ← 적용됨'}
-                                      </div>
-                                    </div>
                                   </div>
-                                </div>
-                              ))}
+                                ))}
                               {conflict.testSamples.length > 3 && (
-                                <div className="text-sm text-gray-500 text-center">
-                                  ... 및 {conflict.testSamples.length - 3}개 추가 샘플
+                                <div className='text-center text-sm text-gray-500'>
+                                  ... 및 {conflict.testSamples.length - 3}개
+                                  추가 샘플
                                 </div>
                               )}
                             </div>
@@ -307,13 +353,13 @@ export function RegexConflictManager() {
                         )}
 
                         {/* 액션 버튼 */}
-                        <div className="flex gap-2 pt-2">
-                          <Button size="sm" variant="outline">
-                            <Settings className="h-4 w-4 mr-2" />
+                        <div className='flex gap-2 pt-2'>
+                          <Button size='sm' variant='outline'>
+                            <Settings className='mr-2 h-4 w-4' />
                             우선순위 조정
                           </Button>
-                          <Button size="sm" variant="outline">
-                            <Eye className="h-4 w-4 mr-2" />
+                          <Button size='sm' variant='outline'>
+                            <Eye className='mr-2 h-4 w-4' />
                             규칙 편집
                           </Button>
                         </div>
@@ -327,20 +373,22 @@ export function RegexConflictManager() {
         </Card>
       ) : (
         <Card>
-          <CardContent className="text-center py-12">
+          <CardContent className='py-12 text-center'>
             {isLoading ? (
               <div>
-                <RefreshCw className="h-12 w-12 mx-auto text-muted-foreground mb-4 animate-spin" />
-                <h3 className="text-lg font-semibold mb-2">충돌 분석 중...</h3>
-                <p className="text-muted-foreground">
+                <RefreshCw className='mx-auto mb-4 h-12 w-12 animate-spin text-muted-foreground' />
+                <h3 className='mb-2 text-lg font-semibold'>충돌 분석 중...</h3>
+                <p className='text-muted-foreground'>
                   모든 정규식 패턴을 분석하여 충돌을 감지하고 있습니다.
                 </p>
               </div>
             ) : (
               <div>
-                <Shield className="h-12 w-12 mx-auto text-green-600 mb-4" />
-                <h3 className="text-lg font-semibold mb-2 text-green-700">충돌이 감지되지 않았습니다</h3>
-                <p className="text-muted-foreground">
+                <Shield className='mx-auto mb-4 h-12 w-12 text-green-600' />
+                <h3 className='mb-2 text-lg font-semibold text-green-700'>
+                  충돌이 감지되지 않았습니다
+                </h3>
+                <p className='text-muted-foreground'>
                   현재 모든 정규식 패턴이 올바르게 분리되어 있습니다.
                 </p>
               </div>

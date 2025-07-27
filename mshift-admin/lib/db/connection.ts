@@ -16,9 +16,10 @@ export function checkDatabaseUrl(): boolean {
 export function logDatabaseInfo(): void {
   if (process.env.DATABASE_URL) {
     const url = process.env.DATABASE_URL;
-    const maskedUrl = url.substring(0, 20) + '***' + url.substring(url.length - 20);
+    const maskedUrl =
+      url.substring(0, 20) + '***' + url.substring(url.length - 20);
     console.log('📊 DATABASE_URL 설정됨:', maskedUrl);
   } else {
     console.log('❌ DATABASE_URL이 설정되지 않음');
   }
-} 
+}

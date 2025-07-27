@@ -2,7 +2,6 @@
  * 태그-계정과목 매핑 업데이트 테스트 (TDD)
  * 3자리 계정코드를 4자리 계정코드로 업데이트하는 테스트
  */
-
 import { PrismaClient } from '../../lib/generated/prisma';
 
 const prisma = new PrismaClient();
@@ -20,9 +19,9 @@ describe('Tag-Account Mapping Update', () => {
     const mappingsWithOldCodes = await prisma.tagAccountMapping.count({
       where: {
         accountCode: {
-          in: ['622', '651', '111', '634', '611', '999'] // 기존 3자리 코드들
-        }
-      }
+          in: ['622', '651', '111', '634', '611', '999'], // 기존 3자리 코드들
+        },
+      },
     });
 
     // 모든 매핑이 4자리 코드로 업데이트되어야 함
@@ -33,7 +32,7 @@ describe('Tag-Account Mapping Update', () => {
     // 주요 비즈니스 태그들이 올바른 4자리 계정으로 매핑되는지 확인
     const businessTagMappings = [
       { tagName: '편의점', expectedAccountCode: '5410' }, // 소모품비
-      { tagName: '주유소', expectedAccountCode: '5310' }, // 차량유지비  
+      { tagName: '주유소', expectedAccountCode: '5310' }, // 차량유지비
       { tagName: '치킨전문점', expectedAccountCode: '5230' }, // 접대비
       { tagName: '카페', expectedAccountCode: '5230' }, // 접대비
       { tagName: '마트', expectedAccountCode: '5410' }, // 소모품비
@@ -43,20 +42,20 @@ describe('Tag-Account Mapping Update', () => {
 
     for (const { tagName, expectedAccountCode } of businessTagMappings) {
       const tag = await prisma.tagsMaster.findUnique({
-        where: { tagName }
+        where: { tagName },
       });
-      
+
       if (tag) {
         const mapping = await prisma.tagAccountMapping.findFirst({
-          where: { tagId: tag.id }
+          where: { tagId: tag.id },
         });
-        
+
         if (mapping) {
           expect(mapping.accountCode).toBe(expectedAccountCode);
-          
+
           // 해당 계정이 실제로 존재하는지 확인
           const account = await prisma.chartOfAccounts.findUnique({
-            where: { accountCode: expectedAccountCode }
+            where: { accountCode: expectedAccountCode },
           });
           expect(account).toBeTruthy();
         }
@@ -67,16 +66,16 @@ describe('Tag-Account Mapping Update', () => {
   test('should maintain tag mapping functionality with new account codes', async () => {
     // 모든 매핑이 유효한 4자리 계정코드를 사용하는지 확인
     const allMappings = await prisma.tagAccountMapping.findMany({
-      select: { accountCode: true }
+      select: { accountCode: true },
     });
 
     for (const mapping of allMappings) {
       // 4자리 숫자 형식인지 확인
       expect(mapping.accountCode).toMatch(/^\d{4}$/);
-      
+
       // 해당 계정이 차트에 존재하는지 확인
       const account = await prisma.chartOfAccounts.findUnique({
-        where: { accountCode: mapping.accountCode }
+        where: { accountCode: mapping.accountCode },
       });
       expect(account).toBeTruthy();
     }
@@ -87,17 +86,17 @@ describe('Tag-Account Mapping Update', () => {
     const tagsWithoutMappings = await prisma.tagsMaster.count({
       where: {
         tagAccountMappings: {
-          none: {}
+          none: {},
         },
-        isActive: true
-      }
+        isActive: true,
+      },
     });
 
     // 대부분의 활성 태그가 매핑을 가져야 함 (일부 새로운 태그는 제외)
     const totalActiveTags = await prisma.tagsMaster.count({
-      where: { isActive: true }
+      where: { isActive: true },
     });
-    
+
     expect(tagsWithoutMappings).toBeLessThan(totalActiveTags * 0.3); // 30% 미만이어야 함
   });
 
@@ -106,22 +105,22 @@ describe('Tag-Account Mapping Update', () => {
     const expenseTagMappings = await prisma.tagAccountMapping.findMany({
       where: {
         accountCode: {
-          startsWith: '5' // 비용 계정
-        }
+          startsWith: '5', // 비용 계정
+        },
       },
       include: {
         tag: {
-          select: { tagName: true, tagCategory: true }
-        }
+          select: { tagName: true, tagCategory: true },
+        },
       },
-      take: 10
+      take: 10,
     });
 
     for (const mapping of expenseTagMappings) {
       const account = await prisma.chartOfAccounts.findUnique({
-        where: { accountCode: mapping.accountCode }
+        where: { accountCode: mapping.accountCode },
       });
-      
+
       expect(account?.accountType).toBe('비용');
       expect(account?.isDebitNormal).toBe(true);
     }

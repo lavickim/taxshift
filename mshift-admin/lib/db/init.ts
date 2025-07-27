@@ -10,31 +10,33 @@ import { checkDatabaseUrl, logDatabaseInfo } from './connection';
  */
 export async function initializeDatabase(): Promise<void> {
   console.log('🔄 Initializing database...');
-  
+
   // DATABASE_URL 확인
   if (!checkDatabaseUrl()) {
-    throw new Error('DATABASE_URL이 환경 변수에 설정되지 않았습니다. .env 파일에 Supabase에서 제공하는 DATABASE_URL을 추가해주세요.');
+    throw new Error(
+      'DATABASE_URL이 환경 변수에 설정되지 않았습니다. .env 파일에 Supabase에서 제공하는 DATABASE_URL을 추가해주세요.'
+    );
   }
-  
+
   logDatabaseInfo();
-  
+
   try {
     // 1. 데이터베이스 연결 테스트
     await testDatabaseConnection();
-    
+
     // 2. 마이그레이션 상태 확인
     await checkMigrationStatus();
-    
+
     // 3. 데이터 수집 테이블 확인 및 생성
     await checkDataCollectionTables();
-    
+
     // 4. 기본 데이터 확인 및 생성
     await seedRequiredData();
-    
+
     console.log('✅ Database initialization completed');
   } catch (error) {
     console.error('❌ Database initialization failed:', error);
-    
+
     // 개발 환경에서는 자동으로 마이그레이션 시도
     if (process.env.NODE_ENV === 'development') {
       console.log('🔄 Attempting to apply migrations...');
@@ -53,13 +55,15 @@ async function checkMigrationStatus(): Promise<void> {
     // Prisma의 _prisma_migrations 테이블을 확인하여 마이그레이션 상태 체크
     // 실제 테이블 쿼리로 스키마 존재 여부 확인
     const { prisma } = await import('./client');
-    
+
     // companies 테이블이 존재하는지 확인 (대표 테이블)
     await prisma.$queryRaw`SELECT 1 FROM companies LIMIT 1`;
     console.log('✅ Database schema is up to date');
   } catch (error) {
     console.log('⚠️ Database schema needs migration');
-    throw new Error('Database schema is not up to date. Please run migrations.');
+    throw new Error(
+      'Database schema is not up to date. Please run migrations.'
+    );
   }
 }
 
@@ -68,21 +72,23 @@ async function checkMigrationStatus(): Promise<void> {
  */
 async function applyMigrationsInDevelopment(): Promise<void> {
   if (process.env.NODE_ENV !== 'development') {
-    throw new Error('Auto-migration is only allowed in development environment');
+    throw new Error(
+      'Auto-migration is only allowed in development environment'
+    );
   }
-  
+
   try {
     // 개발 환경에서는 prisma db push를 사용하여 스키마를 자동 동기화
     const { execSync } = require('child_process');
-    
+
     console.log('🔄 Applying database migrations...');
-    execSync('npx prisma db push --skip-generate', { 
+    execSync('npx prisma db push --skip-generate', {
       stdio: 'inherit',
-      cwd: process.cwd()
+      cwd: process.cwd(),
     });
-    
+
     console.log('✅ Migrations applied successfully');
-    
+
     // 마이그레이션 후 다시 연결 테스트
     await testDatabaseConnection();
   } catch (error) {
@@ -97,23 +103,27 @@ async function applyMigrationsInDevelopment(): Promise<void> {
 async function checkDataCollectionTables(): Promise<void> {
   try {
     const { prisma } = await import('./client');
-    
+
     // 경기도 배달특급 데이터 수집 테이블 확인
     try {
       await prisma.$queryRaw`SELECT 1 FROM datacollection_gyeonggi_delivery LIMIT 1`;
-      console.log('✅ Data collection table (datacollection_gyeonggi_delivery) exists');
-      
+      console.log(
+        '✅ Data collection table (datacollection_gyeonggi_delivery) exists'
+      );
+
       // 기존 테이블의 RLS 설정 확인 및 수정
       await checkAndFixTablePermissions();
     } catch (error) {
       console.log('⚠️ Data collection table not found, creating...');
       await createDataCollectionTables();
     }
-    
+
     // 서울시 일반음식점 데이터 수집 테이블 확인
     try {
       await prisma.$queryRaw`SELECT 1 FROM datacollection_seoul_restaurants LIMIT 1`;
-      console.log('✅ Seoul restaurants table (datacollection_seoul_restaurants) exists');
+      console.log(
+        '✅ Seoul restaurants table (datacollection_seoul_restaurants) exists'
+      );
     } catch (error) {
       console.log('⚠️ Seoul restaurants table not found, creating...');
       await createSeoulRestaurantsTable();
@@ -130,9 +140,9 @@ async function checkDataCollectionTables(): Promise<void> {
 async function createDataCollectionTables(): Promise<void> {
   try {
     const { prisma } = await import('./client');
-    
+
     console.log('🔧 Creating datacollection_gyeonggi_delivery table...');
-    
+
     // 경기도 배달특급 데이터 수집 테이블 생성
     await prisma.$executeRaw`
       CREATE TABLE datacollection_gyeonggi_delivery (
@@ -156,7 +166,7 @@ async function createDataCollectionTables(): Promise<void> {
         updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
       )
     `;
-    
+
     // 인덱스 생성
     console.log('🔧 Creating indexes...');
     await prisma.$executeRaw`
@@ -179,7 +189,7 @@ async function createDataCollectionTables(): Promise<void> {
       CREATE INDEX idx_datacollection_gyeonggi_delivery_created_at 
         ON datacollection_gyeonggi_delivery(created_at)
     `;
-    
+
     // 업데이트 트리거 생성
     console.log('🔧 Creating update trigger...');
     await prisma.$executeRaw`
@@ -191,15 +201,15 @@ async function createDataCollectionTables(): Promise<void> {
       END;
       $$ language 'plpgsql'
     `;
-    
+
     await prisma.$executeRaw`
       CREATE TRIGGER update_datacollection_gyeonggi_delivery_updated_at 
           BEFORE UPDATE ON datacollection_gyeonggi_delivery 
           FOR EACH ROW EXECUTE FUNCTION update_updated_at_column()
     `;
-    
+
     console.log('✅ Data collection tables created successfully');
-    
+
     // RLS 설정 (Row Level Security)
     console.log('🔧 Setting up Row Level Security...');
     try {
@@ -207,18 +217,18 @@ async function createDataCollectionTables(): Promise<void> {
       await prisma.$executeRaw`
         ALTER TABLE datacollection_gyeonggi_delivery DISABLE ROW LEVEL SECURITY
       `;
-      
+
       // 또는 모든 사용자에게 INSERT/SELECT 권한 부여
       await prisma.$executeRaw`
         GRANT INSERT, SELECT, UPDATE, DELETE ON datacollection_gyeonggi_delivery TO anon, authenticated
       `;
-      
+
       console.log('✅ RLS settings configured');
     } catch (rlsError) {
       console.log('⚠️ RLS setup failed:', rlsError);
       // RLS 설정 실패 시에도 진행
     }
-    
+
     // 테이블 코멘트 추가 (선택사항)
     try {
       await prisma.$executeRaw`
@@ -231,7 +241,6 @@ async function createDataCollectionTables(): Promise<void> {
     } catch (commentError) {
       console.log('⚠️ Failed to add table comments (non-critical)');
     }
-    
   } catch (error) {
     console.error('❌ Failed to create data collection tables:', error);
     throw error;
@@ -244,9 +253,9 @@ async function createDataCollectionTables(): Promise<void> {
 async function createSeoulRestaurantsTable(): Promise<void> {
   try {
     const { prisma } = await import('./client');
-    
+
     console.log('🔧 Creating datacollection_seoul_restaurants table...');
-    
+
     // 서울시 일반음식점 데이터 수집 테이블 생성 (첫 번째 컬럼은 제외, 폐업 데이터는 필터링)
     await prisma.$executeRaw`
       CREATE TABLE datacollection_seoul_restaurants (
@@ -300,7 +309,7 @@ async function createSeoulRestaurantsTable(): Promise<void> {
         updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
       )
     `;
-    
+
     // 인덱스 생성
     console.log('🔧 Creating indexes for Seoul restaurants table...');
     await prisma.$executeRaw`
@@ -327,7 +336,7 @@ async function createSeoulRestaurantsTable(): Promise<void> {
       CREATE INDEX idx_seoul_restaurants_created_at 
         ON datacollection_seoul_restaurants(created_at)
     `;
-    
+
     // 업데이트 트리거 생성
     console.log('🔧 Creating update trigger for Seoul restaurants...');
     await prisma.$executeRaw`
@@ -335,23 +344,23 @@ async function createSeoulRestaurantsTable(): Promise<void> {
           BEFORE UPDATE ON datacollection_seoul_restaurants 
           FOR EACH ROW EXECUTE FUNCTION update_updated_at_column()
     `;
-    
+
     // RLS 설정
     console.log('🔧 Setting up Row Level Security for Seoul restaurants...');
     try {
       await prisma.$executeRaw`
         ALTER TABLE datacollection_seoul_restaurants DISABLE ROW LEVEL SECURITY
       `;
-      
+
       await prisma.$executeRaw`
         GRANT INSERT, SELECT, UPDATE, DELETE ON datacollection_seoul_restaurants TO anon, authenticated
       `;
-      
+
       console.log('✅ Seoul restaurants RLS settings configured');
     } catch (rlsError) {
       console.log('⚠️ Seoul restaurants RLS setup failed:', rlsError);
     }
-    
+
     // 테이블 코멘트 추가
     try {
       await prisma.$executeRaw`
@@ -365,11 +374,12 @@ async function createSeoulRestaurantsTable(): Promise<void> {
       `;
       console.log('✅ Seoul restaurants table comments added');
     } catch (commentError) {
-      console.log('⚠️ Failed to add Seoul restaurants table comments (non-critical)');
+      console.log(
+        '⚠️ Failed to add Seoul restaurants table comments (non-critical)'
+      );
     }
-    
+
     console.log('✅ Seoul restaurants table created successfully');
-    
   } catch (error) {
     console.error('❌ Failed to create Seoul restaurants table:', error);
     throw error;
@@ -382,19 +392,19 @@ async function createSeoulRestaurantsTable(): Promise<void> {
 async function checkAndFixTablePermissions(): Promise<void> {
   try {
     const { prisma } = await import('./client');
-    
+
     console.log('🔧 Checking table permissions...');
-    
+
     // RLS 비활성화
     await prisma.$executeRaw`
       ALTER TABLE datacollection_gyeonggi_delivery DISABLE ROW LEVEL SECURITY
     `;
-    
+
     // 권한 부여
     await prisma.$executeRaw`
       GRANT INSERT, SELECT, UPDATE, DELETE ON datacollection_gyeonggi_delivery TO anon, authenticated
     `;
-    
+
     // 서울시 음식점 테이블 권한도 확인 (존재하는 경우에만)
     try {
       await prisma.$executeRaw`
@@ -406,7 +416,7 @@ async function checkAndFixTablePermissions(): Promise<void> {
     } catch (error) {
       // 테이블이 아직 없을 수 있으므로 무시
     }
-    
+
     console.log('✅ Table permissions updated');
   } catch (error) {
     console.log('⚠️ Failed to update table permissions:', error);
@@ -421,4 +431,4 @@ async function seedRequiredData(): Promise<void> {
   // 현재는 특별히 필요한 기본 데이터가 없음
   // 필요시 여기에 추가
   console.log('✅ Required data check completed');
-} 
+}

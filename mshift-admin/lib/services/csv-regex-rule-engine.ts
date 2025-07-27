@@ -23,22 +23,22 @@ export class CsvRegexRuleEngine {
         pattern: 'GS25|CU|세븐일레븐|미니스톱',
         businessType: '편의점',
         confidence: 95,
-        enabled: true
+        enabled: true,
       },
       {
         id: 2,
         pattern: '주유소|SK에너지|GS칼텍스|현대오일뱅크',
         businessType: '주유소',
         confidence: 90,
-        enabled: true
+        enabled: true,
       },
       {
         id: 3,
         pattern: '카페|스타벅스|투썸플레이스|이디야',
         businessType: '카페',
         confidence: 85,
-        enabled: true
-      }
+        enabled: true,
+      },
     ];
     this.loaded = true;
   }
@@ -46,14 +46,14 @@ export class CsvRegexRuleEngine {
   matchPattern(text: string): RegexRuleMatch | null {
     for (const rule of this.rules) {
       if (!rule.enabled) continue;
-      
+
       const regex = new RegExp(rule.pattern, 'i');
       if (regex.test(text)) {
         return {
           ruleId: rule.id,
           businessType: rule.businessType,
           confidence: rule.confidence,
-          matchedPattern: rule.pattern
+          matchedPattern: rule.pattern,
         };
       }
     }

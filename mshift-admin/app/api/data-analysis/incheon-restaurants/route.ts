@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+
 import { prisma } from '@/lib/db/client';
 
 export async function GET(request: NextRequest) {
@@ -14,7 +15,7 @@ export async function GET(request: NextRequest) {
         const totalCount = await prisma.$queryRaw`
           SELECT COUNT(*) as count FROM incheon_restaurants
         `;
-        
+
         const activeCount = await prisma.$queryRaw`
           SELECT COUNT(*) as count FROM incheon_restaurants 
           WHERE business_status = '영업'
@@ -24,8 +25,8 @@ export async function GET(request: NextRequest) {
           success: true,
           data: {
             totalCount: Number((totalCount as any)[0]?.count || 0),
-            activeCount: Number((activeCount as any)[0]?.count || 0)
-          }
+            activeCount: Number((activeCount as any)[0]?.count || 0),
+          },
         });
 
       case 'region':
@@ -42,7 +43,7 @@ export async function GET(request: NextRequest) {
 
         return NextResponse.json({
           success: true,
-          data: regionData
+          data: regionData,
         });
 
       case 'status':
@@ -58,12 +59,12 @@ export async function GET(request: NextRequest) {
 
         return NextResponse.json({
           success: true,
-          data: statusData
+          data: statusData,
         });
 
       case 'details':
         const offset = (page - 1) * limit;
-        
+
         if (search) {
           const searchPattern = `%${search}%`;
           const detailsData = await prisma.$queryRaw`
@@ -92,8 +93,8 @@ export async function GET(request: NextRequest) {
               items: detailsData,
               total: Number((totalQuery as any)[0]?.total || 0),
               page,
-              limit
-            }
+              limit,
+            },
           });
         } else {
           const detailsData = await prisma.$queryRaw`
@@ -120,23 +121,28 @@ export async function GET(request: NextRequest) {
               items: detailsData,
               total: Number((totalQuery as any)[0]?.total || 0),
               page,
-              limit
-            }
+              limit,
+            },
           });
         }
 
       default:
-        return NextResponse.json({
-          success: false,
-          error: 'Invalid analysis type'
-        }, { status: 400 });
+        return NextResponse.json(
+          {
+            success: false,
+            error: 'Invalid analysis type',
+          },
+          { status: 400 }
+        );
     }
-
   } catch (error) {
     console.error('Incheon restaurants analysis error:', error);
-    return NextResponse.json({
-      success: false,
-      error: 'Failed to analyze incheon restaurants data'
-    }, { status: 500 });
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Failed to analyze incheon restaurants data',
+      },
+      { status: 500 }
+    );
   }
-} 
+}

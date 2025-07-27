@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoneyShift Manager</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #ffffff;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 8px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            min-height: 40px;
+            -webkit-app-region: drag; /* 헤더 영역을 드래그 가능하게 */
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            padding: 15px;
+            gap: 15px;
+            height: 100vh; /* 전체 화면 높이 사용 */
+        }
+
+        .main-content.compact {
+            flex-direction: column;
+            padding: 15px;
+            gap: 15px;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow-y: auto; /* 세로 스크롤 활성화 */
+            overflow-x: hidden; /* 가로 스크롤 숨김 */
+        }
+
+        .main-content.compact .sidebar {
+            width: 100%;
+            padding: 8px;
+        }
+
+        .content-area {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow-y: auto; /* 세로 스크롤 활성화 */
+            overflow-x: hidden; /* 가로 스크롤 숨김 */
+        }
+
+        .main-content.compact .content-area {
+            display: none;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #ffffff;
+        }
+
+        .service-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+        }
+
+        .service-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .service-icon {
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .service-details h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .service-details p {
+            font-size: 12px;
+            color: #a0a0a0;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-running {
+            background: #10b981;
+            color: white;
+        }
+
+        .status-stopped {
+            background: #6b7280;
+            color: white;
+        }
+
+        .status-starting {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .status-error {
+            background: #ef4444;
+            color: white;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex: 1;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .quick-access-info {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 20px;
+        }
+
+        .quick-access-info h4 {
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .shortcut-list {
+            font-size: 12px;
+            color: #a0a0a0;
+            line-height: 1.6;
+        }
+
+        .log-area {
+            background: #000000;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 20px;
+            height: 200px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 12px;
+            color: #00ff00;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .log-area::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .log-area::-webkit-scrollbar-track {
+            background: #1a1a1a;
+            border-radius: 4px;
+        }
+
+        .log-area::-webkit-scrollbar-thumb {
+            background: #333333;
+            border-radius: 4px;
+        }
+
+        .log-area::-webkit-scrollbar-thumb:hover {
+            background: #555555;
+        }
+
+        .log-entry {
+            margin-bottom: 4px;
+        }
+
+        .log-timestamp {
+            color: #666;
+        }
+
+        .log-error {
+            color: #ff6b6b;
+        }
+
+        .log-info {
+            color: #00ff00;
+        }
+
+        .log-warning {
+            color: #ffa500;
+        }
+
+        .header-controls {
+            position: fixed;
+            bottom: 15px;
+            right: 15px;
+            display: flex;
+            gap: 8px;
+            z-index: 1000;
+        }
+
+        .control-btn {
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 10px 12px;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            -webkit-app-region: no-drag; /* 버튼은 드래그 안됨 */
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .control-btn.active {
+            background: rgba(102, 126, 234, 0.3);
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+
+        /* 컴팩트 모드 전용 스타일 */
+        .main-content.compact .section-title {
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        /* 컴팩트 모드에서 플로팅 버튼 위치 조정 */
+        .main-content.compact ~ .header-controls {
+            bottom: 10px;
+            right: 10px;
+            gap: 6px;
+        }
+
+        .main-content.compact ~ .header-controls .control-btn {
+            padding: 6px 8px;
+            font-size: 12px;
+        }
+
+        .main-content.compact .control-buttons {
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .main-content.compact .btn {
+            padding: 8px 12px;
+            font-size: 11px;
+        }
+
+        .main-content.compact .service-item {
+            padding: 6px 8px;
+            margin-bottom: 4px;
+        }
+
+        .main-content.compact .service-icon {
+            width: 20px;
+            height: 20px;
+            font-size: 10px;
+        }
+
+        .main-content.compact .service-details h4 {
+            font-size: 11px;
+            margin-bottom: 2px;
+        }
+
+        .main-content.compact .service-details p {
+            font-size: 9px;
+        }
+
+        .main-content.compact .status-badge {
+            font-size: 8px;
+            padding: 2px 4px;
+        }
+
+        .main-content.compact .quick-access-info {
+            padding: 8px;
+            margin-top: 12px;
+        }
+
+        .main-content.compact .quick-access-info h4 {
+            font-size: 10px;
+            margin-bottom: 4px;
+        }
+
+        .main-content.compact .shortcut-list {
+            font-size: 8px;
+            line-height: 1.4;
+        }
+
+        .main-content.compact .header .title {
+            font-size: 18px;
+        }
+
+        .main-content.compact .header .subtitle {
+            font-size: 10px;
+        }
+
+        .main-content.compact .logo {
+            width: 32px;
+            height: 32px;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        /* 스크롤 가능하게 설정 */
+        .main-content.compact {
+            overflow-y: auto;
+            max-height: 100vh;
+        }
+
+        .main-content.compact .sidebar {
+            overflow-y: auto;
+            max-height: 350px;
+        }
+
+        /* 스크롤바 스타일링 */
+        .main-content.compact .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .main-content.compact .sidebar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+        }
+
+        .main-content.compact .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+        }
+
+        .main-content.compact .sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="header"></div>
+
+    <div class="main-content">
+        <div class="sidebar">
+            <div class="section-title">시스템 제어</div>
+            
+            <div class="control-buttons">
+                <button class="btn btn-primary" onclick="startAllServices()">⚡ Start All</button>
+                <button class="btn btn-danger" onclick="stopAllServices()">🛑 Stop All</button>
+            </div>
+
+            <div class="section-title">서비스 상태</div>
+            <div id="servicesList">
+                <!-- 서비스 목록이 동적으로 생성됩니다 -->
+            </div>
+
+            <div class="quick-access-info">
+                <h4>⚡ 빠른 접근</h4>
+                <div class="shortcut-list">
+                    <div>⌘⇧Q: 퀵 액세스</div>
+                    <div>⌘⇧S: 모든 서비스 시작</div>
+                    <div>⌘⇧T: 모든 서비스 중지</div>
+                    <div>⌘⇧M: 메인 윈도우 토글</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-area">
+            <div class="section-title">시스템 로그</div>
+            <div class="log-area" id="logArea">
+                <div class="log-entry log-info">
+                    <span class="log-timestamp">[2025-01-28 17:45:00]</span> MoneyShift Manager 시작됨
+                </div>
+                <div class="log-entry log-info">
+                    <span class="log-timestamp">[2025-01-28 17:45:01]</span> 서비스 상태 모니터링 시작
+                </div>
+                <div class="log-entry log-info">
+                    <span class="log-timestamp">[2025-01-28 17:45:02]</span> 글로벌 단축키 등록 완료
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 플로팅 컨트롤 버튼들 -->
+    <div class="header-controls">
+        <button class="control-btn" onclick="toggleAlwaysOnTop()" id="pinBtn" title="Always on Top">
+            📌
+        </button>
+        <button class="control-btn" onclick="toggleWindowSize()" id="sizeToggleBtn">
+            🔄
+        </button>
+    </div>
+
+    <script>
+        const serviceConfig = {
+            backend: { icon: '🔧', name: 'Backend API', description: 'Spring Boot API 서버' },
+            frontend: { icon: '🎨', name: 'Frontend Admin', description: 'NextJS Admin Panel' },
+            database: { icon: '🗄️', name: 'Database', description: 'PostgreSQL + Redis' },
+            redis: { icon: '🔄', name: 'Redis Cache', description: 'In-memory Cache' },
+            mobile: { icon: '📱', name: 'Mobile Dev', description: 'React Native Expo' }
+        }
+
+        let services = {}
+        let isCompactMode = true
+        let isAlwaysOnTop = false
+
+        async function startAllServices() {
+            try {
+                addLog('info', '모든 서비스 시작 요청...')
+                await window.electronAPI.startAllServices()
+                updateServiceStatus()
+            } catch (error) {
+                addLog('error', `서비스 시작 실패: ${error.message}`)
+            }
+        }
+
+        async function stopAllServices() {
+            try {
+                addLog('info', '모든 서비스 중지 요청...')
+                await window.electronAPI.stopAllServices()
+                updateServiceStatus()
+            } catch (error) {
+                addLog('error', `서비스 중지 실패: ${error.message}`)
+            }
+        }
+
+        async function toggleService(serviceName) {
+            try {
+                const service = services[serviceName]
+                if (service && service.status === 'running') {
+                    addLog('info', `${serviceName} 서비스 중지 요청...`)
+                    await window.electronAPI.stopService(serviceName)
+                } else {
+                    addLog('info', `${serviceName} 서비스 시작 요청...`)
+                    await window.electronAPI.startService(serviceName)
+                }
+                updateServiceStatus()
+            } catch (error) {
+                addLog('error', `${serviceName} 서비스 제어 실패: ${error.message}`)
+            }
+        }
+
+        function renderServices() {
+            const list = document.getElementById('servicesList')
+            list.innerHTML = ''
+
+            Object.entries(serviceConfig).forEach(([key, config]) => {
+                const service = services[key] || { status: 'stopped' }
+                const item = document.createElement('div')
+                item.className = 'service-item'
+                item.style.cursor = 'pointer'
+                item.onclick = () => toggleService(key)
+                
+                item.innerHTML = `
+                    <div class="service-info">
+                        <div class="service-icon">${config.icon}</div>
+                        <div class="service-details">
+                            <h4>${config.name}</h4>
+                            <p>${config.description}</p>
+                        </div>
+                    </div>
+                    <div class="status-badge status-${service.status}">${service.status}</div>
+                `
+                
+                list.appendChild(item)
+            })
+        }
+
+        async function updateServiceStatus() {
+            try {
+                const status = await window.electronAPI.getServicesStatus()
+                services = status
+                renderServices()
+            } catch (error) {
+                addLog('error', `서비스 상태 조회 실패: ${error.message}`)
+            }
+        }
+
+        function addLog(level, message) {
+            const logArea = document.getElementById('logArea')
+            const timestamp = new Date().toLocaleString('ko-KR')
+            const entry = document.createElement('div')
+            entry.className = `log-entry log-${level}`
+            entry.innerHTML = `<span class="log-timestamp">[${timestamp}]</span> ${message}`
+            
+            logArea.appendChild(entry)
+            logArea.scrollTop = logArea.scrollHeight
+            
+            // 최대 100개 로그만 유지
+            while (logArea.children.length > 100) {
+                logArea.removeChild(logArea.firstChild)
+            }
+        }
+
+        // 서비스 상태 실시간 업데이트
+        window.electronAPI.onServicesStatusUpdate((status) => {
+            services = status
+            renderServices()
+        })
+
+        // 로그 업데이트 수신
+        window.electronAPI.onLogUpdate((logData) => {
+            addLog(logData.level, `${logData.service}: ${logData.message}`)
+        })
+
+        // 초기 로드
+        document.addEventListener('DOMContentLoaded', () => {
+            updateServiceStatus()
+            
+            // 5초마다 상태 업데이트
+            setInterval(updateServiceStatus, 5000)
+            
+            addLog('info', 'MoneyShift Manager UI 준비 완료')
+            addLog('info', '트레이 아이콘을 클릭하거나 ⌘⇧Q로 퀵 액세스를 사용하세요')
+            
+            // 초기 상태 로드
+            loadCompactMode()
+            loadAlwaysOnTop()
+        })
+
+        async function toggleWindowSize() {
+            try {
+                const newCompactMode = await window.electronAPI.toggleWindowSize()
+                updateLayoutMode(newCompactMode)
+                addLog('info', `윈도우 모드 변경: ${newCompactMode ? '컴팩트' : '풀'} 모드`)
+            } catch (error) {
+                addLog('error', `크기 변경 실패: ${error.message}`)
+            }
+        }
+
+        async function loadCompactMode() {
+            try {
+                isCompactMode = await window.electronAPI.getCompactMode()
+                updateLayoutMode(isCompactMode)
+            } catch (error) {
+                console.error('Failed to load compact mode:', error)
+            }
+        }
+
+        function updateLayoutMode(compact) {
+            isCompactMode = compact
+            const mainContent = document.querySelector('.main-content')
+            const toggleBtn = document.getElementById('sizeToggleBtn')
+            
+            if (compact) {
+                mainContent.classList.add('compact')
+                toggleBtn.innerHTML = '📏 크게'
+                toggleBtn.title = '풀 모드로 전환'
+            } else {
+                mainContent.classList.remove('compact')
+                toggleBtn.innerHTML = '📐 작게'
+                toggleBtn.title = '컴팩트 모드로 전환'
+            }
+        }
+
+        // 컴팩트 모드 변경 이벤트 수신
+        window.electronAPI.onCompactModeChanged((compact) => {
+            updateLayoutMode(compact)
+        })
+
+        async function toggleAlwaysOnTop() {
+            try {
+                const newAlwaysOnTop = await window.electronAPI.toggleAlwaysOnTop()
+                updateAlwaysOnTopButton(newAlwaysOnTop)
+                addLog('info', `Always on Top: ${newAlwaysOnTop ? 'ON' : 'OFF'}`)
+            } catch (error) {
+                addLog('error', `Always on Top 토글 실패: ${error.message}`)
+            }
+        }
+
+        async function loadAlwaysOnTop() {
+            try {
+                isAlwaysOnTop = await window.electronAPI.getAlwaysOnTop()
+                updateAlwaysOnTopButton(isAlwaysOnTop)
+            } catch (error) {
+                console.error('Failed to load always on top state:', error)
+            }
+        }
+
+        function updateAlwaysOnTopButton(alwaysOnTop) {
+            isAlwaysOnTop = alwaysOnTop
+            const pinBtn = document.getElementById('pinBtn')
+            
+            if (alwaysOnTop) {
+                pinBtn.classList.add('active')
+                pinBtn.title = 'Always on Top: ON'
+            } else {
+                pinBtn.classList.remove('active')
+                pinBtn.title = 'Always on Top: OFF'
+            }
+        }
+
+        // Always on Top 상태 변경 이벤트 수신
+        window.electronAPI.onAlwaysOnTopChanged((alwaysOnTop) => {
+            updateAlwaysOnTopButton(alwaysOnTop)
+        })
+    </script>
+</body>
+</html>

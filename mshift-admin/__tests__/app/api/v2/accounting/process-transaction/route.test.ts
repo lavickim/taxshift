@@ -81,6 +81,8 @@ describe('/api/v2/accounting/process-transaction', () => {
       prisma.journalEntry.create.mockResolvedValue(mockJournalEntry);
       prisma.journalEntryDetail.createMany.mockResolvedValue({ count: 2 });
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
       const request = new NextRequest('http://localhost:3000/api/v2/accounting/process-transaction', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -157,6 +159,8 @@ describe('/api/v2/accounting/process-transaction', () => {
         { code: '4100', name: '매출', type: 'REVENUE' }
       ]);
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
       const request = new NextRequest('http://localhost:3000/api/v2/accounting/process-transaction', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -198,6 +202,8 @@ describe('/api/v2/accounting/process-transaction', () => {
       ]);
       prisma.journalEntry.create.mockResolvedValue({ id: 'je-low-conf' });
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
       const request = new NextRequest('http://localhost:3000/api/v2/accounting/process-transaction', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -228,6 +234,8 @@ describe('/api/v2/accounting/process-transaction', () => {
         { code: '4100', name: '매출', type: 'REVENUE' }
         // 9999 코드는 없음
       ]);
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
       const request = new NextRequest('http://localhost:3000/api/v2/accounting/process-transaction', {
         method: 'POST',
@@ -264,6 +272,8 @@ describe('/api/v2/accounting/process-transaction', () => {
       ]);
       prisma.journalEntry.create.mockResolvedValue({ id: 'je-custom' });
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
       const request = new NextRequest('http://localhost:3000/api/v2/accounting/process-transaction', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -283,6 +293,8 @@ describe('/api/v2/accounting/process-transaction', () => {
         // missing required fields
         description: 'Test'
       };
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
       const request = new NextRequest('http://localhost:3000/api/v2/accounting/process-transaction', {
         method: 'POST',
@@ -313,6 +325,8 @@ describe('/api/v2/accounting/process-transaction', () => {
       
       // 데이터베이스 에러 시뮬레이션
       prisma.journalEntry.create.mockRejectedValue(new Error('Database connection failed'));
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
       const request = new NextRequest('http://localhost:3000/api/v2/accounting/process-transaction', {
         method: 'POST',
@@ -352,6 +366,8 @@ describe('/api/v2/accounting/process-transaction', () => {
       ]);
       
       prisma.journalEntry.create.mockResolvedValue({ id: 'je-multicurrency' });
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
       const request = new NextRequest('http://localhost:3000/api/v2/accounting/process-transaction', {
         method: 'POST',
@@ -395,6 +411,8 @@ describe('/api/v2/accounting/process-transaction', () => {
         { code: '1100', name: '현금', type: 'ASSET' }
       ]);
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
       const request = new NextRequest('http://localhost:3000/api/v2/accounting/process-transaction', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -434,6 +452,8 @@ describe('/api/v2/accounting/process-transaction', () => {
         }
       });
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
       const request = new NextRequest('http://localhost:3000/api/v2/accounting/process-transaction', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -461,6 +481,7 @@ const POST = async (request: NextRequest) => {
     const startTime = Date.now();
 
     // Field validation
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const requiredFields = ['companyId', 'description', 'amount', 'date'];
     const missingFields = requiredFields.filter(field => !transaction[field]);
     

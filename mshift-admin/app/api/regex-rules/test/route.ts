@@ -1,5 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "../../../../lib/generated/prisma";
+import { NextRequest, NextResponse } from 'next/server';
+
+import { PrismaClient } from '../../../../lib/generated/prisma';
 
 const prisma = new PrismaClient();
 
@@ -9,9 +10,9 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { text } = body;
 
-    if (!text || typeof text !== "string") {
+    if (!text || typeof text !== 'string') {
       return NextResponse.json(
-        { error: "테스트할 텍스트가 필요합니다." },
+        { error: '테스트할 텍스트가 필요합니다.' },
         { status: 400 }
       );
     }
@@ -19,15 +20,12 @@ export async function POST(request: NextRequest) {
     // 활성화된 모든 규칙 조회 (우선순위 순)
     const rules = await prisma.regex_rules.findMany({
       where: {
-        OR: [
-          { enabled: true },
-          { is_active: true },
-        ],
+        OR: [{ enabled: true }, { is_active: true }],
       },
       orderBy: [
-        { pattern_type: "asc" }, // BRAND first, then KEYWORD
-        { priority: "desc" },
-        { confidence: "desc" },
+        { pattern_type: 'asc' }, // BRAND first, then KEYWORD
+        { priority: 'desc' },
+        { confidence: 'desc' },
       ],
     });
 
@@ -35,13 +33,13 @@ export async function POST(request: NextRequest) {
     let processedText = text;
 
     // 브랜드 패턴 먼저 처리 (정규식)
-    const brandRules = rules.filter(r => r.pattern_type === "BRAND");
+    const brandRules = rules.filter(r => r.pattern_type === 'BRAND');
     for (const rule of brandRules) {
       if (rule.pattern) {
         try {
-          const regex = new RegExp(rule.pattern, "gi");
+          const regex = new RegExp(rule.pattern, 'gi');
           const matches = text.match(regex);
-          
+
           if (matches) {
             matchedRules.push({
               id: rule.id.toString(),
@@ -66,12 +64,12 @@ export async function POST(request: NextRequest) {
     }
 
     // 키워드 패턴 처리 (단순 문자열 매칭)
-    const keywordRules = rules.filter(r => r.pattern_type === "KEYWORD");
+    const keywordRules = rules.filter(r => r.pattern_type === 'KEYWORD');
     for (const rule of keywordRules) {
       if (rule.keyword) {
         const lowerText = text.toLowerCase();
         const lowerKeyword = rule.keyword.toLowerCase();
-        
+
         if (lowerText.includes(lowerKeyword)) {
           matchedRules.push({
             id: rule.id.toString(),
@@ -94,7 +92,7 @@ export async function POST(request: NextRequest) {
 
     // 사용 카운트 업데이트 (비동기로 실행하여 응답 속도 향상)
     if (matchedRules.length > 0) {
-      const updatePromises = matchedRules.map(async (matchedRule) => {
+      const updatePromises = matchedRules.map(async matchedRule => {
         try {
           await prisma.regex_rules.update({
             where: { id: BigInt(matchedRule.id) },
@@ -106,7 +104,10 @@ export async function POST(request: NextRequest) {
             },
           });
         } catch (error) {
-          console.warn(`Failed to update usage count for rule ${matchedRule.id}:`, error);
+          console.warn(
+            `Failed to update usage count for rule ${matchedRule.id}:`,
+            error
+          );
         }
       });
 
@@ -125,9 +126,9 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("통합 regex rules 테스트 오류:", error);
+    console.error('통합 regex rules 테스트 오류:', error);
     return NextResponse.json(
-      { error: "통합 regex rules 테스트 중 오류가 발생했습니다." },
+      { error: '통합 regex rules 테스트 중 오류가 발생했습니다.' },
       { status: 500 }
     );
   }

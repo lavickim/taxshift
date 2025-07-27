@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8080';
+const BACKEND_URL =
+  process.env.BACKEND_URL || 'http://localhost:8080/mshift-api';
 
 export async function POST(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
+
     const companyId = searchParams.get('companyId');
     const periodStart = searchParams.get('periodStart');
     const periodEnd = searchParams.get('periodEnd');
@@ -19,22 +21,25 @@ export async function POST(request: NextRequest) {
     const params = new URLSearchParams({
       companyId,
       periodStart,
-      periodEnd
+      periodEnd,
     });
 
-    const response = await fetch(`${BACKEND_URL}/api/v2/accounting/generate-income-statement?${params}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const response = await fetch(
+      `${BACKEND_URL}/api/v2/accounting/generate-income-statement?${params}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
 
     if (!response.ok) {
       throw new Error(`Backend response: ${response.status}`);
     }
 
     const data = await response.json();
-    
+
     return NextResponse.json(data, { status: 200 });
   } catch (error) {
     console.error('손익계산서 생성 API 오류:', error);

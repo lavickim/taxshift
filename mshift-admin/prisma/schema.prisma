@@ -142,11 +142,11 @@ model JournalEntries {
   description       String
   totalDebitAmount  Decimal                     @map("total_debit_amount") @db.Decimal(18, 2)
   totalCreditAmount Decimal                     @map("total_credit_amount") @db.Decimal(18, 2)
-  status            JournalEntryApprovalStatus? @default(DRAFT)
   confidenceScore   Decimal?                    @map("confidence_score") @db.Decimal(5, 2)
   postedAt          DateTime?                   @map("posted_at") @db.Timestamptz(6)
   createdAt         DateTime?                   @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt         DateTime?                   @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  status            JournalEntryApprovalStatus? @default(DRAFT)
   glDetails         GlDetail[]
   company           Company                     @relation(fields: [companyId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   details           JournalEntryDetail[]
@@ -175,6 +175,457 @@ model JournalEntryDetail {
   @@map("journal_entry_details")
 }
 
+model RegexPreprocessingRule {
+  id             BigInt                     @id @default(autoincrement())
+  ruleName       String                     @map("rule_name") @db.VarChar(100)
+  description    String?
+  category       String                     @db.VarChar(50)
+  inputPattern   String                     @map("input_pattern")
+  outputTemplate String                     @map("output_template")
+  priority       Int?                       @default(100)
+  isActive       Boolean?                   @default(true) @map("is_active")
+  metadataTags   Json?                      @map("metadata_tags")
+  testCases      Json?                      @map("test_cases")
+  usageCount     BigInt?                    @default(0) @map("usage_count")
+  successRate    Decimal?                   @map("success_rate") @db.Decimal(5, 2)
+  createdAt      DateTime?                  @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt      DateTime?                  @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
+  test_examples  String[]
+  category_ref   RegexPreprocessingCategory @relation(fields: [category], references: [categoryName], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([isActive], map: "idx_regex_preprocessing_rules_active")
+  @@index([isActive, priority(sort: Desc)], map: "idx_regex_preprocessing_rules_active_priority")
+  @@index([category], map: "idx_regex_preprocessing_rules_category")
+  @@index([priority], map: "idx_regex_preprocessing_rules_priority")
+  @@map("regex_preprocessing_rules")
+}
+
+model RegexPreprocessingCategory {
+  id           BigInt                   @id @default(autoincrement())
+  categoryName String                   @unique @map("category_name") @db.VarChar(50)
+  description  String?
+  color_code   String?                  @default("#6B7280") @db.VarChar(7)
+  isActive     Boolean?                 @default(true) @map("is_active")
+  createdAt    DateTime?                @default(now()) @map("created_at") @db.Timestamp(6)
+  rules        RegexPreprocessingRule[]
+
+  @@map("regex_preprocessing_categories")
+}
+
+model RegexPreprocessingLog {
+  id                BigInt   @id @default(autoincrement())
+  originalText      String   @map("original_text")
+  normalizedText    String?  @map("normalized_text")
+  appliedRuleId     BigInt?  @map("applied_rule_id")
+  appliedRuleName   String?  @map("applied_rule_name") @db.VarChar(100)
+  extractedMetadata Json?    @map("extracted_metadata")
+  processingTimeMs  Int?     @map("processing_time_ms")
+  success           Boolean  @default(true)
+  errorMessage      String?  @map("error_message")
+  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([createdAt], map: "idx_regex_logs_created_at")
+  @@index([appliedRuleId], map: "idx_regex_logs_rule_id")
+  @@map("regex_preprocessing_logs")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model datacollection_franchise_brands {
+  id                 BigInt    @id @default(autoincrement())
+  category           String?   @db.VarChar(100)
+  brand_name         String?   @unique(map: "unique_brand_name") @db.VarChar(200)
+  brand_name_english String?   @db.VarChar(200)
+  priority           Int?
+  description        String?
+  country_origin     String?   @db.VarChar(50)
+  establishment_year Int?
+  franchise_count    Int?
+  batch_id           String?   @default("batch_franchise_brands") @db.VarChar(50)
+  created_at         DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at         DateTime? @default(now()) @db.Timestamptz(6)
+
+  @@index([category], map: "idx_franchise_brands_category")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model datacollection_gas_stations {
+  id                           BigInt    @id @default(autoincrement())
+  region                       String?   @db.VarChar(50)
+  business_registration_number String?   @unique(map: "unique_gas_station") @db.VarChar(20)
+  company_name                 String?   @db.VarChar(200)
+  owner_name                   String?   @db.VarChar(100)
+  address                      String?
+  station_type                 String?   @db.VarChar(50)
+  brand                        String?   @db.VarChar(100)
+  batch_id                     String?   @default("batch_gas_stations") @db.VarChar(50)
+  created_at                   DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at                   DateTime? @default(now()) @db.Timestamptz(6)
+
+  @@index([region], map: "idx_gas_stations_region")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model datacollection_gyeonggi_delivery {
+  id                   String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  list_total_count     Int?
+  response_code        String?
+  response_message     String?
+  api_version          String?
+  business_reg_no      String    @unique
+  sigun_name           String?
+  store_name           String
+  industry_type        String?
+  refined_road_address String?
+  refined_lot_address  String?
+  refined_zipcode      String?
+  refined_latitude     Decimal?  @db.Decimal(10, 8)
+  refined_longitude    Decimal?  @db.Decimal(11, 8)
+  data_source          String    @default("gyeonggi_delivery")
+  collection_batch_id  String?
+  created_at           DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at           DateTime? @default(now()) @db.Timestamptz(6)
+
+  @@index([business_reg_no], map: "idx_datacollection_gyeonggi_delivery_business_reg_no")
+  @@index([created_at], map: "idx_datacollection_gyeonggi_delivery_created_at")
+  @@index([data_source], map: "idx_datacollection_gyeonggi_delivery_data_source")
+  @@index([industry_type], map: "idx_datacollection_gyeonggi_delivery_industry_type")
+  @@index([sigun_name], map: "idx_datacollection_gyeonggi_delivery_sigun_name")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model datacollection_manufacturing {
+  id                           BigInt    @id @default(autoincrement())
+  region                       String?   @db.VarChar(50)
+  company_name                 String?   @db.VarChar(200)
+  business_registration_number String?   @unique(map: "unique_manufacturing") @db.VarChar(20)
+  industry_type                String?   @db.VarChar(100)
+  address                      String?
+  phone_number                 String?   @db.VarChar(20)
+  employee_count               Int?
+  establishment_date           String?   @db.VarChar(10)
+  annual_sales                 BigInt?
+  batch_id                     String?   @default("batch_manufacturing") @db.VarChar(50)
+  created_at                   DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at                   DateTime? @default(now()) @db.Timestamptz(6)
+
+  @@index([region], map: "idx_manufacturing_region")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model datacollection_national_pension {
+  id                           BigInt    @id @default(autoincrement())
+  data_year_month              String?   @db.VarChar(10)
+  workplace_name               String?
+  business_registration_number String?   @db.VarChar(20)
+  workplace_status_code        String?   @db.VarChar(2)
+  postal_code                  String?   @db.VarChar(10)
+  address_jibun                String?
+  address_road                 String?
+  legal_dong_code              String?   @db.VarChar(10)
+  admin_dong_code              String?   @db.VarChar(10)
+  sido_code                    String?   @db.VarChar(5)
+  sigungu_code                 String?   @db.VarChar(5)
+  eubmyeondong_code            String?   @db.VarChar(5)
+  workplace_type_code          String?   @db.VarChar(2)
+  industry_code                String?   @db.VarChar(10)
+  industry_name                String?   @db.VarChar(100)
+  application_date             String?   @db.VarChar(15)
+  re_registration_date         String?   @db.VarChar(15)
+  withdrawal_date              String?   @db.VarChar(15)
+  member_count                 Int?
+  monthly_notice_amount        BigInt?
+  new_acquisition_count        Int?
+  loss_count                   Int?
+  batch_id                     String?   @default("batch_national_pension") @db.VarChar(50)
+  created_at                   DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at                   DateTime? @default(now()) @db.Timestamptz(6)
+  extracted_keywords           String[]
+  primary_keywords             String[]
+  keyword_confidence           Decimal?  @db.Decimal(3, 2)
+  keyword_category             String?   @db.VarChar(50)
+  keyword_extraction_date      DateTime? @default(now()) @db.Timestamp(6)
+
+  @@index([business_registration_number], map: "idx_national_pension_business_reg")
+  @@index([sido_code, sigungu_code], map: "idx_national_pension_region")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model datacollection_regional_restaurants {
+  id                BigInt    @id @default(autoincrement())
+  region_code       String?   @db.VarChar(10)
+  region_name       String?   @db.VarChar(50)
+  license_number    String?   @db.VarChar(50)
+  business_name     String?   @db.VarChar(200)
+  business_type     String?   @db.VarChar(100)
+  business_status   String?   @db.VarChar(50)
+  phone_number      String?   @db.VarChar(20)
+  address_jibun     String?
+  address_road      String?
+  postal_code       String?   @db.VarChar(10)
+  x_coordinate      Decimal?  @db.Decimal(15, 10)
+  y_coordinate      Decimal?  @db.Decimal(15, 10)
+  license_date      String?   @db.VarChar(10)
+  closure_date      String?   @db.VarChar(10)
+  specialty         String?   @db.VarChar(200)
+  grade             String?   @db.VarChar(20)
+  employee_total    Int?
+  facility_scale    String?   @db.VarChar(50)
+  data_source       String?   @db.VarChar(100)
+  original_filename String?   @db.VarChar(200)
+  batch_id          String?   @db.VarChar(50)
+  created_at        DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime? @default(now()) @db.Timestamptz(6)
+
+  @@index([business_name], map: "idx_regional_restaurants_business_name")
+  @@index([region_code, region_name], map: "idx_regional_restaurants_region")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model datacollection_seoul_restaurants {
+  id                           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  management_number            String?
+  license_date                 DateTime? @db.Date
+  license_cancel_date          DateTime? @db.Date
+  business_status_code         String?
+  business_status_name         String?
+  detailed_status_code         String?
+  detailed_status_name         String?
+  closure_date                 DateTime? @db.Date
+  suspension_start_date        DateTime? @db.Date
+  suspension_end_date          DateTime? @db.Date
+  reopening_date               DateTime? @db.Date
+  phone_number                 String?
+  site_area                    String?
+  postal_code                  String?
+  lot_address                  String?
+  road_address                 String?
+  road_postal_code             String?
+  business_name                String
+  last_modified_date           DateTime? @db.Timestamp(6)
+  data_update_type             String?
+  data_update_date             DateTime? @db.Timestamp(6)
+  business_type                String?
+  coordinate_x                 Decimal?  @db.Decimal(20, 6)
+  coordinate_y                 Decimal?  @db.Decimal(20, 6)
+  hygiene_business_type        String?
+  male_employee_count          Int?
+  female_employee_count        Int?
+  surrounding_area_type        String?
+  grade_type                   String?
+  water_supply_type            String?
+  total_employees              Int?
+  headquarters_employees       Int?
+  factory_office_employees     Int?
+  factory_sales_employees      Int?
+  factory_production_employees Int?
+  building_ownership_type      String?
+  deposit_amount               Decimal?  @db.Decimal(15, 2)
+  monthly_rent                 Decimal?  @db.Decimal(15, 2)
+  multi_use_facility_yn        String?
+  total_facility_size          Decimal?  @db.Decimal(10, 2)
+  traditional_business_number  String?
+  traditional_main_food        String?
+  homepage                     String?
+  data_source                  String    @default("seoul_restaurants")
+  collection_batch_id          String?
+  created_at                   DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at                   DateTime? @default(now()) @db.Timestamptz(6)
+
+  @@index([business_name], map: "idx_seoul_restaurants_business_name")
+  @@index([business_status_name], map: "idx_seoul_restaurants_business_status")
+  @@index([business_type], map: "idx_seoul_restaurants_business_type")
+  @@index([created_at], map: "idx_seoul_restaurants_created_at")
+  @@index([management_number], map: "idx_seoul_restaurants_management_number")
+  @@index([road_address], map: "idx_seoul_restaurants_road_address")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model datacollection_tourism {
+  id              BigInt    @id @default(autoincrement())
+  region          String?   @db.VarChar(50)
+  attraction_name String?   @db.VarChar(200)
+  category        String?   @db.VarChar(100)
+  address         String?
+  phone_number    String?   @db.VarChar(20)
+  description     String?
+  facilities      String?
+  operating_hours String?   @db.VarChar(100)
+  admission_fee   String?   @db.VarChar(100)
+  website         String?   @db.VarChar(200)
+  x_coordinate    Decimal?  @db.Decimal(15, 10)
+  y_coordinate    Decimal?  @db.Decimal(15, 10)
+  batch_id        String?   @default("batch_tourism") @db.VarChar(50)
+  created_at      DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at      DateTime? @default(now()) @db.Timestamptz(6)
+
+  @@index([region], map: "idx_tourism_region")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model industry_keywords {
+  id                                                                               BigInt                  @id @default(autoincrement())
+  keyword                                                                          String                  @unique(map: "unique_keyword") @db.VarChar(100)
+  category                                                                         String?                 @db.VarChar(50)
+  frequency                                                                        Int?                    @default(1)
+  confidence_score                                                                 Decimal?                @default(0.80) @db.Decimal(3, 2)
+  extraction_method                                                                String?                 @default("nlp") @db.VarChar(50)
+  created_at                                                                       DateTime?               @default(now()) @db.Timestamptz(6)
+  updated_at                                                                       DateTime?               @default(now()) @db.Timestamptz(6)
+  keyword_relationships_keyword_relationships_source_keyword_idToindustry_keywords keyword_relationships[] @relation("keyword_relationships_source_keyword_idToindustry_keywords")
+  keyword_relationships_keyword_relationships_target_keyword_idToindustry_keywords keyword_relationships[] @relation("keyword_relationships_target_keyword_idToindustry_keywords")
+  workplace_keywords                                                               workplace_keywords[]
+
+  @@index([category], map: "idx_keywords_category")
+  @@index([confidence_score(sort: Desc)], map: "idx_keywords_confidence")
+  @@index([frequency(sort: Desc)], map: "idx_keywords_frequency")
+}
+
+model keyword_categories {
+  id                       BigInt               @id @default(autoincrement())
+  category_name            String               @unique(map: "unique_category") @db.VarChar(50)
+  description              String?
+  color_code               String?              @db.VarChar(7)
+  parent_category_id       BigInt?
+  display_order            Int?                 @default(0)
+  is_active                Boolean?             @default(true)
+  created_at               DateTime?            @default(now()) @db.Timestamptz(6)
+  keyword_categories       keyword_categories?  @relation("keyword_categoriesTokeyword_categories", fields: [parent_category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  other_keyword_categories keyword_categories[] @relation("keyword_categoriesTokeyword_categories")
+
+  @@index([display_order], map: "idx_categories_order")
+  @@index([parent_category_id], map: "idx_categories_parent")
+}
+
+model keyword_processing_logs {
+  id                 BigInt    @id @default(autoincrement())
+  batch_id           String    @db.VarChar(100)
+  processing_type    String?   @db.VarChar(50)
+  total_records      Int?
+  processed_records  Int?
+  success_count      Int?      @default(0)
+  error_count        Int?      @default(0)
+  processing_time_ms BigInt?
+  status             String?   @default("running") @db.VarChar(20)
+  error_message      String?
+  metadata           Json?
+  started_at         DateTime? @default(now()) @db.Timestamptz(6)
+  completed_at       DateTime? @db.Timestamptz(6)
+
+  @@index([batch_id], map: "idx_processing_logs_batch")
+  @@index([status], map: "idx_processing_logs_status")
+  @@index([processing_type], map: "idx_processing_logs_type")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model keyword_relationships {
+  id                                                                           BigInt             @id @default(autoincrement())
+  source_keyword_id                                                            BigInt?
+  target_keyword_id                                                            BigInt?
+  relationship_type                                                            String?            @default("related") @db.VarChar(50)
+  strength                                                                     Decimal?           @default(0.50) @db.Decimal(3, 2)
+  co_occurrence_count                                                          Int?               @default(1)
+  pmi_score                                                                    Decimal?           @db.Decimal(8, 4)
+  created_at                                                                   DateTime?          @default(now()) @db.Timestamptz(6)
+  updated_at                                                                   DateTime?          @default(now()) @db.Timestamptz(6)
+  industry_keywords_keyword_relationships_source_keyword_idToindustry_keywords industry_keywords? @relation("keyword_relationships_source_keyword_idToindustry_keywords", fields: [source_keyword_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  industry_keywords_keyword_relationships_target_keyword_idToindustry_keywords industry_keywords? @relation("keyword_relationships_target_keyword_idToindustry_keywords", fields: [target_keyword_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([source_keyword_id, target_keyword_id, relationship_type], map: "unique_relationship")
+  @@index([source_keyword_id], map: "idx_relationships_source")
+  @@index([strength(sort: Desc)], map: "idx_relationships_strength")
+  @@index([target_keyword_id], map: "idx_relationships_target")
+  @@index([relationship_type], map: "idx_relationships_type")
+}
+
+model keyword_relationships_summary {
+  id                    Int       @id @default(autoincrement())
+  keyword1              String
+  keyword2              String
+  relationship_strength Decimal?  @default(0) @db.Decimal(5, 3)
+  co_occurrence_count   Int?      @default(0)
+  pmi_score             Decimal?  @default(0) @db.Decimal(5, 3)
+  segment_filter        String?
+  created_at            DateTime? @default(now()) @db.Timestamp(6)
+
+  @@unique([keyword1, keyword2, segment_filter])
+  @@index([keyword1], map: "idx_keyword_relationships_keyword1")
+  @@index([keyword2], map: "idx_keyword_relationships_keyword2")
+  @@index([relationship_strength(sort: Desc)], map: "idx_keyword_relationships_strength")
+}
+
+model keyword_segments {
+  id                     Int                @id @default(autoincrement())
+  segment_name           String             @db.VarChar(100)
+  segment_type           String             @db.VarChar(50)
+  parent_segment_id      Int?
+  keyword                String
+  total_count            Int?               @default(0)
+  member_count           Int?               @default(0)
+  workplace_count        Int?               @default(0)
+  confidence_score       Decimal?           @default(0) @db.Decimal(3, 2)
+  created_at             DateTime?          @default(now()) @db.Timestamp(6)
+  updated_at             DateTime?          @default(now()) @db.Timestamp(6)
+  keyword_segments       keyword_segments?  @relation("keyword_segmentsTokeyword_segments", fields: [parent_segment_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  other_keyword_segments keyword_segments[] @relation("keyword_segmentsTokeyword_segments")
+
+  @@unique([segment_type, segment_name, keyword])
+  @@index([total_count(sort: Desc)], map: "idx_keyword_segments_count")
+  @@index([keyword], map: "idx_keyword_segments_keyword")
+  @@index([segment_type, segment_name], map: "idx_keyword_segments_type_name")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model recommended_tags {
+  id                   BigInt    @id @default(autoincrement())
+  tag_name             String    @unique(map: "unique_tag") @db.VarChar(100)
+  tag_category         String?   @db.VarChar(50)
+  related_keywords     String[]
+  usage_count          Int?      @default(0)
+  recommendation_score Decimal?  @default(0.50) @db.Decimal(3, 2)
+  auto_generated       Boolean?  @default(true)
+  description          String?
+  created_at           DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at           DateTime? @default(now()) @db.Timestamptz(6)
+
+  @@index([tag_category], map: "idx_tags_category")
+  @@index([recommendation_score(sort: Desc)], map: "idx_tags_score")
+  @@index([usage_count(sort: Desc)], map: "idx_tags_usage")
+}
+
+model regex_rules {
+  id          BigInt    @id @default(autoincrement())
+  pattern     String    @db.VarChar(1000)
+  replacement String?   @db.VarChar(1000)
+  description String?
+  category    String?   @db.VarChar(100)
+  enabled     Boolean?  @default(true)
+  priority    Int?      @default(0)
+  created_at  DateTime? @default(now()) @db.Timestamp(6)
+  updated_at  DateTime? @default(now()) @db.Timestamp(6)
+
+  @@index([category], map: "idx_regex_rules_category")
+  @@index([enabled], map: "idx_regex_rules_enabled")
+  @@index([enabled, category], map: "idx_regex_rules_enabled_category")
+  @@index([priority], map: "idx_regex_rules_priority")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model workplace_keywords {
+  id                BigInt             @id @default(autoincrement())
+  workplace_name    String             @db.VarChar(255)
+  industry_name     String             @db.VarChar(255)
+  keyword_id        BigInt?
+  extraction_method String?            @default("nlp") @db.VarChar(50)
+  confidence        Decimal?           @default(0.80) @db.Decimal(3, 2)
+  is_primary        Boolean?           @default(false)
+  created_at        DateTime?          @default(now()) @db.Timestamptz(6)
+  industry_keywords industry_keywords? @relation(fields: [keyword_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([industry_name], map: "idx_workplace_keywords_industry")
+  @@index([keyword_id], map: "idx_workplace_keywords_keyword")
+  @@index([workplace_name], map: "idx_workplace_keywords_name")
+}
+
 enum TaxpayerType {
   CORPORATION
   SOLE_PROPRIETORSHIP
@@ -190,11 +641,11 @@ enum TransactionIOType {
 }
 
 enum AccountType {
-  ASSET      @map("자산")
-  LIABILITY  @map("부채")
-  EQUITY     @map("자본")
-  REVENUE    @map("수익")
-  EXPENSE    @map("비용")
+  ASSET     @map("자산")
+  LIABILITY @map("부채")
+  EQUITY    @map("자본")
+  REVENUE   @map("수익")
+  EXPENSE   @map("비용")
 
   @@map("account_type_enum")
 }
@@ -207,65 +658,4 @@ enum JournalEntryApprovalStatus {
   POSTED
 
   @@map("journal_entry_approval_status_enum")
-}
-
-// === 정규식 전처리 시스템 모델 ===
-
-model RegexPreprocessingRule {
-  id              BigInt   @id @default(autoincrement())
-  ruleName        String   @map("rule_name") @db.VarChar(100)
-  description     String?
-  category        String   @db.VarChar(50)
-  inputPattern    String   @map("input_pattern") @db.Text
-  outputTemplate  String   @map("output_template") @db.Text
-  priority        Int      @default(100)
-  isActive        Boolean  @default(true) @map("is_active")
-  metadataTags    Json?    @map("metadata_tags")
-  testCases       Json?    @map("test_cases")
-  usageCount      BigInt   @default(0) @map("usage_count")
-  successRate     Decimal? @map("success_rate") @db.Decimal(5, 2)
-  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt       DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
-
-  category_ref    RegexPreprocessingCategory @relation(fields: [category], references: [categoryName], onDelete: NoAction, onUpdate: NoAction)
-  processingLogs  RegexPreprocessingLog[]
-
-  @@index([category], map: "idx_regex_rules_category")
-  @@index([priority], map: "idx_regex_rules_priority")
-  @@index([isActive], map: "idx_regex_rules_active")
-  @@map("regex_preprocessing_rules")
-}
-
-model RegexPreprocessingCategory {
-  id           BigInt  @id @default(autoincrement())
-  categoryName String  @unique @map("category_name") @db.VarChar(50)
-  description  String?
-  displayOrder Int     @default(0) @map("display_order")
-  iconName     String? @map("icon_name") @db.VarChar(50)
-  colorHex     String? @map("color_hex") @db.VarChar(7)
-  isActive     Boolean @default(true) @map("is_active")
-  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-
-  rules        RegexPreprocessingRule[]
-
-  @@map("regex_preprocessing_categories")
-}
-
-model RegexPreprocessingLog {
-  id                 BigInt   @id @default(autoincrement())
-  originalText       String   @map("original_text") @db.Text
-  normalizedText     String?  @map("normalized_text") @db.Text
-  appliedRuleId      BigInt?  @map("applied_rule_id")
-  appliedRuleName    String?  @map("applied_rule_name") @db.VarChar(100)
-  extractedMetadata  Json?    @map("extracted_metadata")
-  processingTimeMs   Int?     @map("processing_time_ms")
-  success            Boolean  @default(true)
-  errorMessage       String?  @map("error_message") @db.Text
-  createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-
-  appliedRule        RegexPreprocessingRule? @relation(fields: [appliedRuleId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@index([createdAt], map: "idx_regex_logs_created_at")
-  @@index([appliedRuleId], map: "idx_regex_logs_rule_id")
-  @@map("regex_preprocessing_logs")
 }

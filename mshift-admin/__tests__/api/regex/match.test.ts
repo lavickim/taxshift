@@ -1,5 +1,6 @@
-import { POST } from '@/app/api/regex/match/route';
 import { NextRequest } from 'next/server';
+
+import { POST } from '@/app/api/regex/match/route';
 
 // Mock CSV 규칙 엔진
 jest.mock('@/lib/services/csv-regex-rule-engine', () => {
@@ -15,7 +16,7 @@ jest.mock('@/lib/services/csv-regex-rule-engine', () => {
             pattern: 'GS25',
             confidence: 0.95,
             normalizedName: 'GS25',
-            description: 'GS25 편의점 패턴'
+            description: 'GS25 편의점 패턴',
           };
         } else if (text.includes('카센터')) {
           return {
@@ -24,7 +25,7 @@ jest.mock('@/lib/services/csv-regex-rule-engine', () => {
             pattern: '(.+?)카센터',
             confidence: 0.9,
             normalizedName: '현대 카센터',
-            description: '카센터 키워드 패턴'
+            description: '카센터 키워드 패턴',
           };
         } else if (text.includes('주유소')) {
           return {
@@ -33,30 +34,32 @@ jest.mock('@/lib/services/csv-regex-rule-engine', () => {
             pattern: '(.+?)주유소',
             confidence: 0.8,
             normalizedName: '테스트 주유소',
-            description: '일반 주유소 키워드 패턴'
+            description: '일반 주유소 키워드 패턴',
           };
         }
-        
+
         return {
           matched: false,
           category: null,
           pattern: null,
           confidence: 0,
           normalizedName: null,
-          description: null
+          description: null,
         };
-      })
-    }))
+      }),
+    })),
   };
 });
 
 describe('/api/regex/match API 테스트', () => {
-  
   describe('POST 요청 처리', () => {
     it('유효한 텍스트로 매칭 요청 시 성공 응답을 반환해야 함', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const requestBody = {
-        text: 'GS25강남역점'
+        text: 'GS25강남역점',
       };
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
       const request = new NextRequest('http://localhost:3000/api/regex/match', {
         method: 'POST',
@@ -79,15 +82,18 @@ describe('/api/regex/match API 테스트', () => {
           confidence: 0.95,
           normalizedName: 'GS25',
           description: 'GS25 편의점 패턴',
-          originalText: 'GS25강남역점'
-        }
+          originalText: 'GS25강남역점',
+        },
       });
     });
 
     it('매칭되지 않는 텍스트에 대해 올바른 응답을 반환해야 함', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const requestBody = {
-        text: '알수없는거래처'
+        text: '알수없는거래처',
       };
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
       const request = new NextRequest('http://localhost:3000/api/regex/match', {
         method: 'POST',
@@ -110,8 +116,8 @@ describe('/api/regex/match API 테스트', () => {
           confidence: 0,
           normalizedName: null,
           description: null,
-          originalText: '알수없는거래처'
-        }
+          originalText: '알수없는거래처',
+        },
       });
     });
 
@@ -120,23 +126,27 @@ describe('/api/regex/match API 테스트', () => {
         {
           text: '현대카센터신림',
           expectedCategory: '카센터',
-          expectedConfidence: 0.9
+          expectedConfidence: 0.9,
         },
         {
           text: '셀프주유소',
           expectedCategory: '주유소',
-          expectedConfidence: 0.8
-        }
+          expectedConfidence: 0.8,
+        },
       ];
 
       for (const testCase of testCases) {
-        const request = new NextRequest('http://localhost:3000/api/regex/match', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ text: testCase.text }),
-        });
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const request = new NextRequest(
+          'http://localhost:3000/api/regex/match',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ text: testCase.text }),
+          }
+        );
 
         const response = await POST(request);
         const data = await response.json();
@@ -153,7 +163,10 @@ describe('/api/regex/match API 테스트', () => {
 
   describe('요청 유효성 검증', () => {
     it('text 필드가 없을 때 400 에러를 반환해야 함', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const requestBody = {};
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
       const request = new NextRequest('http://localhost:3000/api/regex/match', {
         method: 'POST',
@@ -169,14 +182,17 @@ describe('/api/regex/match API 테스트', () => {
       expect(response.status).toBe(400);
       expect(data).toEqual({
         success: false,
-        error: 'text 필드는 필수입니다'
+        error: 'text 필드는 필수입니다',
       });
     });
 
     it('빈 문자열일 때 400 에러를 반환해야 함', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const requestBody = {
-        text: ''
+        text: '',
       };
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
       const request = new NextRequest('http://localhost:3000/api/regex/match', {
         method: 'POST',
@@ -192,14 +208,17 @@ describe('/api/regex/match API 테스트', () => {
       expect(response.status).toBe(400);
       expect(data).toEqual({
         success: false,
-        error: 'text 필드는 비어있을 수 없습니다'
+        error: 'text 필드는 비어있을 수 없습니다',
       });
     });
 
     it('text가 문자열이 아닐 때 400 에러를 반환해야 함', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const requestBody = {
-        text: 123
+        text: 123,
       };
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
       const request = new NextRequest('http://localhost:3000/api/regex/match', {
         method: 'POST',
@@ -215,11 +234,12 @@ describe('/api/regex/match API 테스트', () => {
       expect(response.status).toBe(400);
       expect(data).toEqual({
         success: false,
-        error: 'text 필드는 문자열이어야 합니다'
+        error: 'text 필드는 문자열이어야 합니다',
       });
     });
 
     it('잘못된 JSON 형식일 때 400 에러를 반환해야 함', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const request = new NextRequest('http://localhost:3000/api/regex/match', {
         method: 'POST',
         headers: {
@@ -246,10 +266,14 @@ describe('/api/regex/match API 테스트', () => {
     it('에러 처리 로직이 올바르게 구현되어야 함', async () => {
       // 에러 처리 로직이 API에 포함되어 있는지 확인하는 테스트
       // 실제 에러를 발생시키기보다는 API가 에러 처리를 올바르게 구현했는지 검증
-      
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
       const requestBody = {
-        text: 'GS25강남역점'
+        text: 'GS25강남역점',
       };
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
       const request = new NextRequest('http://localhost:3000/api/regex/match', {
         method: 'POST',
@@ -265,11 +289,11 @@ describe('/api/regex/match API 테스트', () => {
       // 정상적인 경우에는 성공 응답을 받아야 함
       expect(response.status).toBe(200);
       expect(data.success).toBe(true);
-      
+
       // API가 에러 처리를 위한 적절한 구조를 가지고 있는지 확인
       expect(data).toHaveProperty('success');
       expect(data).toHaveProperty('data');
-      
+
       // 응답 데이터 구조 검증
       expect(data.data).toHaveProperty('matched');
       expect(data.data).toHaveProperty('originalText', 'GS25강남역점');
@@ -278,9 +302,12 @@ describe('/api/regex/match API 테스트', () => {
     it('매칭 중 예상치 못한 에러 발생 시 올바른 응답을 반환해야 함', async () => {
       // 실제로는 매칭 중 에러가 발생해도 적절히 처리되어야 함
       // 이 테스트는 API가 예외 상황을 안전하게 처리하는지 확인
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const requestBody = {
-        text: 'GS25강남역점'
+        text: 'GS25강남역점',
       };
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
       const request = new NextRequest('http://localhost:3000/api/regex/match', {
         method: 'POST',
@@ -303,9 +330,12 @@ describe('/api/regex/match API 테스트', () => {
 
   describe('응답 형식 검증', () => {
     it('성공 응답의 구조가 올바른지 확인해야 함', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const requestBody = {
-        text: 'GS25강남역점'
+        text: 'GS25강남역점',
       };
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
       const request = new NextRequest('http://localhost:3000/api/regex/match', {
         method: 'POST',
@@ -330,9 +360,12 @@ describe('/api/regex/match API 테스트', () => {
     });
 
     it('Content-Type 헤더가 올바르게 설정되어야 함', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const requestBody = {
-        text: 'GS25강남역점'
+        text: 'GS25강남역점',
       };
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
       const request = new NextRequest('http://localhost:3000/api/regex/match', {
         method: 'POST',
@@ -344,15 +377,20 @@ describe('/api/regex/match API 테스트', () => {
 
       const response = await POST(request);
 
-      expect(response.headers.get('Content-Type')).toContain('application/json');
+      expect(response.headers.get('Content-Type')).toContain(
+        'application/json'
+      );
     });
   });
 
   describe('성능 테스트', () => {
     it('단일 매칭 요청이 100ms 이내에 완료되어야 함', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const requestBody = {
-        text: 'GS25강남역점'
+        text: 'GS25강남역점',
       };
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
       const request = new NextRequest('http://localhost:3000/api/regex/match', {
         method: 'POST',
@@ -375,17 +413,21 @@ describe('/api/regex/match API 테스트', () => {
         'GS25강남역점',
         '현대카센터신림',
         '셀프주유소',
-        '알수없는거래처'
+        '알수없는거래처',
       ];
 
-      const requests = testTexts.map(text => 
-        POST(new NextRequest('http://localhost:3000/api/regex/match', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ text }),
-        }))
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
+      const requests = testTexts.map(text =>
+        POST(
+          new NextRequest('http://localhost:3000/api/regex/match', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ text }),
+          })
+        )
       );
 
       const startTime = Date.now();
@@ -401,4 +443,4 @@ describe('/api/regex/match API 테스트', () => {
       expect(endTime - startTime).toBeLessThan(200);
     });
   });
-}); 
+});

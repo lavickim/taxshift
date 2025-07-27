@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const JAVA_API_BASE_URL = process.env.JAVA_API_BASE_URL || 'http://localhost:8080';
+const JAVA_API_BASE_URL =
+  process.env.JAVA_API_BASE_URL || 'http://localhost:8080/mshift-api';
 
 interface EndpointTest {
   name: string;
@@ -18,7 +19,7 @@ const CRITICAL_ENDPOINTS: EndpointTest[] = [
     method: 'GET',
     path: '/actuator/health',
     expectedStatus: 200,
-    critical: true
+    critical: true,
   },
   {
     name: 'Keyword System Classify',
@@ -26,36 +27,36 @@ const CRITICAL_ENDPOINTS: EndpointTest[] = [
     path: '/v2/keyword-system/classify',
     expectedStatus: 200,
     testData: { description: '테스트 거래', amount: 10000 },
-    critical: true
+    critical: true,
   },
   {
     name: 'Keyword Groups',
-    method: 'GET', 
+    method: 'GET',
     path: '/v2/tag-mapping/keyword-groups',
     expectedStatus: 200,
-    critical: true
+    critical: true,
   },
   {
     name: 'Tag Mapping Stats',
     method: 'GET',
     path: '/v2/tag-mapping/stats',
     expectedStatus: 200,
-    critical: true
+    critical: true,
   },
   {
     name: 'Tag Mapping Management Stats',
     method: 'GET',
     path: '/v2/tag-mapping-mgmt/stats',
     expectedStatus: 200,
-    critical: false
+    critical: false,
   },
   {
     name: 'Tag Mapping Management Groups',
     method: 'GET',
     path: '/v2/tag-mapping-mgmt/keyword-groups',
     expectedStatus: 200,
-    critical: false
-  }
+    critical: false,
+  },
 ];
 
 interface EndpointResult {
@@ -73,12 +74,12 @@ export async function GET(request: NextRequest) {
   const results: EndpointResult[] = [];
   let overallHealth = true;
   let criticalFailures = 0;
-  
+
   console.log('🔍 Starting endpoint health check...');
-  
+
   for (const endpoint of CRITICAL_ENDPOINTS) {
     const startTime = Date.now();
-    
+
     try {
       const url = `${JAVA_API_BASE_URL}${endpoint.path}`;
       const response = await fetch(url, {
@@ -88,15 +89,15 @@ export async function GET(request: NextRequest) {
         },
         body: endpoint.testData ? JSON.stringify(endpoint.testData) : undefined,
       });
-      
+
       const responseTime = Date.now() - startTime;
       const healthy = response.status === (endpoint.expectedStatus || 200);
-      
+
       if (!healthy && endpoint.critical) {
         criticalFailures++;
         overallHealth = false;
       }
-      
+
       results.push({
         name: endpoint.name,
         path: endpoint.path,
@@ -104,19 +105,20 @@ export async function GET(request: NextRequest) {
         status: response.status,
         responseTime,
         healthy,
-        critical: endpoint.critical
+        critical: endpoint.critical,
       });
-      
-      console.log(`${healthy ? '✅' : '❌'} ${endpoint.name}: ${response.status} (${responseTime}ms)`);
-      
+
+      console.log(
+        `${healthy ? '✅' : '❌'} ${endpoint.name}: ${response.status} (${responseTime}ms)`
+      );
     } catch (error) {
       const responseTime = Date.now() - startTime;
-      
+
       if (endpoint.critical) {
         criticalFailures++;
         overallHealth = false;
       }
-      
+
       results.push({
         name: endpoint.name,
         path: endpoint.path,
@@ -125,25 +127,27 @@ export async function GET(request: NextRequest) {
         responseTime,
         healthy: false,
         critical: endpoint.critical,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
-      
+
       console.error(`❌ ${endpoint.name}: ${error}`);
     }
   }
-  
+
   const healthSummary = {
     overallHealth,
     criticalFailures,
     totalEndpoints: CRITICAL_ENDPOINTS.length,
     healthyEndpoints: results.filter(r => r.healthy).length,
     timestamp: new Date().toISOString(),
-    results
+    results,
   };
-  
-  console.log(`🏥 Health check complete: ${healthSummary.healthyEndpoints}/${healthSummary.totalEndpoints} healthy`);
-  
+
+  console.log(
+    `🏥 Health check complete: ${healthSummary.healthyEndpoints}/${healthSummary.totalEndpoints} healthy`
+  );
+
   return NextResponse.json(healthSummary, {
-    status: overallHealth ? 200 : 503
+    status: overallHealth ? 200 : 503,
   });
 }

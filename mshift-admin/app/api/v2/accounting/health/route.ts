@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8080';
+const BACKEND_URL =
+  process.env.BACKEND_URL || 'http://localhost:8080/mshift-api';
 
 export async function GET(request: NextRequest) {
   try {
@@ -16,16 +17,16 @@ export async function GET(request: NextRequest) {
     }
 
     const data = await response.json();
-    
+
     return NextResponse.json(data, { status: 200 });
   } catch (error) {
     console.error('헬스체크 API 오류:', error);
     return NextResponse.json(
-      { 
+      {
         status: 'unhealthy',
-        service: 'accounting-engine', 
+        service: 'accounting-engine',
         error: '백엔드 서버 연결 실패',
-        timestamp: Date.now()
+        timestamp: Date.now(),
       },
       { status: 500 }
     );

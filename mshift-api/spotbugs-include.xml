@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+    <!-- 핵심 비즈니스 로직 클래스들만 검사 -->
+    <Match>
+        <Class name="~com\.moneyshift\.api\.service\..*"/>
+    </Match>
+    
+    <Match>
+        <Class name="~com\.moneyshift\.api\.controller\..*"/>
+    </Match>
+    
+    <Match>
+        <Class name="~com\.moneyshift\.api\.model\..*"/>
+    </Match>
+    
+    <Match>
+        <Class name="~com\.moneyshift\.api\.util\..*"/>
+    </Match>
+</FindBugsFilter>

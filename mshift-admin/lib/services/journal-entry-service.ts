@@ -48,50 +48,73 @@ export class JournalEntryService {
   /**
    * 거래에서 분개 자동 생성 (백엔드 API 호출)
    */
-  async createJournalEntryFromTransaction(transactionId: number): Promise<{ success: boolean; journalEntry?: JournalEntry; message?: string }> {
-    const response = await fetch(`${this.baseUrl}/journal-entries/from-transaction`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ transactionId })
-    });
-    
+  async createJournalEntryFromTransaction(transactionId: number): Promise<{
+    success: boolean;
+    journalEntry?: JournalEntry;
+    message?: string;
+  }> {
+    const response = await fetch(
+      `${this.baseUrl}/journal-entries/from-transaction`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ transactionId }),
+      }
+    );
+
     return await response.json();
   }
 
   /**
    * 분개 생성 (백엔드 API 호출)
    */
-  async createJournalEntry(request: JournalEntryRequest): Promise<{ success: boolean; journalEntry?: JournalEntry; message?: string }> {
+  async createJournalEntry(request: JournalEntryRequest): Promise<{
+    success: boolean;
+    journalEntry?: JournalEntry;
+    message?: string;
+  }> {
     const response = await fetch(`${this.baseUrl}/journal-entries`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(request)
+      body: JSON.stringify(request),
     });
-    
+
     return await response.json();
   }
 
   /**
    * 분개 승인 처리 (백엔드 API 호출)
    */
-  async approveJournalEntry(journalEntryId: number): Promise<{ success: boolean; journalEntry?: JournalEntry; message?: string }> {
-    const response = await fetch(`${this.baseUrl}/journal-entries/${journalEntryId}/approve`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' }
-    });
-    
+  async approveJournalEntry(journalEntryId: number): Promise<{
+    success: boolean;
+    journalEntry?: JournalEntry;
+    message?: string;
+  }> {
+    const response = await fetch(
+      `${this.baseUrl}/journal-entries/${journalEntryId}/approve`,
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
+
     return await response.json();
   }
 
   /**
    * 분개를 총계정원장에 전기 (백엔드 API 호출)
    */
-  async postJournalEntryToGL(journalEntryId: number): Promise<{ success: boolean; message?: string }> {
-    const response = await fetch(`${this.baseUrl}/journal-entries/${journalEntryId}/post`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' }
-    });
-    
+  async postJournalEntryToGL(
+    journalEntryId: number
+  ): Promise<{ success: boolean; message?: string }> {
+    const response = await fetch(
+      `${this.baseUrl}/journal-entries/${journalEntryId}/post`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
+
     return await response.json();
   }
 
@@ -114,7 +137,9 @@ export class JournalEntryService {
       });
     }
 
-    const response = await fetch(`${this.baseUrl}/journal-entries?${queryParams}`);
+    const response = await fetch(
+      `${this.baseUrl}/journal-entries?${queryParams}`
+    );
     return await response.json();
   }
 
@@ -122,7 +147,9 @@ export class JournalEntryService {
    * 분개 상세 조회 (백엔드 API 호출)
    */
   async getJournalEntry(journalEntryId: number): Promise<JournalEntry> {
-    const response = await fetch(`${this.baseUrl}/journal-entries/${journalEntryId}`);
+    const response = await fetch(
+      `${this.baseUrl}/journal-entries/${journalEntryId}`
+    );
     return await response.json();
   }
 
@@ -134,21 +161,29 @@ export class JournalEntryService {
     entryDate: string,
     description: string,
     lines: JournalEntryLine[]
-  ): Promise<{ success: boolean; journalEntry?: JournalEntry; message?: string }> {
+  ): Promise<{
+    success: boolean;
+    journalEntry?: JournalEntry;
+    message?: string;
+  }> {
     const response = await fetch(`${this.baseUrl}/journal-entries/complex`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ companyId, entryDate, description, lines })
+      body: JSON.stringify({ companyId, entryDate, description, lines }),
     });
-    
+
     return await response.json();
   }
 
   /**
    * 분개 감사 추적 조회 (백엔드 API 호출)
    */
-  async getJournalEntryAuditTrail(journalEntryId: number): Promise<{ auditTrail: any[] }> {
-    const response = await fetch(`${this.baseUrl}/journal-entries/${journalEntryId}/audit`);
+  async getJournalEntryAuditTrail(
+    journalEntryId: number
+  ): Promise<{ auditTrail: any[] }> {
+    const response = await fetch(
+      `${this.baseUrl}/journal-entries/${journalEntryId}/audit`
+    );
     return await response.json();
   }
 }

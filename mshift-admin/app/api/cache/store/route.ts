@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+
 import { TransactionCacheService } from '@/lib/services/transaction-cache';
 
 export interface CacheStoreResponse {
@@ -20,15 +21,15 @@ export interface CacheStoreRequest {
 
 /**
  * POST /api/cache/store - 캐시 저장 API
- * 
+ *
  * 쿼리 파라미터 (선택):
  * - upsert: true인 경우 이미 존재하는 해시에 대해 업데이트 수행
- * 
+ *
  * 요청 본문:
  * - rawTextHash: 저장할 해시값 (64자리 16진수)
  * - rawText: 원본 텍스트
  * - uniqueKey: 고유 키
- * 
+ *
  * 응답:
  * - 201: 새로운 캐시 생성 성공
  * - 200: upsert로 기존 캐시 업데이트 성공
@@ -36,37 +37,41 @@ export interface CacheStoreRequest {
  * - 409: 중복된 해시 (upsert=false일 때)
  * - 500: 서버 내부 오류
  */
-export async function POST(request: NextRequest): Promise<NextResponse<CacheStoreResponse | CacheErrorResponse>> {
+export async function POST(
+  request: NextRequest
+): Promise<NextResponse<CacheStoreResponse | CacheErrorResponse>> {
   const startTime = Date.now();
-  
+
   try {
     // 쿼리 파라미터에서 upsert 옵션 확인
     const { searchParams } = new URL(request.url);
     const isUpsert = searchParams.get('upsert') === 'true';
 
     // 요청 본문 파싱
+
     let requestData: CacheStoreRequest;
-    
+
     try {
       requestData = await request.json();
     } catch (parseError) {
       return NextResponse.json(
         {
           error: '잘못된 JSON 형식입니다',
-          code: 'INVALID_JSON_FORMAT'
+          code: 'INVALID_JSON_FORMAT',
         },
         { status: 400 }
       );
     }
 
     // 필수 필드 검증
+
     const requiredFields = ['rawTextHash', 'rawText', 'uniqueKey'];
     for (const field of requiredFields) {
       if (!requestData[field as keyof CacheStoreRequest]) {
         return NextResponse.json(
           {
             error: `필수 필드가 누락되었습니다: ${field}`,
-            code: 'MISSING_REQUIRED_FIELD'
+            code: 'MISSING_REQUIRED_FIELD',
           },
           { status: 400 }
         );
@@ -103,20 +108,19 @@ export async function POST(request: NextRequest): Promise<NextResponse<CacheStor
             rawTextHash: result.rawTextHash,
             rawText: result.rawText,
             uniqueKey: result.uniqueKey,
-            createdAt: result.createdAt.toISOString()
+            createdAt: result.createdAt.toISOString(),
           },
-          processingTime
+          processingTime,
         },
         { status: statusCode }
       );
-
     } catch (serviceError: any) {
       // TransactionCacheService에서 발생한 에러 처리
       if (serviceError.message?.includes('해시는 64자리 16진수여야 합니다')) {
         return NextResponse.json(
           {
             error: serviceError.message,
-            code: 'INVALID_HASH_FORMAT'
+            code: 'INVALID_HASH_FORMAT',
           },
           { status: 400 }
         );
@@ -126,7 +130,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<CacheStor
         return NextResponse.json(
           {
             error: serviceError.message,
-            code: 'INVALID_RAW_TEXT'
+            code: 'INVALID_RAW_TEXT',
           },
           { status: 400 }
         );
@@ -136,7 +140,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<CacheStor
         return NextResponse.json(
           {
             error: serviceError.message,
-            code: 'INVALID_UNIQUE_KEY'
+            code: 'INVALID_UNIQUE_KEY',
           },
           { status: 400 }
         );
@@ -146,7 +150,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<CacheStor
         return NextResponse.json(
           {
             error: serviceError.message,
-            code: 'DUPLICATE_HASH'
+            code: 'DUPLICATE_HASH',
           },
           { status: 409 }
         );
@@ -155,17 +159,16 @@ export async function POST(request: NextRequest): Promise<NextResponse<CacheStor
       // 기타 서비스 에러는 500으로 처리
       throw serviceError;
     }
-
   } catch (error: any) {
     // 예상하지 못한 서버 에러
     console.error('Cache store error:', error);
-    
+
     return NextResponse.json(
       {
         error: '캐시 저장 중 오류가 발생했습니다',
-        code: 'CACHE_STORE_ERROR'
+        code: 'CACHE_STORE_ERROR',
       },
       { status: 500 }
     );
   }
-} 
+}

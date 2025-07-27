@@ -9,14 +9,14 @@ const DELAY_BETWEEN_BATCHES = 1000; // 1초 대기
 
 async function testBrandsWithImprovedKeywords() {
   console.log('🚀 개선된 키워드 룰로 브랜드 테스트 시작...');
-  
+
   try {
     // 모든 브랜드 조회 (generated_transaction_string이 있는 것만)
     const allBrands = await prisma.franchiseBrands.findMany({
       where: {
         generatedTransactionString: {
-          not: null
-        }
+          not: null,
+        },
       },
       select: {
         id: true,
@@ -27,15 +27,15 @@ async function testBrandsWithImprovedKeywords() {
         generatedTransactionString: true,
         primaryTag: true,
         secondaryTag: true,
-        tertiaryTag: true
+        tertiaryTag: true,
       },
       orderBy: {
-        id: 'asc'
-      }
+        id: 'asc',
+      },
     });
 
     console.log(`📊 총 테스트 대상 브랜드: ${allBrands.length}개`);
-    
+
     let totalTested = 0;
     let totalMatched = 0;
     let categoryStats = {};
@@ -47,11 +47,13 @@ async function testBrandsWithImprovedKeywords() {
       const batch = allBrands.slice(i, i + BATCH_SIZE);
       const batchNumber = Math.floor(i / BATCH_SIZE) + 1;
       const totalBatches = Math.ceil(allBrands.length / BATCH_SIZE);
-      
-      console.log(`\n🔄 배치 ${batchNumber}/${totalBatches} 처리 중... (${batch.length}개 브랜드)`);
-      
+
+      console.log(
+        `\n🔄 배치 ${batchNumber}/${totalBatches} 처리 중... (${batch.length}개 브랜드)`
+      );
+
       // 배치 내 브랜드들을 병렬로 테스트
-      const batchPromises = batch.map(async (brand) => {
+      const batchPromises = batch.map(async brand => {
         try {
           const response = await fetch(KEYWORD_CLASSIFY_API, {
             method: 'POST',
@@ -60,8 +62,8 @@ async function testBrandsWithImprovedKeywords() {
             },
             body: JSON.stringify({
               description: brand.generatedTransactionString,
-              amount: 10000
-            })
+              amount: 10000,
+            }),
           });
 
           if (!response.ok) {
@@ -69,7 +71,7 @@ async function testBrandsWithImprovedKeywords() {
           }
 
           const result = await response.json();
-          
+
           const testResult = {
             brandId: brand.id,
             brandName: brand.brandName,
@@ -81,13 +83,15 @@ async function testBrandsWithImprovedKeywords() {
             extractedKeywords: result.extractedKeywords || [],
             processingPath: result.processingPath || '',
             priorityTag1: brand.primaryTag,
-            expectedMatch: brand.primaryTag !== '기타'
+            expectedMatch: brand.primaryTag !== '기타',
           };
 
           return testResult;
-          
         } catch (error) {
-          console.error(`❌ 브랜드 ${brand.brandName} 테스트 실패:`, error.message);
+          console.error(
+            `❌ 브랜드 ${brand.brandName} 테스트 실패:`,
+            error.message
+          );
           return {
             brandId: brand.id,
             brandName: brand.brandName,
@@ -100,7 +104,7 @@ async function testBrandsWithImprovedKeywords() {
             processingPath: 'ERROR',
             error: error.message,
             priorityTag1: brand.primaryTag,
-            expectedMatch: brand.primaryTag !== '기타'
+            expectedMatch: brand.primaryTag !== '기타',
           };
         }
       });
@@ -112,7 +116,7 @@ async function testBrandsWithImprovedKeywords() {
       // 배치 통계 업데이트
       for (const result of batchResults) {
         totalTested++;
-        
+
         if (result.matched) {
           totalMatched++;
         }
@@ -134,25 +138,33 @@ async function testBrandsWithImprovedKeywords() {
       }
 
       // 진행률 출력
-      const currentAccuracy = totalTested > 0 ? (totalMatched / totalTested * 100).toFixed(2) : 0;
-      console.log(`   📈 현재까지 정확도: ${currentAccuracy}% (${totalMatched}/${totalTested})`);
-      
+      const currentAccuracy =
+        totalTested > 0 ? ((totalMatched / totalTested) * 100).toFixed(2) : 0;
+      console.log(
+        `   📈 현재까지 정확도: ${currentAccuracy}% (${totalMatched}/${totalTested})`
+      );
+
       // 배치 간 대기
       if (i + BATCH_SIZE < allBrands.length) {
-        await new Promise(resolve => setTimeout(resolve, DELAY_BETWEEN_BATCHES));
+        await new Promise(resolve =>
+          setTimeout(resolve, DELAY_BETWEEN_BATCHES)
+        );
       }
     }
 
     // 최종 결과 계산
-    const finalAccuracy = (totalMatched / totalTested * 100).toFixed(2);
-    
+    const finalAccuracy = ((totalMatched / totalTested) * 100).toFixed(2);
+
     // 카테고리별 성공률 계산
     const categoryAccuracy = {};
     for (const [category, stats] of Object.entries(categoryStats)) {
       categoryAccuracy[category] = {
         total: stats.total,
         matched: stats.matched,
-        accuracy: stats.total > 0 ? (stats.matched / stats.total * 100).toFixed(2) : 0
+        accuracy:
+          stats.total > 0
+            ? ((stats.matched / stats.total) * 100).toFixed(2)
+            : 0,
       };
     }
 
@@ -166,21 +178,25 @@ async function testBrandsWithImprovedKeywords() {
     const sortedCategories = Object.entries(categoryAccuracy)
       .sort((a, b) => b[1].total - a[1].total)
       .slice(0, 10);
-    
+
     for (const [category, stats] of sortedCategories) {
-      console.log(`   ${category}: ${stats.accuracy}% (${stats.matched}/${stats.total})`);
+      console.log(
+        `   ${category}: ${stats.accuracy}% (${stats.matched}/${stats.total})`
+      );
     }
 
     console.log(`\n❌ 실패한 브랜드 (상위 20개):`);
     const topFailures = failedBrands.slice(0, 20);
     for (const brand of topFailures) {
-      console.log(`   ${brand.brandName} (${brand.category}): "${brand.generatedString}"`);
+      console.log(
+        `   ${brand.brandName} (${brand.category}): "${brand.generatedString}"`
+      );
     }
 
     // 결과를 데이터베이스에 저장
     console.log(`\n💾 테스트 결과를 데이터베이스에 저장 중...`);
     let updatedCount = 0;
-    
+
     for (const result of results) {
       try {
         await prisma.franchiseBrands.update({
@@ -192,16 +208,19 @@ async function testBrandsWithImprovedKeywords() {
               confidence: result.confidence,
               tag: result.tag,
               extractedKeywords: result.extractedKeywords,
-              processingPath: result.processingPath
-            }
-          }
+              processingPath: result.processingPath,
+            },
+          },
         });
         updatedCount++;
       } catch (error) {
-        console.error(`❌ 브랜드 ${result.brandId} 업데이트 실패:`, error.message);
+        console.error(
+          `❌ 브랜드 ${result.brandId} 업데이트 실패:`,
+          error.message
+        );
       }
     }
-    
+
     console.log(`✅ ${updatedCount}개 브랜드 결과 저장 완료`);
 
     // 성능 분석 리포트 생성
@@ -211,27 +230,33 @@ async function testBrandsWithImprovedKeywords() {
       finalAccuracy,
       categoryAccuracy,
       failedBrands: failedBrands.slice(0, 50), // 상위 50개만
-      testDate: new Date().toISOString()
+      testDate: new Date().toISOString(),
     });
 
     // 리포트 파일 저장
     const fs = require('fs');
     const reportPath = `./test-results/keyword-test-report-${Date.now()}.md`;
-    
+
     // 디렉토리 확인 및 생성
     if (!fs.existsSync('./test-results')) {
       fs.mkdirSync('./test-results', { recursive: true });
     }
-    
+
     fs.writeFileSync(reportPath, reportContent);
     console.log(`📄 상세 리포트 저장: ${reportPath}`);
 
     console.log(`\n🎯 목표 달성 여부:`);
     if (parseFloat(finalAccuracy) >= 75) {
-      console.log(`✅ 목표 달성! 현재 정확도 ${finalAccuracy}%가 목표 75% 이상입니다.`);
+      console.log(
+        `✅ 목표 달성! 현재 정확도 ${finalAccuracy}%가 목표 75% 이상입니다.`
+      );
     } else {
-      console.log(`❌ 목표 미달성. 현재 정확도 ${finalAccuracy}%가 목표 75% 미만입니다.`);
-      console.log(`   추가 ${Math.ceil((75 * totalTested / 100) - totalMatched)}개 브랜드가 더 매칭되어야 합니다.`);
+      console.log(
+        `❌ 목표 미달성. 현재 정확도 ${finalAccuracy}%가 목표 75% 미만입니다.`
+      );
+      console.log(
+        `   추가 ${Math.ceil((75 * totalTested) / 100 - totalMatched)}개 브랜드가 더 매칭되어야 합니다.`
+      );
     }
 
     return {
@@ -239,9 +264,8 @@ async function testBrandsWithImprovedKeywords() {
       totalTested,
       totalMatched,
       categoryStats: categoryAccuracy,
-      failedBrands: failedBrands.slice(0, 100)
+      failedBrands: failedBrands.slice(0, 100),
     };
-
   } catch (error) {
     console.error('❌ 테스트 실행 중 오류:', error);
     throw error;
@@ -251,8 +275,15 @@ async function testBrandsWithImprovedKeywords() {
 }
 
 function generatePerformanceReport(data) {
-  const { totalTested, totalMatched, finalAccuracy, categoryAccuracy, failedBrands, testDate } = data;
-  
+  const {
+    totalTested,
+    totalMatched,
+    finalAccuracy,
+    categoryAccuracy,
+    failedBrands,
+    testDate,
+  } = data;
+
   return `# 키워드 기반 브랜드 분류 테스트 리포트
 
 ## 테스트 개요
@@ -262,9 +293,10 @@ function generatePerformanceReport(data) {
 - **최종 정확도**: **${finalAccuracy}%**
 
 ## 목표 달성 여부
-${parseFloat(finalAccuracy) >= 75 
-  ? '✅ **목표 달성!** 75% 이상 정확도 확보' 
-  : '❌ **목표 미달성** - 추가 키워드 룰 필요'
+${
+  parseFloat(finalAccuracy) >= 75
+    ? '✅ **목표 달성!** 75% 이상 정확도 확보'
+    : '❌ **목표 미달성** - 추가 키워드 룰 필요'
 }
 
 ## 카테고리별 성과 분석
@@ -274,9 +306,11 @@ ${parseFloat(finalAccuracy) >= 75
 ${Object.entries(categoryAccuracy)
   .sort((a, b) => b[1].total - a[1].total)
   .slice(0, 20)
-  .map(([category, stats]) => 
-    `| ${category} | ${stats.total} | ${stats.matched} | ${stats.accuracy}% |`
-  ).join('\n')}
+  .map(
+    ([category, stats]) =>
+      `| ${category} | ${stats.total} | ${stats.matched} | ${stats.accuracy}% |`
+  )
+  .join('\n')}
 
 ## 성능 개선 영역
 
@@ -285,7 +319,10 @@ ${Object.entries(categoryAccuracy)
   .filter(([_, stats]) => parseFloat(stats.accuracy) >= 80 && stats.total >= 10)
   .sort((a, b) => parseFloat(b[1].accuracy) - parseFloat(a[1].accuracy))
   .slice(0, 10)
-  .map(([category, stats]) => `- **${category}**: ${stats.accuracy}% (${stats.matched}/${stats.total})`)
+  .map(
+    ([category, stats]) =>
+      `- **${category}**: ${stats.accuracy}% (${stats.matched}/${stats.total})`
+  )
   .join('\n')}
 
 ### 개선 필요 카테고리 (50% 미만)
@@ -293,18 +330,26 @@ ${Object.entries(categoryAccuracy)
   .filter(([_, stats]) => parseFloat(stats.accuracy) < 50 && stats.total >= 10)
   .sort((a, b) => b[1].total - a[1].total)
   .slice(0, 10)
-  .map(([category, stats]) => `- **${category}**: ${stats.accuracy}% (${stats.matched}/${stats.total}) - 키워드 룰 추가 필요`)
+  .map(
+    ([category, stats]) =>
+      `- **${category}**: ${stats.accuracy}% (${stats.matched}/${stats.total}) - 키워드 룰 추가 필요`
+  )
   .join('\n')}
 
 ## 실패 분석 (상위 50개)
 
 ### 공통 실패 패턴
-${failedBrands.slice(0, 50).map((brand, index) => 
-  `${index + 1}. **${brand.brandName}** (${brand.category})  
+${failedBrands
+  .slice(0, 50)
+  .map(
+    (brand, index) =>
+      `${index + 1}. **${brand.brandName}** (${brand.category})  
    - 거래문자열: "${brand.generatedString}"  
    - 기대태그: ${brand.priorityTag1}  
    - 추출키워드: [${brand.extractedKeywords.join(', ')}]  
-`).join('\n')}
+`
+  )
+  .join('\n')}
 
 ## 개선 권장사항
 
@@ -320,11 +365,11 @@ ${failedBrands.slice(0, 50).map((brand, index) =>
 // 실행
 if (require.main === module) {
   testBrandsWithImprovedKeywords()
-    .then((result) => {
+    .then(result => {
       console.log('\n✅ 테스트 완료');
       process.exit(0);
     })
-    .catch((error) => {
+    .catch(error => {
       console.error('❌ 테스트 실패:', error);
       process.exit(1);
     });

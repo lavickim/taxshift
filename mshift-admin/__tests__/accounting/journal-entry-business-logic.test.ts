@@ -2,7 +2,6 @@
  * 복식부기 분개 비즈니스 로직 테스트 (TDD Phase 4)
  * Transaction → Journal Entry 자동 생성 및 처리 프로세스를 테스트합니다.
  */
-
 import { PrismaClient } from '../../lib/generated/prisma';
 import { journalEntryService } from '../../lib/services/journal-entry-service';
 
@@ -24,12 +23,15 @@ describe('Journal Entry Business Logic (Phase 4)', () => {
           rawText: '사무용품 구매 50,000원',
           transactionDate: new Date('2024-01-15'),
           amount: 50000n,
-          transactionType: 'EXPENSE'
-        }
+          transactionType: 'EXPENSE',
+        },
       });
 
       // When: 거래에서 분개 자동 생성
-      const journalEntry = await journalEntryService.createJournalEntryFromTransaction(transaction.id);
+      const journalEntry =
+        await journalEntryService.createJournalEntryFromTransaction(
+          transaction.id
+        );
 
       // Then: 분개가 올바르게 생성되었는지 검증
       expect(journalEntry).toBeDefined();
@@ -41,29 +43,48 @@ describe('Journal Entry Business Logic (Phase 4)', () => {
 
     test('should create balanced journal entry with correct debit/credit logic', async () => {
       // Given: 분개 생성 요청
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const request = {
         companyId: testCompanyId,
         entryDate: new Date('2024-01-15'),
         description: '사무용품 구매',
-        debitAccountCode: '5030',  // 사무용품비
+        debitAccountCode: '5030', // 사무용품비
         creditAccountCode: '1010', // 보통예금
-        amount: 30000
+        amount: 30000,
       };
 
       // When: 분개 생성
-      const journalEntry = await journalEntryService.createJournalEntry(request);
+      const journalEntry =
+        await journalEntryService.createJournalEntry(request);
 
       // Then: 복식부기 원칙 준수 검증
-      expect(journalEntry.totalDebitAmount).toEqual(journalEntry.totalCreditAmount);
+      expect(journalEntry.totalDebitAmount).toEqual(
+        journalEntry.totalCreditAmount
+      );
       expect(Number(journalEntry.totalDebitAmount)).toBe(30000);
     });
 
     test('should handle complex transactions with multiple line items', async () => {
       // Given: 복합 분개 라인
       const journalLines = [
-        { accountCode: '5010', accountName: '급여', debitAmount: 100000, creditAmount: 0 },
-        { accountCode: '5030', accountName: '사무용품비', debitAmount: 50000, creditAmount: 0 },
-        { accountCode: '1010', accountName: '보통예금', debitAmount: 0, creditAmount: 150000 }
+        {
+          accountCode: '5010',
+          accountName: '급여',
+          debitAmount: 100000,
+          creditAmount: 0,
+        },
+        {
+          accountCode: '5030',
+          accountName: '사무용품비',
+          debitAmount: 50000,
+          creditAmount: 0,
+        },
+        {
+          accountCode: '1010',
+          accountName: '보통예금',
+          debitAmount: 0,
+          creditAmount: 150000,
+        },
       ];
 
       // When: 복합 분개 생성
@@ -90,11 +111,13 @@ describe('Journal Entry Business Logic (Phase 4)', () => {
         description: '승인 테스트',
         debitAccountCode: '5030',
         creditAccountCode: '1010',
-        amount: 25000
+        amount: 25000,
       });
 
       // When: 분개 승인
-      const approvedEntry = await journalEntryService.approveJournalEntry(journalEntry.id);
+      const approvedEntry = await journalEntryService.approveJournalEntry(
+        journalEntry.id
+      );
 
       // Then: 승인 상태 확인
       expect(approvedEntry.status).toBe('APPROVED');
@@ -103,8 +126,18 @@ describe('Journal Entry Business Logic (Phase 4)', () => {
     test('should prevent posting of unbalanced journal entries', async () => {
       // Given: 불균형 분개 라인
       const unbalancedLines = [
-        { accountCode: '5010', accountName: '급여', debitAmount: 100000, creditAmount: 0 },
-        { accountCode: '1010', accountName: '보통예금', debitAmount: 0, creditAmount: 90000 }
+        {
+          accountCode: '5010',
+          accountName: '급여',
+          debitAmount: 100000,
+          creditAmount: 0,
+        },
+        {
+          accountCode: '1010',
+          accountName: '보통예금',
+          debitAmount: 0,
+          creditAmount: 90000,
+        },
       ];
 
       // When & Then: 불균형 분개 생성 시 에러
@@ -128,17 +161,19 @@ describe('Journal Entry Business Logic (Phase 4)', () => {
         description: 'GL 전기 테스트',
         debitAccountCode: '5030',
         creditAccountCode: '1010',
-        amount: 75000
+        amount: 75000,
       });
 
-      const approvedEntry = await journalEntryService.approveJournalEntry(journalEntry.id);
+      const approvedEntry = await journalEntryService.approveJournalEntry(
+        journalEntry.id
+      );
 
       // When: GL 전기
       await journalEntryService.postJournalEntryToGL(approvedEntry.id);
 
       // Then: 분개 상태가 POSTED로 변경
       const postedEntry = await prisma.journalEntries.findUnique({
-        where: { id: approvedEntry.id }
+        where: { id: approvedEntry.id },
       });
       expect(postedEntry?.status).toBe('POSTED');
     });
@@ -153,18 +188,23 @@ describe('Journal Entry Business Logic (Phase 4)', () => {
           rawText: '사무용품 구매 15,000원',
           transactionDate: new Date('2024-01-20'),
           amount: 15000n,
-          transactionType: 'EXPENSE'
-        }
+          transactionType: 'EXPENSE',
+        },
       });
 
       // When: 완전한 프로세스 실행
-      const journalEntry = await journalEntryService.createJournalEntryFromTransaction(transaction.id);
-      const approvedEntry = await journalEntryService.approveJournalEntry(journalEntry.id);
+      const journalEntry =
+        await journalEntryService.createJournalEntryFromTransaction(
+          transaction.id
+        );
+      const approvedEntry = await journalEntryService.approveJournalEntry(
+        journalEntry.id
+      );
       await journalEntryService.postJournalEntryToGL(approvedEntry.id);
 
       // Then: 최종 상태 확인
       const finalEntry = await prisma.journalEntries.findUnique({
-        where: { id: journalEntry.id }
+        where: { id: journalEntry.id },
       });
       expect(finalEntry?.status).toBe('POSTED');
     });

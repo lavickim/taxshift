@@ -1,5 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "../../../../lib/generated/prisma";
+import { NextRequest, NextResponse } from 'next/server';
+
+import { PrismaClient } from '../../../../lib/generated/prisma';
 
 const prisma = new PrismaClient();
 
@@ -7,26 +8,26 @@ const prisma = new PrismaClient();
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const pattern_type = searchParams.get("pattern_type");
-    const category = searchParams.get("category");
+    const pattern_type = searchParams.get('pattern_type');
+    const category = searchParams.get('category');
 
     const whereClause: any = {};
-    
-    if (pattern_type && pattern_type !== "all") {
+
+    if (pattern_type && pattern_type !== 'all') {
       whereClause.pattern_type = pattern_type;
     }
-    
-    if (category && category !== "all") {
+
+    if (category && category !== 'all') {
       whereClause.category = category;
     }
 
     const rules = await prisma.regex_rules.findMany({
       where: whereClause,
       orderBy: [
-        { pattern_type: "asc" },
-        { priority: "desc" },
-        { confidence: "desc" },
-        { created_at: "desc" },
+        { pattern_type: 'asc' },
+        { priority: 'desc' },
+        { confidence: 'desc' },
+        { created_at: 'desc' },
       ],
     });
 
@@ -40,9 +41,9 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(serializedRules);
   } catch (error) {
-    console.error("통합 regex rules 조회 오류:", error);
+    console.error('통합 regex rules 조회 오류:', error);
     return NextResponse.json(
-      { error: "통합 regex rules 조회 중 오류가 발생했습니다." },
+      { error: '통합 regex rules 조회 중 오류가 발생했습니다.' },
       { status: 500 }
     );
   }
@@ -74,21 +75,21 @@ export async function POST(request: NextRequest) {
     // 필수 필드 검증
     if (!description || !category) {
       return NextResponse.json(
-        { error: "설명과 카테고리는 필수입니다." },
+        { error: '설명과 카테고리는 필수입니다.' },
         { status: 400 }
       );
     }
 
-    if (pattern_type === "BRAND" && !pattern) {
+    if (pattern_type === 'BRAND' && !pattern) {
       return NextResponse.json(
-        { error: "브랜드 패턴에는 정규식 패턴이 필요합니다." },
+        { error: '브랜드 패턴에는 정규식 패턴이 필요합니다.' },
         { status: 400 }
       );
     }
 
-    if (pattern_type === "KEYWORD" && !keyword) {
+    if (pattern_type === 'KEYWORD' && !keyword) {
       return NextResponse.json(
-        { error: "키워드 패턴에는 키워드가 필요합니다." },
+        { error: '키워드 패턴에는 키워드가 필요합니다.' },
         { status: 400 }
       );
     }
@@ -105,7 +106,7 @@ export async function POST(request: NextRequest) {
 
     if (existingRule) {
       return NextResponse.json(
-        { error: "이미 존재하는 패턴 또는 키워드입니다." },
+        { error: '이미 존재하는 패턴 또는 키워드입니다.' },
         { status: 400 }
       );
     }
@@ -120,7 +121,7 @@ export async function POST(request: NextRequest) {
         priority: priority || 50,
         confidence: confidence || 0.8,
         normalizer_type,
-        pattern_type: pattern_type || "BRAND",
+        pattern_type: pattern_type || 'BRAND',
         keyword,
         tags,
         primary_tag,
@@ -131,7 +132,7 @@ export async function POST(request: NextRequest) {
         positive_count: 0,
         negative_count: 0,
         is_active: is_active !== undefined ? is_active : true,
-        created_by: "ADMIN",
+        created_by: 'ADMIN',
         success_rate: null,
       },
     });
@@ -146,9 +147,9 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(serializedRule);
   } catch (error) {
-    console.error("통합 regex rule 생성 오류:", error);
+    console.error('통합 regex rule 생성 오류:', error);
     return NextResponse.json(
-      { error: "통합 regex rule 생성 중 오류가 발생했습니다." },
+      { error: '통합 regex rule 생성 중 오류가 발생했습니다.' },
       { status: 500 }
     );
   }

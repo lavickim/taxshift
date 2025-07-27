@@ -34,8 +34,8 @@ export class TransactionCacheService {
         data: {
           rawTextHash: data.rawTextHash,
           rawText: data.rawText,
-          uniqueKey: data.uniqueKey
-        }
+          uniqueKey: data.uniqueKey,
+        },
       });
     } catch (error: any) {
       if (error.code === 'P2002') {
@@ -54,7 +54,7 @@ export class TransactionCacheService {
     this.validateHash(hash);
 
     return await prisma.transactionCache.findUnique({
-      where: { rawTextHash: hash }
+      where: { rawTextHash: hash },
     });
   }
 
@@ -64,7 +64,7 @@ export class TransactionCacheService {
    */
   async findAll(): Promise<TransactionCache[]> {
     return await prisma.transactionCache.findMany({
-      orderBy: { createdAt: 'asc' }
+      orderBy: { createdAt: 'asc' },
     });
   }
 
@@ -82,13 +82,16 @@ export class TransactionCacheService {
    * @param data 수정할 데이터
    * @returns 수정된 캐시 데이터
    */
-  async update(hash: string, data: UpdateTransactionCacheData): Promise<TransactionCache> {
+  async update(
+    hash: string,
+    data: UpdateTransactionCacheData
+  ): Promise<TransactionCache> {
     this.validateHash(hash);
 
     try {
       return await prisma.transactionCache.update({
         where: { rawTextHash: hash },
-        data: data
+        data: data,
       });
     } catch (error: any) {
       if (error.code === 'P2025') {
@@ -108,7 +111,7 @@ export class TransactionCacheService {
 
     try {
       return await prisma.transactionCache.delete({
-        where: { rawTextHash: hash }
+        where: { rawTextHash: hash },
       });
     } catch (error: any) {
       if (error.code === 'P2025') {
@@ -135,8 +138,8 @@ export class TransactionCacheService {
    * @returns upsert된 캐시 데이터
    */
   async upsert(
-    hash: string, 
-    createData: CreateTransactionCacheData, 
+    hash: string,
+    createData: CreateTransactionCacheData,
     updateData: UpdateTransactionCacheData
   ): Promise<TransactionCache> {
     this.validateHash(hash);
@@ -147,9 +150,9 @@ export class TransactionCacheService {
       create: {
         rawTextHash: createData.rawTextHash,
         rawText: createData.rawText,
-        uniqueKey: createData.uniqueKey
+        uniqueKey: createData.uniqueKey,
       },
-      update: updateData
+      update: updateData,
     });
   }
 
@@ -162,7 +165,7 @@ export class TransactionCacheService {
     // 키를 해시로 변환
     const crypto = require('crypto');
     const hash = crypto.createHash('sha256').update(key).digest('hex');
-    
+
     const cached = await this.findByHash(hash);
     if (cached) {
       try {
@@ -183,18 +186,19 @@ export class TransactionCacheService {
   async set(key: string, value: any, ttl?: number): Promise<void> {
     const crypto = require('crypto');
     const hash = crypto.createHash('sha256').update(key).digest('hex');
-    
-    const serializedValue = typeof value === 'string' ? value : JSON.stringify(value);
-    
+
+    const serializedValue =
+      typeof value === 'string' ? value : JSON.stringify(value);
+
     await this.upsert(
       hash,
       {
         rawTextHash: hash,
         rawText: key,
-        uniqueKey: serializedValue
+        uniqueKey: serializedValue,
       },
       {
-        uniqueKey: serializedValue
+        uniqueKey: serializedValue,
       }
     );
   }
@@ -237,12 +241,20 @@ export class TransactionCacheService {
    * @throws 잘못된 데이터인 경우 에러
    */
   private validateCreateData(data: CreateTransactionCacheData): void {
-    if (!data.rawText || typeof data.rawText !== 'string' || data.rawText.trim() === '') {
+    if (
+      !data.rawText ||
+      typeof data.rawText !== 'string' ||
+      data.rawText.trim() === ''
+    ) {
       throw new Error('rawText는 비어있을 수 없습니다');
     }
 
-    if (!data.uniqueKey || typeof data.uniqueKey !== 'string' || data.uniqueKey.trim() === '') {
+    if (
+      !data.uniqueKey ||
+      typeof data.uniqueKey !== 'string' ||
+      data.uniqueKey.trim() === ''
+    ) {
       throw new Error('uniqueKey는 비어있을 수 없습니다');
     }
   }
-} 
+}

@@ -383,6 +383,7 @@ class TransactionCacheService {
     let clearedCount = 0;
     
     for (const key of keys) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const ttl = await this.redis.ttl(key);
       if (ttl === -1) { // expired
         await this.redis.del(key);

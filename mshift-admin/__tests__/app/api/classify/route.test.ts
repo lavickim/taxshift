@@ -39,6 +39,8 @@ describe('/api/classify', () => {
 
       transactionClassifier.classify.mockResolvedValue(mockClassification);
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
       const request = new NextRequest('http://localhost:3000/api/classify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -75,6 +77,8 @@ describe('/api/classify', () => {
 
       transactionClassifier.classifyBatch.mockResolvedValue(mockBatchClassifications);
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
       const request = new NextRequest('http://localhost:3000/api/classify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -105,6 +109,7 @@ describe('/api/classify', () => {
     });
 
     it('should validate request payload', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const request = new NextRequest('http://localhost:3000/api/classify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -124,6 +129,7 @@ describe('/api/classify', () => {
     });
 
     it('should handle empty description gracefully', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const request = new NextRequest('http://localhost:3000/api/classify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -142,6 +148,8 @@ describe('/api/classify', () => {
 
     it('should handle classification service errors', async () => {
       transactionClassifier.classify.mockRejectedValue(new Error('Service unavailable'));
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
       const request = new NextRequest('http://localhost:3000/api/classify', {
         method: 'POST',
@@ -175,6 +183,8 @@ describe('/api/classify', () => {
         new Promise(resolve => setTimeout(() => resolve(mockClassification), 100))
       );
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
       const request = new NextRequest('http://localhost:3000/api/classify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -192,6 +202,7 @@ describe('/api/classify', () => {
     });
 
     it('should handle malformed JSON request', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const request = new NextRequest('http://localhost:3000/api/classify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -213,6 +224,8 @@ describe('/api/classify', () => {
       };
 
       transactionClassifier.classify.mockResolvedValue(lowConfidenceClassification);
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
       const request = new NextRequest('http://localhost:3000/api/classify', {
         method: 'POST',
@@ -239,6 +252,8 @@ describe('/api/classify', () => {
         confidence: 95,
         layer: 'REGEX'
       });
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
       const request = new NextRequest('http://localhost:3000/api/classify', {
         method: 'POST',
@@ -270,6 +285,8 @@ describe('/api/classify', () => {
         amount: 10000 + i
       }));
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
       const request = new NextRequest('http://localhost:3000/api/classify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -294,6 +311,8 @@ describe('/api/classify', () => {
         confidence: 85,
         layer: 'REGEX'
       });
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
       const request = new NextRequest('http://localhost:3000/api/classify', {
         method: 'POST',
@@ -325,6 +344,8 @@ describe('/api/classify', () => {
       });
 
       const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
       const request = new NextRequest('http://localhost:3000/api/classify', {
         method: 'POST',

@@ -1,7 +1,7 @@
-import { transactionClassifier } from '../../../lib/services/transaction-classifier';
-import { TransactionCacheService } from '../../../lib/services/transaction-cache';
 import { LLMInferenceService } from '../../../lib/services/llm-inference';
 import { MLInferenceService } from '../../../lib/services/ml-inference';
+import { TransactionCacheService } from '../../../lib/services/transaction-cache';
+import { transactionClassifier } from '../../../lib/services/transaction-classifier';
 
 // Mock dependencies
 jest.mock('../../../lib/services/transaction-cache');
@@ -10,18 +10,24 @@ jest.mock('../../../lib/services/ml-inference');
 jest.mock('../../../lib/db/client', () => ({
   prisma: {
     regexRules: {
-      findMany: jest.fn()
+      findMany: jest.fn(),
     },
     transactions: {
       create: jest.fn(),
-      findUnique: jest.fn()
-    }
-  }
+      findUnique: jest.fn(),
+    },
+  },
 }));
 
-const mockCacheService = TransactionCacheService as jest.Mocked<typeof TransactionCacheService>;
-const mockLLMService = LLMInferenceService as jest.Mocked<typeof LLMInferenceService>;
-const mockMLService = MLInferenceService as jest.Mocked<typeof MLInferenceService>;
+const mockCacheService = TransactionCacheService as jest.Mocked<
+  typeof TransactionCacheService
+>;
+const mockLLMService = LLMInferenceService as jest.Mocked<
+  typeof LLMInferenceService
+>;
+const mockMLService = MLInferenceService as jest.Mocked<
+  typeof MLInferenceService
+>;
 
 describe('TransactionClassifier', () => {
   beforeEach(() => {
@@ -33,7 +39,7 @@ describe('TransactionClassifier', () => {
       id: 'tx-test-001',
       description: 'GS25 편의점 결제',
       amount: 15000,
-      date: '2025-07-22'
+      date: '2025-07-22',
     };
 
     it('should return cached result from Layer 0 (Redis)', async () => {
@@ -41,28 +47,34 @@ describe('TransactionClassifier', () => {
         businessType: '편의점',
         confidence: 98,
         layer: 'CACHE' as const,
-        tags: ['convenience_store', 'gs25']
+        tags: ['convenience_store', 'gs25'],
       };
 
-      mockCacheService.getCachedClassification = jest.fn().mockResolvedValue(cachedResult);
+      mockCacheService.getCachedClassification = jest
+        .fn()
+        .mockResolvedValue(cachedResult);
 
       const result = await transactionClassifier.classify(mockTransaction);
 
       expect(result).toEqual(cachedResult);
-      expect(mockCacheService.getCachedClassification).toHaveBeenCalledWith(mockTransaction.description);
+      expect(mockCacheService.getCachedClassification).toHaveBeenCalledWith(
+        mockTransaction.description
+      );
       // 다른 layer는 호출되지 않아야 함
       expect(mockLLMService.infer).not.toHaveBeenCalled();
     });
 
     it('should fallback to Layer 1 (Regex) when cache miss', async () => {
-      mockCacheService.getCachedClassification = jest.fn().mockResolvedValue(null);
-      
+      mockCacheService.getCachedClassification = jest
+        .fn()
+        .mockResolvedValue(null);
+
       const regexResult = {
         businessType: '편의점',
         confidence: 95,
         layer: 'REGEX' as const,
         tags: ['convenience_store'],
-        ruleId: 'rule-convenience-001'
+        ruleId: 'rule-convenience-001',
       };
 
       // Mock regex rule matching
@@ -72,8 +84,8 @@ describe('TransactionClassifier', () => {
           id: 'rule-convenience-001',
           pattern: 'GS25|편의점|CU|이마트24',
           businessType: '편의점',
-          confidence: 95
-        }
+          confidence: 95,
+        },
       ]);
 
       const result = await transactionClassifier.classify(mockTransaction);
@@ -84,8 +96,10 @@ describe('TransactionClassifier', () => {
     });
 
     it('should fallback to Layer 2 (ML) when regex fails', async () => {
-      mockCacheService.getCachedClassification = jest.fn().mockResolvedValue(null);
-      
+      mockCacheService.getCachedClassification = jest
+        .fn()
+        .mockResolvedValue(null);
+
       const { prisma } = require('../../../lib/db/client');
       prisma.regexRules.findMany.mockResolvedValue([]);
 
@@ -93,7 +107,7 @@ describe('TransactionClassifier', () => {
         businessType: '음식점',
         confidence: 87,
         layer: 'ML' as const,
-        tags: ['restaurant', 'korean_food']
+        tags: ['restaurant', 'korean_food'],
       };
 
       mockMLService.infer = jest.fn().mockResolvedValue(mlResult);
@@ -105,18 +119,20 @@ describe('TransactionClassifier', () => {
     });
 
     it('should fallback to Layer 3 (LLM) as final resort', async () => {
-      mockCacheService.getCachedClassification = jest.fn().mockResolvedValue(null);
-      
+      mockCacheService.getCachedClassification = jest
+        .fn()
+        .mockResolvedValue(null);
+
       const { prisma } = require('../../../lib/db/client');
       prisma.regexRules.findMany.mockResolvedValue([]);
-      
+
       mockMLService.infer = jest.fn().mockResolvedValue(null);
-      
+
       const llmResult = {
         businessType: '주유소',
         confidence: 82,
         layer: 'LLM' as const,
-        tags: ['gas_station', 'fuel']
+        tags: ['gas_station', 'fuel'],
       };
 
       mockLLMService.infer = jest.fn().mockResolvedValue(llmResult);
@@ -128,14 +144,16 @@ describe('TransactionClassifier', () => {
     });
 
     it('should cache successful classification results', async () => {
-      mockCacheService.getCachedClassification = jest.fn().mockResolvedValue(null);
+      mockCacheService.getCachedClassification = jest
+        .fn()
+        .mockResolvedValue(null);
       mockCacheService.setCachedClassification = jest.fn();
 
       const regexResult = {
         businessType: '편의점',
         confidence: 95,
         layer: 'REGEX' as const,
-        tags: ['convenience_store']
+        tags: ['convenience_store'],
       };
 
       const { prisma } = require('../../../lib/db/client');
@@ -144,8 +162,8 @@ describe('TransactionClassifier', () => {
           id: 'rule-convenience-001',
           pattern: 'GS25',
           businessType: '편의점',
-          confidence: 95
-        }
+          confidence: 95,
+        },
       ]);
 
       await transactionClassifier.classify(mockTransaction);
@@ -154,7 +172,7 @@ describe('TransactionClassifier', () => {
         mockTransaction.description,
         expect.objectContaining({
           businessType: '편의점',
-          confidence: 95
+          confidence: 95,
         })
       );
     });
@@ -166,18 +184,22 @@ describe('TransactionClassifier', () => {
         businessType: '기타',
         confidence: 45, // 낮은 신뢰도
         layer: 'LLM' as const,
-        tags: ['unknown']
+        tags: ['unknown'],
       };
 
-      mockCacheService.getCachedClassification = jest.fn().mockResolvedValue(null);
+      mockCacheService.getCachedClassification = jest
+        .fn()
+        .mockResolvedValue(null);
       mockCacheService.setCachedClassification = jest.fn();
-      
+
       const { prisma } = require('../../../lib/db/client');
       prisma.regexRules.findMany.mockResolvedValue([]);
       mockMLService.infer = jest.fn().mockResolvedValue(null);
       mockLLMService.infer = jest.fn().mockResolvedValue(lowConfidenceResult);
 
-      await transactionClassifier.classify({ description: 'Unknown transaction' });
+      await transactionClassifier.classify({
+        description: 'Unknown transaction',
+      });
 
       // 낮은 신뢰도는 캐싱하지 않아야 함
       expect(mockCacheService.setCachedClassification).not.toHaveBeenCalled();
@@ -187,12 +209,17 @@ describe('TransactionClassifier', () => {
       const transactions = [
         { description: 'GS25 편의점', amount: 15000 },
         { description: 'McDonald 햄버거', amount: 25000 },
-        { description: 'Shell 주유소', amount: 80000 }
+        { description: 'Shell 주유소', amount: 80000 },
       ];
 
-      mockCacheService.getCachedClassification = jest.fn()
+      mockCacheService.getCachedClassification = jest
+        .fn()
         .mockResolvedValueOnce(null) // GS25 - cache miss
-        .mockResolvedValueOnce({ businessType: '음식점', confidence: 96, layer: 'CACHE' }) // McDonald - cache hit
+        .mockResolvedValueOnce({
+          businessType: '음식점',
+          confidence: 96,
+          layer: 'CACHE',
+        }) // McDonald - cache hit
         .mockResolvedValueOnce(null); // Shell - cache miss
 
       const results = await transactionClassifier.classifyBatch(transactions);
@@ -205,11 +232,14 @@ describe('TransactionClassifier', () => {
 
   describe('error handling', () => {
     it('should handle service failures gracefully', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const errorTransaction = {
-        description: 'Error test transaction'
+        description: 'Error test transaction',
       };
 
-      mockCacheService.getCachedClassification = jest.fn().mockRejectedValue(new Error('Cache service error'));
+      mockCacheService.getCachedClassification = jest
+        .fn()
+        .mockRejectedValue(new Error('Cache service error'));
 
       // 에러가 발생해도 분류는 계속 진행되어야 함
       const { prisma } = require('../../../lib/db/client');
@@ -218,7 +248,7 @@ describe('TransactionClassifier', () => {
       mockLLMService.infer = jest.fn().mockResolvedValue({
         businessType: '기타',
         confidence: 60,
-        layer: 'LLM'
+        layer: 'LLM',
       });
 
       const result = await transactionClassifier.classify(errorTransaction);
@@ -228,15 +258,19 @@ describe('TransactionClassifier', () => {
     });
 
     it('should return fallback classification when all layers fail', async () => {
-      mockCacheService.getCachedClassification = jest.fn().mockRejectedValue(new Error('Cache error'));
-      
+      mockCacheService.getCachedClassification = jest
+        .fn()
+        .mockRejectedValue(new Error('Cache error'));
+
       const { prisma } = require('../../../lib/db/client');
       prisma.regexRules.findMany.mockRejectedValue(new Error('DB error'));
       mockMLService.infer = jest.fn().mockRejectedValue(new Error('ML error'));
-      mockLLMService.infer = jest.fn().mockRejectedValue(new Error('LLM error'));
+      mockLLMService.infer = jest
+        .fn()
+        .mockRejectedValue(new Error('LLM error'));
 
       const result = await transactionClassifier.classify({
-        description: 'Failing transaction'
+        description: 'Failing transaction',
       });
 
       expect(result).toEqual({
@@ -244,7 +278,7 @@ describe('TransactionClassifier', () => {
         confidence: 0,
         layer: 'FALLBACK',
         tags: ['unclassified'],
-        error: 'All classification layers failed'
+        error: 'All classification layers failed',
       });
     });
   });
@@ -255,38 +289,43 @@ describe('TransactionClassifier', () => {
       { description: 'SK주유소 서초', expected: '주유소' },
       { description: '현대카센터', expected: '카센터' },
       { description: '쿠팡이츠 배달', expected: '음식배달' },
-      { description: '네이버페이', expected: '온라인결제' }
+      { description: '네이버페이', expected: '온라인결제' },
     ];
 
-    it.each(koreanBusinessCases)('should classify Korean business: $description -> $expected', async ({ description, expected }) => {
-      mockCacheService.getCachedClassification = jest.fn().mockResolvedValue(null);
-      
-      const { prisma } = require('../../../lib/db/client');
-      prisma.regexRules.findMany.mockResolvedValue([
-        {
-          pattern: getPatternForBusinessType(expected),
-          businessType: expected,
-          confidence: 95
-        }
-      ]);
+    it.each(koreanBusinessCases)(
+      'should classify Korean business: $description -> $expected',
+      async ({ description, expected }) => {
+        mockCacheService.getCachedClassification = jest
+          .fn()
+          .mockResolvedValue(null);
 
-      const result = await transactionClassifier.classify({ description });
-      
-      expect(result.businessType).toBe(expected);
-      expect(result.confidence).toBeGreaterThanOrEqual(90);
-    });
+        const { prisma } = require('../../../lib/db/client');
+        prisma.regexRules.findMany.mockResolvedValue([
+          {
+            pattern: getPatternForBusinessType(expected),
+            businessType: expected,
+            confidence: 95,
+          },
+        ]);
+
+        const result = await transactionClassifier.classify({ description });
+
+        expect(result.businessType).toBe(expected);
+        expect(result.confidence).toBeGreaterThanOrEqual(90);
+      }
+    );
   });
 });
 
 // Helper function for Korean business pattern matching
 function getPatternForBusinessType(businessType: string): string {
   const patterns: { [key: string]: string } = {
-    '편의점': 'GS25|CU|이마트24|세븐일레븐|편의점',
-    '주유소': 'SK|GS|현대오일뱅크|S-OIL|주유소',
-    '카센터': '카센터|정비소|타이어|오토',
-    '음식배달': '배달|쿠팡이츠|배민|요기요',
-    '온라인결제': '페이|온라인|인터넷'
+    편의점: 'GS25|CU|이마트24|세븐일레븐|편의점',
+    주유소: 'SK|GS|현대오일뱅크|S-OIL|주유소',
+    카센터: '카센터|정비소|타이어|오토',
+    음식배달: '배달|쿠팡이츠|배민|요기요',
+    온라인결제: '페이|온라인|인터넷',
   };
-  
+
   return patterns[businessType] || '.*';
 }

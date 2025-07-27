@@ -7,7 +7,7 @@ const KEYWORD_CLASSIFY_API = 'http://localhost:8080/v2/keyword-system/classify';
 
 async function verifyClassificationAccuracy() {
   console.log('🔍 성공 케이스의 분류 정확성 검증 시작...');
-  
+
   try {
     // 기대 태그가 명확한 브랜드들을 선택
     const verificationBrands = await prisma.franchiseBrands.findMany({
@@ -15,20 +15,20 @@ async function verifyClassificationAccuracy() {
         AND: [
           {
             generatedTransactionString: {
-              not: null
-            }
+              not: null,
+            },
           },
           {
             primaryTag: {
-              not: '기타'
-            }
+              not: '기타',
+            },
           },
           {
             primaryTag: {
-              not: null
-            }
-          }
-        ]
+              not: null,
+            },
+          },
+        ],
       },
       select: {
         id: true,
@@ -40,16 +40,16 @@ async function verifyClassificationAccuracy() {
         generatedTransactionString: true,
         primaryTag: true,
         secondaryTag: true,
-        tertiaryTag: true
+        tertiaryTag: true,
       },
       orderBy: {
-        id: 'asc'
+        id: 'asc',
       },
-      take: 500 // 검증용 샘플
+      take: 500, // 검증용 샘플
     });
 
     console.log(`📊 검증 대상: ${verificationBrands.length}개 브랜드`);
-    
+
     // 태그별 매핑 테이블 조회 (정확한 분류 검증을 위해)
     const tagMappings = await prisma.tagsMaster.findMany({
       where: { isActive: true },
@@ -57,8 +57,8 @@ async function verifyClassificationAccuracy() {
         id: true,
         tagName: true,
         tagCategory: true,
-        description: true
-      }
+        description: true,
+      },
     });
 
     // 태그 ID -> 태그명 매핑
@@ -81,10 +81,12 @@ async function verifyClassificationAccuracy() {
       const batch = verificationBrands.slice(i, i + batchSize);
       const batchNum = Math.floor(i / batchSize) + 1;
       const totalBatches = Math.ceil(verificationBrands.length / batchSize);
-      
-      console.log(`🔄 배치 ${batchNum}/${totalBatches} 검증 중... (${batch.length}개)`);
-      
-      const batchPromises = batch.map(async (brand) => {
+
+      console.log(
+        `🔄 배치 ${batchNum}/${totalBatches} 검증 중... (${batch.length}개)`
+      );
+
+      const batchPromises = batch.map(async brand => {
         try {
           const response = await fetch(KEYWORD_CLASSIFY_API, {
             method: 'POST',
@@ -93,8 +95,8 @@ async function verifyClassificationAccuracy() {
             },
             body: JSON.stringify({
               description: brand.generatedTransactionString,
-              amount: 10000
-            })
+              amount: 10000,
+            }),
           });
 
           if (!response.ok) {
@@ -102,15 +104,16 @@ async function verifyClassificationAccuracy() {
           }
 
           const result = await response.json();
-          
+
           // 태그 정확성 검증
-          const actualTagName = tagIdToName[result.tag] || result.tag || 'UNKNOWN';
+          const actualTagName =
+            tagIdToName[result.tag] || result.tag || 'UNKNOWN';
           const expectedTag = brand.primaryTag;
-          
+
           // 태그 정확성 판단 로직
           let isCorrect = false;
           let classificationStatus = 'INCORRECT';
-          
+
           if (actualTagName === expectedTag) {
             // 정확히 일치
             isCorrect = true;
@@ -126,14 +129,16 @@ async function verifyClassificationAccuracy() {
               ['이미용', '뷰티'],
               ['스포츠시설', '스포츠'],
               ['편의점', '마트'],
-              ['디저트전문점', '디저트']
+              ['디저트전문점', '디저트'],
             ];
-            
+
             for (const [tag1, tag2] of similarityPairs) {
-              if ((actualTagName.includes(tag1) && expectedTag.includes(tag2)) ||
-                  (actualTagName.includes(tag2) && expectedTag.includes(tag1)) ||
-                  (actualTagName === tag1 && expectedTag === tag2) ||
-                  (actualTagName === tag2 && expectedTag === tag1)) {
+              if (
+                (actualTagName.includes(tag1) && expectedTag.includes(tag2)) ||
+                (actualTagName.includes(tag2) && expectedTag.includes(tag1)) ||
+                (actualTagName === tag1 && expectedTag === tag2) ||
+                (actualTagName === tag2 && expectedTag === tag1)
+              ) {
                 isCorrect = true;
                 classificationStatus = 'SIMILAR_MATCH';
                 break;
@@ -154,11 +159,10 @@ async function verifyClassificationAccuracy() {
             extractedKeywords: result.extractedKeywords || [],
             processingPath: result.processingPath || '',
             isCorrectClassification: isCorrect,
-            classificationStatus: classificationStatus
+            classificationStatus: classificationStatus,
           };
 
           return testResult;
-          
         } catch (error) {
           return {
             brandId: brand.id,
@@ -174,49 +178,72 @@ async function verifyClassificationAccuracy() {
             processingPath: 'ERROR',
             error: error.message,
             isCorrectClassification: false,
-            classificationStatus: 'ERROR'
+            classificationStatus: 'ERROR',
           };
         }
       });
 
       const batchResults = await Promise.all(batchPromises);
       results.push(...batchResults);
-      
+
       // 누적 통계
-      const batchCorrect = batchResults.filter(r => r.isCorrectClassification).length;
+      const batchCorrect = batchResults.filter(
+        r => r.isCorrectClassification
+      ).length;
       correctClassifications += batchCorrect;
-      incorrectClassifications += (batchResults.length - batchCorrect);
-      
-      const currentAccuracy = (correctClassifications / results.length * 100).toFixed(2);
-      console.log(`   📈 현재까지 정확 분류율: ${currentAccuracy}% (${correctClassifications}/${results.length})`);
-      
+      incorrectClassifications += batchResults.length - batchCorrect;
+
+      const currentAccuracy = (
+        (correctClassifications / results.length) *
+        100
+      ).toFixed(2);
+      console.log(
+        `   📈 현재까지 정확 분류율: ${currentAccuracy}% (${correctClassifications}/${results.length})`
+      );
+
       // 배치 간 대기
       await new Promise(resolve => setTimeout(resolve, 100));
     }
 
     // 최종 결과 분석
     const totalClassified = results.filter(r => r.matched).length;
-    const accurateClassifications = results.filter(r => r.isCorrectClassification).length;
-    const finalAccuracy = (accurateClassifications / results.length * 100).toFixed(2);
-    const classificationAccuracy = totalClassified > 0 ? (accurateClassifications / totalClassified * 100).toFixed(2) : 0;
-    
+    const accurateClassifications = results.filter(
+      r => r.isCorrectClassification
+    ).length;
+    const finalAccuracy = (
+      (accurateClassifications / results.length) *
+      100
+    ).toFixed(2);
+    const classificationAccuracy =
+      totalClassified > 0
+        ? ((accurateClassifications / totalClassified) * 100).toFixed(2)
+        : 0;
+
     console.log(`\n🎉 분류 정확성 검증 완료!`);
     console.log(`📊 최종 결과:`);
     console.log(`   총 테스트: ${results.length}개`);
     console.log(`   매칭 성공: ${totalClassified}개`);
     console.log(`   정확한 분류: ${accurateClassifications}개`);
-    console.log(`   잘못된 분류: ${results.length - accurateClassifications}개`);
+    console.log(
+      `   잘못된 분류: ${results.length - accurateClassifications}개`
+    );
     console.log(`   전체 정확도: ${finalAccuracy}%`);
     console.log(`   분류 정확도 (매칭된 것 중): ${classificationAccuracy}%`);
 
     // 잘못 분류된 케이스 분석
-    const incorrectCases = results.filter(r => r.matched && !r.isCorrectClassification);
-    console.log(`\n❌ 잘못 분류된 케이스 분석 (총 ${incorrectCases.length}개):`);
-    
+    const incorrectCases = results.filter(
+      r => r.matched && !r.isCorrectClassification
+    );
+    console.log(
+      `\n❌ 잘못 분류된 케이스 분석 (총 ${incorrectCases.length}개):`
+    );
+
     if (incorrectCases.length > 0) {
       console.log(`\n잘못 분류된 브랜드 (상위 20개):`);
       incorrectCases.slice(0, 20).forEach((incorrect, index) => {
-        console.log(`${index + 1}. ${incorrect.brandName} (${incorrect.industryCategory})`);
+        console.log(
+          `${index + 1}. ${incorrect.brandName} (${incorrect.industryCategory})`
+        );
         console.log(`   거래문자열: "${incorrect.generatedString}"`);
         console.log(`   기대태그: ${incorrect.expectedTag}`);
         console.log(`   실제태그: ${incorrect.actualTag}`);
@@ -229,7 +256,8 @@ async function verifyClassificationAccuracy() {
       const misclassificationPatterns = {};
       for (const incorrect of incorrectCases) {
         const pattern = `${incorrect.expectedTag} → ${incorrect.actualTag}`;
-        misclassificationPatterns[pattern] = (misclassificationPatterns[pattern] || 0) + 1;
+        misclassificationPatterns[pattern] =
+          (misclassificationPatterns[pattern] || 0) + 1;
       }
 
       console.log(`잘못된 분류 패턴 (상위 10개):`);
@@ -244,16 +272,22 @@ async function verifyClassificationAccuracy() {
       const industryMisclassifications = {};
       for (const incorrect of incorrectCases) {
         const industry = incorrect.industryCategory || '기타';
-        industryMisclassifications[industry] = (industryMisclassifications[industry] || 0) + 1;
+        industryMisclassifications[industry] =
+          (industryMisclassifications[industry] || 0) + 1;
       }
 
       console.log(`\n산업별 잘못된 분류:`);
       Object.entries(industryMisclassifications)
         .sort((a, b) => b[1] - a[1])
         .forEach(([industry, count]) => {
-          const industryTotal = results.filter(r => r.industryCategory === industry).length;
-          const errorRate = (count / industryTotal * 100).toFixed(1);
-          console.log(`   ${industry}: ${count}개 오분류 (오분류율 ${errorRate}%)`);
+          const industryTotal = results.filter(
+            r => r.industryCategory === industry
+          ).length;
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const errorRate = ((count / industryTotal) * 100).toFixed(1);
+          console.log(
+            `   ${industry}: ${count}개 오분류 (오분류율 ${errorRate}%)`
+          );
         });
     }
 
@@ -261,7 +295,9 @@ async function verifyClassificationAccuracy() {
     const correctCases = results.filter(r => r.isCorrectClassification);
     console.log(`\n✅ 정확한 분류 예시 (상위 10개):`);
     correctCases.slice(0, 10).forEach((correct, index) => {
-      console.log(`${index + 1}. ${correct.brandName} → ${correct.actualTag} (${correct.classificationStatus})`);
+      console.log(
+        `${index + 1}. ${correct.brandName} → ${correct.actualTag} (${correct.classificationStatus})`
+      );
     });
 
     // 개선 권장사항
@@ -289,9 +325,8 @@ async function verifyClassificationAccuracy() {
       overallAccuracy: parseFloat(finalAccuracy),
       classificationAccuracy: parseFloat(classificationAccuracy),
       incorrectCases: incorrectCases.slice(0, 50),
-      isHighQuality: parseFloat(finalAccuracy) >= 95
+      isHighQuality: parseFloat(finalAccuracy) >= 95,
     };
-
   } catch (error) {
     console.error('❌ 분류 정확성 검증 중 오류:', error);
     throw error;
@@ -303,7 +338,7 @@ async function verifyClassificationAccuracy() {
 // 실행
 if (require.main === module) {
   verifyClassificationAccuracy()
-    .then((result) => {
+    .then(result => {
       console.log('\n✅ 분류 정확성 검증 완료');
       if (result.isHighQuality) {
         console.log('🎊 고품질 분류 시스템!');
@@ -312,7 +347,7 @@ if (require.main === module) {
       }
       process.exit(0);
     })
-    .catch((error) => {
+    .catch(error => {
       console.error('❌ 분류 정확성 검증 실패:', error);
       process.exit(1);
     });

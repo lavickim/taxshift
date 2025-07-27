@@ -12,9 +12,9 @@ export async function GET() {
       dailyStats: [
         { date: '2024-01-01', accuracy: 0.85, processed: 1200 },
         { date: '2024-01-02', accuracy: 0.88, processed: 1350 },
-        { date: '2024-01-03', accuracy: 0.86, processed: 1100 }
-      ]
-    }
+        { date: '2024-01-03', accuracy: 0.86, processed: 1100 },
+      ],
+    },
   };
 
   return NextResponse.json(mockAnalytics);

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+    <!-- 테스트 클래스들 제외 -->
+    <Match>
+        <Class name="~.*Test.*"/>
+    </Match>
+    
+    <!-- Lombok 생성 메서드들 제외 -->
+    <Match>
+        <Class name="~.*\$Builder"/>
+    </Match>
+    
+    <!-- 설정 클래스들의 일반적인 패턴 제외 -->
+    <Match>
+        <Class name="~.*Config.*"/>
+        <Bug pattern="UWF_UNWRITTEN_FIELD"/>
+    </Match>
+    
+    <!-- Spring Boot 자동 생성 코드 제외 -->
+    <Match>
+        <Class name="~.*Application"/>
+        <Bug pattern="UWF_UNWRITTEN_FIELD"/>
+    </Match>
+    
+    <!-- MyBatis 매퍼 인터페이스 제외 -->
+    <Match>
+        <Class name="~.*Mapper"/>
+    </Match>
+</FindBugsFilter>

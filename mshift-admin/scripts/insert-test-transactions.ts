@@ -7,6 +7,7 @@ async function insertTestTransactions() {
 
   try {
     // 테스트 거래 데이터 생성
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const testTransactions = [
       {
         id: 1,
@@ -18,7 +19,7 @@ async function insertTestTransactions() {
         finalDebitAccount: null,
         finalCreditAccount: null,
         transactionType: 'EXPENSE',
-        status: 'PROCESSED'
+        status: 'PROCESSED',
       },
       {
         id: 2,
@@ -30,7 +31,7 @@ async function insertTestTransactions() {
         finalDebitAccount: null,
         finalCreditAccount: null,
         transactionType: 'EXPENSE',
-        status: 'PROCESSED'
+        status: 'PROCESSED',
       },
       {
         id: 3,
@@ -42,7 +43,7 @@ async function insertTestTransactions() {
         finalDebitAccount: null,
         finalCreditAccount: null,
         transactionType: 'EXPENSE',
-        status: 'PROCESSED'
+        status: 'PROCESSED',
       },
       {
         id: 4,
@@ -54,7 +55,7 @@ async function insertTestTransactions() {
         finalDebitAccount: null,
         finalCreditAccount: null,
         transactionType: 'EXPENSE',
-        status: 'PROCESSED'
+        status: 'PROCESSED',
       },
       {
         id: 5,
@@ -66,7 +67,7 @@ async function insertTestTransactions() {
         finalDebitAccount: null,
         finalCreditAccount: null,
         transactionType: 'INCOME',
-        status: 'PROCESSED'
+        status: 'PROCESSED',
       },
       {
         id: 6,
@@ -78,7 +79,7 @@ async function insertTestTransactions() {
         finalDebitAccount: null,
         finalCreditAccount: null,
         transactionType: 'EXPENSE',
-        status: 'PROCESSED'
+        status: 'PROCESSED',
       },
       {
         id: 7,
@@ -90,7 +91,7 @@ async function insertTestTransactions() {
         finalDebitAccount: null,
         finalCreditAccount: null,
         transactionType: 'EXPENSE',
-        status: 'PROCESSED'
+        status: 'PROCESSED',
       },
       {
         id: 8,
@@ -102,15 +103,15 @@ async function insertTestTransactions() {
         finalDebitAccount: null,
         finalCreditAccount: null,
         transactionType: 'EXPENSE',
-        status: 'PROCESSED'
-      }
+        status: 'PROCESSED',
+      },
     ];
 
     // 기존 데이터 삭제 (ID 충돌 방지)
     await prisma.transaction.deleteMany({
       where: {
-        id: { in: testTransactions.map(t => t.id) }
-      }
+        id: { in: testTransactions.map(t => t.id) },
+      },
     });
 
     // 새 데이터 삽입
@@ -128,25 +129,28 @@ async function insertTestTransactions() {
           transactionType: transaction.transactionType,
           status: transaction.status as any,
           createdAt: new Date(),
-          updatedAt: new Date()
-        }
+          updatedAt: new Date(),
+        },
       });
     }
 
-    console.log(`✅ ${testTransactions.length}개의 테스트 거래 데이터가 성공적으로 생성되었습니다.`);
+    console.log(
+      `✅ ${testTransactions.length}개의 테스트 거래 데이터가 성공적으로 생성되었습니다.`
+    );
 
     // 생성된 데이터 확인
     const count = await prisma.transaction.count({
-      where: { companyId: 'COMP001' }
+      where: { companyId: 'COMP001' },
     });
     console.log(`📊 COMP001 회사의 총 거래 수: ${count}개`);
 
     // 각 거래별 요약 출력
     console.log('\n📝 생성된 거래 요약:');
     for (const transaction of testTransactions) {
-      console.log(`ID ${transaction.id}: ${transaction.finalSuggestedTag} - ${transaction.amount.toLocaleString()}원 (${transaction.transactionType})`);
+      console.log(
+        `ID ${transaction.id}: ${transaction.finalSuggestedTag} - ${transaction.amount.toLocaleString()}원 (${transaction.transactionType})`
+      );
     }
-
   } catch (error) {
     console.error('❌ 테스트 거래 데이터 생성 실패:', error);
     throw error;
@@ -162,7 +166,7 @@ if (require.main === module) {
       console.log('🎉 테스트 거래 데이터 생성 완료!');
       process.exit(0);
     })
-    .catch((error) => {
+    .catch(error => {
       console.error('💥 스크립트 실행 실패:', error);
       process.exit(1);
     });

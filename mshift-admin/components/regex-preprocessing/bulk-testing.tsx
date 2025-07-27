@@ -1,16 +1,31 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { Progress } from "@/components/ui/progress";
-import { 
-  TestTube2, Upload, Play, Download, BarChart3, 
-  CheckCircle, AlertCircle, Clock, Zap 
-} from "lucide-react";
+
+import {
+  AlertCircle,
+  BarChart3,
+  CheckCircle,
+  Clock,
+  Download,
+  Play,
+  TestTube2,
+  // Upload,
+  // Zap,
+} from 'lucide-react';
+
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
+import { Separator } from '@/components/ui/separator';
+import { Textarea } from '@/components/ui/textarea';
 
 interface BulkTestResult {
   totalTests: number;
@@ -86,7 +101,7 @@ CLAUDE.AI SUBSCRIPTION SAN FRANCISCO USA
 
     try {
       const lines = testInput.split('\n').filter(line => line.trim());
-      
+
       if (lines.length === 0) {
         alert('유효한 테스트 데이터가 없습니다.');
         return;
@@ -96,13 +111,13 @@ CLAUDE.AI SUBSCRIPTION SAN FRANCISCO USA
       const response = await fetch('/api/regex-preprocessing/preprocess', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ texts: lines })
+        body: JSON.stringify({ texts: lines }),
       });
 
       const result = await response.json();
-      
+
       if (result.success) {
         // 결과를 BulkTestResult 형식으로 변환
         const bulkResult: BulkTestResult = {
@@ -119,10 +134,10 @@ CLAUDE.AI SUBSCRIPTION SAN FRANCISCO USA
             cacheHitRate: 0,
             dailyProcessingCount: 0,
             errorRate: 100 - result.data.summary.successRate,
-            topCategories: []
-          }
+            topCategories: [],
+          },
         };
-        
+
         setTestResults(bulkResult);
         setProgress(100);
       } else {
@@ -141,16 +156,25 @@ CLAUDE.AI SUBSCRIPTION SAN FRANCISCO USA
     if (!testResults) return;
 
     const csv = [
-      ['원본 텍스트', '정규화된 텍스트', '적용된 규칙', '처리 시간(ms)', '성공 여부', '오류 메시지'],
+      [
+        '원본 텍스트',
+        '정규화된 텍스트',
+        '적용된 규칙',
+        '처리 시간(ms)',
+        '성공 여부',
+        '오류 메시지',
+      ],
       ...testResults.results.map(result => [
         result.originalText,
         result.normalizedText,
         result.appliedRuleName || '없음',
         result.processingTimeMs.toString(),
         result.success ? '성공' : '실패',
-        result.errorMessage || ''
-      ])
-    ].map(row => row.join(',')).join('\n');
+        result.errorMessage || '',
+      ]),
+    ]
+      .map(row => row.join(','))
+      .join('\n');
 
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
@@ -159,51 +183,56 @@ CLAUDE.AI SUBSCRIPTION SAN FRANCISCO USA
     link.click();
   };
 
-  const successRate = testResults ? (testResults.successCount / testResults.totalTests) * 100 : 0;
+  const successRate = testResults
+    ? (testResults.successCount / testResults.totalTests) * 100
+    : 0;
 
   return (
-    <div className="space-y-6">
+    <div className='space-y-6'>
       {/* 테스트 입력 */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <TestTube2 className="h-5 w-5" />
+          <CardTitle className='flex items-center gap-2'>
+            <TestTube2 className='h-5 w-5' />
             대량 테스트 및 성능 분석
           </CardTitle>
           <CardDescription>
             여러 거래 문자열을 한 번에 테스트하고 성능을 분석합니다.
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className='space-y-4'>
           <div>
-            <div className="flex items-center justify-between mb-2">
-              <label className="text-sm font-medium">테스트 데이터 (한 줄에 하나씩)</label>
-              <Button variant="outline" size="sm" onClick={loadSampleData}>
+            <div className='mb-2 flex items-center justify-between'>
+              <label className='text-sm font-medium'>
+                테스트 데이터 (한 줄에 하나씩)
+              </label>
+              <Button variant='outline' size='sm' onClick={loadSampleData}>
                 샘플 데이터 로드
               </Button>
             </div>
             <Textarea
               value={testInput}
-              onChange={(e) => setTestInput(e.target.value)}
-              placeholder="테스트할 거래 문자열들을 한 줄에 하나씩 입력하세요..."
+              onChange={e => setTestInput(e.target.value)}
+              placeholder='테스트할 거래 문자열들을 한 줄에 하나씩 입력하세요...'
               rows={10}
-              className="font-mono text-sm"
+              className='font-mono text-sm'
             />
-            <p className="text-xs text-gray-500 mt-1">
-              총 {testInput.split('\n').filter(line => line.trim()).length}개 테스트 케이스
+            <p className='mt-1 text-xs text-gray-500'>
+              총 {testInput.split('\n').filter(line => line.trim()).length}개
+              테스트 케이스
             </p>
           </div>
 
-          <div className="flex gap-2">
-            <Button 
-              onClick={runBulkTest} 
+          <div className='flex gap-2'>
+            <Button
+              onClick={runBulkTest}
               disabled={isRunning}
-              className="flex-1"
+              className='flex-1'
             >
               {isRunning ? (
-                <Clock className="h-4 w-4 mr-2 animate-spin" />
+                <Clock className='mr-2 h-4 w-4 animate-spin' />
               ) : (
-                <Play className="h-4 w-4 mr-2" />
+                <Play className='mr-2 h-4 w-4' />
               )}
               {isRunning ? '테스트 실행 중...' : '대량 테스트 실행'}
             </Button>
@@ -211,9 +240,9 @@ CLAUDE.AI SUBSCRIPTION SAN FRANCISCO USA
 
           {/* 진행 상황 */}
           {isRunning && (
-            <div className="space-y-2">
-              <Progress value={progress} className="w-full" />
-              <div className="text-sm text-gray-600 text-center">
+            <div className='space-y-2'>
+              <Progress value={progress} className='w-full' />
+              <div className='text-center text-sm text-gray-600'>
                 {currentTest && `현재 처리 중: ${currentTest}`}
               </div>
             </div>
@@ -227,56 +256,62 @@ CLAUDE.AI SUBSCRIPTION SAN FRANCISCO USA
           {/* 요약 통계 */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <BarChart3 className="h-5 w-5" />
+              <CardTitle className='flex items-center justify-between'>
+                <div className='flex items-center gap-2'>
+                  <BarChart3 className='h-5 w-5' />
                   테스트 결과 요약
                 </div>
-                <Button variant="outline" size="sm" onClick={exportResults}>
-                  <Download className="h-4 w-4 mr-2" />
+                <Button variant='outline' size='sm' onClick={exportResults}>
+                  <Download className='mr-2 h-4 w-4' />
                   CSV 다운로드
                 </Button>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="text-center p-4 border rounded-lg">
-                  <div className="text-2xl font-bold text-blue-600">
+              <div className='grid grid-cols-2 gap-4 md:grid-cols-4'>
+                <div className='rounded-lg border p-4 text-center'>
+                  <div className='text-2xl font-bold text-blue-600'>
                     {testResults.totalTests}
                   </div>
-                  <div className="text-sm text-gray-600">총 테스트</div>
+                  <div className='text-sm text-gray-600'>총 테스트</div>
                 </div>
-                <div className="text-center p-4 border rounded-lg">
-                  <div className="text-2xl font-bold text-green-600">
+                <div className='rounded-lg border p-4 text-center'>
+                  <div className='text-2xl font-bold text-green-600'>
                     {testResults.successCount}
                   </div>
-                  <div className="text-sm text-gray-600">성공</div>
+                  <div className='text-sm text-gray-600'>성공</div>
                 </div>
-                <div className="text-center p-4 border rounded-lg">
-                  <div className="text-2xl font-bold text-red-600">
+                <div className='rounded-lg border p-4 text-center'>
+                  <div className='text-2xl font-bold text-red-600'>
                     {testResults.failureCount}
                   </div>
-                  <div className="text-sm text-gray-600">실패</div>
+                  <div className='text-sm text-gray-600'>실패</div>
                 </div>
-                <div className="text-center p-4 border rounded-lg">
-                  <div className="text-2xl font-bold text-purple-600">
+                <div className='rounded-lg border p-4 text-center'>
+                  <div className='text-2xl font-bold text-purple-600'>
                     {testResults.averageProcessingTime.toFixed(1)}ms
                   </div>
-                  <div className="text-sm text-gray-600">평균 처리시간</div>
+                  <div className='text-sm text-gray-600'>평균 처리시간</div>
                 </div>
               </div>
 
-              <Separator className="my-4" />
+              <Separator className='my-4' />
 
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium">전체 성공률:</span>
-                  <Badge variant={successRate >= 80 ? "default" : "destructive"}>
+              <div className='flex items-center justify-between'>
+                <div className='flex items-center gap-2'>
+                  <span className='text-sm font-medium'>전체 성공률:</span>
+                  <Badge
+                    variant={successRate >= 80 ? 'default' : 'destructive'}
+                  >
                     {successRate.toFixed(1)}%
                   </Badge>
                 </div>
-                <div className="text-sm text-gray-600">
-                  총 처리시간: {testResults.results.reduce((sum, r) => sum + r.processingTimeMs, 0).toFixed(0)}ms
+                <div className='text-sm text-gray-600'>
+                  총 처리시간:{' '}
+                  {testResults.results
+                    .reduce((sum, r) => sum + r.processingTimeMs, 0)
+                    .toFixed(0)}
+                  ms
                 </div>
               </div>
             </CardContent>
@@ -288,54 +323,63 @@ CLAUDE.AI SUBSCRIPTION SAN FRANCISCO USA
               <CardTitle>상세 테스트 결과</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-2">
+              <div className='space-y-2'>
                 {testResults.results.map((result, index) => (
                   <div
                     key={index}
-                    className={`p-3 border rounded-lg ${
-                      result.success ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'
+                    className={`rounded-lg border p-3 ${
+                      result.success
+                        ? 'border-green-200 bg-green-50'
+                        : 'border-red-200 bg-red-50'
                     }`}
                   >
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
+                    <div className='mb-2 flex items-center justify-between'>
+                      <div className='flex items-center gap-2'>
                         {result.success ? (
-                          <CheckCircle className="h-4 w-4 text-green-600" />
+                          <CheckCircle className='h-4 w-4 text-green-600' />
                         ) : (
-                          <AlertCircle className="h-4 w-4 text-red-600" />
+                          <AlertCircle className='h-4 w-4 text-red-600' />
                         )}
-                        <span className="font-mono text-sm font-medium">
+                        <span className='font-mono text-sm font-medium'>
                           {result.originalText}
                         </span>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className='flex items-center gap-2'>
                         {result.appliedRuleName && (
-                          <Badge variant="outline" className="text-xs">
+                          <Badge variant='outline' className='text-xs'>
                             {result.appliedRuleName}
                           </Badge>
                         )}
-                        <Badge variant="outline" className="text-xs">
+                        <Badge variant='outline' className='text-xs'>
                           {result.processingTimeMs}ms
                         </Badge>
                       </div>
                     </div>
 
-                    <div className="text-sm">
+                    <div className='text-sm'>
                       {result.success ? (
-                        <div className="space-y-1">
+                        <div className='space-y-1'>
                           <div>
-                            <span className="text-gray-600">정규화 결과:</span>
-                            <span className="font-mono ml-2 text-green-700">
+                            <span className='text-gray-600'>정규화 결과:</span>
+                            <span className='ml-2 font-mono text-green-700'>
                               {result.normalizedText}
                             </span>
                           </div>
-                          {result.extractedMetadata && Object.keys(result.extractedMetadata).length > 0 && (
-                            <div className="text-xs text-gray-500">
-                              메타데이터: {JSON.stringify(result.extractedMetadata, null, 0)}
-                            </div>
-                          )}
+                          {result.extractedMetadata &&
+                            Object.keys(result.extractedMetadata).length >
+                              0 && (
+                              <div className='text-xs text-gray-500'>
+                                메타데이터:{' '}
+                                {JSON.stringify(
+                                  result.extractedMetadata,
+                                  null,
+                                  0
+                                )}
+                              </div>
+                            )}
                         </div>
                       ) : (
-                        <div className="text-red-600">
+                        <div className='text-red-600'>
                           오류: {result.errorMessage}
                         </div>
                       )}

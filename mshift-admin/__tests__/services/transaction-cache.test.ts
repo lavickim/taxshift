@@ -17,11 +17,11 @@ describe('TransactionCache 테이블 CRUD 테스트', () => {
       const testData = {
         rawTextHash: 'a'.repeat(64), // 64자리 해시
         rawText: '박광업 (대림카센터)',
-        uniqueKey: '카센터_대림카센터_박광업'
+        uniqueKey: '카센터_대림카센터_박광업',
       };
 
       const created = await prisma.transactionCache.create({
-        data: testData
+        data: testData,
       });
 
       expect(created.rawTextHash).toBe(testData.rawTextHash);
@@ -34,7 +34,7 @@ describe('TransactionCache 테이블 CRUD 테스트', () => {
       const testData = {
         rawTextHash: 'b'.repeat(64),
         rawText: '지에스25이천하이',
-        uniqueKey: '편의점_GS25_이천하이'
+        uniqueKey: '편의점_GS25_이천하이',
       };
 
       // 첫 번째 생성
@@ -55,22 +55,22 @@ describe('TransactionCache 테이블 CRUD 테스트', () => {
           {
             rawTextHash: 'c'.repeat(64),
             rawText: '세븐일레븐 충주기업',
-            uniqueKey: '편의점_세븐일레븐_충주기업'
+            uniqueKey: '편의점_세븐일레븐_충주기업',
           },
           {
             rawTextHash: 'd'.repeat(64),
             rawText: '(주)부자 충주(상)주',
-            uniqueKey: '주유소_부자주유소_충주'
-          }
-        ]
+            uniqueKey: '주유소_부자주유소_충주',
+          },
+        ],
       });
     });
 
     it('해시로 단일 캐시 데이터를 조회할 수 있어야 함', async () => {
       const hash = 'c'.repeat(64);
-      
+
       const found = await prisma.transactionCache.findUnique({
-        where: { rawTextHash: hash }
+        where: { rawTextHash: hash },
       });
 
       expect(found).not.toBeNull();
@@ -81,9 +81,9 @@ describe('TransactionCache 테이블 CRUD 테스트', () => {
 
     it('존재하지 않는 해시 조회 시 null을 반환해야 함', async () => {
       const nonExistentHash = 'z'.repeat(64);
-      
+
       const found = await prisma.transactionCache.findUnique({
-        where: { rawTextHash: nonExistentHash }
+        where: { rawTextHash: nonExistentHash },
       });
 
       expect(found).toBeNull();
@@ -91,7 +91,7 @@ describe('TransactionCache 테이블 CRUD 테스트', () => {
 
     it('모든 캐시 데이터를 조회할 수 있어야 함', async () => {
       const allCaches = await prisma.transactionCache.findMany({
-        orderBy: { createdAt: 'asc' }
+        orderBy: { createdAt: 'asc' },
       });
 
       expect(allCaches).toHaveLength(2);
@@ -111,8 +111,8 @@ describe('TransactionCache 테이블 CRUD 테스트', () => {
         data: {
           rawTextHash: 'e'.repeat(64),
           rawText: '구글페이먼트코리아',
-          uniqueKey: '온라인서비스_구글_결제'
-        }
+          uniqueKey: '온라인서비스_구글_결제',
+        },
       });
     });
 
@@ -122,7 +122,7 @@ describe('TransactionCache 테이블 CRUD 테스트', () => {
 
       const updated = await prisma.transactionCache.update({
         where: { rawTextHash: hash },
-        data: { uniqueKey: newUniqueKey }
+        data: { uniqueKey: newUniqueKey },
       });
 
       expect(updated.uniqueKey).toBe(newUniqueKey);
@@ -135,7 +135,7 @@ describe('TransactionCache 테이블 CRUD 테스트', () => {
       await expect(
         prisma.transactionCache.update({
           where: { rawTextHash: nonExistentHash },
-          data: { uniqueKey: '새로운키' }
+          data: { uniqueKey: '새로운키' },
         })
       ).rejects.toThrow();
     });
@@ -148,14 +148,14 @@ describe('TransactionCache 테이블 CRUD 테스트', () => {
           {
             rawTextHash: 'f'.repeat(64),
             rawText: '건강보험료',
-            uniqueKey: '복리후생비_건강보험_회사부담분'
+            uniqueKey: '복리후생비_건강보험_회사부담분',
           },
           {
             rawTextHash: 'g'.repeat(64),
             rawText: 'DNH*GODADDY#32131232131123',
-            uniqueKey: '온라인서비스_GoDaddy_도메인'
-          }
-        ]
+            uniqueKey: '온라인서비스_GoDaddy_도메인',
+          },
+        ],
       });
     });
 
@@ -163,14 +163,14 @@ describe('TransactionCache 테이블 CRUD 테스트', () => {
       const hashToDelete = 'f'.repeat(64);
 
       const deleted = await prisma.transactionCache.delete({
-        where: { rawTextHash: hashToDelete }
+        where: { rawTextHash: hashToDelete },
       });
 
       expect(deleted.rawTextHash).toBe(hashToDelete);
 
       // 삭제 확인
       const found = await prisma.transactionCache.findUnique({
-        where: { rawTextHash: hashToDelete }
+        where: { rawTextHash: hashToDelete },
       });
       expect(found).toBeNull();
 
@@ -184,14 +184,14 @@ describe('TransactionCache 테이블 CRUD 테스트', () => {
 
       await expect(
         prisma.transactionCache.delete({
-          where: { rawTextHash: nonExistentHash }
+          where: { rawTextHash: nonExistentHash },
         })
       ).rejects.toThrow();
     });
 
     it('모든 캐시 데이터를 삭제할 수 있어야 함', async () => {
       const deleteResult = await prisma.transactionCache.deleteMany({});
-      
+
       expect(deleteResult.count).toBe(2);
 
       // 삭제 확인
@@ -206,13 +206,13 @@ describe('TransactionCache 테이블 CRUD 테스트', () => {
       const testData = {
         rawTextHash: hash,
         rawText: '김용훈',
-        uniqueKey: '개인_김용훈_급여'
+        uniqueKey: '개인_김용훈_급여',
       };
 
       const upserted = await prisma.transactionCache.upsert({
         where: { rawTextHash: hash },
         create: testData,
-        update: { uniqueKey: '업데이트된키' }
+        update: { uniqueKey: '업데이트된키' },
       });
 
       expect(upserted.rawTextHash).toBe(hash);
@@ -222,14 +222,14 @@ describe('TransactionCache 테이블 CRUD 테스트', () => {
 
     it('이미 존재하는 데이터는 업데이트해야 함', async () => {
       const hash = 'i'.repeat(64);
-      
+
       // 먼저 데이터 생성
       await prisma.transactionCache.create({
         data: {
           rawTextHash: hash,
           rawText: '체크입금',
-          uniqueKey: '입금_체크카드_미분류'
-        }
+          uniqueKey: '입금_체크카드_미분류',
+        },
       });
 
       // upsert로 업데이트
@@ -238,9 +238,9 @@ describe('TransactionCache 테이블 CRUD 테스트', () => {
         create: {
           rawTextHash: hash,
           rawText: '새로운텍스트',
-          uniqueKey: '새로운키'
+          uniqueKey: '새로운키',
         },
-        update: { uniqueKey: '입금_체크카드_확인됨' }
+        update: { uniqueKey: '입금_체크카드_확인됨' },
       });
 
       expect(upserted.rawTextHash).toBe(hash);
@@ -255,7 +255,7 @@ describe('TransactionCache 테이블 CRUD 테스트', () => {
       const testData = Array.from({ length: 1000 }, (_, i) => ({
         rawTextHash: i.toString().padStart(64, '0'),
         rawText: `테스트거래${i}`,
-        uniqueKey: `테스트키${i}`
+        uniqueKey: `테스트키${i}`,
       }));
 
       await prisma.transactionCache.createMany({ data: testData });
@@ -263,15 +263,15 @@ describe('TransactionCache 테이블 CRUD 테스트', () => {
       // 조회 성능 측정
       const startTime = Date.now();
       const found = await prisma.transactionCache.findUnique({
-        where: { rawTextHash: '0'.repeat(59) + '00500' }
+        where: { rawTextHash: '0'.repeat(59) + '00500' },
       });
       const endTime = Date.now();
 
       expect(found).not.toBeNull();
       expect(found?.uniqueKey).toBe('테스트키500');
-      
+
       // 조회 시간이 100ms 미만이어야 함 (인덱스 성능 검증)
       expect(endTime - startTime).toBeLessThan(100);
     });
   });
-}); 
+});

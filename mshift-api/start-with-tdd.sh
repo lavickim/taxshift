@@ -112,12 +112,28 @@ echo
 
 # 5. 정적 분석 및 체크섬 검증
 print_section "🔍 정적 코드 분석"
-if command -v spotbugs >/dev/null 2>&1; then
-    print_progress "SpotBugs 분석 중..."
-    mvn spotbugs:check -q || print_warning "SpotBugs 경고가 있습니다."
-    print_success "정적 분석 완료"
+print_progress "SpotBugs Maven 플러그인 실행 중..."
+
+# SpotBugs Maven 플러그인 실행
+SPOTBUGS_OUTPUT=$(mvn com.github.spotbugs:spotbugs-maven-plugin:check -q 2>&1)
+SPOTBUGS_RESULT=$?
+
+if [ $SPOTBUGS_RESULT -eq 0 ]; then
+    print_success "SpotBugs 분석 완료 - 심각한 문제 없음 ✨"
 else
-    print_info "SpotBugs가 설치되지 않음 (건너뜀)"
+    # SpotBugs 결과 분석
+    ERROR_COUNT=$(echo "$SPOTBUGS_OUTPUT" | grep -c "ERROR:" || echo "0")
+    WARNING_COUNT=$(echo "$SPOTBUGS_OUTPUT" | grep -c "WARNING:" || echo "0")
+    
+    if [ "$ERROR_COUNT" -gt 0 ]; then
+        print_warning "SpotBugs에서 $ERROR_COUNT개의 문제를 발견했습니다"
+        print_info "주요 문제들 (상위 5개):"
+        echo "$SPOTBUGS_OUTPUT" | grep "ERROR:" | head -5 | sed 's/^/      /' | cut -c 1-120
+    else
+        print_success "SpotBugs 분석 완료 - 경미한 경고만 있음"
+    fi
+    
+    print_info "전체 SpotBugs 보고서: mvn spotbugs:gui"
 fi
 echo
 

@@ -1,17 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const JAVA_API_BASE_URL = process.env.JAVA_API_BASE_URL || 'http://localhost:8080';
+const JAVA_API_BASE_URL =
+  process.env.JAVA_API_BASE_URL || 'http://localhost:8080/mshift-api';
 
 export async function GET(request: NextRequest) {
   try {
     console.log('GET /api/v2/test/sample-cases - 샘플 테스트 케이스 조회');
-    
-    const response = await fetch(`${JAVA_API_BASE_URL}/api/v2/test/sample-cases`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+
+    const response = await fetch(
+      `${JAVA_API_BASE_URL}/api/v2/test/sample-cases`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -24,7 +28,7 @@ export async function GET(request: NextRequest) {
 
     const data = await response.json();
     console.log('샘플 테스트 케이스 조회 성공:', data.length, '개');
-    
+
     return NextResponse.json(data);
   } catch (error) {
     console.error('샘플 테스트 케이스 조회 실패:', error);

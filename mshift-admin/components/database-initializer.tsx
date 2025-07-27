@@ -2,7 +2,11 @@
 
 import { useEffect, useState } from 'react';
 
-export function DatabaseInitializer({ children }: { children: React.ReactNode }) {
+export function DatabaseInitializer({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [isInitialized, setIsInitialized] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -32,10 +36,10 @@ export function DatabaseInitializer({ children }: { children: React.ReactNode })
 
   if (!isInitialized) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-sm text-gray-600">Initializing database...</p>
+      <div className='flex min-h-screen items-center justify-center'>
+        <div className='text-center'>
+          <div className='mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600'></div>
+          <p className='text-sm text-gray-600'>Initializing database...</p>
         </div>
       </div>
     );
@@ -43,12 +47,14 @@ export function DatabaseInitializer({ children }: { children: React.ReactNode })
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center p-6 max-w-md">
-          <div className="text-red-500 mb-4">⚠️</div>
-          <h2 className="text-lg font-semibold mb-2">Database Connection Error</h2>
-          <p className="text-sm text-gray-600 mb-4">{error}</p>
-          <p className="text-xs text-gray-500">
+      <div className='flex min-h-screen items-center justify-center'>
+        <div className='max-w-md p-6 text-center'>
+          <div className='mb-4 text-red-500'>⚠️</div>
+          <h2 className='mb-2 text-lg font-semibold'>
+            Database Connection Error
+          </h2>
+          <p className='mb-4 text-sm text-gray-600'>{error}</p>
+          <p className='text-xs text-gray-500'>
             Check your database configuration and try refreshing the page.
           </p>
         </div>
@@ -57,4 +63,4 @@ export function DatabaseInitializer({ children }: { children: React.ReactNode })
   }
 
   return <>{children}</>;
-} 
+}

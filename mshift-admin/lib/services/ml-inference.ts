@@ -35,7 +35,9 @@ export class MLInferenceService {
    * @param request ML 추론 요청
    * @returns ML 추론 결과
    */
-  public async inferCategory(request: MLInferenceRequest): Promise<MLInferenceResponse> {
+  public async inferCategory(
+    request: MLInferenceRequest
+  ): Promise<MLInferenceResponse> {
     try {
       // 더미 구현: 항상 매치되지 않음으로 반환하여 LLM으로 넘어가도록 함
       return {
@@ -47,13 +49,13 @@ export class MLInferenceService {
           predictedName: null,
           description: 'ML 모델이 아직 구현되지 않음 (더미 응답)',
           originalText: request.originalText,
-          source: 'ml'
-        }
+          source: 'ml',
+        },
       };
     } catch (error) {
       return {
         success: false,
-        error: `ML 추론 오류: ${error instanceof Error ? error.message : '알 수 없는 오류'}`
+        error: `ML 추론 오류: ${error instanceof Error ? error.message : '알 수 없는 오류'}`,
       };
     }
   }
@@ -78,7 +80,7 @@ export class MLInferenceService {
       lastInferenceTime: null,
       totalInferences: 0,
       accuracy: 0.0,
-      status: 'not_implemented'
+      status: 'not_implemented',
     };
   }
-} 
+}
