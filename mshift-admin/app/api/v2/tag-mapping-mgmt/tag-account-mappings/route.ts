@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     );
 
     const response = await fetch(
-      `${JAVA_API_BASE_URL}/v2/tag-account-mappings`,
+      `${JAVA_API_BASE_URL}/v2/tag-mapping-mgmt/tag-account-mappings`,
       {
         method: 'GET',
         headers: {
@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
     }
 
     const response = await fetch(
-      `${JAVA_API_BASE_URL}/v2/tag-account-mappings`,
+      `${JAVA_API_BASE_URL}/v2/tag-mapping-mgmt/tag-account-mappings`,
       {
         method: 'POST',
         headers: {

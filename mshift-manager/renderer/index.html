@@ -451,6 +451,9 @@
 
     <!-- 플로팅 컨트롤 버튼들 -->
     <div class="header-controls">
+        <button class="control-btn" onclick="openAdminInBrowser()" id="adminBtn" title="어드민 패널 열기 (Chrome)">
+            🌐
+        </button>
         <button class="control-btn" onclick="toggleAlwaysOnTop()" id="pinBtn" title="Always on Top">
             📌
         </button>
@@ -655,6 +658,15 @@
             } else {
                 pinBtn.classList.remove('active')
                 pinBtn.title = 'Always on Top: OFF'
+            }
+        }
+
+        async function openAdminInBrowser() {
+            try {
+                await window.electronAPI.openAdminPanel()
+                addLog('info', '어드민 패널을 브라우저에서 열었습니다')
+            } catch (error) {
+                addLog('error', `어드민 패널 열기 실패: ${error.message}`)
             }
         }
 

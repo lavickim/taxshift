@@ -27,6 +27,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
   toggleAlwaysOnTop: () => ipcRenderer.invoke('toggle-always-on-top'),
   getAlwaysOnTop: () => ipcRenderer.invoke('get-always-on-top'),
   
+  // 어드민 패널 열기
+  openAdminPanel: () => ipcRenderer.invoke('open-admin-panel'),
+  
   // 이벤트 리스너
   onServicesStatusUpdate: (callback) => {
     ipcRenderer.on('services-status-update', (event, services) => {

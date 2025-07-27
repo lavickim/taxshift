@@ -43,7 +43,7 @@ function createWindow() {
     },
     titleBarStyle: 'hiddenInset', // macOS 기본 타이틀바 스타일
     title: 'MoneyShift Manager', // 윈도우 타이틀
-    icon: path.join(__dirname, '../assets/icon.png'),
+    icon: path.join(__dirname, '../assets/money-icon.png'),
     show: false // 준비될 때까지 숨김
   })
 
@@ -373,7 +373,7 @@ function showServiceStatus() {
 function showNotification(title, body) {
   new Notification(title, {
     body: body,
-    icon: path.join(__dirname, '../assets/icon.png')
+    icon: path.join(__dirname, '../assets/money-icon.png')
   })
 }
 
@@ -466,6 +466,10 @@ ipcMain.handle('toggle-always-on-top', () => {
 
 ipcMain.handle('get-always-on-top', () => {
   return store.get('alwaysOnTop', false)
+})
+
+ipcMain.handle('open-admin-panel', () => {
+  shell.openExternal('http://localhost:3000')
 })
 
 // 서비스 관리 함수들
