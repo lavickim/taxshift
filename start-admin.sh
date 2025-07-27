@@ -36,11 +36,15 @@ echo "💡 프로덕션 배포 전 다음 명령어로 체크하세요:"
 echo "   npx tsc --noEmit --skipLibCheck"
 echo "   yarn build"
 
-# 4. ESLint 체크 (경고만)
-echo "🔍 ESLint 체크 중..."
-if ! yarn lint --max-warnings 50; then
-    echo "⚠️ ESLint 경고가 많이 발견되었습니다."
-    echo "💡 자동 수정 시도: yarn lint --fix"
+# 4. 코드 포매팅만 실행
+echo "🎨 코드 포매팅 중..."
+echo "   - Prettier 코드 포매팅"
+echo "   - Import 정렬 및 정리"
+echo "   - Tailwind CSS 클래스 정렬"
+if [ -f "scripts/format-only.js" ]; then
+    node scripts/format-only.js || yarn format || true
+else
+    yarn format || true
 fi
 
 # 5. 테스트 건너뛰기 (개발 모드)

@@ -1,29 +1,21 @@
 import { PrismaClient } from '../generated/prisma';
-import { checkDatabaseUrl, logDatabaseInfo } from './connection';
-
-// DATABASE_URL 확인
-if (!checkDatabaseUrl()) {
-  throw new Error('DATABASE_URL이 환경 변수에 설정되지 않았습니다. .env 파일에 Supabase에서 제공하는 DATABASE_URL을 추가해주세요.');
-}
 
 declare global {
-  // eslint-disable-next-line no-var
   var prisma: PrismaClient | undefined;
 }
 
 // Prisma 클라이언트 인스턴스 생성 (중복 방지)
 let prisma: PrismaClient;
 
-if (globalThis.prisma) {
-  prisma = globalThis.prisma;
+if (process.env.NODE_ENV === 'production') {
+  prisma = new PrismaClient();
 } else {
-  prisma = new PrismaClient({
-    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
-  });
-  
-  if (process.env.NODE_ENV !== 'production') {
-    globalThis.prisma = prisma;
+  if (!global.prisma) {
+    global.prisma = new PrismaClient({
+      log: ['query', 'error', 'warn'],
+    });
   }
+  prisma = global.prisma;
 }
 
 export { prisma };
@@ -46,4 +38,4 @@ export async function testDatabaseConnection(): Promise<void> {
  */
 export async function disconnectDatabase(): Promise<void> {
   await prisma.$disconnect();
-} 
+}
