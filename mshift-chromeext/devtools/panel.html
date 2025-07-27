@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoneyShift DevTools Panel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #ffffff;
+            color: #333333;
+            font-size: 13px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: #f5f5f5;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .title {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+        }
+
+        .status-text {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .tabs {
+            background: #f9f9f9;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+        }
+
+        .tab {
+            padding: 8px 15px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            font-size: 12px;
+            color: #666;
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+            background: white;
+        }
+
+        .tab:hover {
+            background: #f0f0f0;
+        }
+
+        .content {
+            flex: 1;
+            overflow: auto;
+            padding: 15px;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 10px;
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .metric:last-child {
+            border-bottom: none;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .metric-value {
+            font-size: 12px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .request-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 12px;
+        }
+
+        .request-method {
+            width: 60px;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .request-url {
+            flex: 1;
+            color: #333;
+            margin: 0 10px;
+        }
+
+        .request-status {
+            width: 40px;
+            text-align: right;
+        }
+
+        .request-time {
+            width: 60px;
+            text-align: right;
+            color: #666;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .empty-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .filter-input {
+            flex: 1;
+            padding: 6px 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .filter-btn {
+            padding: 6px 12px;
+            border: 1px solid #e0e0e0;
+            background: white;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <div class="logo">M$</div>
+            <div class="title">MoneyShift DevTools</div>
+        </div>
+        <div class="status">
+            <div class="status-dot"></div>
+            <span class="status-text">연결됨</span>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <div class="tab active" data-tab="overview">개요</div>
+        <div class="tab" data-tab="network">네트워크</div>
+        <div class="tab" data-tab="performance">성능</div>
+        <div class="tab" data-tab="logs">로그</div>
+    </div>
+
+    <div class="content">
+        <!-- Overview Tab -->
+        <div class="tab-content" id="overview">
+            <div class="section">
+                <div class="section-title">시스템 상태</div>
+                <div class="card">
+                    <div class="metric">
+                        <span class="metric-label">Frontend (Admin)</span>
+                        <span class="metric-value" id="frontendStatus">확인 중...</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Backend (API)</span>
+                        <span class="metric-value" id="backendStatus">확인 중...</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Database</span>
+                        <span class="metric-value" id="databaseStatus">확인 중...</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Mobile Dev</span>
+                        <span class="metric-value" id="mobileStatus">확인 중...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">성능 메트릭</div>
+                <div class="card">
+                    <div class="metric">
+                        <span class="metric-label">총 요청 수</span>
+                        <span class="metric-value" id="totalRequests">0</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">평균 응답 시간</span>
+                        <span class="metric-value" id="avgResponseTime">0ms</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">오류율</span>
+                        <span class="metric-value" id="errorRate">0%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Network Tab -->
+        <div class="tab-content" id="network" style="display: none;">
+            <div class="filter-bar">
+                <input type="text" class="filter-input" placeholder="URL 필터링..." id="urlFilter">
+                <button class="filter-btn active" data-filter="all">전체</button>
+                <button class="filter-btn" data-filter="api">API</button>
+                <button class="filter-btn" data-filter="static">정적 파일</button>
+            </div>
+            
+            <div class="section">
+                <div class="section-title">네트워크 요청</div>
+                <div class="card">
+                    <div id="requestsList">
+                        <div class="empty-state">
+                            <div class="empty-icon">🌐</div>
+                            <div>네트워크 요청이 없습니다</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Tab -->
+        <div class="tab-content" id="performance" style="display: none;">
+            <div class="section">
+                <div class="section-title">페이지 성능</div>
+                <div class="card">
+                    <div class="empty-state">
+                        <div class="empty-icon">⚡</div>
+                        <div>성능 데이터를 수집 중입니다...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logs Tab -->
+        <div class="tab-content" id="logs" style="display: none;">
+            <div class="section">
+                <div class="section-title">로그 스트림</div>
+                <div class="card">
+                    <div class="empty-state">
+                        <div class="empty-icon">📄</div>
+                        <div>로그를 수집 중입니다...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="panel.js"></script>
+</body>
+</html>

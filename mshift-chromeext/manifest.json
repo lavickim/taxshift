@@ -1,0 +1,104 @@
+{
+  "manifest_version": 3,
+  "name": "MoneyShift Manager ✨",
+  "version": "1.0.0",
+  "description": "🚀 Beautiful MoneyShift AI Platform manager for developers. Control your services with style!",
+  
+  "icons": {
+    "16": "assets/icons/icon16.png",
+    "32": "assets/icons/icon32.png",
+    "48": "assets/icons/icon48.png",
+    "128": "assets/icons/icon128.png"
+  },
+  
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "MoneyShift Manager - 시스템 제어",
+    "default_icon": {
+      "16": "assets/icons/icon16.png",
+      "32": "assets/icons/icon32.png",
+      "48": "assets/icons/icon48.png",
+      "128": "assets/icons/icon128.png"
+    }
+  },
+  
+  "background": {
+    "service_worker": "background/service-worker.js"
+  },
+  
+  "content_scripts": [
+    {
+      "matches": [
+        "http://localhost:3000/*",
+        "http://localhost:8080/*",
+        "http://localhost:19002/*",
+        "https://*.moneyshift.com/*"
+      ],
+      "js": ["content/content.js"],
+      "css": ["content/content.css"],
+      "run_at": "document_end"
+    }
+  ],
+  
+  "devtools_page": "devtools/devtools.html",
+  
+  "options_page": "options/options.html",
+  
+  "permissions": [
+    "storage",
+    "activeTab",
+    "notifications",
+    "alarms"
+  ],
+  
+  "host_permissions": [
+    "http://localhost:*/*",
+    "https://*.moneyshift.com/*"
+  ],
+  
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "assets/icons/*.png",
+        "assets/animations/*.json",
+        "injected/moneyshift-detector.js"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline';"
+  },
+  
+  "externally_connectable": {
+    "matches": [
+      "http://localhost:*/*",
+      "https://*.moneyshift.com/*"
+    ]
+  },
+  
+  "commands": {
+    "start-all": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+S",
+        "mac": "Command+Shift+S"
+      },
+      "description": "⚡ 모든 서비스 시작"
+    },
+    "stop-all": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+T",
+        "mac": "Command+Shift+T"
+      },
+      "description": "🛑 모든 서비스 중지"
+    },
+    "toggle-popup": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+M",
+        "mac": "Command+Shift+M"
+      },
+      "description": "🎛️ MoneyShift 제어판 열기"
+    }
+  }
+}

@@ -1,0 +1,457 @@
+/**
+ * MoneyShift Manager - Content Script Styles
+ * 웹 페이지에 삽입되는 거래 감지 UI 스타일
+ */
+
+/* 거래 감지 하이라이트 */
+.moneyshift-detected {
+  background: rgba(102, 126, 234, 0.1) !important;
+  border: 1px solid rgba(102, 126, 234, 0.3) !important;
+  border-radius: 4px !important;
+  position: relative !important;
+  transition: all 0.3s ease !important;
+}
+
+.moneyshift-detected:hover {
+  background: rgba(102, 126, 234, 0.2) !important;
+  border-color: rgba(102, 126, 234, 0.5) !important;
+}
+
+/* MoneyShift 배지 */
+.moneyshift-badge {
+  position: absolute !important;
+  top: -8px !important;
+  right: -8px !important;
+  background: linear-gradient(45deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
+  padding: 2px 6px !important;
+  border-radius: 10px !important;
+  font-size: 10px !important;
+  font-weight: bold !important;
+  z-index: 10000 !important;
+  cursor: pointer !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  border: none !important;
+  text-decoration: none !important;
+  transition: transform 0.2s ease !important;
+}
+
+.moneyshift-badge:hover {
+  transform: scale(1.1) !important;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3) !important;
+}
+
+/* 거래 감지 팝업 */
+.moneyshift-popup {
+  position: fixed !important;
+  top: 20px !important;
+  right: 20px !important;
+  background: white !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 12px !important;
+  padding: 16px !important;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+  z-index: 10001 !important;
+  max-width: 350px !important;
+  min-width: 280px !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  font-size: 14px !important;
+  backdrop-filter: blur(10px) !important;
+  animation: slideInFromRight 0.3s ease-out !important;
+}
+
+.moneyshift-popup-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  margin-bottom: 12px !important;
+  padding-bottom: 8px !important;
+  border-bottom: 1px solid #f3f4f6 !important;
+}
+
+.moneyshift-popup-title {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  font-weight: 600 !important;
+  color: #374151 !important;
+  font-size: 14px !important;
+}
+
+.moneyshift-popup-logo {
+  width: 16px !important;
+  height: 16px !important;
+  border-radius: 3px !important;
+}
+
+.moneyshift-popup-close {
+  background: none !important;
+  border: none !important;
+  font-size: 18px !important;
+  cursor: pointer !important;
+  color: #9ca3af !important;
+  padding: 0 !important;
+  width: 20px !important;
+  height: 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 4px !important;
+  transition: all 0.2s ease !important;
+}
+
+.moneyshift-popup-close:hover {
+  background: #f3f4f6 !important;
+  color: #374151 !important;
+}
+
+.moneyshift-popup-content {
+  margin-bottom: 12px !important;
+}
+
+.moneyshift-popup-row {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: 6px !important;
+  font-size: 13px !important;
+}
+
+.moneyshift-popup-label {
+  color: #6b7280 !important;
+  font-weight: 500 !important;
+}
+
+.moneyshift-popup-value {
+  color: #374151 !important;
+  font-weight: 600 !important;
+}
+
+.moneyshift-popup-amount {
+  color: #dc2626 !important;
+  font-weight: 700 !important;
+}
+
+.moneyshift-popup-category {
+  color: #059669 !important;
+  font-weight: 600 !important;
+}
+
+.moneyshift-popup-confidence {
+  background: linear-gradient(45deg, #667eea, #764ba2) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  font-weight: 700 !important;
+}
+
+.moneyshift-popup-actions {
+  display: flex !important;
+  gap: 8px !important;
+}
+
+.moneyshift-popup-btn {
+  flex: 1 !important;
+  padding: 8px 12px !important;
+  border: none !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  transition: all 0.2s ease !important;
+  font-family: inherit !important;
+}
+
+.moneyshift-popup-btn-primary {
+  background: linear-gradient(45deg, #667eea, #764ba2) !important;
+  color: white !important;
+}
+
+.moneyshift-popup-btn-primary:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3) !important;
+}
+
+.moneyshift-popup-btn-secondary {
+  background: #f9fafb !important;
+  color: #374151 !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+.moneyshift-popup-btn-secondary:hover {
+  background: #f3f4f6 !important;
+}
+
+/* 개발자 도구 버튼 */
+.moneyshift-dev-tools {
+  position: fixed !important;
+  bottom: 20px !important;
+  right: 20px !important;
+  background: linear-gradient(45deg, #667eea, #764ba2) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 50% !important;
+  width: 56px !important;
+  height: 56px !important;
+  font-size: 24px !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3) !important;
+  z-index: 9999 !important;
+  transition: all 0.3s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.moneyshift-dev-tools:hover {
+  transform: scale(1.1) translateY(-2px) !important;
+  box-shadow: 0 8px 30px rgba(102, 126, 234, 0.4) !important;
+}
+
+.moneyshift-dev-tools:active {
+  transform: scale(0.95) !important;
+}
+
+/* MoneyShift 페이지 개선 */
+.moneyshift-page-enhanced {
+  position: relative !important;
+}
+
+.moneyshift-page-enhanced::before {
+  content: '' !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 4px !important;
+  background: linear-gradient(90deg, #667eea, #764ba2, #667eea) !important;
+  z-index: 10000 !important;
+  animation: gradientMove 3s ease-in-out infinite !important;
+}
+
+/* API 문서 개선 (Swagger UI) */
+.swagger-ui .topbar {
+  background: linear-gradient(45deg, #667eea, #764ba2) !important;
+}
+
+.swagger-ui .btn.authorize {
+  background: #764ba2 !important;
+  border-color: #764ba2 !important;
+}
+
+.swagger-ui .btn.authorize:hover {
+  background: #667eea !important;
+  border-color: #667eea !important;
+}
+
+/* 은행/카드사 사이트 개선 */
+.moneyshift-banking-enhanced .transaction-list {
+  position: relative !important;
+}
+
+.moneyshift-banking-enhanced .transaction-item {
+  transition: all 0.2s ease !important;
+}
+
+.moneyshift-banking-enhanced .transaction-item:hover {
+  background: rgba(102, 126, 234, 0.05) !important;
+}
+
+/* 쇼핑몰 사이트 개선 */
+.moneyshift-ecommerce-enhanced .order-summary {
+  position: relative !important;
+}
+
+.moneyshift-ecommerce-enhanced .payment-section {
+  border: 2px solid rgba(102, 126, 234, 0.2) !important;
+  border-radius: 8px !important;
+}
+
+/* 로딩 인디케이터 */
+.moneyshift-loading {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  padding: 8px 12px !important;
+  border-radius: 20px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  color: #667eea !important;
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 10002 !important;
+}
+
+.moneyshift-loading-spinner {
+  width: 16px !important;
+  height: 16px !important;
+  border: 2px solid #e5e7eb !important;
+  border-top: 2px solid #667eea !important;
+  border-radius: 50% !important;
+  animation: spin 1s linear infinite !important;
+}
+
+/* 성공 체크마크 애니메이션 */
+.moneyshift-success-check {
+  position: relative !important;
+  display: inline-block !important;
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.moneyshift-success-check::before {
+  content: '✓' !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  color: #059669 !important;
+  font-weight: bold !important;
+  animation: checkmark 0.5s ease-in-out !important;
+}
+
+/* 키보드 단축키 힌트 */
+.moneyshift-shortcut-hint {
+  position: fixed !important;
+  bottom: 60px !important;
+  right: 20px !important;
+  background: rgba(0, 0, 0, 0.8) !important;
+  color: white !important;
+  padding: 8px 12px !important;
+  border-radius: 6px !important;
+  font-size: 11px !important;
+  font-family: monospace !important;
+  opacity: 0 !important;
+  transform: translateY(10px) !important;
+  transition: all 0.3s ease !important;
+  z-index: 9998 !important;
+}
+
+.moneyshift-shortcut-hint.show {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+/* 애니메이션 */
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%) !important;
+    opacity: 0 !important;
+  }
+  to {
+    transform: translateX(0) !important;
+    opacity: 1 !important;
+  }
+}
+
+@keyframes gradientMove {
+  0%, 100% {
+    background-position: 0% 50% !important;
+  }
+  50% {
+    background-position: 100% 50% !important;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg) !important; }
+  100% { transform: rotate(360deg) !important; }
+}
+
+@keyframes checkmark {
+  0% {
+    transform: translate(-50%, -50%) scale(0) !important;
+    opacity: 0 !important;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2) !important;
+    opacity: 1 !important;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1) !important;
+    opacity: 1 !important;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1 !important;
+  }
+  50% {
+    opacity: 0.5 !important;
+  }
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .moneyshift-popup {
+    max-width: 280px !important;
+    right: 10px !important;
+    top: 10px !important;
+  }
+  
+  .moneyshift-dev-tools {
+    width: 48px !important;
+    height: 48px !important;
+    font-size: 20px !important;
+    bottom: 15px !important;
+    right: 15px !important;
+  }
+}
+
+/* 다크 모드 지원 */
+@media (prefers-color-scheme: dark) {
+  .moneyshift-popup {
+    background: #1f2937 !important;
+    border-color: #374151 !important;
+    color: #f9fafb !important;
+  }
+  
+  .moneyshift-popup-title {
+    color: #f9fafb !important;
+  }
+  
+  .moneyshift-popup-label {
+    color: #9ca3af !important;
+  }
+  
+  .moneyshift-popup-value {
+    color: #f3f4f6 !important;
+  }
+  
+  .moneyshift-popup-close {
+    color: #6b7280 !important;
+  }
+  
+  .moneyshift-popup-close:hover {
+    background: #374151 !important;
+    color: #f9fafb !important;
+  }
+  
+  .moneyshift-popup-btn-secondary {
+    background: #374151 !important;
+    color: #f9fafb !important;
+    border-color: #4b5563 !important;
+  }
+  
+  .moneyshift-popup-btn-secondary:hover {
+    background: #4b5563 !important;
+  }
+}
+
+/* 프린트 시 숨김 */
+@media print {
+  .moneyshift-detected,
+  .moneyshift-badge,
+  .moneyshift-popup,
+  .moneyshift-dev-tools,
+  .moneyshift-loading,
+  .moneyshift-shortcut-hint {
+    display: none !important;
+  }
+}
