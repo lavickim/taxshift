@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss} [TEST] - %msg%n"/>
+    
+    <!-- 콘솔 출력 설정 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+    
+    <!-- Spring Boot 로고/배너 완전 차단 -->
+    <logger name="org.springframework.boot.StartupInfoLogger" level="WARN"/>
+    <logger name="org.springframework.boot.SpringApplication" level="WARN"/>
+    <logger name="org.springframework.context.annotation" level="WARN"/>
+    <logger name="org.springframework.core.env" level="WARN"/>
+    <logger name="org.springframework.web" level="WARN"/>
+    <logger name="org.springframework.boot.autoconfigure" level="WARN"/>
+    <logger name="org.springframework.boot.actuate" level="WARN"/>
+    
+    <!-- MyBatis 관련 로그 차단 -->
+    <logger name="org.apache.ibatis" level="WARN"/>
+    <logger name="org.mybatis" level="WARN"/>
+    
+    <!-- 커넥션 풀 로그 차단 -->
+    <logger name="com.zaxxer.hikari" level="WARN"/>
+    <logger name="org.postgresql" level="WARN"/>
+    
+    <!-- 테스트 관련 로그 차단 -->
+    <logger name="org.springframework.test" level="WARN"/>
+    <logger name="org.springframework.boot.test" level="WARN"/>
+    
+    <!-- 우리 애플리케이션만 INFO 레벨 -->
+    <logger name="com.moneyshift.api" level="INFO"/>
+    
+    <!-- 전체 로그 레벨을 WARN으로 설정 -->
+    <root level="WARN">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>
