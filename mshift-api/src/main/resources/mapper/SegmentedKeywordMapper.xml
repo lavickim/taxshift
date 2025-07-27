@@ -205,4 +205,112 @@
             END
     </select>
 
+    <!-- ====== 키워드 매핑 관련 쿼리 ====== -->
+    
+    <!-- 국민연금 업종 데이터 조회 (키워드 추출용) -->
+    <select id="getPensionIndustryData" resultType="Map">
+        SELECT DISTINCT
+            industry_name,
+            member_count,
+            sido_code,
+            COUNT(*) as workplace_count
+        FROM datacollection_national_pension
+        WHERE industry_name IS NOT NULL 
+          AND industry_name != ''
+          AND industry_name != 'BIZ_NO미존재사업장'
+          AND industry_name != '해당없음'
+        GROUP BY industry_name, member_count, sido_code
+        HAVING COUNT(*) >= 2  -- 최소 2개 이상의 사업장이 있는 업종만
+        ORDER BY workplace_count DESC, member_count DESC
+        LIMIT 50000  -- 처리 성능을 위해 상위 5만건으로 제한
+    </select>
+    
+    <!-- 키워드 매핑 데이터 배치 삽입 -->
+    <insert id="insertKeywordMappingsBatch">
+        INSERT INTO keyword_tag_mappings 
+        (keyword, tag_id, confidence_score, extraction_method, metadata, created_at, updated_at)
+        VALUES
+        <foreach collection="mappings" item="item" separator=",">
+        (
+            #{item.keyword},
+            (SELECT id FROM tags_master WHERE tag_name = #{item.tag_name} LIMIT 1),
+            #{item.confidence},
+            #{item.extraction_method},
+            JSON_BUILD_OBJECT(
+                'segment_type', #{item.segment_type},
+                'segment_value', #{item.segment_value},
+                'industry_name', #{item.industry_name},
+                'member_count', #{item.member_count}
+            ),
+            NOW(),
+            NOW()
+        )
+        </foreach>
+        ON CONFLICT (keyword, tag_id) 
+        DO UPDATE SET 
+            confidence_score = GREATEST(keyword_tag_mappings.confidence_score, EXCLUDED.confidence_score),
+            updated_at = NOW()
+    </insert>
+    
+    <!-- 태그-계정과목 매핑 데이터 배치 삽입 -->
+    <insert id="insertTagAccountMappingsBatch">
+        INSERT INTO tag_account_mappings 
+        (tag_id, account_code, account_name, mapping_condition, is_default, priority, confidence_boost, created_at)
+        VALUES
+        <foreach collection="mappings" item="item" separator=",">
+        (
+            (SELECT id FROM tags_master WHERE tag_name = #{item.tag_name} LIMIT 1),
+            #{item.account_code},
+            (SELECT account_name FROM chart_of_accounts WHERE account_code = #{item.account_code} LIMIT 1),
+            JSON_BUILD_OBJECT(
+                'source', #{item.mapping_source},
+                'confidence', #{item.confidence}
+            ),
+            false,
+            5,
+            0.10,
+            NOW()
+        )
+        </foreach>
+        ON CONFLICT (tag_id, account_code) 
+        DO UPDATE SET 
+            confidence_boost = GREATEST(tag_account_mappings.confidence_boost, 0.10),
+            updated_at = NOW()
+    </insert>
+    
+    <!-- 키워드 매핑 통계 조회 -->
+    <select id="getKeywordMappingStatistics" resultType="Map">
+        SELECT 
+            COUNT(*) as total_keyword_mappings,
+            COUNT(DISTINCT keyword) as unique_keywords,
+            COUNT(DISTINCT tag_id) as unique_tags,
+            ROUND(AVG(confidence_score), 4) as avg_confidence,
+            COUNT(CASE WHEN confidence_score >= 0.8 THEN 1 END) as high_confidence_mappings,
+            COUNT(CASE WHEN confidence_score &lt; 0.5 THEN 1 END) as low_confidence_mappings
+        FROM keyword_tag_mappings
+    </select>
+    
+    <!-- 키워드 매핑 데이터 정리 -->
+    <delete id="clearKeywordMappings">
+        DELETE FROM keyword_tag_mappings 
+        WHERE extraction_method LIKE '%PENSION_DATA%'
+    </delete>
+    
+    <!-- 실시간 키워드 매칭을 위한 캐시 데이터 조회 -->
+    <select id="getKeywordTagCache" resultType="Map">
+        SELECT 
+            ktm.keyword,
+            tm.tag_name,
+            ktm.confidence_score,
+            tam.account_code,
+            tam.account_name,
+            tam.priority,
+            tam.confidence_boost
+        FROM keyword_tag_mappings ktm
+        JOIN tags_master tm ON ktm.tag_id = tm.id
+        LEFT JOIN tag_account_mappings tam ON tm.id = tam.tag_id
+        WHERE ktm.confidence_score >= 0.6  -- 신뢰도 60% 이상만 캐시
+        ORDER BY ktm.keyword, ktm.confidence_score DESC, tam.priority DESC
+    </select>
+
 </mapper>

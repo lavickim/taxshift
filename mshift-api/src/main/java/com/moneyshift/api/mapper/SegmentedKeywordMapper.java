@@ -66,4 +66,36 @@ public interface SegmentedKeywordMapper {
         @Param("segmentName") String segmentName,
         @Param("limit") int limit
     );
+    
+    // ====== 키워드 매핑 관련 메서드 ======
+    
+    /**
+     * 국민연금 업종 데이터 조회 (키워드 추출용)
+     */
+    List<Map<String, Object>> getPensionIndustryData();
+    
+    /**
+     * 키워드 매핑 데이터 배치 삽입
+     */
+    void insertKeywordMappingsBatch(@Param("mappings") List<Map<String, Object>> mappings);
+    
+    /**
+     * 태그-계정과목 매핑 데이터 배치 삽입
+     */
+    void insertTagAccountMappingsBatch(@Param("mappings") List<Map<String, Object>> mappings);
+    
+    /**
+     * 키워드 매핑 통계 조회
+     */
+    Map<String, Object> getKeywordMappingStatistics();
+    
+    /**
+     * 키워드 매핑 데이터 정리
+     */
+    void clearKeywordMappings();
+    
+    /**
+     * 실시간 키워드 매칭을 위한 캐시 데이터 조회
+     */
+    List<Map<String, Object>> getKeywordTagCache();
 }
