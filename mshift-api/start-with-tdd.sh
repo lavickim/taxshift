@@ -46,11 +46,29 @@ fi
 
 # 6. 단위 테스트 실행
 echo "🧪 Unit Tests 실행 중..."
-echo "   ⏳ 테스트 진행 중... (Spring Boot 로고 출력은 정상입니다)"
 
-# 조용한 테스트 실행 (로그 최소화)
-TEST_OUTPUT=$(mvn test -q -Dspring.main.banner-mode=off -Dlogging.level.root=WARN 2>&1)
+# 테스트 실행하면서 진행 상황 표시
+mvn test -q -Dspring.main.banner-mode=off -Dlogging.level.root=WARN > /tmp/test_output.log 2>&1 &
+TEST_PID=$!
+
+# 테스트 진행 상황 모니터링
+echo "   ⏳ 테스트 진행 중..."
+while kill -0 $TEST_PID 2>/dev/null; do
+    # 실행 중인 테스트 클래스 이름 추출해서 표시
+    if [ -f /tmp/test_output.log ]; then
+        CURRENT_TEST=$(tail -10 /tmp/test_output.log | grep -o "Tests run.*" | tail -1)
+        RUNNING_TEST=$(tail -20 /tmp/test_output.log | grep -o "Running.*Test" | tail -1)
+        if [ ! -z "$RUNNING_TEST" ]; then
+            echo "   📋 $RUNNING_TEST"
+        fi
+    fi
+    sleep 1
+done
+
+# 테스트 결과 확인
+wait $TEST_PID
 TEST_RESULT=$?
+TEST_OUTPUT=$(cat /tmp/test_output.log)
 
 if [ $TEST_RESULT -ne 0 ]; then
     echo ""
@@ -67,10 +85,25 @@ if [ $TEST_RESULT -ne 0 ]; then
     echo "  mvn test -Dtest=ClassName#methodName"
     echo ""
     echo "🚫 테스트 실패로 서버 시작을 중단합니다."
+    rm -f /tmp/test_output.log
     exit 1
 else
-    echo "   ✅ 모든 테스트 통과!"
+    # 성공한 테스트들 요약 표시
+    echo ""
+    echo "✅ 모든 테스트 통과!"
+    PASSED_TESTS=$(echo "$TEST_OUTPUT" | grep -o "Tests run: [0-9]*, Failures: 0, Errors: 0" | wc -l)
+    TOTAL_TESTS=$(echo "$TEST_OUTPUT" | grep -o "Tests run: [0-9]*" | sed 's/Tests run: //' | awk '{sum += $1} END {print sum}')
+    if [ ! -z "$TOTAL_TESTS" ] && [ "$TOTAL_TESTS" -gt 0 ]; then
+        echo "   📊 총 $TOTAL_TESTS 개 테스트 성공"
+    fi
+    
+    # 실행된 테스트 클래스들 표시
+    echo "   🧪 실행된 테스트 클래스들:"
+    echo "$TEST_OUTPUT" | grep "Running.*Test" | sed 's/Running /   - /' | tail -10
 fi
+
+# 임시 파일 정리
+rm -f /tmp/test_output.log
 
 # 7. 통합 테스트 (있는 경우)
 echo "🔄 Integration Tests 체크 중..."
@@ -117,8 +150,12 @@ fi
 # Spring Boot 애플리케이션 시작
 echo "================================================"
 echo "🚀 MoneyShift API Backend 시작 중..."
-echo "📡 서버 URL: http://localhost:8080"
-echo "🏥 Health Check: http://localhost:8080/actuator/health"
+echo "📡 서버 URL: http://localhost:8080/mshift-api"
+echo "🏥 Health Check: http://localhost:8080/mshift-api/actuator/health"
+echo "🎯 API 테스트: http://localhost:8080/mshift-api/v2/segmented-keywords/segments/statistics"
+echo ""
+echo "✨ Spring Boot 로고와 함께 서버가 시작됩니다..."
 echo ""
 
+# 서버 시작 시에는 배너 표시 (테스트와 달리)
 exec mvn spring-boot:run

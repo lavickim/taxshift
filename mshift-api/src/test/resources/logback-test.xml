@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss} [TEST] - %msg%n"/>
+    <property name="LOG_PATTERN" value="%d{HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"/>
     
     <!-- 콘솔 출력 설정 -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
@@ -9,7 +9,7 @@
         </encoder>
     </appender>
     
-    <!-- Spring Boot 로고/배너 완전 차단 -->
+    <!-- Spring Boot 로고/배너 차단 (테스트 시에만) -->
     <logger name="org.springframework.boot.StartupInfoLogger" level="WARN"/>
     <logger name="org.springframework.boot.SpringApplication" level="WARN"/>
     <logger name="org.springframework.context.annotation" level="WARN"/>
@@ -26,11 +26,11 @@
     <logger name="com.zaxxer.hikari" level="WARN"/>
     <logger name="org.postgresql" level="WARN"/>
     
-    <!-- 테스트 관련 로그 차단 -->
-    <logger name="org.springframework.test" level="WARN"/>
-    <logger name="org.springframework.boot.test" level="WARN"/>
+    <!-- 테스트 실행 정보는 INFO 레벨로 표시 -->
+    <logger name="org.springframework.test" level="INFO"/>
+    <logger name="org.springframework.boot.test" level="INFO"/>
     
-    <!-- 우리 애플리케이션만 INFO 레벨 -->
+    <!-- 우리 애플리케이션은 INFO 레벨 -->
     <logger name="com.moneyshift.api" level="INFO"/>
     
     <!-- 전체 로그 레벨을 WARN으로 설정 -->
