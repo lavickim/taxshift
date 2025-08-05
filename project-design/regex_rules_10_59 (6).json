@@ -1,0 +1,394 @@
+[
+  {
+    "pattern": "(스타벅스|STARBUCKS|스벅|별다방|SBUX)",
+    "replacement": "커피전문점",
+    "description": "스타벅스 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 95
+  },
+  {
+    "pattern": "(투썸플레이스|A\\s*TWOSOME\\s*PLACE|투썸|TWOSOME)",
+    "replacement": "커피전문점",
+    "description": "투썸플레이스 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(엔젤리너스|ANGEL\\s*IN\\s*US|엔제리너스|엔젤인어스)",
+    "replacement": "커피전문점",
+    "description": "엔젤리너스 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(카페베네|CAFFE\\s*BENE|CAFFEBENE|베네)",
+    "replacement": "커피전문점",
+    "description": "카페베네 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(이디야|EDIYA|이디야커피|에디야)",
+    "replacement": "커피전문점",
+    "description": "이디야 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(메가커피|MEGA\\s*COFFEE|메가MGC커피|메가)",
+    "replacement": "커피전문점",
+    "description": "메가커피 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(컴포즈커피|COMPOSE\\s*COFFEE|컴포즈|COMPOSE)",
+    "replacement": "커피전문점",
+    "description": "컴포즈커피 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(커피빈앤티리프|COFFEE\\s*BEAN\\s*&\\s*TEA\\s*LEAF|CBTL)",
+    "replacement": "커피전문점",
+    "description": "커피빈앤티리프 풀네임 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(더벤티|THE\\s*VENTI|더벤티커피|벤티)",
+    "replacement": "커피전문점",
+    "description": "더벤티 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(블루보틀|BLUE\\s*BOTTLE|블루보틀커피|블보)",
+    "replacement": "커피전문점",
+    "description": "블루보틀 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(테라로사|TERAROSA|테라로사커피|테라)",
+    "replacement": "커피전문점",
+    "description": "테라로사 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(커피리브레|COFFEE\\s*LIBRE|리브레|커리브)",
+    "replacement": "커피전문점",
+    "description": "커피리브레 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(모모스커피|MOMOS|모모스|모모스테이블)",
+    "replacement": "커피전문점",
+    "description": "모모스커피 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(앤트러사이트|ANTHRACITE|앤트러|안트라사이트)",
+    "replacement": "커피전문점",
+    "description": "앤트러사이트 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(프릳츠|FRITZ|프릳츠커피|프리츠)",
+    "replacement": "커피전문점",
+    "description": "프릳츠 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(커피몽타주|COFFEE\\s*MONTAGE|몽타주|몽타주커피)",
+    "replacement": "커피전문점",
+    "description": "커피몽타주 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(카페꼼마|CAFE\\s*COMMA|꼼마|콤마커피)",
+    "replacement": "커피전문점",
+    "description": "카페꼼마 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(헬카페|HELL\\s*CAFE|헬커피|HELL\\s*COFFEE)",
+    "replacement": "커피전문점",
+    "description": "헬카페 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(스페셜티커피|SPECIALTY|스페셜티|로스터리)",
+    "replacement": "커피전문점",
+    "description": "스페셜티 커피전문점 일반 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(핸드드립|HAND\\s*DRIP|드립커피|브루잉)",
+    "replacement": "커피전문점",
+    "description": "핸드드립 전문점 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(로스터리카페|ROASTERY|로스팅|커피로스터리)",
+    "replacement": "커피전문점",
+    "description": "로스터리 카페 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(에스프레소바|ESPRESSO\\s*BAR|에스프레소전문|바리스타)",
+    "replacement": "커피전문점",
+    "description": "에스프레소바 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(콜드브루|COLD\\s*BREW|더치커피|DUTCH\\s*COFFEE)",
+    "replacement": "커피전문점",
+    "description": "콜드브루 전문점 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(커피공방|COFFEE\\s*WORKSHOP|커피작업실|커피아뜰리에)",
+    "replacement": "커피전문점",
+    "description": "커피공방 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(커피전문점|커피숍|COFFEE\\s*SHOP|카페|CAFE)",
+    "replacement": "커피전문점",
+    "description": "커피전문점 일반 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(24시커피|24시간커피|무인카페|무인커피)",
+    "replacement": "커피전문점",
+    "description": "24시/무인 커피전문점 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(커피하우스|COFFEE\\s*HOUSE|커피홀|커피라운지)",
+    "replacement": "커피전문점",
+    "description": "커피하우스 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(디저트카페|DESSERT\\s*CAFE|케이크카페|브런치카페)",
+    "replacement": "커피전문점",
+    "description": "디저트/브런치 카페 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(북카페|BOOK\\s*CAFE|스터디카페|공부카페)",
+    "replacement": "커피전문점",
+    "description": "북카페/스터디카페 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(루프탑카페|ROOFTOP|옥상카페|테라스카페)",
+    "replacement": "커피전문점",
+    "description": "루프탑/테라스 카페 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(펫카페|PET\\s*CAFE|애견카페|강아지카페|고양이카페)",
+    "replacement": "커피전문점",
+    "description": "펫카페 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(드라이브스루|DRIVE\\s*THRU|DT점|차안에서)",
+    "replacement": "커피전문점",
+    "description": "드라이브스루 전문점 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(커피앤베이커리|COFFEE\\s*&\\s*BAKERY|카페베이커리)",
+    "replacement": "커피전문점",
+    "description": "커피&베이커리 복합점 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(아메리카노전문|라떼전문|카푸치노|플랫화이트)",
+    "replacement": "커피전문점",
+    "description": "특정 메뉴 전문점 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(테이크아웃전문|TAKEOUT|TO\\s*GO|포장전문)",
+    "replacement": "커피전문점",
+    "description": "테이크아웃 전문점 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(커피트럭|COFFEE\\s*TRUCK|이동카페|푸드트럭)",
+    "replacement": "커피전문점",
+    "description": "커피트럭 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(프리미엄커피|PREMIUM|고급커피|수입커피)",
+    "replacement": "커피전문점",
+    "description": "프리미엄 커피전문점 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(싱글오리진|SINGLE\\s*ORIGIN|원두전문|생두)",
+    "replacement": "커피전문점",
+    "description": "싱글오리진 전문점 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(아라비카|ARABICA|로부스타|ROBUSTA|커피품종)",
+    "replacement": "커피전문점",
+    "description": "커피품종 전문점 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(큐그레이더|Q\\s*GRADER|커피감정사|바리스타인증)",
+    "replacement": "커피전문점",
+    "description": "전문가 운영 커피전문점 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(라떼아트|LATTE\\s*ART|로제타|하트|튤립)",
+    "replacement": "커피전문점",
+    "description": "라떼아트 전문점 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(사이폰커피|SIPHON|모카포트|MOKA\\s*POT|케멕스)",
+    "replacement": "커피전문점",
+    "description": "특수추출 커피전문점 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(브루어리카페|BREWERY|맥주카페|커피맥주)",
+    "replacement": "커피전문점",
+    "description": "브루어리 카페 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(코워킹카페|CO\\s*WORKING|업무카페|비즈니스카페)",
+    "replacement": "커피전문점",
+    "description": "코워킹 카페 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(시그니처커피|SIGNATURE|시그니처메뉴|대표메뉴)",
+    "replacement": "커피전문점",
+    "description": "시그니처 메뉴 전문점 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(친환경카페|ECO\\s*CAFE|제로웨이스트|텀블러)",
+    "replacement": "커피전문점",
+    "description": "친환경 카페 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(스마트오더|SMART\\s*ORDER|앱주문|키오스크)",
+    "replacement": "커피전문점",
+    "description": "스마트오더 전문점 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(구독커피|SUBSCRIPTION|정기배송|커피구독)",
+    "replacement": "커피전문점",
+    "description": "구독형 커피전문점 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(갤러리카페|GALLERY\\s*CAFE|전시카페|아트카페)",
+    "replacement": "커피전문점",
+    "description": "갤러리 카페 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  }
+]

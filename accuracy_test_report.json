@@ -1,0 +1,1280 @@
+{
+  "timestamp": "2025-07-27T22:50:32.226Z",
+  "targetAccuracy": 95,
+  "achievedAccuracy": 0,
+  "goalAchieved": false,
+  "summary": {
+    "accuracy": "0.00",
+    "correct": 0,
+    "total": 50,
+    "detailedResults": [
+      {
+        "text": "네이버페이 강남점",
+        "expected": "온라인결제",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "카카오페이 맛있는집",
+        "expected": "온라인결제",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "토스 생활용품",
+        "expected": "온라인결제",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "페이코 결제",
+        "expected": "온라인결제",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "삼성페이 이용",
+        "expected": "온라인결제",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "넷플릭스 월 구독료",
+        "expected": "구독서비스",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "유튜브 프리미엄",
+        "expected": "구독서비스",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "스포티파이 구독",
+        "expected": "구독서비스",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "디즈니플러스 구독료",
+        "expected": "구독서비스",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "멜론 이용료",
+        "expected": "구독서비스",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "배달의민족 피자헛",
+        "expected": "배달서비스",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "쿠팡이츠 중식당",
+        "expected": "배달서비스",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "요기요 맛있는집",
+        "expected": "배달서비스",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "우버이츠 주문",
+        "expected": "배달서비스",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "땡겨요 배달",
+        "expected": "배달서비스",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "쿠팡 전자제품",
+        "expected": "쇼핑몰",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "11번가 의류",
+        "expected": "쇼핑몰",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "G마켓 생활용품",
+        "expected": "쇼핑몰",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "옥션 화장품",
+        "expected": "쇼핑몰",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "위메프 도서",
+        "expected": "쇼핑몰",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "서울교통공사 지하철",
+        "expected": "교통",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "버스 요금",
+        "expected": "교통",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "카카오택시",
+        "expected": "교통",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "타다 이용료",
+        "expected": "교통",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "쏘카 대여료",
+        "expected": "교통",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "서울 종합병원",
+        "expected": "의료",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "강남 치과",
+        "expected": "의료",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "부산 한의원",
+        "expected": "의료",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "온누리 약국",
+        "expected": "의료",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "사랑 동물병원",
+        "expected": "의료",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "영어 전문학원",
+        "expected": "교육",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "수학 학원",
+        "expected": "교육",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "해바라기 유치원",
+        "expected": "교육",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "서울대학교",
+        "expected": "교육",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "교보문고",
+        "expected": "교육",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "신한은행",
+        "expected": "금융",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "국민은행",
+        "expected": "금융",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "카카오뱅크",
+        "expected": "금융",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "삼성생명보험",
+        "expected": "금융",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "미래에셋증권",
+        "expected": "금융",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "서울 미용실",
+        "expected": "생활서비스",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "예쁜 네일샵",
+        "expected": "생활서비스",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "깨끗한 세탁소",
+        "expected": "생활서비스",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "헬스 클럽",
+        "expected": "생활서비스",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "서울 부동산",
+        "expected": "생활서비스",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "CU편의점 강남점",
+        "expected": "편의점",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "이마트 성수점",
+        "expected": "대형마트",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "SK주유소 서울역점",
+        "expected": "주유소",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "스타벅스 홍대점",
+        "expected": "카페",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      },
+      {
+        "text": "BBQ 치킨",
+        "expected": "치킨",
+        "predicted": "FAILED",
+        "confidence": 0,
+        "correct": false,
+        "success": false
+      }
+    ]
+  },
+  "categoryBreakdown": {
+    "온라인결제": {
+      "correct": 0,
+      "total": 5
+    },
+    "구독서비스": {
+      "correct": 0,
+      "total": 5
+    },
+    "배달서비스": {
+      "correct": 0,
+      "total": 5
+    },
+    "쇼핑몰": {
+      "correct": 0,
+      "total": 5
+    },
+    "교통": {
+      "correct": 0,
+      "total": 5
+    },
+    "의료": {
+      "correct": 0,
+      "total": 5
+    },
+    "교육": {
+      "correct": 0,
+      "total": 5
+    },
+    "금융": {
+      "correct": 0,
+      "total": 5
+    },
+    "생활서비스": {
+      "correct": 0,
+      "total": 5
+    },
+    "편의점": {
+      "correct": 0,
+      "total": 1
+    },
+    "대형마트": {
+      "correct": 0,
+      "total": 1
+    },
+    "주유소": {
+      "correct": 0,
+      "total": 1
+    },
+    "카페": {
+      "correct": 0,
+      "total": 1
+    },
+    "치킨": {
+      "correct": 0,
+      "total": 1
+    }
+  },
+  "detailedResults": [
+    {
+      "text": "네이버페이 강남점",
+      "expected": "온라인결제",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "카카오페이 맛있는집",
+      "expected": "온라인결제",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "토스 생활용품",
+      "expected": "온라인결제",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "페이코 결제",
+      "expected": "온라인결제",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "삼성페이 이용",
+      "expected": "온라인결제",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "넷플릭스 월 구독료",
+      "expected": "구독서비스",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "유튜브 프리미엄",
+      "expected": "구독서비스",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "스포티파이 구독",
+      "expected": "구독서비스",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "디즈니플러스 구독료",
+      "expected": "구독서비스",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "멜론 이용료",
+      "expected": "구독서비스",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "배달의민족 피자헛",
+      "expected": "배달서비스",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "쿠팡이츠 중식당",
+      "expected": "배달서비스",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "요기요 맛있는집",
+      "expected": "배달서비스",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "우버이츠 주문",
+      "expected": "배달서비스",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "땡겨요 배달",
+      "expected": "배달서비스",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "쿠팡 전자제품",
+      "expected": "쇼핑몰",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "11번가 의류",
+      "expected": "쇼핑몰",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "G마켓 생활용품",
+      "expected": "쇼핑몰",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "옥션 화장품",
+      "expected": "쇼핑몰",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "위메프 도서",
+      "expected": "쇼핑몰",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "서울교통공사 지하철",
+      "expected": "교통",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "버스 요금",
+      "expected": "교통",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "카카오택시",
+      "expected": "교통",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "타다 이용료",
+      "expected": "교통",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "쏘카 대여료",
+      "expected": "교통",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "서울 종합병원",
+      "expected": "의료",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "강남 치과",
+      "expected": "의료",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "부산 한의원",
+      "expected": "의료",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "온누리 약국",
+      "expected": "의료",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "사랑 동물병원",
+      "expected": "의료",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "영어 전문학원",
+      "expected": "교육",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "수학 학원",
+      "expected": "교육",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "해바라기 유치원",
+      "expected": "교육",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "서울대학교",
+      "expected": "교육",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "교보문고",
+      "expected": "교육",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "신한은행",
+      "expected": "금융",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "국민은행",
+      "expected": "금융",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "카카오뱅크",
+      "expected": "금융",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "삼성생명보험",
+      "expected": "금융",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "미래에셋증권",
+      "expected": "금융",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "서울 미용실",
+      "expected": "생활서비스",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "예쁜 네일샵",
+      "expected": "생활서비스",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "깨끗한 세탁소",
+      "expected": "생활서비스",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "헬스 클럽",
+      "expected": "생활서비스",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "서울 부동산",
+      "expected": "생활서비스",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "CU편의점 강남점",
+      "expected": "편의점",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "이마트 성수점",
+      "expected": "대형마트",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "SK주유소 서울역점",
+      "expected": "주유소",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "스타벅스 홍대점",
+      "expected": "카페",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "BBQ 치킨",
+      "expected": "치킨",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    }
+  ],
+  "failureCases": [
+    {
+      "text": "네이버페이 강남점",
+      "expected": "온라인결제",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "카카오페이 맛있는집",
+      "expected": "온라인결제",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "토스 생활용품",
+      "expected": "온라인결제",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "페이코 결제",
+      "expected": "온라인결제",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "삼성페이 이용",
+      "expected": "온라인결제",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "넷플릭스 월 구독료",
+      "expected": "구독서비스",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "유튜브 프리미엄",
+      "expected": "구독서비스",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "스포티파이 구독",
+      "expected": "구독서비스",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "디즈니플러스 구독료",
+      "expected": "구독서비스",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "멜론 이용료",
+      "expected": "구독서비스",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "배달의민족 피자헛",
+      "expected": "배달서비스",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "쿠팡이츠 중식당",
+      "expected": "배달서비스",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "요기요 맛있는집",
+      "expected": "배달서비스",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "우버이츠 주문",
+      "expected": "배달서비스",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "땡겨요 배달",
+      "expected": "배달서비스",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "쿠팡 전자제품",
+      "expected": "쇼핑몰",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "11번가 의류",
+      "expected": "쇼핑몰",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "G마켓 생활용품",
+      "expected": "쇼핑몰",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "옥션 화장품",
+      "expected": "쇼핑몰",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "위메프 도서",
+      "expected": "쇼핑몰",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "서울교통공사 지하철",
+      "expected": "교통",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "버스 요금",
+      "expected": "교통",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "카카오택시",
+      "expected": "교통",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "타다 이용료",
+      "expected": "교통",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "쏘카 대여료",
+      "expected": "교통",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "서울 종합병원",
+      "expected": "의료",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "강남 치과",
+      "expected": "의료",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "부산 한의원",
+      "expected": "의료",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "온누리 약국",
+      "expected": "의료",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "사랑 동물병원",
+      "expected": "의료",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "영어 전문학원",
+      "expected": "교육",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "수학 학원",
+      "expected": "교육",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "해바라기 유치원",
+      "expected": "교육",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "서울대학교",
+      "expected": "교육",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "교보문고",
+      "expected": "교육",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "신한은행",
+      "expected": "금융",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "국민은행",
+      "expected": "금융",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "카카오뱅크",
+      "expected": "금융",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "삼성생명보험",
+      "expected": "금융",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "미래에셋증권",
+      "expected": "금융",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "서울 미용실",
+      "expected": "생활서비스",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "예쁜 네일샵",
+      "expected": "생활서비스",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "깨끗한 세탁소",
+      "expected": "생활서비스",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "헬스 클럽",
+      "expected": "생활서비스",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "서울 부동산",
+      "expected": "생활서비스",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "CU편의점 강남점",
+      "expected": "편의점",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "이마트 성수점",
+      "expected": "대형마트",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "SK주유소 서울역점",
+      "expected": "주유소",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "스타벅스 홍대점",
+      "expected": "카페",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    },
+    {
+      "text": "BBQ 치킨",
+      "expected": "치킨",
+      "predicted": "FAILED",
+      "confidence": 0,
+      "correct": false,
+      "success": false
+    }
+  ],
+  "testConfiguration": {
+    "totalTestCases": 50,
+    "apiBase": "http://localhost:8080/api",
+    "dataExpansionVersion": "v1.0"
+  }
+}

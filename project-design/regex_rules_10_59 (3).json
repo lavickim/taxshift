@@ -1,0 +1,394 @@
+[
+  {
+    "pattern": "(파리바게뜨|파리바게트|PARIS\\s*BAGUETTE|PB|파바)",
+    "replacement": "베이커리",
+    "description": "파리바게뜨 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(뚜레쥬르|뚜레주르|TOUS\\s*LES\\s*JOURS|뚜레)",
+    "replacement": "베이커리",
+    "description": "뚜레쥬르 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(던킨도너츠|던킨|DUNKIN\\s*DONUTS|DUNKIN|DD)",
+    "replacement": "베이커리",
+    "description": "던킨도너츠 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(크리스피크림|크리스피|KRISPY\\s*KREME|KK|크크)",
+    "replacement": "베이커리",
+    "description": "크리스피크림 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(성심당|대전성심당|튀김소보로|부추빵)",
+    "replacement": "베이커리",
+    "description": "성심당 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(빵집|베이커리|BAKERY|제과점|제빵소)",
+    "replacement": "베이커리",
+    "description": "베이커리 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(브레드|BREAD|브래드|홈메이드|수제빵)",
+    "replacement": "베이커리",
+    "description": "빵 전문점 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(케이크|케익|CAKE|생일케이크|웨딩케이크)",
+    "replacement": "베이커리",
+    "description": "케이크 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(도넛|도너츠|DONUT|DOUGHNUT|꽈배기)",
+    "replacement": "베이커리",
+    "description": "도넛 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(크로와상|크루아상|CROISSANT|페이스트리|PASTRY)",
+    "replacement": "베이커리",
+    "description": "프랑스 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(바게트|바게뜨|BAGUETTE|프랑스빵|불란서빵)",
+    "replacement": "베이커리",
+    "description": "프랑스빵 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(마카롱|마카롱전문|MACARON|프렌치마카롱)",
+    "replacement": "베이커리",
+    "description": "마카롱 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(타르트|타르트전문|TART|에그타르트|과일타르트)",
+    "replacement": "베이커리",
+    "description": "타르트 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(머핀|MUFFIN|컵케이크|CUPCAKE|미니케이크)",
+    "replacement": "베이커리",
+    "description": "머핀/컵케이크 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(브라우니|BROWNIE|초콜릿케이크|초코케이크)",
+    "replacement": "베이커리",
+    "description": "브라우니/초콜릿 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(티라미수|TIRAMISU|이탈리안디저트|젤라또)",
+    "replacement": "베이커리",
+    "description": "이탈리안 디저트 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(치아바타|포카치아|FOCACCIA|이탈리안브레드)",
+    "replacement": "베이커리",
+    "description": "이탈리안 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(베이글|BAGEL|뉴욕베이글|크림치즈베이글)",
+    "replacement": "베이커리",
+    "description": "베이글 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(프레첼|프레즐|PRETZEL|독일빵|호밀빵)",
+    "replacement": "베이커리",
+    "description": "독일식 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(스콘|SCONE|잉글리시머핀|브리티시베이커리)",
+    "replacement": "베이커리",
+    "description": "영국식 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(에클레어|ECLAIR|슈크림|크림빵|슈)",
+    "replacement": "베이커리",
+    "description": "에클레어/슈 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(카스테라|카스텔라|CASTELLA|대만카스테라|촉촉한카스테라)",
+    "replacement": "베이커리",
+    "description": "카스테라 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(소금빵|시오빵|버터롤|우유빵|크림빵)",
+    "replacement": "베이커리",
+    "description": "일본식 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(앙버터|앙금빵|팥빵|단팥빵|찐빵)",
+    "replacement": "베이커리",
+    "description": "앙금빵 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(소보로|소보루|소보로빵|단팥소보로|땅콩소보로)",
+    "replacement": "베이커리",
+    "description": "소보로빵 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(멜론빵|메론빵|MELON\\s*PAN|메론판)",
+    "replacement": "베이커리",
+    "description": "멜론빵 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(식빵|토스트|TOAST|식빵전문|생식빵)",
+    "replacement": "베이커리",
+    "description": "식빵 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(크로플|크로와상와플|CROFFLE|와플)",
+    "replacement": "베이커리",
+    "description": "크로플/와플 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(파이|PIE|애플파이|호두파이|피칸파이)",
+    "replacement": "베이커리",
+    "description": "파이 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(쿠키|COOKIE|수제쿠키|마들렌|휘낭시에)",
+    "replacement": "베이커리",
+    "description": "쿠키 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(치즈케이크|CHEESECAKE|뉴욕치즈케이크|바스크치즈케이크)",
+    "replacement": "베이커리",
+    "description": "치즈케이크 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(롤케이크|ROLL\\s*CAKE|스위스롤|생크림롤)",
+    "replacement": "베이커리",
+    "description": "롤케이크 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(파운드케이크|POUND\\s*CAKE|버터케이크|마드레느)",
+    "replacement": "베이커리",
+    "description": "파운드케이크 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(샌드위치|SANDWICH|샌드|토스트샌드위치)",
+    "replacement": "베이커리",
+    "description": "샌드위치 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(브런치베이커리|브런치카페|올데이브런치|BRUNCH)",
+    "replacement": "베이커리",
+    "description": "브런치 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(디저트|DESSERT|수제디저트|프리미엄디저트)",
+    "replacement": "베이커리",
+    "description": "디저트 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(글루텐프리|무글루텐|비건베이커리|VEGAN)",
+    "replacement": "베이커리",
+    "description": "건강/특수 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(통밀빵|호밀빵|잡곡빵|건강빵|유기농빵)",
+    "replacement": "베이커리",
+    "description": "건강빵 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(천연발효|사워도우|SOURDOUGH|르방|천연효모)",
+    "replacement": "베이커리",
+    "description": "천연발효빵 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(공방|아틀리에|ATELIER|수제과자|쁘띠가또)",
+    "replacement": "베이커리",
+    "description": "프리미엄 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(델리|DELI|베이커리카페|카페베이커리)",
+    "replacement": "베이커리",
+    "description": "델리/카페형 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(모닝빵|아침빵|조식빵|모닝롤|브렉퍼스트)",
+    "replacement": "베이커리",
+    "description": "아침식사 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(붕어빵|팥붕어빵|슈크림붕어빵|미니붕어빵)",
+    "replacement": "베이커리",
+    "description": "붕어빵 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(호떡|호빵|찐빵|왕만두|고로케)",
+    "replacement": "베이커리",
+    "description": "길거리 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(꽃빵|마늘빵|모카빵|야채빵|양파빵)",
+    "replacement": "베이커리",
+    "description": "특수빵 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(피자빵|핫도그빵|소시지빵|햄치즈빵)",
+    "replacement": "베이커리",
+    "description": "조리빵 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(만쥬|MANJU|도라야키|찹쌀떡|떡빵)",
+    "replacement": "베이커리",
+    "description": "일본식 전통과자 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(에그타르트전문|포르투갈에그타르트|마카오에그타르트)",
+    "replacement": "베이커리",
+    "description": "에그타르트 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(24시베이커리|새벽베이커리|심야베이커리|올나잇)",
+    "replacement": "베이커리",
+    "description": "24시간 베이커리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  }
+]

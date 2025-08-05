@@ -1,0 +1,394 @@
+[
+  {
+    "pattern": "(아웃백|OUTBACK|아웃백스테이크하우스|OUTBACK\\s*STEAKHOUSE)",
+    "replacement": "양식당",
+    "description": "아웃백 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(티지아이프라이데이|TGIF|TGI\\s*FRIDAY'S|티지아이)",
+    "replacement": "양식당",
+    "description": "TGIF 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(빕스|VIPS|빕스프리미어|VIPS\\s*PREMIER)",
+    "replacement": "양식당",
+    "description": "빕스 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(애슐리|ASHLEY|애슐리퀸즈|애슐리W)",
+    "replacement": "양식당",
+    "description": "애슐리 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(토니로마스|TONY\\s*ROMA'S|토니|토로마)",
+    "replacement": "양식당",
+    "description": "토니로마스 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(매드포갈릭|MAD\\s*FOR\\s*GARLIC|매드갈릭|매포갈)",
+    "replacement": "양식당",
+    "description": "매드포갈릭 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(온더보더|ON\\s*THE\\s*BORDER|온더보더멕시칸)",
+    "replacement": "양식당",
+    "description": "온더보더 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(베니건스|BENNIGAN'S|베니건|베니건스그릴)",
+    "replacement": "양식당",
+    "description": "베니건스 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(스테이크|STEAK|스테이크하우스|STEAKHOUSE)",
+    "replacement": "양식당",
+    "description": "스테이크 전문점 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(티본|T-BONE|티본스테이크|립아이|RIB\\s*EYE)",
+    "replacement": "양식당",
+    "description": "스테이크 부위별 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(안심|등심|채끝|꽃등심|부채살)",
+    "replacement": "양식당",
+    "description": "한국식 스테이크 부위 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(파스타|PASTA|스파게티|SPAGHETTI|페투치니|FETTUCCINE)",
+    "replacement": "양식당",
+    "description": "파스타 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(까르보나라|CARBONARA|알리오올리오|AGLIO\\s*OLIO)",
+    "replacement": "양식당",
+    "description": "파스타 종류별 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(로제파스타|크림파스타|토마토파스타|오일파스타)",
+    "replacement": "양식당",
+    "description": "파스타 소스별 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(봉골레|VONGOLE|아라비아타|ARRABBIATA|푸타네스카)",
+    "replacement": "양식당",
+    "description": "이탈리안 파스타 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(리조또|RISOTTO|리조토|필라프|PILAF)",
+    "replacement": "양식당",
+    "description": "리조또/필라프 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(그라탕|GRATIN|라자냐|LASAGNA|뇨끼|GNOCCHI)",
+    "replacement": "양식당",
+    "description": "오븐 요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(이탈리안|ITALIAN|이태리|이탈리아)",
+    "replacement": "양식당",
+    "description": "이탈리안 레스토랑 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(프렌치|FRENCH|프랑스요리|불란서요리)",
+    "replacement": "양식당",
+    "description": "프렌치 레스토랑 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(브런치|BRUNCH|브런치카페|올데이브런치)",
+    "replacement": "양식당",
+    "description": "브런치 레스토랑 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(에그베네딕트|팬케이크|PANCAKE|프렌치토스트)",
+    "replacement": "양식당",
+    "description": "브런치 메뉴 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(오믈렛|OMELET|스크램블|에그스크램블)",
+    "replacement": "양식당",
+    "description": "계란 요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(피자|PIZZA|화덕피자|씬피자|시카고피자)",
+    "replacement": "양식당",
+    "description": "피자 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(샐러드바|SALAD\\s*BAR|셀러드바|뷔페)",
+    "replacement": "양식당",
+    "description": "샐러드바 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(시저샐러드|CAESAR|코브샐러드|그릭샐러드)",
+    "replacement": "양식당",
+    "description": "샐러드 종류별 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(수프|SOUP|스프|양송이수프|호박수프)",
+    "replacement": "양식당",
+    "description": "수프 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(클램차우더|민네스트로네|비스크|콘소메)",
+    "replacement": "양식당",
+    "description": "수프 종류별 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(돈까스|DONKATSU|일본식돈까스|경양식)",
+    "replacement": "양식당",
+    "description": "경양식 돈까스 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(함박스테이크|HAMBURG\\s*STEAK|햄버그스테이크)",
+    "replacement": "양식당",
+    "description": "함박스테이크 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(오므라이스|OMURICE|오무라이스|볶음밥오믈렛)",
+    "replacement": "양식당",
+    "description": "오므라이스 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(포크커틀릿|PORK\\s*CUTLET|치킨커틀릿|코르동블루)",
+    "replacement": "양식당",
+    "description": "커틀릿 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(그릴|GRILL|바베큐|BBQ|숯불구이)",
+    "replacement": "양식당",
+    "description": "그릴 요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(립|RIBS|폭립|바비큐립|베이비백립)",
+    "replacement": "양식당",
+    "description": "립 요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(치킨|로티세리치킨|그릴드치킨|허브치킨)",
+    "replacement": "양식당",
+    "description": "양식 치킨 요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(해산물|SEAFOOD|씨푸드|랍스터|LOBSTER)",
+    "replacement": "양식당",
+    "description": "해산물 요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(새우|쉬림프|SHRIMP|감바스|GAMBAS)",
+    "replacement": "양식당",
+    "description": "새우 요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(연어|SALMON|연어스테이크|그릴드연어)",
+    "replacement": "양식당",
+    "description": "연어 요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(와인|WINE|와인바|WINE\\s*BAR|와인레스토랑)",
+    "replacement": "양식당",
+    "description": "와인바/레스토랑 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(타파스|TAPAS|스페인요리|스패니시)",
+    "replacement": "양식당",
+    "description": "스페인 요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(멕시칸|MEXICAN|타코|부리또|퀘사디아)",
+    "replacement": "양식당",
+    "description": "멕시칸 요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(파인다이닝|FINE\\s*DINING|고급양식|코스요리)",
+    "replacement": "양식당",
+    "description": "파인다이닝 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(비스트로|BISTRO|캐주얼다이닝|브라스리)",
+    "replacement": "양식당",
+    "description": "비스트로/캐주얼 다이닝 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(뷔페|BUFFET|부페|양식뷔페|씨푸드뷔페)",
+    "replacement": "양식당",
+    "description": "양식 뷔페 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(런치세트|LUNCH\\s*SET|런치코스|비즈니스런치)",
+    "replacement": "양식당",
+    "description": "런치세트 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(디너코스|DINNER\\s*COURSE|정찬|풀코스)",
+    "replacement": "양식당",
+    "description": "디너코스 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(애피타이저|APPETIZER|전채요리|스타터)",
+    "replacement": "양식당",
+    "description": "전채요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(디저트|DESSERT|티라미수|판나코타|크렘브륄레)",
+    "replacement": "양식당",
+    "description": "양식 디저트 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(바|BAR|펍|PUB|가스트로펍|GASTROPUB)",
+    "replacement": "양식당",
+    "description": "바/펍 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(양식|서양요리|웨스턴|WESTERN|유럽요리)",
+    "replacement": "양식당",
+    "description": "양식 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  }
+]

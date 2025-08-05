@@ -1,0 +1,394 @@
+[
+  {
+    "pattern": "(장충동왕족발|장충동|왕족발|JANGCHUNGDONG)",
+    "replacement": "족발/보쌈집",
+    "description": "장충동왕족발 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(가장맛있는족발|가장맛|가맛족|가장맛있는)",
+    "replacement": "족발/보쌈집",
+    "description": "가장맛있는족발 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(원할머니보쌈|원할머니|원보쌈|원할머니보쌈족발)",
+    "replacement": "족발/보쌈집",
+    "description": "원할머니보쌈 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(놀부보쌈|놀부|NOLBOO|놀부보쌈족발)",
+    "replacement": "족발/보쌈집",
+    "description": "놀부보쌈 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(한신포차|한신|HANSHIN|한신포차족발)",
+    "replacement": "족발/보쌈집",
+    "description": "한신포차 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(족발야시장|족발야|야시장족발|족야)",
+    "replacement": "족발/보쌈집",
+    "description": "족발야시장 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(마포족발|마포|MAPO|마포원조족발)",
+    "replacement": "족발/보쌈집",
+    "description": "마포족발 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(왕족발보쌈|왕족보|왕보쌈|WANG)",
+    "replacement": "족발/보쌈집",
+    "description": "왕족발보쌈 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(족발|JOKBAL|족빨|쪽발|돼지족발)",
+    "replacement": "족발/보쌈집",
+    "description": "족발 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(보쌈|BOSSAM|보삼|돼지보쌈|수육)",
+    "replacement": "족발/보쌈집",
+    "description": "보쌈 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(앞다리|뒷다리|앞족|뒷족|통족발)",
+    "replacement": "족발/보쌈집",
+    "description": "족발 부위별 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(미니족발|한입족발|아기족발|새끼족발)",
+    "replacement": "족발/보쌈집",
+    "description": "미니족발 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(불족발|매운족발|마늘족발|간장족발)",
+    "replacement": "족발/보쌈집",
+    "description": "족발 양념별 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(오향족발|훈제족발|구운족발|직화족발)",
+    "replacement": "족발/보쌈집",
+    "description": "족발 조리법별 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(냉채족발|냉족|콜드족발|차가운족발)",
+    "replacement": "족발/보쌈집",
+    "description": "냉채족발 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(항정살보쌈|목살보쌈|삼겹보쌈|특수부위보쌈)",
+    "replacement": "족발/보쌈집",
+    "description": "보쌈 부위별 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(마늘보쌈|매운보쌈|간장보쌈|굴보쌈)",
+    "replacement": "족발/보쌈집",
+    "description": "보쌈 양념별 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(보쌈정식|보쌈백반|보쌈한정식|보쌈세트)",
+    "replacement": "족발/보쌈집",
+    "description": "보쌈정식 메뉴 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(족발보쌈|족보|족발보쌈세트|반반세트)",
+    "replacement": "족발/보쌈집",
+    "description": "족발보쌈 세트 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(막국수|쟁반막국수|메밀막국수|족발막국수)",
+    "replacement": "족발/보쌈집",
+    "description": "족발집 막국수 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(보쌈김치|보김치|겉절이|무말랭이|쌈무)",
+    "replacement": "족발/보쌈집",
+    "description": "족발/보쌈 김치류 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(새우젓|새우젓소스|쌈장|마늘|고추)",
+    "replacement": "족발/보쌈집",
+    "description": "족발/보쌈 양념류 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(상추쌈|쌈채소|깻잎|배추쌈|쌈야채)",
+    "replacement": "족발/보쌈집",
+    "description": "족발/보쌈 쌈채소 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(순대|순대국|모듬순대|암뽕순대)",
+    "replacement": "족발/보쌈집",
+    "description": "족발집 순대 메뉴 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(편육|수육|돼지편육|삶은고기)",
+    "replacement": "족발/보쌈집",
+    "description": "편육/수육 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(족발전문|족발맛집|원조족발|3대족발)",
+    "replacement": "족발/보쌈집",
+    "description": "족발전문점 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(보쌈전문|보쌈맛집|원조보쌈|전통보쌈)",
+    "replacement": "족발/보쌈집",
+    "description": "보쌈전문점 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(24시족발|새벽족발|심야족발|올나잇족발)",
+    "replacement": "족발/보쌈집",
+    "description": "24시 족발집 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(포장족발|배달족발|테이크아웃족발|택배족발)",
+    "replacement": "족발/보쌈집",
+    "description": "포장/배달 족발 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(모듬족발|스페셜족발|족발모듬|플래터)",
+    "replacement": "족발/보쌈집",
+    "description": "모듬족발 메뉴 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(칼국수|족발칼국수|보쌈칼국수|손칼국수)",
+    "replacement": "족발/보쌈집",
+    "description": "족발집 칼국수 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(소주|막걸리|맥주|족발주류|보쌈술)",
+    "replacement": "족발/보쌈집",
+    "description": "족발/보쌈 주류 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(회식족발|단체족발|가족족발|모임족발)",
+    "replacement": "족발/보쌈집",
+    "description": "단체 족발 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(점심보쌈|런치보쌈|보쌈정식|보쌈백반)",
+    "replacement": "족발/보쌈집",
+    "description": "점심 보쌈메뉴 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(콜라겐|쫄깃|쫄깃한족발|탱탱한족발)",
+    "replacement": "족발/보쌈집",
+    "description": "족발 식감 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(한방족발|약재족발|건강족발|인삼족발)",
+    "replacement": "족발/보쌈집",
+    "description": "한방족발 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(치즈족발|치즈보쌈|치즈토핑|치즈추가)",
+    "replacement": "족발/보쌈집",
+    "description": "치즈 토핑 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(족발거리|족발골목|족발타운|족발촌)",
+    "replacement": "족발/보쌈집",
+    "description": "족발 밀집지역 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(압력솥|가마솥|직화|훈연|찜통)",
+    "replacement": "족발/보쌈집",
+    "description": "족발 조리도구 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(대자|중자|소자|특대|미니사이즈)",
+    "replacement": "족발/보쌈집",
+    "description": "족발 사이즈 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(쫄면|비빔국수|김치말이국수|국수추가)",
+    "replacement": "족발/보쌈집",
+    "description": "족발집 면류 사이드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(족발무침|족발샐러드|족발냉채|족발쌈)",
+    "replacement": "족발/보쌈집",
+    "description": "족발 응용메뉴 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(보쌈쌈밥|보쌈비빔밥|보쌈덮밥|보쌈볶음밥)",
+    "replacement": "족발/보쌈집",
+    "description": "보쌈 응용메뉴 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(족발주막|족발포차|실내포차|포장마차)",
+    "replacement": "족발/보쌈집",
+    "description": "족발 포차 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(반반메뉴|하프앤하프|믹스메뉴|콤보)",
+    "replacement": "족발/보쌈집",
+    "description": "반반메뉴 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(1인족발|혼술족발|혼밥보쌈|개인세트)",
+    "replacement": "족발/보쌈집",
+    "description": "1인메뉴 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(생족발|냉동족발|진공포장|택배전국)",
+    "replacement": "족발/보쌈집",
+    "description": "족발 포장/유통 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(족발축제|보쌈축제|족발이벤트|할인족발)",
+    "replacement": "족발/보쌈집",
+    "description": "족발 이벤트 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(전통시장족발|시장족발|재래시장족발)",
+    "replacement": "족발/보쌈집",
+    "description": "시장 족발집 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  }
+]

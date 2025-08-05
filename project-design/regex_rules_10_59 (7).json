@@ -1,0 +1,394 @@
+[
+  {
+    "pattern": "(BBQ|비비큐|BBQ치킨|BBQ올리브치킨|비비큐치킨)",
+    "replacement": "치킨전문점",
+    "description": "BBQ 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 95
+  },
+  {
+    "pattern": "(교촌치킨|KYOCHON|교촌|교촌에프앤비|KyoChon)",
+    "replacement": "치킨전문점",
+    "description": "교촌치킨 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 95
+  },
+  {
+    "pattern": "(BHC|BHC치킨|비에이치씨|뿌링클|맛초킹)",
+    "replacement": "치킨전문점",
+    "description": "BHC 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(네네치킨|NENE|네네|NeNe|네네치킨파닭)",
+    "replacement": "치킨전문점",
+    "description": "네네치킨 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(굽네치킨|GOOBNE|굽네|굽네갈비천왕|고추바사삭)",
+    "replacement": "치킨전문점",
+    "description": "굽네치킨 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(푸라닭|PURADAK|푸라닭치킨|블랙알리오)",
+    "replacement": "치킨전문점",
+    "description": "푸라닭 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(페리카나|PELICANA|페리카나치킨|양념통닭)",
+    "replacement": "치킨전문점",
+    "description": "페리카나 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(호식이두마리치킨|호식이|두마리치킨|호치킨)",
+    "replacement": "치킨전문점",
+    "description": "호식이두마리치킨 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(멕시카나|MEXICANA|멕시카나치킨|땡초치킨)",
+    "replacement": "치킨전문점",
+    "description": "멕시카나 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(또래오래|또래오래치킨|또오치|신호등치킨)",
+    "replacement": "치킨전문점",
+    "description": "또래오래 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(처갓집양념치킨|처갓집|처갓집슈프림|슈프림양념)",
+    "replacement": "치킨전문점",
+    "description": "처갓집양념치킨 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(맘스터치|MOM'S\\s*TOUCH|맘터|싸이버거세트)",
+    "replacement": "치킨전문점",
+    "description": "맘스터치 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(60계치킨|육공계|60계|60계스파이시)",
+    "replacement": "치킨전문점",
+    "description": "60계치킨 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(치킨플러스|CHICKEN\\s*PLUS|치플|깐풍치킨)",
+    "replacement": "치킨전문점",
+    "description": "치킨플러스 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(자담치킨|JADAM|자담|숯불치킨)",
+    "replacement": "치킨전문점",
+    "description": "자담치킨 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(노랑통닭|노랑|노랑치킨|압구정노랑통닭)",
+    "replacement": "치킨전문점",
+    "description": "노랑통닭 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(티바두마리치킨|티바|TIBA|두마리)",
+    "replacement": "치킨전문점",
+    "description": "티바두마리치킨 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(후라이드참잘하는집|후참|참잘|후라이드전문)",
+    "replacement": "치킨전문점",
+    "description": "후라이드참잘하는집 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(치킨매니아|CHICKEN\\s*MANIA|치매|매니아)",
+    "replacement": "치킨전문점",
+    "description": "치킨매니아 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(신통치킨|신통|통닭|옛날통닭)",
+    "replacement": "치킨전문점",
+    "description": "신통치킨 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(부어치킨|BOOR|부어|맥주치킨)",
+    "replacement": "치킨전문점",
+    "description": "부어치킨 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(가마로강정|가마로|강정치킨|간장강정)",
+    "replacement": "치킨전문점",
+    "description": "가마로강정 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(피자나라치킨공주|피자나라|치킨공주|피치공)",
+    "replacement": "치킨전문점",
+    "description": "피자나라치킨공주 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(돈치킨|DON|돈까스치킨|치킨까스)",
+    "replacement": "치킨전문점",
+    "description": "돈치킨 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(오븐마루|OVEN\\s*MARU|오븐마루치킨|오븐구이)",
+    "replacement": "치킨전문점",
+    "description": "오븐마루 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(구구치킨|99|구구|숯불바베큐)",
+    "replacement": "치킨전문점",
+    "description": "구구치킨 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(치킨|CHICKEN|통닭|닭튀김|프라이드치킨)",
+    "replacement": "치킨전문점",
+    "description": "치킨 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(후라이드|프라이드|FRIED|후치|크리스피)",
+    "replacement": "치킨전문점",
+    "description": "후라이드치킨 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(양념치킨|양념통닭|간장치킨|매운치킨|순한치킨)",
+    "replacement": "치킨전문점",
+    "description": "양념치킨 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(파닭|파치킨|대파치킨|파닭치킨)",
+    "replacement": "치킨전문점",
+    "description": "파닭 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(닭강정|강정|순살강정|매운강정|간장강정)",
+    "replacement": "치킨전문점",
+    "description": "닭강정 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(순살치킨|순살|뼈없는치킨|순살텐더)",
+    "replacement": "치킨전문점",
+    "description": "순살치킨 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(전기구이치킨|전기구이통닭|로티세리|구이치킨)",
+    "replacement": "치킨전문점",
+    "description": "전기구이치킨 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(숯불치킨|숯불구이|바베큐치킨|BBQ구이)",
+    "replacement": "치킨전문점",
+    "description": "숯불치킨 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(오븐치킨|오븐구이|베이크치킨|구운치킨)",
+    "replacement": "치킨전문점",
+    "description": "오븐치킨 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(반반치킨|반반|하프앤하프|믹스치킨)",
+    "replacement": "치킨전문점",
+    "description": "반반치킨 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(치킨너겟|너겟|텐더|치킨텐더|닭가슴살)",
+    "replacement": "치킨전문점",
+    "description": "치킨너겟/텐더 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(윙|봉|날개|닭날개|윙봉)",
+    "replacement": "치킨전문점",
+    "description": "윙/봉 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(24시치킨|새벽치킨|심야치킨|올나잇치킨)",
+    "replacement": "치킨전문점",
+    "description": "24시 치킨 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(치킨배달|배달치킨|치킨딜리버리|퀵치킨)",
+    "replacement": "치킨전문점",
+    "description": "치킨배달 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(치맥|치킨맥주|호프치킨|비어치킨)",
+    "replacement": "치킨전문점",
+    "description": "치맥 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(옛날치킨|전통치킨|시장치킨|재래식치킨)",
+    "replacement": "치킨전문점",
+    "description": "옛날치킨 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(신선치킨|생치킨|당일치킨|냉동안함)",
+    "replacement": "치킨전문점",
+    "description": "신선치킨 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(프리미엄치킨|수제치킨|장인치킨|명품치킨)",
+    "replacement": "치킨전문점",
+    "description": "프리미엄치킨 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(1인치킨|혼술치킨|혼밥치킨|소량치킨)",
+    "replacement": "치킨전문점",
+    "description": "1인 치킨 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(치킨버거|치킨샌드위치|치킨랩|치킨또띠아)",
+    "replacement": "치킨전문점",
+    "description": "치킨버거 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(치킨무|무|치킨소스|양념소스|딥소스)",
+    "replacement": "치킨전문점",
+    "description": "치킨 부가메뉴 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(치킨세트|세트메뉴|콜라세트|맥주세트)",
+    "replacement": "치킨전문점",
+    "description": "치킨세트 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(치킨테이크아웃|포장치킨|TO\\s*GO|픽업치킨)",
+    "replacement": "치킨전문점",
+    "description": "테이크아웃 치킨 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  }
+]

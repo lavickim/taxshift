@@ -1,0 +1,394 @@
+[
+  {
+    "pattern": "(하남돼지집|하남|HANAM|하남돈|하남돼지)",
+    "replacement": "고기집",
+    "description": "하남돼지집 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(육전식당|육전|YUKJEON|6전|육전본점)",
+    "replacement": "고기집",
+    "description": "육전식당 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(육대장|육대|YUKDAEJANG|6대장|소고기육대장)",
+    "replacement": "고기집",
+    "description": "육대장 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(곱창이야기|곱이|곱창스토리|곱창이야기본점)",
+    "replacement": "고기집",
+    "description": "곱창이야기 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(별난곱창|별곱|별난|별난곱창본점)",
+    "replacement": "고기집",
+    "description": "별난곱창 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(돈마루|DON\\s*MARU|돈마루본점|돈마루김치찌개)",
+    "replacement": "고기집",
+    "description": "돈마루 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(제주흑돼지|흑돼지|제주돼지|BLACK\\s*PORK)",
+    "replacement": "고기집",
+    "description": "제주흑돼지 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(삼겹살|삼겹|SAMGYEOPSAL|삼겹살구이|생삼겹)",
+    "replacement": "고기집",
+    "description": "삼겹살 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(목살|목삼겹|항정살|가브리살|갈매기살)",
+    "replacement": "고기집",
+    "description": "돼지고기 특수부위 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(오겹살|대패삼겹살|통삼겹|두툼삼겹)",
+    "replacement": "고기집",
+    "description": "삼겹살 변형 메뉴 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(갈비|GALBI|돼지갈비|왕갈비|양념갈비)",
+    "replacement": "고기집",
+    "description": "갈비 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(소갈비|LA갈비|본갈비|생갈비|꽃갈비)",
+    "replacement": "고기집",
+    "description": "소갈비 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(한우|HANWOO|1\\+\\+한우|한우전문|한우타운)",
+    "replacement": "고기집",
+    "description": "한우 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(등심|안심|채끝|꽃등심|부채살)",
+    "replacement": "고기집",
+    "description": "소고기 부위별 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(차돌박이|차돌|우삼겹|업진살|치마살)",
+    "replacement": "고기집",
+    "description": "소고기 특수부위 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(양고기|램|LAMB|양갈비|양꼬치)",
+    "replacement": "고기집",
+    "description": "양고기 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(숯불구이|숯불|참숯|CHARCOAL|바베큐)",
+    "replacement": "고기집",
+    "description": "숯불구이 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(생고기|생생고기|신선고기|당일도축)",
+    "replacement": "고기집",
+    "description": "생고기 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(무한리필|무한|뷔페고기|고기뷔페|셀프고기)",
+    "replacement": "고기집",
+    "description": "무한리필 고기집 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(정육식당|정육점식당|정육|BUTCHER)",
+    "replacement": "고기집",
+    "description": "정육식당 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(곱창|대창|막창|양|특양|모듬곱창)",
+    "replacement": "고기집",
+    "description": "곱창류 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(양념곱창|소금구이곱창|매운곱창|간장곱창)",
+    "replacement": "고기집",
+    "description": "곱창 양념별 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(곱창전골|곱창볶음|곱창구이|야채곱창)",
+    "replacement": "고기집",
+    "description": "곱창 조리법 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(닭갈비|춘천닭갈비|철판닭갈비|숯불닭갈비)",
+    "replacement": "고기집",
+    "description": "닭갈비 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(오리고기|오리|DUCK|오리주물럭|오리불고기)",
+    "replacement": "고기집",
+    "description": "오리고기 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(고기집|육류전문|MEAT|구이전문|BBQ전문)",
+    "replacement": "고기집",
+    "description": "고기집 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(숙성고기|숙성육|DRY\\s*AGED|웻에이징)",
+    "replacement": "고기집",
+    "description": "숙성육 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(모듬구이|모듬세트|한우모듬|스페셜세트)",
+    "replacement": "고기집",
+    "description": "모듬구이 세트 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(김치찌개|된장찌개|냉면|고기집냉면)",
+    "replacement": "고기집",
+    "description": "고기집 사이드메뉴 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(상추|쌈채소|쌈장|마늘|고추)",
+    "replacement": "고기집",
+    "description": "고기집 쌈채소 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(명이나물|깻잎|파채|양파절임)",
+    "replacement": "고기집",
+    "description": "고기집 특수 쌈채소 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(소금구이|양념구이|간장구이|고추장구이)",
+    "replacement": "고기집",
+    "description": "구이 양념별 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(연탄구이|연탄불고기|7분돼지|팔분돼지)",
+    "replacement": "고기집",
+    "description": "특수 조리법 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(고기타운|고깃거리|먹자골목고기|정육타운)",
+    "replacement": "고기집",
+    "description": "고기집 밀집지역 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(불판|철판|석쇠|그릴|로스터)",
+    "replacement": "고기집",
+    "description": "고기집 조리도구 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(집게|가위|앞치마|고기가위)",
+    "replacement": "고기집",
+    "description": "고기집 도구 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(환풍기|연기|숯불냄새|고기냄새)",
+    "replacement": "고기집",
+    "description": "고기집 환경 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(1인분|2인분|인분추가|최소주문)",
+    "replacement": "고기집",
+    "description": "고기집 주문단위 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(와규|WAGYU|미국산|호주산|수입육)",
+    "replacement": "고기집",
+    "description": "수입육 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(토시살|살치살|안창살|제비추리)",
+    "replacement": "고기집",
+    "description": "희귀부위 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(막걸리|소주|맥주|고기집술)",
+    "replacement": "고기집",
+    "description": "고기집 주류 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(회식|단체석|룸|고기집회식)",
+    "replacement": "고기집",
+    "description": "단체 고기집 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(점심특선|런치세트|고기정식|백반)",
+    "replacement": "고기집",
+    "description": "고기집 점심메뉴 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(고기굽는남자|고기굽는여자|고굽남|고굽녀)",
+    "replacement": "고기집",
+    "description": "서비스형 고기집 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(24시고기|새벽고기|심야고기집)",
+    "replacement": "고기집",
+    "description": "24시 고기집 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(포장고기|테이크아웃고기|배달고기)",
+    "replacement": "고기집",
+    "description": "포장/배달 고기집 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(캠핑고기|바베큐세트|BBQ세트)",
+    "replacement": "고기집",
+    "description": "캠핑용 고기 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(특수부위|부위별|전문부위)",
+    "replacement": "고기집",
+    "description": "특수부위 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(직화구이|직화|화로구이|장작구이)",
+    "replacement": "고기집",
+    "description": "직화구이 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  }
+]

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
+import { DataCollectionStatusDashboard } from './data-collection-status-dashboard';
 import { FranchiseBrandsAnalysis } from './franchise-brands-analysis';
 import { GyeonggiDataAnalysis } from './gyeonggi-data-analysis';
 import { GyeonggiDeliveryAnalysis } from './gyeonggi-delivery-analysis';
@@ -10,9 +11,29 @@ import { SegmentedKeywordAnalysis } from './segmented-keyword-analysis';
 import { SeoulRestaurantsAnalysis } from './seoul-restaurants-analysis';
 
 export function DataAnalysisContent() {
-  const [activeTab, setActiveTab] = useState('franchise-brands');
+  const [activeTab, setActiveTab] = useState('data-collection-status');
 
   const tabs = [
+    {
+      id: 'data-collection-status',
+      name: '📊 데이터 수집 현황',
+      count: '95% 목표',
+      icon: (
+        <svg
+          className='h-4 w-4'
+          fill='none'
+          stroke='currentColor'
+          viewBox='0 0 24 24'
+        >
+          <path
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            strokeWidth={2}
+            d='M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'
+          />
+        </svg>
+      ),
+    },
     {
       id: 'gyeonggi-delivery',
       name: '경기 데이터드림',
@@ -178,6 +199,7 @@ export function DataAnalysisContent() {
 
       {/* 탭 컨텐츠 */}
       <div className='min-h-[500px]'>
+        {activeTab === 'data-collection-status' && <DataCollectionStatusDashboard />}
         {activeTab === 'gyeonggi-delivery' && <GyeonggiDataAnalysis />}
         {activeTab === 'gyeonggi-delivery-stores' && (
           <GyeonggiDeliveryAnalysis />

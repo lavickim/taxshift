@@ -42,9 +42,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import {
-  RegexRule,
-} from '@/lib/services/regex-preprocessing.service';
+import { RegexRule } from '@/lib/services/regex-preprocessing.service';
 
 interface UIRegexRule extends RegexRule {
   testCases: number;
@@ -73,13 +71,15 @@ export function RegexRuleManagement() {
       setLoading(true);
       setError(null);
 
-      const response = await fetch('/api/regex-preprocessing/rules?sortBy=priority');
+      const response = await fetch(
+        '/api/regex-preprocessing/rules?sortBy=priority'
+      );
       const result = await response.json();
-      
+
       if (!result.success) {
         throw new Error(result.error || 'Failed to fetch rules');
       }
-      
+
       const fetchedRules = result.data;
 
       // RegexRule을 UIRegexRule로 변환

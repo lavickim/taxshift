@@ -1,0 +1,394 @@
+[
+  {
+    "pattern": "(스시|초밥|회전초밥|SUSHI|すし|寿司)",
+    "replacement": "일식당",
+    "description": "스시/초밥 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(스시로|스시잔마이|스시노미도리|스시효|스시쿠이네)",
+    "replacement": "일식당",
+    "description": "스시 전문 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(갓덴스시|상무초밥|초밥천국|스시웨이|스시박스)",
+    "replacement": "일식당",
+    "description": "국내 스시 프랜차이즈 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(오마카세|おまかせ|OMAKASE|셰프스초이스)",
+    "replacement": "일식당",
+    "description": "오마카세 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(사시미|さしみ|刺身|생선회|활어회)",
+    "replacement": "일식당",
+    "description": "사시미/회 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(라멘|라면|ラーメン|拉麺|RAMEN)",
+    "replacement": "일식당",
+    "description": "라멘 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(이치란|잇푸도|멘야산다이메|킷카타|하카타분코)",
+    "replacement": "일식당",
+    "description": "라멘 전문 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(돈코츠|돈코쓰|豚骨|미소|된장|시오|소금|쇼유|간장)",
+    "replacement": "일식당",
+    "description": "라멘 종류별 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(츠케멘|つけ麺|마제소바|아부라소바|탄탄멘)",
+    "replacement": "일식당",
+    "description": "특수 라멘 종류 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(우동|うどん|UDON|사누키우동|가케우동)",
+    "replacement": "일식당",
+    "description": "우동 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(마루가메제면|니쿠우동|역전우동|우동신|우동마루)",
+    "replacement": "일식당",
+    "description": "우동 프랜차이즈 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(소바|そば|蕎麦|SOBA|메밀국수|자루소바)",
+    "replacement": "일식당",
+    "description": "소바 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(돈까스|돈카츠|とんかつ|TONKATSU|돈가스)",
+    "replacement": "일식당",
+    "description": "돈까스 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(사보텐|카츠야|마이센|기소야|카츠&)",
+    "replacement": "일식당",
+    "description": "돈까스 전문 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(경양식|일본식돈까스|왕돈까스|치즈돈까스|카레돈까스)",
+    "replacement": "일식당",
+    "description": "돈까스 변형 메뉴 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(카츠동|카츠돈|かつ丼|가츠동|돈까스덮밥)",
+    "replacement": "일식당",
+    "description": "카츠동 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(규동|규돈|牛丼|GYUDON|소고기덮밥)",
+    "replacement": "일식당",
+    "description": "규동 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(요시노야|스키야|마츠야|나카우|규동전문)",
+    "replacement": "일식당",
+    "description": "규동 체인점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(덮밥|돈부리|どんぶり|DONBURI|일본덮밥)",
+    "replacement": "일식당",
+    "description": "덮밥 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(오야코동|親子丼|텐동|天丼|우나동|うな丼)",
+    "replacement": "일식당",
+    "description": "특수 덮밥 종류 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(이자카야|居酒屋|IZAKAYA|일본술집|일본선술집)",
+    "replacement": "일식당",
+    "description": "이자카야 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(와라와라|츠보하치|토리돈|야키토리|꼬치구이)",
+    "replacement": "일식당",
+    "description": "이자카야 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(사케|日本酒|니혼슈|청주|일본술)",
+    "replacement": "일식당",
+    "description": "일본술 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(야키니쿠|焼肉|YAKINIKU|일본식구이|화로구이)",
+    "replacement": "일식당",
+    "description": "야키니쿠 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(규카츠|규가츠|牛カツ|소고기카츠|비프카츠)",
+    "replacement": "일식당",
+    "description": "규카츠 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(텐푸라|덴뿌라|天ぷら|TEMPURA|튀김정식)",
+    "replacement": "일식당",
+    "description": "텐푸라 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(장어|우나기|うなぎ|UNAGI|장어구이|장어덮밥)",
+    "replacement": "일식당",
+    "description": "장어 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(스키야키|すき焼き|SUKIYAKI|일본식전골|샤브샤브)",
+    "replacement": "일식당",
+    "description": "스키야키/샤브샤브 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(나베|鍋|NABE|일본전골|일본식찌개)",
+    "replacement": "일식당",
+    "description": "나베 요리 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(벤토|弁当|BENTO|도시락|일본도시락)",
+    "replacement": "일식당",
+    "description": "일본식 도시락 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(오코노미야키|お好み焼き|타코야키|たこ焼き|일본전)",
+    "replacement": "일식당",
+    "description": "오코노미야키/타코야키 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(카레|카레라이스|カレー|CURRY|일본카레)",
+    "replacement": "일식당",
+    "description": "일본 카레 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(코코이찌방야|CoCo壱番屋|아비꼬|카레신)",
+    "replacement": "일식당",
+    "description": "카레 전문 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(미소시루|味噌汁|일본국|일본된장국)",
+    "replacement": "일식당",
+    "description": "일본 국/찌개 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(정식|定食|TEISHOKU|일본정식|일식정식)",
+    "replacement": "일식당",
+    "description": "일본 정식 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(야마야|오오토야|혼케츠루하시|후라토식당)",
+    "replacement": "일식당",
+    "description": "일본 정식당 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(모찌|떡|もち|MOCHI|일본떡)",
+    "replacement": "일식당",
+    "description": "일본 떡/디저트 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(와규|和牛|WAGYU|일본소|일본한우)",
+    "replacement": "일식당",
+    "description": "와규 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(참치|마구로|まぐろ|TUNA|참치전문)",
+    "replacement": "일식당",
+    "description": "참치 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(연어|사케|サケ|SALMON|연어전문)",
+    "replacement": "일식당",
+    "description": "연어 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(카이센동|海鮮丼|해산물덮밥|회덮밥)",
+    "replacement": "일식당",
+    "description": "카이센동 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(치라시|ちらし|CHIRASHI|치라시스시|흩뿌림초밥)",
+    "replacement": "일식당",
+    "description": "치라시 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(마키|巻き|MAKI|김밥초밥|롤초밥)",
+    "replacement": "일식당",
+    "description": "마키/롤 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(니기리|握り|NIGIRI|쥔초밥|손초밥)",
+    "replacement": "일식당",
+    "description": "니기리 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(가이세키|懐石|KAISEKI|일본코스요리|고급일식)",
+    "replacement": "일식당",
+    "description": "가이세키 요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(로바타야키|炉端焼|화로구이|일본숯불구이)",
+    "replacement": "일식당",
+    "description": "로바타야키 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(멘타이코|明太子|명란|명란젓|멘타이)",
+    "replacement": "일식당",
+    "description": "멘타이코 요리 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(에비|海老|새우튀김|새우카츠|에비후라이)",
+    "replacement": "일식당",
+    "description": "새우 요리 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(일본가정식|일본집밥|오카상|엄마손맛|일본홈쿠킹)",
+    "replacement": "일식당",
+    "description": "일본 가정식 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  }
+]

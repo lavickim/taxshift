@@ -1,0 +1,34 @@
+{
+  "summary": {
+    "testName": "MoneyShift Large Scale Performance Test",
+    "timestamp": "2025-07-27T16:34:54.211Z",
+    "totalRequests": 240,
+    "successfulRequests": 240,
+    "failedRequests": 0,
+    "successRate": "100.00%",
+    "totalExecutionTime": "3.09s",
+    "throughput": "77.76 req/s"
+  },
+  "performance": {
+    "averageResponseTime": "11.41ms",
+    "p50ResponseTime": "11.81ms",
+    "p95ResponseTime": "20.29ms",
+    "p99ResponseTime": "21.67ms",
+    "minResponseTime": "1.47ms",
+    "maxResponseTime": "27.33ms"
+  },
+  "caching": {
+    "totalCacheHits": 25,
+    "totalCacheMisses": 215,
+    "overallCacheHitRate": "10.42%",
+    "duplicateTestCount": 40,
+    "duplicateCacheHits": 0,
+    "duplicateCacheRate": "0.00%"
+  },
+  "scalability": {
+    "concurrencyLevel": 5,
+    "batchProcessing": true,
+    "memoryEfficient": true,
+    "apiStressTest": "PASSED"
+  }
+}

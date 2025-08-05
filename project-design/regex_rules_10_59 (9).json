@@ -1,0 +1,394 @@
+[
+  {
+    "pattern": "(김밥천국|김천|KIMBAB\\s*HEAVEN|김밥천국분식)",
+    "replacement": "분식점",
+    "description": "김밥천국 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(김밥나라|김밥나루|KIMBAB\\s*NARA|김나)",
+    "replacement": "분식점",
+    "description": "김밥나라 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(신전떡볶이|신전|SINJEON|신전떡볶이본점)",
+    "replacement": "분식점",
+    "description": "신전떡볶이 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(엽기떡볶이|엽떡|YUPDDUK|엽기)",
+    "replacement": "분식점",
+    "description": "엽기떡볶이 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(죠스떡볶이|죠스|JAWS|죠떡)",
+    "replacement": "분식점",
+    "description": "죠스떡볶이 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(떡참|떡참떡볶이|DDUK\\s*CHAM|떡참본점)",
+    "replacement": "분식점",
+    "description": "떡참 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(국대떡볶이|국대|국떡|GUKDAE)",
+    "replacement": "분식점",
+    "description": "국대떡볶이 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(아딸|아딸떡볶이|ADDAL|아딸본점)",
+    "replacement": "분식점",
+    "description": "아딸 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(김밥|KIMBAB|GIMBAP|김밥집|김밥전문)",
+    "replacement": "분식점",
+    "description": "김밥 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(참치김밥|야채김밥|충무김밥|누드김밥|꼬마김밥)",
+    "replacement": "분식점",
+    "description": "김밥 종류별 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(떡볶이|떡볶기|떡뽀끼|TTEOKBOKKI|DDUKBOKKI)",
+    "replacement": "분식점",
+    "description": "떡볶이 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(로제떡볶이|짜장떡볶이|궁중떡볶이|국물떡볶이)",
+    "replacement": "분식점",
+    "description": "떡볶이 종류별 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(라면|라멘|RAMEN|RAMYEON|컵라면)",
+    "replacement": "분식점",
+    "description": "라면 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(신라면|진라면|너구리|안성탕면|짜파게티)",
+    "replacement": "분식점",
+    "description": "라면 브랜드별 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(라볶이|라볶기|라면떡볶이|짜파구리|짜파게티라면)",
+    "replacement": "분식점",
+    "description": "라면 응용 메뉴 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(튀김|TWIGIM|야채튀김|오징어튀김|고구마튀김)",
+    "replacement": "분식점",
+    "description": "튀김 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(김말이|춘권|깻잎튀김|새우튀김|만두튀김)",
+    "replacement": "분식점",
+    "description": "튀김 종류별 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(순대|SUNDAE|순댓국|찰순대|당면순대)",
+    "replacement": "분식점",
+    "description": "순대 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(순대볶음|순대꼬치|순대정식|모듬순대)",
+    "replacement": "분식점",
+    "description": "순대 메뉴 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(어묵|오뎅|EOMUK|ODEN|어묵탕)",
+    "replacement": "분식점",
+    "description": "어묵 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(꼬치어묵|어묵국물|어묵바|매운어묵)",
+    "replacement": "분식점",
+    "description": "어묵 종류별 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(만두|MANDU|군만두|물만두|찐만두)",
+    "replacement": "분식점",
+    "description": "만두 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(왕만두|고기만두|김치만두|야채만두|새우만두)",
+    "replacement": "분식점",
+    "description": "만두 종류별 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(쫄면|쫄면무침|비빔쫄면|매운쫄면)",
+    "replacement": "분식점",
+    "description": "쫄면 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(국수|잔치국수|비빔국수|멸치국수|소면)",
+    "replacement": "분식점",
+    "description": "국수 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(우동|UDON|가락우동|어묵우동|김치우동)",
+    "replacement": "분식점",
+    "description": "우동 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(비빔밥|돌솥비빔밥|야채비빔밥|참치비빔밥)",
+    "replacement": "분식점",
+    "description": "분식점 비빔밥 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(볶음밥|김치볶음밥|새우볶음밥|햄볶음밥)",
+    "replacement": "분식점",
+    "description": "볶음밥 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(덮밥|제육덮밥|오징어덮밥|참치덮밥)",
+    "replacement": "분식점",
+    "description": "덮밥 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(주먹밥|삼각김밥|충무김밥세트|김밥정식)",
+    "replacement": "분식점",
+    "description": "주먹밥/세트 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(분식|분식집|분식점|BUNSIK|한식분식)",
+    "replacement": "분식점",
+    "description": "분식점 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(즉석떡볶이|즉떡|컵떡볶이|포장떡볶이)",
+    "replacement": "분식점",
+    "description": "즉석떡볶이 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(떡강정|떡꼬치|떡튀김|매운떡강정)",
+    "replacement": "분식점",
+    "description": "떡 응용메뉴 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(핫도그|소세지|햄치즈스틱|모짜핫도그)",
+    "replacement": "분식점",
+    "description": "핫도그 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(토스트|햄치즈토스트|계란토스트|야채토스트)",
+    "replacement": "분식점",
+    "description": "토스트 관련 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(떡라면|떡만둣국|라면김밥|라면정식)",
+    "replacement": "분식점",
+    "description": "라면 세트메뉴 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(분식세트|떡튀순|라볶이세트|김떡순)",
+    "replacement": "분식점",
+    "description": "분식 세트메뉴 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(학교앞분식|학교분식|대학분식|캠퍼스분식)",
+    "replacement": "분식점",
+    "description": "학교 분식점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(시장분식|재래시장분식|전통시장분식)",
+    "replacement": "분식점",
+    "description": "시장 분식점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(24시분식|24시간분식|새벽분식|심야분식)",
+    "replacement": "분식점",
+    "description": "24시간 분식점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(포장마차|노점|길거리분식|트럭분식)",
+    "replacement": "분식점",
+    "description": "포장마차/노점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(떡볶이뷔페|분식뷔페|무한리필떡볶이)",
+    "replacement": "분식점",
+    "description": "분식 뷔페 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(매운맛|중간맛|순한맛|신라면맛|짜장맛)",
+    "replacement": "분식점",
+    "description": "맵기/맛 단계 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(치즈떡볶이|치즈김밥|치즈라면|치즈추가)",
+    "replacement": "분식점",
+    "description": "치즈 토핑 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(계란추가|햄추가|김치추가|토핑추가)",
+    "replacement": "분식점",
+    "description": "토핑 추가 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(단무지|깍두기|김치|반찬|무료반찬)",
+    "replacement": "분식점",
+    "description": "분식점 반찬 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(분식체인|분식프랜차이즈|가맹점분식)",
+    "replacement": "분식점",
+    "description": "분식 체인점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(혼밥분식|1인분식|소량분식|미니세트)",
+    "replacement": "분식점",
+    "description": "1인 분식 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(배달분식|분식배달|떡볶이배달|포장분식)",
+    "replacement": "분식점",
+    "description": "분식 배달/포장 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  }
+]

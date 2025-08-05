@@ -1,0 +1,394 @@
+[
+  {
+    "pattern": "(한식|한식당|한식집|한국음식|한국요리|KOREAN)",
+    "replacement": "한식당",
+    "description": "한식당 일반 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(국밥|국밥집|순대국|돼지국밥|소머리국밥|뼈해장국)",
+    "replacement": "한식당",
+    "description": "국밥류 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(하동관|신선설농탕|명동교자|을밀대|진주회관)",
+    "replacement": "한식당",
+    "description": "전통 한식당 브랜드 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(본죽|죽이야기|팥죽|호박죽|전복죽|야채죽)",
+    "replacement": "한식당",
+    "description": "죽 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(찌개|김치찌개|된장찌개|순두부찌개|부대찌개|찌개백반)",
+    "replacement": "한식당",
+    "description": "찌개 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(백반|정식|한정식|백반집|가정식백반|집밥)",
+    "replacement": "한식당",
+    "description": "백반/정식 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(비빔밥|전주비빔밥|돌솥비빔밥|육회비빔밥|산채비빔밥)",
+    "replacement": "한식당",
+    "description": "비빔밥 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(한식뷔페|한정식뷔페|뷔페식당|무한리필한식)",
+    "replacement": "한식당",
+    "description": "한식 뷔페 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(삼계탕|백숙|토종닭|닭백숙|인삼삼계탕|영계백숙)",
+    "replacement": "한식당",
+    "description": "삼계탕/백숙 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(곰탕|설렁탕|갈비탕|우거지탕|사골국|꼬리곰탕)",
+    "replacement": "한식당",
+    "description": "탕류 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(감자탕|뼈해장국|뼈다귀|감자국|등뼈찜)",
+    "replacement": "한식당",
+    "description": "감자탕 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(24시|이십사시|24시간|새벽식당|올나잇)",
+    "replacement": "한식당",
+    "description": "24시 한식당 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(콩나물국밥|콩나물해장국|전주콩나물|남원추어탕|추어탕)",
+    "replacement": "한식당",
+    "description": "해장국 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(보쌈정식|수육백반|보쌈백반|김치보쌈|막국수보쌈)",
+    "replacement": "한식당",
+    "description": "보쌈정식 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(쌈밥|쌈밥정식|쌈채소|야채쌈밥|고기쌈밥)",
+    "replacement": "한식당",
+    "description": "쌈밥 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(제육볶음|제육백반|두루치기|김치제육|매운제육)",
+    "replacement": "한식당",
+    "description": "제육볶음 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(불고기|불고기백반|불고기정식|한우불고기|돼지불고기)",
+    "replacement": "한식당",
+    "description": "불고기 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(생선구이|고등어구이|갈치구이|조기구이|생선백반)",
+    "replacement": "한식당",
+    "description": "생선구이 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(냉면|물냉면|비빔냉면|평양냉면|함흥냉면|막국수)",
+    "replacement": "한식당",
+    "description": "냉면 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(육개장|육계장|대구탕|매운탕|알탕|알찌개)",
+    "replacement": "한식당",
+    "description": "매운탕류 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(청국장|청국장찌개|낫토찌개|구수한집)",
+    "replacement": "한식당",
+    "description": "청국장 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(갈비찜|찜갈비|소갈비찜|돼지갈비찜|매운갈비찜)",
+    "replacement": "한식당",
+    "description": "갈비찜 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(아구찜|아귀찜|해물찜|꽃게찜|대게찜)",
+    "replacement": "한식당",
+    "description": "해물찜 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(닭갈비|춘천닭갈비|철판닭갈비|닭갈비볶음밥)",
+    "replacement": "한식당",
+    "description": "닭갈비 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(찜닭|안동찜닭|간장찜닭|매운찜닭|치즈찜닭)",
+    "replacement": "한식당",
+    "description": "찜닭 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(닭볶음탕|닭도리탕|매운닭|춘천통닭|닭한마리)",
+    "replacement": "한식당",
+    "description": "닭볶음탕 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(오리탕|오리주물럭|오리로스|훈제오리|오리백숙)",
+    "replacement": "한식당",
+    "description": "오리 요리 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(전골|김치전골|부대전골|곱창전골|버섯전골)",
+    "replacement": "한식당",
+    "description": "전골 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(순대|순댓국|순대볶음|순대정식|암뽕순대)",
+    "replacement": "한식당",
+    "description": "순대 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(해장국|선지해장국|우거지해장국|북어해장국|황태해장국)",
+    "replacement": "한식당",
+    "description": "해장국 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(칼국수|손칼국수|바지락칼국수|들깨칼국수|김치칼국수)",
+    "replacement": "한식당",
+    "description": "칼국수 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(수제비|감자수제비|김치수제비|해물수제비|옹심이)",
+    "replacement": "한식당",
+    "description": "수제비 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(보리밥|산채비빔밥|나물밥|영양돌솥밥|곤드레밥)",
+    "replacement": "한식당",
+    "description": "건강식 한식당 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(떡갈비|떡갈비정식|화양떡갈비|담양떡갈비|한우떡갈비)",
+    "replacement": "한식당",
+    "description": "떡갈비 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(편육|수육|돼지수육|보쌈수육|막걸리집)",
+    "replacement": "한식당",
+    "description": "편육/수육 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(두부|두부전골|두부김치|순두부|모두부)",
+    "replacement": "한식당",
+    "description": "두부 요리 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(장어구이|민물장어|풍천장어|장어정식|장어탕)",
+    "replacement": "한식당",
+    "description": "장어구이 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(막창|곱창구이|대창구이|양구이|특양구이)",
+    "replacement": "한식당",
+    "description": "곱창구이 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(전|파전|김치전|해물파전|동그랑땡|전집)",
+    "replacement": "한식당",
+    "description": "전 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(묵|도토리묵|메밀묵|묵밥|묵사발|묵무침)",
+    "replacement": "한식당",
+    "description": "묵 요리 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(나물|산나물|나물정식|산채정식|약선요리)",
+    "replacement": "한식당",
+    "description": "나물/산채 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(궁중요리|한정식|고급한정식|전통한정식|코스요리)",
+    "replacement": "한식당",
+    "description": "궁중/고급 한정식 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(사찰음식|절밥|템플푸드|비건한식|채식한정식)",
+    "replacement": "한식당",
+    "description": "사찰/채식 한식 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(반찬가게|반찬전문|밑반찬|김치전문|젓갈전문)",
+    "replacement": "한식당",
+    "description": "반찬 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(돌솥밥|영양밥|솥밥|가마솥밥|돌솥정식)",
+    "replacement": "한식당",
+    "description": "돌솥밥 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(막걸리|동동주|전통주|전통주점|민속주점)",
+    "replacement": "한식당",
+    "description": "전통주점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(도가니|도가니탕|꼬리탕|사골탕|진국)",
+    "replacement": "한식당",
+    "description": "도가니/사골 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(육회|육사시미|한우육회|육회비빔밥|뭉티기)",
+    "replacement": "한식당",
+    "description": "육회 전문점 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(곰국시|곰국|할매국밥|할매집|시골밥상)",
+    "replacement": "한식당",
+    "description": "시골/전통 한식당 패턴",
+    "category": "음식점",
+    "enabled": true,
+    "priority": 80
+  }
+]

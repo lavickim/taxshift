@@ -2,7 +2,15 @@
 
 import React, { useEffect, useState } from 'react';
 
-import { Edit, Hash, Loader2, Plus, RefreshCw, Target, Trash2 } from 'lucide-react';
+import {
+  Edit,
+  Hash,
+  Loader2,
+  Plus,
+  RefreshCw,
+  Target,
+  Trash2,
+} from 'lucide-react';
 import { toast } from 'sonner';
 
 import { Badge } from '@/components/ui/badge';

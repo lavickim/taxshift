@@ -1,0 +1,394 @@
+[
+  {
+    "pattern": "(탐앤탐스|TOM\\s*N\\s*TOMS|탐탐|토망토망스|탐앤톰스)",
+    "replacement": "프랜차이즈카페",
+    "description": "탐앤탐스 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(폴바셋|PAUL\\s*BASSETT|폴바셋커피|폴베이셋)",
+    "replacement": "프랜차이즈카페",
+    "description": "폴바셋 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(빽다방|백다방|PAIK'S\\s*COFFEE|빽스커피|빽커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "빽다방 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 90
+  },
+  {
+    "pattern": "(커피빈|COFFEE\\s*BEAN|더커피빈|커피빈앤티리프)",
+    "replacement": "프랜차이즈카페",
+    "description": "커피빈 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(할리스|HOLLYS|할리스커피|홀리스)",
+    "replacement": "프랜차이즈카페",
+    "description": "할리스 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(파스쿠찌|PASCUCCI|파스쿠치|카페파스쿠찌)",
+    "replacement": "프랜차이즈카페",
+    "description": "파스쿠찌 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 85
+  },
+  {
+    "pattern": "(드롭탑|DROP\\s*TOP|카페드롭탑|드롭탑커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "드롭탑 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(커피베이|COFFEE\\s*BAY|커피베이24|커베)",
+    "replacement": "프랜차이즈카페",
+    "description": "커피베이 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(요거프레소|YOGERPRESSO|요거프레쏘|요프)",
+    "replacement": "프랜차이즈카페",
+    "description": "요거프레소 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(커피명가|COFFEE\\s*MYUNGGA|커피명가에스프레소)",
+    "replacement": "프랜차이즈카페",
+    "description": "커피명가 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(카페띠아모|CAFFE\\s*TI\\s*AMO|띠아모|티아모)",
+    "replacement": "프랜차이즈카페",
+    "description": "카페띠아모 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(달콤커피|DAL\\.KOMM|달콤|달컴커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "달콤커피 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(커피스미스|COFFEE\\s*SMITH|커피스미쓰|스미스커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "커피스미스 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(셀렉토커피|SELECTO|셀렉토|셀렉토커피숍)",
+    "replacement": "프랜차이즈카페",
+    "description": "셀렉토커피 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(커피나무|COFFEE\\s*NAMU|커피나무로스터스)",
+    "replacement": "프랜차이즈카페",
+    "description": "커피나무 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(망고식스|MANGO\\s*SIX|망고6|망식)",
+    "replacement": "프랜차이즈카페",
+    "description": "망고식스 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(카페드파리|CAFE\\s*DE\\s*PARIS|카드파|파리카페)",
+    "replacement": "프랜차이즈카페",
+    "description": "카페드파리 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(그라찌에|GRAZIE|그라찌에커피|그라제)",
+    "replacement": "프랜차이즈카페",
+    "description": "그라찌에 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(카페보니또|BONITO|보니또|보니토커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "카페보니또 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(커피에반하다|반하다|에반하다|BANHADA)",
+    "replacement": "프랜차이즈카페",
+    "description": "커피에반하다 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(더착한커피|착한커피|THE착한|착커)",
+    "replacement": "프랜차이즈카페",
+    "description": "더착한커피 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(카페마마스|CAFE\\s*MAMAS|마마스|카페마마)",
+    "replacement": "프랜차이즈카페",
+    "description": "카페마마스 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(하삼동커피|HASAMDONG|하삼동|삼동커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "하삼동커피 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(카페봄봄|CAFE\\s*BOMBOM|봄봄|봄봄커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "카페봄봄 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(더리터|THE\\s*LITER|더리터커피|리터커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "더리터 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(매머드커피|MAMMOTH|매머드|맘모스커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "매머드커피 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 80
+  },
+  {
+    "pattern": "(커피온리|COFFEE\\s*ONLY|커피온니|온리커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "커피온리 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(감성커피|GAMSUNG|감성|감커)",
+    "replacement": "프랜차이즈카페",
+    "description": "감성커피 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(커피볶는집|볶는집|ROASTING\\s*HOUSE|로스팅하우스)",
+    "replacement": "프랜차이즈카페",
+    "description": "커피볶는집 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(빈스빈스|BEANS\\s*BINS|빈스빈즈|빈빈)",
+    "replacement": "프랜차이즈카페",
+    "description": "빈스빈스 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(카페아띠|CAFE\\s*ATTI|아띠|아티커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "카페아띠 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(토프레소|TOPRESSO|토프|탑프레소)",
+    "replacement": "프랜차이즈카페",
+    "description": "토프레소 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(카페세나|SENA|세나커피|카페쎄나)",
+    "replacement": "프랜차이즈카페",
+    "description": "카페세나 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(카페라떼아트|LATTE\\s*ART|라떼아트|라떼아트커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "카페라떼아트 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(드립앤드립|DRIP\\s*&\\s*DRIP|드립드립|드앤드)",
+    "replacement": "프랜차이즈카페",
+    "description": "드립앤드립 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(커피플레이스|COFFEE\\s*PLACE|커플|플레이스커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "커피플레이스 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(카페7그램|7GRAM|세븐그램|7그램커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "카페7그램 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(카페노티드|NOTED|노티드|노티드커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "카페노티드 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 75
+  },
+  {
+    "pattern": "(커피팩토리|COFFEE\\s*FACTORY|팩토리|팩토리커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "커피팩토리 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(카페리브레|LIBRE|리브레|리브레커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "카페리브레 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(모카블렌드|MOCA\\s*BLEND|모카|블렌드커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "모카블렌드 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(카페코지|COZY|코지|코지커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "카페코지 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(커피타임|COFFEE\\s*TIME|타임|타임커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "커피타임 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(카페클라우드|CLOUD|클라우드|클라우드커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "카페클라우드 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(카페포레|FORE|포레|포레커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "카페포레 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(더센터커피|THE\\s*CENTER|센터커피|더센터)",
+    "replacement": "프랜차이즈카페",
+    "description": "더센터커피 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(블루포트|BLUE\\s*POT|블루팟|블포)",
+    "replacement": "프랜차이즈카페",
+    "description": "블루포트 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(카페베네치아|VENEZIA|베네치아|베네치아커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "카페베네치아 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  },
+  {
+    "pattern": "(카페인중독|CAFFEINE|인중독|카페인커피)",
+    "replacement": "프랜차이즈카페",
+    "description": "카페인중독 브랜드 패턴",
+    "category": "카페",
+    "enabled": true,
+    "priority": 70
+  }
+]

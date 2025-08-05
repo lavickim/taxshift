@@ -1278,11 +1278,13 @@ export function LLMManagement() {
                               data={[
                                 {
                                   name: '긍정',
-                                  value: analytics?.feedback_stats?.positive || 0,
+                                  value:
+                                    analytics?.feedback_stats?.positive || 0,
                                 },
                                 {
                                   name: '부정',
-                                  value: analytics?.feedback_stats?.negative || 0,
+                                  value:
+                                    analytics?.feedback_stats?.negative || 0,
                                 },
                                 {
                                   name: 'LLM',
@@ -1300,11 +1302,13 @@ export function LLMManagement() {
                               {[
                                 {
                                   name: '긍정',
-                                  value: analytics?.feedback_stats?.positive || 0,
+                                  value:
+                                    analytics?.feedback_stats?.positive || 0,
                                 },
                                 {
                                   name: '부정',
-                                  value: analytics?.feedback_stats?.negative || 0,
+                                  value:
+                                    analytics?.feedback_stats?.negative || 0,
                                 },
                                 {
                                   name: 'LLM',
@@ -1333,7 +1337,9 @@ export function LLMManagement() {
                       </CardHeader>
                       <CardContent>
                         <ResponsiveContainer width='100%' height={300}>
-                          <BarChart data={analytics?.common_classifications || []}>
+                          <BarChart
+                            data={analytics?.common_classifications || []}
+                          >
                             <CartesianGrid strokeDasharray='3 3' />
                             <XAxis dataKey='tag' />
                             <YAxis />
