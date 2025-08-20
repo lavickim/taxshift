@@ -92,6 +92,8 @@ dist/
 # Electron manager app specific
 moneyshift-manager/dist/
 **/moneyshift-manager/dist/
+mshift-manager/dist/
+**/mshift-manager/dist/
 
 # ===========================================
 # Environment & Config
