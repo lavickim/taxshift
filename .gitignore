@@ -89,6 +89,10 @@ dist/
 *.deb
 *.rpm
 
+# Electron manager app specific
+moneyshift-manager/dist/
+**/moneyshift-manager/dist/
+
 # ===========================================
 # Environment & Config
 # ===========================================
