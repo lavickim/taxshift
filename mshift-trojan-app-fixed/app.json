@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "MoneyShift 가계부",
-    "slug": "mshift-trojan-app",
+    "name": "머니쉬프트",
+    "slug": "MoneyShift",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

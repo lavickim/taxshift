@@ -1,4 +1,13 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(./test.sh:*)",
+      "Bash(git push:*)",
+      "Bash(git config:*)",
+      "Bash(git fetch:*)"
+    ],
+    "deny": []
+  },
   "todoManagement": {
     "enabled": true,
     "masterTodoPath": "project-design/todo/master-todolist.md",
@@ -128,11 +137,5 @@
       "Validate implementation against design requirements",
       "Maintain traceability between requirements and implementation"
     ]
-  },
-  "permissions": {
-    "allow": [
-      "Bash(./test.sh:*)"
-    ],
-    "deny": []
   }
 }

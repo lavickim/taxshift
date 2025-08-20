@@ -9,7 +9,7 @@ import {
   Switch,
   Alert,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { Ionicons } from '@expo/vector-icons';
 import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { logout, updateUser } from '../store/slices/userSlice';
 
@@ -195,12 +195,12 @@ export default function SettingsScreen({ navigation }: any) {
         <View style={styles.profileSection}>
           <View style={styles.profileInfo}>
             <View style={styles.avatar}>
-              <Icon name="person" size={32} color="#666" />
+              <Ionicons name="person" size={32} color="#666" />
             </View>
             <View style={styles.userInfo}>
               <Text style={styles.userName}>{user?.name || '사용자'}</Text>
               <Text style={styles.userEmail}>{user?.email || 'user@example.com'}</Text>
-              <Text style={styles.userStatus}>
+              <Text style={user?.isPremium ? styles.userStatusPremium : styles.userStatus}>
                 {user?.isPremium ? '프리미엄 사용자' : '무료 사용자'}
               </Text>
             </View>
@@ -211,7 +211,7 @@ export default function SettingsScreen({ navigation }: any) {
               style={styles.upgradeButton}
               onPress={handleUpgradePremium}
             >
-              <Icon name="star" size={20} color="white" />
+              <Ionicons name="star" size={20} color="white" />
               <Text style={styles.upgradeButtonText}>프리미엄으로 업그레이드</Text>
             </TouchableOpacity>
           )}
@@ -228,7 +228,7 @@ export default function SettingsScreen({ navigation }: any) {
                 onPress={item.onPress}
                 disabled={item.toggle}
               >
-                <Icon name={item.icon} size={24} color="#666" />
+                <Ionicons name={item.icon} size={24} color="#666" />
                 <View style={styles.settingContent}>
                   <Text style={styles.settingTitle}>{item.title}</Text>
                   <Text style={styles.settingSubtitle}>{item.subtitle}</Text>
@@ -241,7 +241,7 @@ export default function SettingsScreen({ navigation }: any) {
                     thumbColor="white"
                   />
                 ) : (
-                  <Icon name="chevron-forward" size={20} color="#ccc" />
+                  <Ionicons name="chevron-forward" size={20} color="#ccc" />
                 )}
               </TouchableOpacity>
             ))}
@@ -253,7 +253,7 @@ export default function SettingsScreen({ navigation }: any) {
           <Text style={styles.sectionTitle}>달성 현황</Text>
           <View style={styles.achievementCard}>
             <View style={styles.achievementHeader}>
-              <Icon name="trophy" size={24} color="#FFD700" />
+              <Ionicons name="trophy" size={24} color="#FFD700" />
               <Text style={styles.achievementTitle}>레벨 3 - 절약 마스터</Text>
             </View>
             <Text style={styles.achievementDescription}>
@@ -277,7 +277,7 @@ export default function SettingsScreen({ navigation }: any) {
 
         {/* Logout Button */}
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Icon name="log-out-outline" size={24} color="#FF6B6B" />
+          <Ionicons name="log-out-outline" size={24} color="#FF6B6B" />
           <Text style={styles.logoutText}>로그아웃</Text>
         </TouchableOpacity>
 
@@ -341,7 +341,12 @@ const styles = StyleSheet.create({
   },
   userStatus: {
     fontSize: 12,
-    color: user?.isPremium ? '#FFD700' : '#999',
+    color: '#999',
+    fontWeight: '500',
+  },
+  userStatusPremium: {
+    fontSize: 12,
+    color: '#FFD700',
     fontWeight: '500',
   },
   upgradeButton: {

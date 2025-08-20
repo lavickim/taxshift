@@ -8,7 +8,7 @@ import {
   SafeAreaView,
   RefreshControl,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { Ionicons } from '@expo/vector-icons';
 import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { fetchDashboardData } from '../store/slices/dashboardSlice';
 
@@ -73,7 +73,7 @@ export default function TransactionListScreen({ navigation }: any) {
       onPress={() => navigation.navigate('TransactionDetail', { transaction: item })}
     >
       <View style={[styles.iconContainer, { backgroundColor: getCategoryColor(item.category) }]}>
-        <Icon name={getCategoryIcon(item.category)} size={24} color="white" />
+        <Ionicons name={getCategoryIcon(item.category)} size={24} color="white" />
       </View>
       
       <View style={styles.transactionDetails}>
@@ -92,7 +92,7 @@ export default function TransactionListScreen({ navigation }: any) {
         <Text style={styles.paymentMethod}>{item.paymentMethod}</Text>
       </View>
       
-      <Icon name="chevron-forward" size={20} color="#ccc" />
+      <Ionicons name="chevron-forward" size={20} color="#ccc" />
     </TouchableOpacity>
   );
 
@@ -101,7 +101,7 @@ export default function TransactionListScreen({ navigation }: any) {
       <View style={styles.header}>
         <Text style={styles.headerTitle}>거래 내역</Text>
         <TouchableOpacity style={styles.filterButton}>
-          <Icon name="filter" size={20} color="#007AFF" />
+          <Ionicons name="filter" size={20} color="#007AFF" />
         </TouchableOpacity>
       </View>
 
@@ -132,7 +132,7 @@ export default function TransactionListScreen({ navigation }: any) {
         }
         ListEmptyComponent={
           <View style={styles.emptyState}>
-            <Icon name="receipt-outline" size={64} color="#ccc" />
+            <Ionicons name="receipt-outline" size={64} color="#ccc" />
             <Text style={styles.emptyText}>거래 내역이 없습니다</Text>
             <Text style={styles.emptySubtext}>영수증을 촬영하여 거래를 추가해보세요</Text>
           </View>
@@ -143,7 +143,7 @@ export default function TransactionListScreen({ navigation }: any) {
         style={styles.fab}
         onPress={() => navigation.navigate('Camera')}
       >
-        <Icon name="add" size={28} color="white" />
+        <Ionicons name="add" size={28} color="white" />
       </TouchableOpacity>
     </SafeAreaView>
   );
