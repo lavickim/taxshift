@@ -47,6 +47,7 @@ server-test.log
 # ===========================================
 # dependencies
 node_modules/
+**/node_modules/
 /.pnp
 .pnp.*
 .yarn/*
@@ -54,6 +55,11 @@ node_modules/
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
+
+# Package manager files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
 
 # testing
 /coverage
@@ -69,6 +75,19 @@ data/mshift-admin/.next/
 # production
 /build
 /dist
+**/dist/
+**/build/
+build/
+dist/
+
+# Electron build files
+*.dmg
+*.app
+*.exe
+*.AppImage
+*.snap
+*.deb
+*.rpm
 
 # ===========================================
 # Environment & Config
@@ -157,6 +176,17 @@ data/source/*
 
 # Raw data collection directory
 mshift-data/
+**/mshift-data/
+
+# Large files (over 50MB)
+*.framework
+Electron\ Framework
+**/Electron\ Framework
+
+# Database backup files
+*.sql
+backups/
+**/backups/
 
 # Script generated files
 analyze-*.js
