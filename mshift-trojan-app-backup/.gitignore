@@ -1,0 +1,47 @@
+# 기본 무시할 파일들
+node_modules/
+.expo/
+dist/
+build/
+coverage/
+.cache/
+logs/
+tmp/
+temp/
+*.log
+*.cache
+
+# OS 생성 파일들
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE 파일들
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 빌드 파일들
+*.tgz
+*.tar.gz
+*.zip
+out/
+.next/
+.nuxt/
+target/
+
+# 환경 파일들
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Metro bundler cache
+.metro-health-check*

@@ -1,0 +1,25 @@
+{
+  "ignore_dirs": [
+    "node_modules",
+    ".git",
+    ".expo",
+    "dist", 
+    "build",
+    "coverage",
+    ".cache",
+    "logs",
+    "tmp",
+    "temp",
+    ".next",
+    ".nuxt",
+    "out",
+    "target",
+    ".gradle",
+    ".idea",
+    ".vscode",
+    "*.log",
+    "*.cache",
+    ".DS_Store",
+    "Thumbs.db"
+  ]
+}
