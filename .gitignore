@@ -224,3 +224,51 @@ test-*.json
 *.map
 *.js.map
 *.css.map
+
+# ===========================================
+# React Native / Android / Mobile
+# ===========================================
+# Android
+android/app/build/
+android/build/
+android/.gradle/
+android/local.properties
+android/**/*.keystore
+!android/**/debug.keystore
+*.apk
+*.aab
+
+# React Native
+.metro-cache/
+.metro-health-check*
+*.jsbundle
+
+# iOS
+ios/build/
+ios/Pods/
+ios/*.xcworkspace/xcuserdata/
+ios/*.xcodeproj/xcuserdata/
+ios/*.xcodeproj/project.xcworkspace/xcshareddata/
+ios/Podfile.lock
+
+# Expo (legacy)
+.expo/
+.expo-shared/
+expo-env.d.ts
+
+# Mobile development tools
+.flipper/
+.vscode/settings.json
+
+# React Native specific
+**/react-native-*/android/build/
+**/react-native-*/ios/build/
+
+# ExpenseTrackerFresh specific
+ExpenseTrackerFresh/android/app/build/
+ExpenseTrackerFresh/android/build/
+ExpenseTrackerFresh/android/.gradle/
+ExpenseTrackerFresh/android/local.properties
+mshift-trojan-app/android/app/build/
+mshift-trojan-app/android/build/
+mshift-trojan-app/.expo/
