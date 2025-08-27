@@ -16,6 +16,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
   DateTime selectedDate = DateTime.now();
   late TabController _tabController;
+  late PageController _pageController;
   int _selectedTabIndex = 1; // 달력 탭 기본 선택
   Map<int, List<Transaction>> transactionsByDay = {};
   MonthlySummary? monthlySummary;
@@ -29,12 +30,17 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   void initState() {
     super.initState();
     _tabController = TabController(length: _topTabs.length, vsync: this, initialIndex: 1);
+    // PageController를 초기 페이지 1200으로 설정
+    final now = DateTime.now();
+    final currentMonthDiff = (selectedDate.year - now.year) * 12 + (selectedDate.month - now.month);
+    _pageController = PageController(initialPage: 1200 + currentMonthDiff);
     loadData();
   }
 
   @override
   void dispose() {
     _tabController.dispose();
+    _pageController.dispose();
     super.dispose();
   }
 
@@ -108,10 +114,14 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   }
 
   void changeMonth(int offset) {
-    setState(() {
-      selectedDate = DateTime(selectedDate.year, selectedDate.month + offset, 1);
-    });
-    loadData();
+    // PageView를 이동시키기
+    final currentPage = _pageController.page?.round() ?? 1200;
+    _pageController.animateToPage(
+      currentPage + offset,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+    // selectedDate는 PageView의 onPageChanged에서 업데이트됨
   }
 
   @override
@@ -260,15 +270,14 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     final currentMonthDiff = (selectedDate.year - now.year) * 12 + (selectedDate.month - now.month);
     
     return PageView.builder(
-      controller: PageController(
-        initialPage: 1200 + currentMonthDiff, // 선택된 월로 시작
-      ),
+      controller: _pageController,
       onPageChanged: (index) {
         // 1200을 기준으로 월 차이 계산
         final monthDiff = index - 1200;
+        final currentNow = DateTime.now();
         final newDate = DateTime(
-          now.year,
-          now.month + monthDiff,
+          currentNow.year,
+          currentNow.month + monthDiff,
           1,
         );
         setState(() {
@@ -279,11 +288,16 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       itemBuilder: (context, pageIndex) {
         // 1200을 기준으로 월 차이 계산
         final monthDiff = pageIndex - 1200;
+        // DateTime.now()를 여기서 다시 호출하여 현재 시점 기준으로 계산
+        final currentNow = DateTime.now();
         final displayDate = DateTime(
-          now.year,
-          now.month + monthDiff,
+          currentNow.year,
+          currentNow.month + monthDiff,
           1,
         );
+        
+        // 디버깅: pageIndex와 계산된 날짜 확인
+        print('DEBUG: pageIndex=$pageIndex, monthDiff=$monthDiff, displayDate=${displayDate.year}년 ${displayDate.month}월');
         
         // 월의 첫날과 마지막날 정확히 계산
         final firstDayOfMonth = DateTime(displayDate.year, displayDate.month, 1);
@@ -300,6 +314,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         } else {
           firstWeekday = firstDayOfMonth.weekday; // 월(1) ~ 토(6)
         }
+        
+        // 디버깅: 각 월의 시작 요일 확인
+        print('  → ${displayDate.year}년 ${displayDate.month}월 1일 - weekday: ${firstDayOfMonth.weekday}, firstWeekday: $firstWeekday');
         
         final weekDays = ['일', '월', '화', '수', '목', '금', '토'];
         
@@ -353,6 +370,11 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   ),
                   itemCount: 42,
                   itemBuilder: (context, index) {
+                    // 디버깅: 각 셀의 인덱스와 firstWeekday 확인
+                    if (index == 0) {
+                      print('    GridView 렌더링: firstWeekday=$firstWeekday, month=${displayDate.month}');
+                    }
+                    
                     // 캘린더 그리드에서 실제 날짜 계산
                     late final DateTime cellDate;
                     bool isCurrentMonth = false;
@@ -370,6 +392,11 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                       isCurrentMonth = true;
                       final dayOfMonth = index - firstWeekday + 1;
                       cellDate = DateTime(displayDate.year, displayDate.month, dayOfMonth);
+                      
+                      // 디버깅: 1일의 위치 확인
+                      if (dayOfMonth == 1) {
+                        print('      → 1일 위치: index=$index, firstWeekday=$firstWeekday');
+                      }
                     } else {
                       // 다음 달 날짜들
                       isNextMonth = true;
