@@ -285,16 +285,20 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           1,
         );
         
-        final daysInMonth = DateTime(displayDate.year, displayDate.month + 1, 0).day;
+        // 월의 첫날과 마지막날 정확히 계산
         final firstDayOfMonth = DateTime(displayDate.year, displayDate.month, 1);
+        final lastDayOfMonth = DateTime(displayDate.year, displayDate.month + 1, 0);
+        final daysInMonth = lastDayOfMonth.day;
         
-        // Flutter의 weekday: 1=월요일, 2=화요일, ..., 7=일요일
-        // 캘린더 표시용: 일요일=0, 월요일=1, ..., 토요일=6
+        // 첫날의 요일 계산 - 일요일부터 시작하는 캘린더를 위한 변환
+        // Flutter weekday: 1=월, 2=화, 3=수, 4=목, 5=금, 6=토, 7=일
+        // 캘린더 인덱스: 0=일, 1=월, 2=화, 3=수, 4=목, 5=금, 6=토
+        // 변환: 일(7)→0, 월(1)→1, 화(2)→2, 수(3)→3, 목(4)→4, 금(5)→5, 토(6)→6
         int firstWeekday;
         if (firstDayOfMonth.weekday == 7) {
           firstWeekday = 0; // 일요일
         } else {
-          firstWeekday = firstDayOfMonth.weekday; // 월요일=1, 화요일=2, ...
+          firstWeekday = firstDayOfMonth.weekday; // 월(1) ~ 토(6)
         }
         
         final weekDays = ['일', '월', '화', '수', '목', '금', '토'];
@@ -349,30 +353,40 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   ),
                   itemCount: 42,
                   itemBuilder: (context, index) {
-                    final dayNumber = index - firstWeekday + 1;
-                    final isCurrentMonth = dayNumber > 0 && dayNumber <= daysInMonth;
-                    final isToday = isCurrentMonth && 
-                                   dayNumber == DateTime.now().day &&
-                                   displayDate.month == DateTime.now().month &&
-                                   displayDate.year == DateTime.now().year;
-                    
-                    // 이전/다음 달 날짜 표시
-                    int displayDay = dayNumber;
+                    // 캘린더 그리드에서 실제 날짜 계산
+                    late final DateTime cellDate;
+                    bool isCurrentMonth = false;
                     bool isPrevMonth = false;
                     bool isNextMonth = false;
                     
-                    if (dayNumber <= 0) {
-                      // 이전 달 날짜
+                    if (index < firstWeekday) {
+                      // 이전 달 날짜들
                       isPrevMonth = true;
-                      final prevMonth = DateTime(displayDate.year, displayDate.month, 0);
-                      displayDay = prevMonth.day + dayNumber;
-                    } else if (dayNumber > daysInMonth) {
-                      // 다음 달 날짜
+                      final prevMonthLastDay = DateTime(displayDate.year, displayDate.month, 0);
+                      final prevMonthDay = prevMonthLastDay.day - (firstWeekday - index - 1);
+                      cellDate = DateTime(prevMonthLastDay.year, prevMonthLastDay.month, prevMonthDay);
+                    } else if (index < firstWeekday + daysInMonth) {
+                      // 현재 달 날짜들
+                      isCurrentMonth = true;
+                      final dayOfMonth = index - firstWeekday + 1;
+                      cellDate = DateTime(displayDate.year, displayDate.month, dayOfMonth);
+                    } else {
+                      // 다음 달 날짜들
                       isNextMonth = true;
-                      displayDay = dayNumber - daysInMonth;
+                      final nextMonthDay = index - firstWeekday - daysInMonth + 1;
+                      cellDate = DateTime(displayDate.year, displayDate.month + 1, nextMonthDay);
                     }
                     
-                    final dayTransactions = monthTransactions[dayNumber] ?? [];
+                    // cellDate는 nullable이 아니므로 null 체크 제거
+                    final isToday = cellDate.day == DateTime.now().day &&
+                                   cellDate.month == DateTime.now().month &&
+                                   cellDate.year == DateTime.now().year;
+                    
+                    // 현재 달의 거래만 표시
+                    final dayTransactions = isCurrentMonth && monthTransactions.containsKey(cellDate.day) 
+                        ? monthTransactions[cellDate.day]! 
+                        : <Transaction>[];
+                    
                     double dayIncome = 0;
                     double dayExpense = 0;
                     
@@ -394,7 +408,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                           changeMonth(1);
                         } else if (isCurrentMonth) {
                           // 날짜 클릭 시 상세 보기
-                          _showDayDetails(displayDate, dayNumber, dayTransactions);
+                          _showDayDetails(cellDate, cellDate.day, dayTransactions);
                         }
                       },
                       child: Container(
@@ -411,32 +425,43 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              displayDay.toString(),
+                              cellDate.day.toString(),
                               style: AppTypography.caption.copyWith(
                                 color: isToday ? AppColors.primaryRed : 
                                        (isPrevMonth || isNextMonth) ? AppColors.textTertiary :
+                                       cellDate.weekday == 7 ? AppColors.primaryRed :  // 일요일
+                                       cellDate.weekday == 6 ? AppColors.primaryBlue :  // 토요일
                                        AppColors.textPrimary,
                                 fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
+                                fontSize: 11,
                               ),
                             ),
-                            if (isCurrentMonth) ...[
-                              const SizedBox(height: 2),
-                              if (dayIncome > 0)
-                                Text(
-                                  '+${NumberFormat.compact(locale: 'ko').format(dayIncome)}',
-                                  style: TextStyle(
-                                    color: AppColors.primaryBlue,
-                                    fontSize: 10,
-                                  ),
+                            if (isCurrentMonth && (dayIncome > 0 || dayExpense > 0)) ...[
+                              const SizedBox(height: 1),
+                              Flexible(
+                                child: Column(
+                                  children: [
+                                    if (dayIncome > 0)
+                                      Text(
+                                        '+${NumberFormat.compact(locale: 'ko').format(dayIncome)}',
+                                        style: TextStyle(
+                                          color: AppColors.primaryBlue,
+                                          fontSize: 9,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    if (dayExpense > 0)
+                                      Text(
+                                        '-${NumberFormat.compact(locale: 'ko').format(dayExpense)}',
+                                        style: TextStyle(
+                                          color: AppColors.primaryRed,
+                                          fontSize: 9,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                  ],
                                 ),
-                              if (dayExpense > 0)
-                                Text(
-                                  '-${NumberFormat.compact(locale: 'ko').format(dayExpense)}',
-                                  style: TextStyle(
-                                    color: AppColors.primaryRed,
-                                    fontSize: 10,
-                                  ),
-                                ),
+                              ),
                             ],
                           ],
                         ),
