@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
+import 'dart:io';
 import '../constants/colors.dart';
 import '../constants/typography.dart';
 import '../widgets/custom_app_bar.dart';
@@ -37,6 +39,17 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   List<Category> _categories = [];
   List<Asset> _assets = [];
   bool _isLoading = false;
+  
+  final ImagePicker _picker = ImagePicker();
+  List<XFile> _attachedImages = [];
+  
+  // Recurring transaction settings
+  bool _isRecurring = false;
+  String _recurringType = 'NONE'; // NONE, DAILY, WEEKLY, MONTHLY, YEARLY
+  int _recurringInterval = 1; // Every N days/weeks/months
+  DateTime? _recurringEndDate;
+  List<int> _selectedWeekdays = []; // For weekly recurrence (1=Mon, 7=Sun)
+  int? _selectedDayOfMonth; // For monthly recurrence
   
   final String baseUrl = 'http://10.0.2.2:8090';
   final int userId = 1;
@@ -172,6 +185,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                   
                   // 설명 입력
                   _buildDescriptionSection(),
+                  const SizedBox(height: 24),
+                  
+                  // 반복 설정
+                  _buildRecurringSection(),
                   const SizedBox(height: 24),
                   
                   // 메모 입력
@@ -470,11 +487,28 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          '메모',
-          style: AppTypography.caption.copyWith(
-            color: AppColors.textSecondary,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              '메모 및 사진',
+              style: AppTypography.caption.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
+            Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.camera_alt, color: AppColors.textSecondary, size: 20),
+                  onPressed: _pickImageFromCamera,
+                ),
+                IconButton(
+                  icon: const Icon(Icons.photo_library, color: AppColors.textSecondary, size: 20),
+                  onPressed: _pickImageFromGallery,
+                ),
+              ],
+            ),
+          ],
         ),
         const SizedBox(height: 8),
         TextField(
@@ -504,8 +538,421 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
             ),
           ),
         ),
+        if (_attachedImages.isNotEmpty) ...[
+          const SizedBox(height: 12),
+          SizedBox(
+            height: 80,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: _attachedImages.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  margin: const EdgeInsets.only(right: 8),
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: AppColors.divider),
+                  ),
+                  child: Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.file(
+                          File(_attachedImages[index].path),
+                          fit: BoxFit.cover,
+                          width: 80,
+                          height: 80,
+                        ),
+                      ),
+                      Positioned(
+                        top: 4,
+                        right: 4,
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _attachedImages.removeAt(index);
+                            });
+                          },
+                          child: Container(
+                            width: 20,
+                            height: 20,
+                            decoration: BoxDecoration(
+                              color: Colors.black54,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: const Icon(
+                              Icons.close,
+                              color: Colors.white,
+                              size: 14,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ],
     );
+  }
+  
+  Future<void> _pickImageFromCamera() async {
+    try {
+      final XFile? image = await _picker.pickImage(
+        source: ImageSource.camera,
+        maxWidth: 1080,
+        maxHeight: 1080,
+        imageQuality: 85,
+      );
+      
+      if (image != null) {
+        setState(() {
+          _attachedImages.add(image);
+        });
+      }
+    } catch (e) {
+      print('Error picking image from camera: $e');
+    }
+  }
+  
+  Future<void> _pickImageFromGallery() async {
+    try {
+      final List<XFile> images = await _picker.pickMultiImage(
+        maxWidth: 1080,
+        maxHeight: 1080,
+        imageQuality: 85,
+      );
+      
+      if (images.isNotEmpty) {
+        setState(() {
+          _attachedImages.addAll(images);
+          // 최대 5장까지만 허용
+          if (_attachedImages.length > 5) {
+            _attachedImages = _attachedImages.take(5).toList();
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('최대 5장까지 첨부 가능합니다'),
+                backgroundColor: AppColors.primaryRed,
+              ),
+            );
+          }
+        });
+      }
+    } catch (e) {
+      print('Error picking images from gallery: $e');
+    }
+  }
+  
+  Widget _buildRecurringSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              '반복 설정',
+              style: AppTypography.caption.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
+            Switch(
+              value: _isRecurring,
+              onChanged: (value) {
+                setState(() {
+                  _isRecurring = value;
+                  if (!value) {
+                    _recurringType = 'NONE';
+                    _recurringEndDate = null;
+                    _selectedWeekdays.clear();
+                    _selectedDayOfMonth = null;
+                  }
+                });
+              },
+              activeColor: widget.isIncome ? AppColors.primaryBlue : AppColors.primaryRed,
+            ),
+          ],
+        ),
+        if (_isRecurring) ...[
+          const SizedBox(height: 12),
+          // Recurring type selector
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: AppColors.cardBackground,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: AppColors.divider),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '반복 주기',
+                  style: AppTypography.caption.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  children: [
+                    _buildRecurringTypeChip('매일', 'DAILY'),
+                    _buildRecurringTypeChip('매주', 'WEEKLY'),
+                    _buildRecurringTypeChip('매월', 'MONTHLY'),
+                    _buildRecurringTypeChip('매년', 'YEARLY'),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                // Interval selector
+                Row(
+                  children: [
+                    Text(
+                      '반복 간격:',
+                      style: AppTypography.caption.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Container(
+                      width: 60,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: AppColors.surface,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              if (_recurringInterval > 1) {
+                                setState(() {
+                                  _recurringInterval--;
+                                });
+                              }
+                            },
+                            child: const Icon(Icons.remove, size: 16),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Text(
+                              '$_recurringInterval',
+                              style: AppTypography.body2,
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                _recurringInterval++;
+                              });
+                            },
+                            child: const Icon(Icons.add, size: 16),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      _getIntervalUnit(),
+                      style: AppTypography.caption.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+                // Weekly specific - weekday selector
+                if (_recurringType == 'WEEKLY') ...[
+                  const SizedBox(height: 12),
+                  Text(
+                    '반복 요일',
+                    style: AppTypography.caption.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildWeekdayChip('월', 1),
+                      _buildWeekdayChip('화', 2),
+                      _buildWeekdayChip('수', 3),
+                      _buildWeekdayChip('목', 4),
+                      _buildWeekdayChip('금', 5),
+                      _buildWeekdayChip('토', 6),
+                      _buildWeekdayChip('일', 7),
+                    ],
+                  ),
+                ],
+                // Monthly specific - day of month selector
+                if (_recurringType == 'MONTHLY') ...[
+                  const SizedBox(height: 12),
+                  Text(
+                    '반복일',
+                    style: AppTypography.caption.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  DropdownButton<int>(
+                    value: _selectedDayOfMonth ?? _selectedDate.day,
+                    items: List.generate(31, (index) => index + 1)
+                        .map((day) => DropdownMenuItem(
+                              value: day,
+                              child: Text('$day일'),
+                            ))
+                        .toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedDayOfMonth = value;
+                      });
+                    },
+                    style: AppTypography.body2,
+                    dropdownColor: AppColors.cardBackground,
+                  ),
+                ],
+                // End date selector
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Text(
+                      '종료일:',
+                      style: AppTypography.caption.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    InkWell(
+                      onTap: () async {
+                        final picked = await showDatePicker(
+                          context: context,
+                          initialDate: _recurringEndDate ?? DateTime.now().add(const Duration(days: 365)),
+                          firstDate: _selectedDate,
+                          lastDate: DateTime.now().add(const Duration(days: 365 * 5)),
+                          builder: (context, child) {
+                            return Theme(
+                              data: ThemeData.dark().copyWith(
+                                colorScheme: ColorScheme.dark(
+                                  primary: widget.isIncome ? AppColors.primaryBlue : AppColors.primaryRed,
+                                  surface: AppColors.cardBackground,
+                                ),
+                              ),
+                              child: child!,
+                            );
+                          },
+                        );
+                        if (picked != null) {
+                          setState(() {
+                            _recurringEndDate = picked;
+                          });
+                        }
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: AppColors.surface,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          _recurringEndDate != null
+                              ? DateFormat('yyyy.MM.dd').format(_recurringEndDate!)
+                              : '무제한',
+                          style: AppTypography.caption,
+                        ),
+                      ),
+                    ),
+                    if (_recurringEndDate != null) ...[
+                      const SizedBox(width: 8),
+                      InkWell(
+                        onTap: () {
+                          setState(() {
+                            _recurringEndDate = null;
+                          });
+                        },
+                        child: const Icon(Icons.clear, size: 16, color: AppColors.textSecondary),
+                      ),
+                    ],
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+  
+  Widget _buildRecurringTypeChip(String label, String type) {
+    final isSelected = _recurringType == type;
+    return ChoiceChip(
+      label: Text(label),
+      labelStyle: AppTypography.caption.copyWith(
+        color: isSelected ? Colors.white : AppColors.textSecondary,
+      ),
+      selected: isSelected,
+      selectedColor: widget.isIncome ? AppColors.primaryBlue : AppColors.primaryRed,
+      backgroundColor: AppColors.surface,
+      onSelected: (selected) {
+        setState(() {
+          _recurringType = selected ? type : 'NONE';
+          // Reset specific settings when changing type
+          _selectedWeekdays.clear();
+          _selectedDayOfMonth = null;
+        });
+      },
+    );
+  }
+  
+  Widget _buildWeekdayChip(String label, int weekday) {
+    final isSelected = _selectedWeekdays.contains(weekday);
+    return InkWell(
+      onTap: () {
+        setState(() {
+          if (isSelected) {
+            _selectedWeekdays.remove(weekday);
+          } else {
+            _selectedWeekdays.add(weekday);
+          }
+        });
+      },
+      child: Container(
+        width: 36,
+        height: 36,
+        decoration: BoxDecoration(
+          color: isSelected 
+              ? (widget.isIncome ? AppColors.primaryBlue : AppColors.primaryRed)
+              : AppColors.surface,
+          shape: BoxShape.circle,
+        ),
+        child: Center(
+          child: Text(
+            label,
+            style: AppTypography.caption.copyWith(
+              color: isSelected ? Colors.white : AppColors.textSecondary,
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+  
+  String _getIntervalUnit() {
+    switch (_recurringType) {
+      case 'DAILY':
+        return '일마다';
+      case 'WEEKLY':
+        return '주마다';
+      case 'MONTHLY':
+        return '개월마다';
+      case 'YEARLY':
+        return '년마다';
+      default:
+        return '';
+    }
   }
 
   Widget _buildNumberPad() {

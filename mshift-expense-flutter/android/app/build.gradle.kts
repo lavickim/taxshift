@@ -8,7 +8,7 @@ plugins {
 android {
     namespace = "com.moneyshift.mshift_expense_flutter"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = "23.1.7779620" // Use available NDK version
+    ndkVersion = "27.0.12077973" // Updated for plugin compatibility
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11

@@ -22,6 +22,9 @@ class AppColors {
   static const Color divider = Color(0xFF2A2A2A); // 구분선
   static const Color border = Color(0xFF333333); // 테두리
   
+  // Surface 색상
+  static const Color surface = Color(0xFF1A1A1A); // 표면 색상 (cardBackground와 동일)
+  
   // 카테고리 색상
   static const List<Color> categoryColors = [
     Color(0xFFFF5757), // 빨간색

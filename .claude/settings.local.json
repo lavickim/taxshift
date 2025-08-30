@@ -20,7 +20,10 @@
       "Bash(adb:*)",
       "Bash(flutter run:*)",
       "Bash(flutter:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(PGPASSWORD=password psql:*)",
+      "Bash(docker inspect:*)"
     ],
     "deny": []
   },

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../constants/colors.dart';
+import '../screens/add_transfer_screen.dart';
 
 class DualFloatingButtons extends StatefulWidget {
   final VoidCallback onIncomePressed;
@@ -51,17 +52,66 @@ class _DualFloatingButtonsState extends State<DualFloatingButtons>
     });
   }
 
+  void _navigateToTransfer() {
+    _toggleExpanded();
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const AddTransferScreen(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
       alignment: Alignment.bottomRight,
       children: [
+        // 이체 버튼
+        AnimatedBuilder(
+          animation: _animation,
+          builder: (context, child) {
+            return Transform.translate(
+              offset: Offset(0, -210 * _animation.value),
+              child: Opacity(
+                opacity: _animation.value,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: AppColors.cardBackground,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: const Text(
+                        '이체',
+                        style: TextStyle(
+                          color: AppColors.textSecondary,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    FloatingActionButton(
+                      heroTag: 'transfer',
+                      onPressed: _navigateToTransfer,
+                      backgroundColor: AppColors.surface,
+                      child: const Icon(Icons.swap_horiz, color: AppColors.textPrimary),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
         // 수입 버튼
         AnimatedBuilder(
           animation: _animation,
           builder: (context, child) {
             return Transform.translate(
-              offset: Offset(0, -70 * _animation.value),
+              offset: Offset(0, -140 * _animation.value),
               child: Opacity(
                 opacity: _animation.value,
                 child: Row(
@@ -103,7 +153,7 @@ class _DualFloatingButtonsState extends State<DualFloatingButtons>
           animation: _animation,
           builder: (context, child) {
             return Transform.translate(
-              offset: Offset(0, -140 * _animation.value),
+              offset: Offset(0, -70 * _animation.value),
               child: Opacity(
                 opacity: _animation.value,
                 child: Row(

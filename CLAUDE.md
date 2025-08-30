@@ -39,9 +39,20 @@ flutter run
 ### 데이터베이스 정보
 - **PostgreSQL 컨테이너**: trojan-expense-db
 - **데이터베이스명**: trojan_expense_db
-- **사용자**: trojan_user / trojan_password
+- **DB 사용자**: trojan_user / trojan_password
 - **볼륨**: moneyshift_trojan_postgres_data (기존 데이터 보존)
 - **테이블**: et_users, et_assets, et_categories, et_transactions, et_budgets 등
+- **테이블 구조 주의사항**:
+  - et_users: `password_hash` (not `password`), `nickname` (not `username`), `is_premium` (not `is_active`)
+  - et_categories: `category_type` (INCOME/EXPENSE/TRANSFER), `icon_name`, `color_code`
+  - et_assets: `asset_type` (CASH/BANK/CARD/INVESTMENT)
+  
+### 테스트 데이터 정보
+- **테스트 사용자**: user_id=1, email=test@example.com, nickname=testuser
+- **샘플 데이터**: 2025년 7월~9월 3개월치 거래 내역
+  - 7월: 34건 거래 (급여, 생활비 등)
+  - 8월: 32건 거래 (현재 달)
+  - 9월: 10건 거래 (예정)
 
 ### 주의사항
 - 포트 8090이 다른 프로세스에 사용 중인지 확인 (`lsof -i :8090`)

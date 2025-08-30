@@ -5,6 +5,7 @@ import 'dart:convert';
 import '../constants/colors.dart';
 import '../constants/typography.dart';
 import '../widgets/custom_app_bar.dart';
+import 'search_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -174,7 +175,14 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         ),
         IconButton(
           icon: const Icon(Icons.search, color: AppColors.textPrimary),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const SearchScreen(),
+              ),
+            );
+          },
         ),
         IconButton(
           icon: const Icon(Icons.menu, color: AppColors.textPrimary),

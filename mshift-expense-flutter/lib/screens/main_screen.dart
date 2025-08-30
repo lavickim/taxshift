@@ -6,6 +6,7 @@ import 'statistics_screen.dart';
 import 'assets_screen.dart';
 import 'more_screen.dart';
 import 'add_transaction_screen.dart';
+import 'add_transfer_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
