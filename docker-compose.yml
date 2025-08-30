@@ -48,20 +48,6 @@ services:
       postgres:
         condition: service_healthy
 
-volumes:
-  postgres_data:
-    driver: local
-    name: moneyshift_postgres_data
-  redis_data:
-    driver: local
-    name: moneyshift_redis_data
-  trojan_postgres_data:
-    driver: local
-    name: trojan_postgres_data
-  trojan_redis_data:
-    driver: local
-    name: trojan_redis_data
-
   trojan-postgres:
     image: postgres:15-alpine
     container_name: trojan-expense-db
@@ -73,8 +59,8 @@ volumes:
     ports:
       - "5433:5432"  # 기존 PostgreSQL과 충돌 방지
     volumes:
-      - trojan_postgres_data:/var/lib/postgresql/data
-      - ./project-design/trojan-horse/prd/database-schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - moneyshift_trojan_postgres_data:/var/lib/postgresql/data
+      - ./project-design/trojan-horse/prd/init-db.sql:/docker-entrypoint-initdb.d/01-schema.sql
     networks:
       - moneyshift-network
     restart: unless-stopped
@@ -95,6 +81,20 @@ volumes:
       - moneyshift-network
     restart: unless-stopped
     command: redis-server --appendonly yes
+
+volumes:
+  postgres_data:
+    driver: local
+    name: moneyshift_postgres_data
+  redis_data:
+    driver: local
+    name: moneyshift_redis_data
+  moneyshift_trojan_postgres_data:
+    driver: local
+    name: moneyshift_trojan_postgres_data
+  trojan_redis_data:
+    driver: local
+    name: trojan_redis_data
 
 networks:
   moneyshift-network:

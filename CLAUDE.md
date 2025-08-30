@@ -1,5 +1,55 @@
 # CLAUDE.md
 
+## MoneyShift Expense Tracker 실행 환경 및 방법 (2025-08-30)
+
+### 실행 환경
+- **백엔드**: Spring Boot (포트 8090)
+- **데이터베이스**: PostgreSQL (포트 5433) + Redis (포트 6380)
+- **프론트엔드**: Flutter 모바일 앱
+- **컨테이너**: Docker Compose로 DB 관리
+
+### 실행 순서 및 명령어
+
+#### 1. Docker 컨테이너 실행 (DB)
+```bash
+# Docker Compose로 PostgreSQL과 Redis 실행
+cd /Users/lavickim/_Dev/moneyshift
+docker-compose up -d trojan-postgres trojan-redis
+```
+
+#### 2. 백엔드 서버 실행
+```bash
+cd /Users/lavickim/_Dev/moneyshift/mshift-expense-backend
+mvn spring-boot:run
+```
+
+#### 3. Flutter 앱 실행
+```bash
+cd /Users/lavickim/_Dev/moneyshift/mshift-expense-flutter
+
+# 에뮬레이터 실행 (ARM64)
+flutter emulators --launch ExpenseTracker_ARM64
+# 또는
+emulator -avd ExpenseTracker_ARM64
+
+# 앱 실행
+flutter run
+```
+
+### 데이터베이스 정보
+- **PostgreSQL 컨테이너**: trojan-expense-db
+- **데이터베이스명**: trojan_expense_db
+- **사용자**: trojan_user / trojan_password
+- **볼륨**: moneyshift_trojan_postgres_data (기존 데이터 보존)
+- **테이블**: et_users, et_assets, et_categories, et_transactions, et_budgets 등
+
+### 주의사항
+- 포트 8090이 다른 프로세스에 사용 중인지 확인 (`lsof -i :8090`)
+- Docker 볼륨은 `moneyshift_trojan_postgres_data` 사용 (기존 데이터 포함)
+- application.yml의 ddl-auto는 `create`로 설정 (테이블 자동 생성)
+
+# CLAUDE.md
+
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## MoneyShift Project Overview
