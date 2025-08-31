@@ -11,6 +11,7 @@ class AppColors {
   static const Color primaryBlue = Color(0xFF4A90E2); // 파란색 (수입)
   static const Color primaryGreen = Color(0xFF4CAF50); // 초록색 (성공/확인)
   static const Color primaryYellow = Color(0xFFFFC107); // 노란색 (경고/강조)
+  static const Color primaryPurple = Color(0xFF9C27B0); // 보라색 (특별/프리미엄)
   
   // 텍스트 색상
   static const Color textPrimary = Color(0xFFFFFFFF); // 주요 텍스트
@@ -21,6 +22,7 @@ class AppColors {
   // 구분선
   static const Color divider = Color(0xFF2A2A2A); // 구분선
   static const Color border = Color(0xFF333333); // 테두리
+  static const Color borderColor = Color(0xFF333333); // 테두리 (별칭)
   
   // Surface 색상
   static const Color surface = Color(0xFF1A1A1A); // 표면 색상 (cardBackground와 동일)

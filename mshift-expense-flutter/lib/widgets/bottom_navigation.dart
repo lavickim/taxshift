@@ -42,6 +42,10 @@ class BottomNavigation extends StatelessWidget {
             label: '통계',
           ),
           BottomNavigationBarItem(
+            icon: Icon(Icons.emoji_events, size: 24),
+            label: '챌린지',
+          ),
+          BottomNavigationBarItem(
             icon: Icon(Icons.people_outline, size: 24),
             label: '커뮤니티',
           ),
