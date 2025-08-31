@@ -1,3 +1,4 @@
+import '../config/api_config.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -19,7 +20,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   DateTime selectedDate = DateTime.now();
   String viewType = 'category'; // category, trend, comparison
   bool isLoading = false;
-  final String baseUrl = 'http://10.0.2.2:8090';
+  String get baseUrl => ApiConfig.baseUrl;
   final int userId = 1;
   
   List<CategoryStatistic> categoryStats = [];
@@ -66,7 +67,8 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       final month = selectedDate.month;
       final response = await http.get(
         Uri.parse('$baseUrl/api/v1/categories/statistics/$year/$month?userId=$userId'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true'},
       );
 
       if (response.statusCode == 200) {
@@ -86,7 +88,8 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       final month = selectedDate.month;
       final response = await http.get(
         Uri.parse('$baseUrl/api/v1/transactions/statistics/daily/$year/$month?userId=$userId'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true'},
       );
 
       if (response.statusCode == 200) {

@@ -1,3 +1,4 @@
+import '../config/api_config.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -19,7 +20,7 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen>
   List<Category> _expenseCategories = [];
   bool _isLoading = false;
   
-  final String baseUrl = 'http://10.0.2.2:8090';
+  String get baseUrl => ApiConfig.baseUrl;
   final int userId = 1;
 
   @override
@@ -43,7 +44,8 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen>
     try {
       final response = await http.get(
         Uri.parse('$baseUrl/api/v1/categories?userId=$userId'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true'},
       );
 
       if (response.statusCode == 200) {
@@ -300,7 +302,8 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen>
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/api/v1/categories'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true'},
         body: json.encode({
           'userId': userId,
           'categoryName': name,
@@ -322,7 +325,8 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen>
     try {
       final response = await http.put(
         Uri.parse('$baseUrl/api/v1/categories/$categoryId'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true'},
         body: json.encode({
           'categoryName': name,
           'iconName': icon,
@@ -341,7 +345,8 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen>
     try {
       final response = await http.delete(
         Uri.parse('$baseUrl/api/v1/categories/$categoryId'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true'},
       );
 
       if (response.statusCode != 204) {

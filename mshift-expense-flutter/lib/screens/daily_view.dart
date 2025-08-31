@@ -1,3 +1,4 @@
+import '../config/api_config.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../constants/colors.dart';
@@ -64,8 +65,9 @@ class _DailyViewState extends State<DailyView> {
     try {
       final dateStr = DateFormat('yyyy-MM-dd').format(widget.selectedDate);
       final response = await http.get(
-        Uri.parse('http://10.0.2.2:8090/api/v1/transactions/daily/$dateStr?userId=${widget.userId}'),
-        headers: {'Content-Type': 'application/json'},
+        Uri.parse('' + ApiConfig.baseUrl + '/api/v1/transactions/daily/$dateStr?userId=${widget.userId}'),
+        headers: {'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true'},
       );
       
       if (response.statusCode == 200) {

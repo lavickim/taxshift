@@ -1,3 +1,4 @@
+import '../config/api_config.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -31,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   Map<int, DailyMemo> memosByDay = {};
   MonthlySummary? monthlySummary;
   bool isLoading = false;
-  final String baseUrl = 'http://10.0.2.2:8090';
+  String get baseUrl => ApiConfig.baseUrl;
   final int userId = 1;
   final DailyMemoService _memoService = DailyMemoService();
 
@@ -81,7 +82,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       final month = selectedDate.month;
       final response = await http.get(
         Uri.parse('$baseUrl/api/v1/transactions/monthly/$year/$month?userId=$userId'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true'},
       );
 
       if (response.statusCode == 200) {
@@ -111,7 +113,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       final month = selectedDate.month;
       final response = await http.get(
         Uri.parse('$baseUrl/api/v1/transactions/statistics/monthly/$year/$month?userId=$userId'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true'},
       );
 
       if (response.statusCode == 200) {

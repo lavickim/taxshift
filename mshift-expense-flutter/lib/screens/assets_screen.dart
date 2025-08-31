@@ -1,3 +1,4 @@
+import '../config/api_config.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -17,7 +18,7 @@ class _AssetsScreenState extends State<AssetsScreen> {
   List<Asset> assets = [];
   double totalBalance = 0;
   bool isLoading = false;
-  final String baseUrl = 'http://10.0.2.2:8090';
+  String get baseUrl => ApiConfig.baseUrl;
   final int userId = 1;
 
   @override
@@ -34,7 +35,8 @@ class _AssetsScreenState extends State<AssetsScreen> {
     try {
       final response = await http.get(
         Uri.parse('$baseUrl/api/v1/assets?userId=$userId'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true'},
       );
 
       if (response.statusCode == 200) {
@@ -473,8 +475,9 @@ class _AddAssetDialogState extends State<_AddAssetDialog> {
 
     try {
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:8090/api/v1/assets'),
-        headers: {'Content-Type': 'application/json'},
+        Uri.parse('' + ApiConfig.baseUrl + '/api/v1/assets'),
+        headers: {'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true'},
         body: json.encode({
           'userId': 1,
           'assetName': _nameController.text,

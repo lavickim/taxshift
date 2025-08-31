@@ -1,3 +1,4 @@
+import '../config/api_config.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../constants/colors.dart';
@@ -61,8 +62,9 @@ class _MonthlyViewState extends State<MonthlyView> {
       final year = widget.selectedDate.year;
       final month = widget.selectedDate.month;
       final response = await http.get(
-        Uri.parse('http://10.0.2.2:8090/api/v1/transactions/statistics/monthly/$year/$month?userId=${widget.userId}'),
-        headers: {'Content-Type': 'application/json'},
+        Uri.parse('' + ApiConfig.baseUrl + '/api/v1/transactions/statistics/monthly/$year/$month?userId=${widget.userId}'),
+        headers: {'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true'},
       );
       
       if (response.statusCode == 200) {
@@ -81,8 +83,9 @@ class _MonthlyViewState extends State<MonthlyView> {
       final year = widget.selectedDate.year;
       final month = widget.selectedDate.month;
       final response = await http.get(
-        Uri.parse('http://10.0.2.2:8090/api/v1/transactions/statistics/category/$year/$month?userId=${widget.userId}'),
-        headers: {'Content-Type': 'application/json'},
+        Uri.parse('' + ApiConfig.baseUrl + '/api/v1/transactions/statistics/category/$year/$month?userId=${widget.userId}'),
+        headers: {'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true'},
       );
       
       if (response.statusCode == 200) {
@@ -102,8 +105,9 @@ class _MonthlyViewState extends State<MonthlyView> {
       final year = widget.selectedDate.year;
       final month = widget.selectedDate.month;
       final response = await http.get(
-        Uri.parse('http://10.0.2.2:8090/api/v1/transactions/statistics/daily/$year/$month?userId=${widget.userId}'),
-        headers: {'Content-Type': 'application/json'},
+        Uri.parse('' + ApiConfig.baseUrl + '/api/v1/transactions/statistics/daily/$year/$month?userId=${widget.userId}'),
+        headers: {'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true'},
       );
       
       if (response.statusCode == 200) {

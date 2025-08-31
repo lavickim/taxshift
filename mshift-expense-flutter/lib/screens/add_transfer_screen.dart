@@ -1,3 +1,4 @@
+import '../config/api_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -33,7 +34,7 @@ class _AddTransferScreenState extends State<AddTransferScreen> {
   bool _isLoading = false;
   String _currentInput = '';
   
-  final String baseUrl = 'http://10.0.2.2:8090';
+  String get baseUrl => ApiConfig.baseUrl;
   final int userId = 1;
 
   @override
@@ -53,7 +54,8 @@ class _AddTransferScreenState extends State<AddTransferScreen> {
     try {
       final response = await http.get(
         Uri.parse('$baseUrl/api/v1/assets?userId=$userId'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true'},
       );
 
       if (response.statusCode == 200) {
@@ -114,7 +116,8 @@ class _AddTransferScreenState extends State<AddTransferScreen> {
 
       final response = await http.post(
         Uri.parse('$baseUrl/api/v1/transactions'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true'},
         body: json.encode(requestBody),
       );
 
