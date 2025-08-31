@@ -4,6 +4,7 @@ import '../widgets/dual_floating_buttons.dart';
 import '../utils/animations.dart';
 import 'home_screen.dart';
 import 'statistics_screen.dart';
+import 'community_feed_screen.dart';
 import 'assets_screen.dart';
 import 'more_screen.dart';
 import 'add_transaction_screen.dart';
@@ -22,6 +23,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _screens = [
     const HomeScreen(),
     const StatisticsScreen(),
+    const CommunityFeedScreen(),
     const AssetsScreen(),
     const MoreScreen(),
   ];

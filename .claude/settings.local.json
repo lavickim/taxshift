@@ -25,7 +25,19 @@
       "Bash(PGPASSWORD=password psql:*)",
       "Bash(docker inspect:*)",
       "Bash(screen:*)",
-      "Bash(defaults read:*)"
+      "Bash(defaults read:*)",
+      "Read(/tmp/**)",
+      "Read(/tmp/**)",
+      "Read(/tmp/**)",
+      "Read(/tmp/**)",
+      "Read(/tmp/**)",
+      "Read(/tmp/**)",
+      "Read(/tmp/**)",
+      "Read(/tmp/**)",
+      "Read(/tmp/**)",
+      "Read(/tmp/**)",
+      "Read(/tmp/**)",
+      "Read(/tmp/**)"
     ],
     "deny": []
   },
