@@ -39,6 +39,7 @@ dependencies:
   fl_chart: ^0.68.0
   image_picker: ^1.0.7
   shimmer: ^3.0.0  # 스켈레톤 UI를 위한 shimmer 효과
+  google_fonts: ^6.2.1  # Google Fonts 패키지
 
 dev_dependencies:
   flutter_test:

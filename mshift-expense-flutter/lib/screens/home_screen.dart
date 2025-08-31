@@ -743,7 +743,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   }
 
   Widget _buildSettlementView() {
-    return const Center(
+    return Center(
       child: Text('결산 보기', style: AppTypography.body1),
     );
   }

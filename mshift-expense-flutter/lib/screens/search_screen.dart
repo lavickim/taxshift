@@ -508,7 +508,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            child: const Text('검색', style: AppTypography.body1),
+            child: Text('검색', style: AppTypography.body1),
           ),
         ),
       ],
