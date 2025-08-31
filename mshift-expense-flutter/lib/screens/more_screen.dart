@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../constants/colors.dart';
 import '../constants/typography.dart';
 import '../widgets/custom_app_bar.dart';
+import '../utils/animations.dart';
+import 'debug_connection_screen.dart';
 
 class MoreScreen extends StatelessWidget {
   const MoreScreen({Key? key}) : super(key: key);
@@ -108,6 +110,17 @@ class MoreScreen extends StatelessWidget {
                 title: '앱 정보',
                 subtitle: '버전 1.0.0',
                 onTap: () {},
+              ),
+              _MenuItem(
+                icon: Icons.bug_report,
+                title: '연결 디버그',
+                subtitle: 'ngrok 연결 상태 확인',
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    ScalePageRoute(page: const DebugConnectionScreen()),
+                  );
+                },
               ),
             ],
           ),

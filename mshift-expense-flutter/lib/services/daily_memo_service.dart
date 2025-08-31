@@ -1,18 +1,16 @@
+import '../config/api_config.dart';
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 import '../models/daily_memo.dart';
+import '../utils/http_client.dart';
 
 class DailyMemoService {
-  static const String baseUrl = 'http://10.0.2.2:8090/api/daily-memos';
+  static String get baseUrl => '${ApiConfig.baseUrl}/api/daily-memos';
 
   Future<DailyMemo?> createOrUpdateMemo(DailyMemo memo) async {
     try {
-      final response = await http.post(
-        Uri.parse(baseUrl),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode(memo.toJson()),
+      final response = await HttpClient.post(
+        baseUrl,
+        body: memo.toJson(),
       );
 
       if (response.statusCode == 200) {
@@ -30,11 +28,8 @@ class DailyMemoService {
   Future<DailyMemo?> getMemoByDate(int userId, DateTime date) async {
     try {
       final dateStr = date.toIso8601String().split('T')[0];
-      final response = await http.get(
-        Uri.parse('$baseUrl/user/$userId/date/$dateStr'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      final response = await HttpClient.get(
+        '$baseUrl/user/$userId/date/$dateStr',
       );
 
       if (response.statusCode == 200) {
@@ -53,11 +48,8 @@ class DailyMemoService {
 
   Future<List<DailyMemo>> getMemosByMonth(int userId, int year, int month) async {
     try {
-      final response = await http.get(
-        Uri.parse('$baseUrl/user/$userId/month?year=$year&month=$month'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      final response = await HttpClient.get(
+        '$baseUrl/user/$userId/month?year=$year&month=$month',
       );
 
       if (response.statusCode == 200) {
@@ -76,11 +68,8 @@ class DailyMemoService {
   Future<bool> deleteMemo(int userId, DateTime date) async {
     try {
       final dateStr = date.toIso8601String().split('T')[0];
-      final response = await http.delete(
-        Uri.parse('$baseUrl/user/$userId/date/$dateStr'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      final response = await HttpClient.delete(
+        '$baseUrl/user/$userId/date/$dateStr',
       );
 
       return response.statusCode == 204;

@@ -1,8 +1,9 @@
-import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../config/api_config.dart';
+import '../utils/http_client.dart';
 
 class ChallengeService {
-  static const String baseUrl = 'http://10.0.2.2:8090/api/v1/challenges';
+  static String get baseUrl => '${ApiConfig.baseUrl}/api/v1/challenges';
   
   // 챌린지 목록 조회
   static Future<Map<String, dynamic>> getChallenges({
@@ -21,10 +22,7 @@ class ChallengeService {
         url += '&type=$type';
       }
       
-      final response = await http.get(
-        Uri.parse(url),
-        headers: {'Content-Type': 'application/json'},
-      );
+      final response = await HttpClient.get(url);
       
       if (response.statusCode == 200) {
         return json.decode(response.body);
@@ -40,10 +38,7 @@ class ChallengeService {
   // 챌린지 상세 조회
   static Future<Map<String, dynamic>> getChallenge(int challengeId) async {
     try {
-      final response = await http.get(
-        Uri.parse('$baseUrl/$challengeId'),
-        headers: {'Content-Type': 'application/json'},
-      );
+      final response = await HttpClient.get('$baseUrl/$challengeId');
       
       if (response.statusCode == 200) {
         return json.decode(response.body);
@@ -59,9 +54,8 @@ class ChallengeService {
   // 챌린지 참여
   static Future<Map<String, dynamic>> joinChallenge(int challengeId, int userId) async {
     try {
-      final response = await http.post(
-        Uri.parse('$baseUrl/$challengeId/join?userId=$userId'),
-        headers: {'Content-Type': 'application/json'},
+      final response = await HttpClient.post(
+        '$baseUrl/$challengeId/join?userId=$userId',
       );
       
       if (response.statusCode == 200) {
@@ -88,10 +82,7 @@ class ChallengeService {
         url += '&status=$status';
       }
       
-      final response = await http.get(
-        Uri.parse(url),
-        headers: {'Content-Type': 'application/json'},
-      );
+      final response = await HttpClient.get(url);
       
       if (response.statusCode == 200) {
         return json.decode(response.body);
@@ -107,9 +98,8 @@ class ChallengeService {
   // 사용자 레벨 정보
   static Future<Map<String, dynamic>> getUserLevel(int userId) async {
     try {
-      final response = await http.get(
-        Uri.parse('$baseUrl/user/$userId/level'),
-        headers: {'Content-Type': 'application/json'},
+      final response = await HttpClient.get(
+        '$baseUrl/user/$userId/level',
       );
       
       if (response.statusCode == 200) {
@@ -138,10 +128,7 @@ class ChallengeService {
         url += 'count=$count';
       }
       
-      final response = await http.put(
-        Uri.parse(url),
-        headers: {'Content-Type': 'application/json'},
-      );
+      final response = await HttpClient.put(url);
       
       if (response.statusCode == 200) {
         return json.decode(response.body);
@@ -157,9 +144,8 @@ class ChallengeService {
   // 사용자 통계
   static Future<Map<String, dynamic>> getUserStats(int userId) async {
     try {
-      final response = await http.get(
-        Uri.parse('$baseUrl/user/$userId/stats'),
-        headers: {'Content-Type': 'application/json'},
+      final response = await HttpClient.get(
+        '$baseUrl/user/$userId/stats',
       );
       
       if (response.statusCode == 200) {

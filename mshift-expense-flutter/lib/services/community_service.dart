@@ -1,8 +1,9 @@
-import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../config/api_config.dart';
+import '../utils/http_client.dart';
 
 class CommunityService {
-  static const String baseUrl = 'http://10.0.2.2:8090/api/v1/community';
+  static String get baseUrl => '${ApiConfig.baseUrl}/api/v1/community';
   
   // 게시물 목록 조회
   static Future<Map<String, dynamic>> getPosts({
@@ -17,10 +18,7 @@ class CommunityService {
         url += '&category=$category';
       }
       
-      final response = await http.get(
-        Uri.parse(url),
-        headers: {'Content-Type': 'application/json'},
-      );
+      final response = await HttpClient.get(url);
       
       if (response.statusCode == 200) {
         return json.decode(response.body);
@@ -36,10 +34,7 @@ class CommunityService {
   // 게시물 상세 조회
   static Future<Map<String, dynamic>> getPost(int postId) async {
     try {
-      final response = await http.get(
-        Uri.parse('$baseUrl/posts/$postId'),
-        headers: {'Content-Type': 'application/json'},
-      );
+      final response = await HttpClient.get('$baseUrl/posts/$postId');
       
       if (response.statusCode == 200) {
         return json.decode(response.body);
@@ -62,16 +57,15 @@ class CommunityService {
     int userId = 1,
   }) async {
     try {
-      final response = await http.post(
-        Uri.parse('$baseUrl/posts?userId=$userId'),
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode({
+      final response = await HttpClient.post(
+        '$baseUrl/posts?userId=$userId',
+        body: {
           'title': title,
           'content': content,
           'category': category,
           'hasImage': hasImage,
           'imageUrl': imageUrl,
-        }),
+        },
       );
       
       if (response.statusCode == 200) {
@@ -88,9 +82,8 @@ class CommunityService {
   // 게시물 좋아요
   static Future<void> likePost(int postId, {int userId = 1}) async {
     try {
-      final response = await http.post(
-        Uri.parse('$baseUrl/posts/$postId/like?userId=$userId'),
-        headers: {'Content-Type': 'application/json'},
+      final response = await HttpClient.post(
+        '$baseUrl/posts/$postId/like?userId=$userId',
       );
       
       if (response.statusCode != 200) {
@@ -109,12 +102,11 @@ class CommunityService {
     int userId = 1,
   }) async {
     try {
-      final response = await http.post(
-        Uri.parse('$baseUrl/posts/$postId/comments?userId=$userId'),
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode({
+      final response = await HttpClient.post(
+        '$baseUrl/posts/$postId/comments?userId=$userId',
+        body: {
           'content': content,
-        }),
+        },
       );
       
       if (response.statusCode == 200) {
@@ -131,9 +123,8 @@ class CommunityService {
   // 댓글 삭제
   static Future<void> deleteComment(int commentId) async {
     try {
-      final response = await http.delete(
-        Uri.parse('$baseUrl/comments/$commentId'),
-        headers: {'Content-Type': 'application/json'},
+      final response = await HttpClient.delete(
+        '$baseUrl/comments/$commentId',
       );
       
       if (response.statusCode != 200) {
