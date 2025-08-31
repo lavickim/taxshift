@@ -23,7 +23,9 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(PGPASSWORD=password psql:*)",
-      "Bash(docker inspect:*)"
+      "Bash(docker inspect:*)",
+      "Bash(screen:*)",
+      "Bash(defaults read:*)"
     ],
     "deny": []
   },

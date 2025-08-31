@@ -5,7 +5,15 @@ import 'dart:convert';
 import '../constants/colors.dart';
 import '../constants/typography.dart';
 import '../widgets/custom_app_bar.dart';
+import '../widgets/skeleton_loader.dart';
+import '../utils/animations.dart';
 import 'search_screen.dart';
+import '../models/daily_memo.dart';
+import '../services/daily_memo_service.dart';
+import '../widgets/memo_dialog.dart';
+import 'daily_view.dart';
+import 'monthly_view.dart';
+import 'memo_list_view.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -20,10 +28,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   late PageController _pageController;
   int _selectedTabIndex = 1; // 달력 탭 기본 선택
   Map<int, List<Transaction>> transactionsByDay = {};
+  Map<int, DailyMemo> memosByDay = {};
   MonthlySummary? monthlySummary;
   bool isLoading = false;
   final String baseUrl = 'http://10.0.2.2:8090';
   final int userId = 1;
+  final DailyMemoService _memoService = DailyMemoService();
 
   final List<String> _topTabs = ['일일', '달력', '월별', '결산', '메모'];
 
@@ -54,6 +64,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       await Future.wait([
         loadTransactions(),
         loadMonthlySummary(),
+        loadMemos(),
       ]);
     } catch (e) {
       print('Error loading data: $e');
@@ -114,6 +125,24 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     }
   }
 
+  Future<void> loadMemos() async {
+    try {
+      final year = selectedDate.year;
+      final month = selectedDate.month;
+      final memos = await _memoService.getMemosByMonth(userId, year, month);
+      
+      setState(() {
+        memosByDay = {};
+        for (var memo in memos) {
+          final day = memo.memoDate.day;
+          memosByDay[day] = memo;
+        }
+      });
+    } catch (e) {
+      print('Error loading memos: $e');
+    }
+  }
+
   void changeMonth(int offset) {
     // PageView를 이동시키기
     final currentPage = _pageController.page?.round() ?? 1200;
@@ -135,15 +164,22 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           _buildTabBar(),
           _buildSummarySection(),
           Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: [
-                _buildDailyView(),
-                _buildCalendarView(),
-                _buildMonthlyView(),
-                _buildSettlementView(),
-                _buildMemoView(),
-              ],
+            child: RefreshIndicator(
+              onRefresh: () async {
+                await loadData();
+              },
+              backgroundColor: AppColors.cardBackground,
+              color: AppColors.primaryRed,
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  _buildDailyView(),
+                  _buildCalendarView(),
+                  _buildMonthlyView(),
+                  _buildSettlementView(),
+                  _buildMemoView(),
+                ],
+              ),
             ),
           ),
           _buildBottomDateBar(),
@@ -178,8 +214,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (context) => const SearchScreen(),
+              SlidePageRoute(
+                page: const SearchScreen(),
+                direction: AxisDirection.left,
               ),
             );
           },
@@ -214,6 +251,46 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
   Widget _buildSummarySection() {
     final formatter = NumberFormat('#,###');
+    
+    if (isLoading && monthlySummary == null) {
+      return Container(
+        padding: const EdgeInsets.all(16),
+        decoration: const BoxDecoration(
+          color: AppColors.cardBackground,
+          border: Border(
+            bottom: BorderSide(color: AppColors.divider, width: 1),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Column(
+              children: const [
+                SkeletonLoader(width: 40, height: 12),
+                SizedBox(height: 4),
+                SkeletonLoader(width: 80, height: 20),
+              ],
+            ),
+            Container(width: 1, height: 40, color: AppColors.divider),
+            Column(
+              children: const [
+                SkeletonLoader(width: 40, height: 12),
+                SizedBox(height: 4),
+                SkeletonLoader(width: 80, height: 20),
+              ],
+            ),
+            Container(width: 1, height: 40, color: AppColors.divider),
+            Column(
+              children: const [
+                SkeletonLoader(width: 40, height: 12),
+                SizedBox(height: 4),
+                SkeletonLoader(width: 80, height: 20),
+              ],
+            ),
+          ],
+        ),
+      );
+    }
     
     return Container(
       padding: const EdgeInsets.all(16),
@@ -328,11 +405,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         
         final weekDays = ['일', '월', '화', '수', '목', '금', '토'];
         
-        // 해당 월의 거래 데이터 가져오기
+        // 해당 월의 거래 데이터와 메모 가져오기
         Map<int, List<Transaction>> monthTransactions = {};
+        Map<int, DailyMemo> monthMemos = {};
         if (displayDate.year == selectedDate.year && 
             displayDate.month == selectedDate.month) {
           monthTransactions = transactionsByDay;
+          monthMemos = memosByDay;
         }
         
         return Column(
@@ -417,10 +496,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                                    cellDate.month == DateTime.now().month &&
                                    cellDate.year == DateTime.now().year;
                     
-                    // 현재 달의 거래만 표시
+                    // 현재 달의 거래와 메모 표시
                     final dayTransactions = isCurrentMonth && monthTransactions.containsKey(cellDate.day) 
                         ? monthTransactions[cellDate.day]! 
                         : <Transaction>[];
+                    final dayMemo = isCurrentMonth && monthMemos.containsKey(cellDate.day) 
+                        ? monthMemos[cellDate.day] 
+                        : null;
                     
                     double dayIncome = 0;
                     double dayExpense = 0;
@@ -442,8 +524,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                           // 다음 달로 이동
                           changeMonth(1);
                         } else if (isCurrentMonth) {
-                          // 날짜 클릭 시 상세 보기
-                          _showDayDetails(cellDate, cellDate.day, dayTransactions);
+                          // 날짜 클릭 시 상세 보기 및 메모 편집
+                          _showDayDetailsWithMemo(cellDate, cellDate.day, dayTransactions, dayMemo);
                         }
                       },
                       child: Container(
@@ -459,17 +541,33 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Text(
-                              cellDate.day.toString(),
-                              style: AppTypography.caption.copyWith(
-                                color: isToday ? AppColors.primaryRed : 
-                                       (isPrevMonth || isNextMonth) ? AppColors.textTertiary :
-                                       cellDate.weekday == 7 ? AppColors.primaryRed :  // 일요일
-                                       cellDate.weekday == 6 ? AppColors.primaryBlue :  // 토요일
-                                       AppColors.textPrimary,
-                                fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
-                                fontSize: 11,
-                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  cellDate.day.toString(),
+                                  style: AppTypography.caption.copyWith(
+                                    color: isToday ? AppColors.primaryRed : 
+                                           (isPrevMonth || isNextMonth) ? AppColors.textTertiary :
+                                           cellDate.weekday == 7 ? AppColors.primaryRed :  // 일요일
+                                           cellDate.weekday == 6 ? AppColors.primaryBlue :  // 토요일
+                                           AppColors.textPrimary,
+                                    fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
+                                    fontSize: 11,
+                                  ),
+                                ),
+                                // 메모 아이콘 표시
+                                if (dayMemo != null) ...[
+                                  const SizedBox(width: 2),
+                                  Icon(
+                                    dayMemo.isImportant ? Icons.star : Icons.note,
+                                    size: 10,
+                                    color: dayMemo.isImportant 
+                                        ? Colors.amber 
+                                        : Color(int.parse('0xFF${dayMemo.color?.substring(1) ?? "4A90E2"}')),
+                                  ),
+                                ],
+                              ],
                             ),
                             if (isCurrentMonth && (dayIncome > 0 || dayExpense > 0)) ...[
                               const SizedBox(height: 1),
@@ -510,6 +608,24 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         );
       },
     );
+  }
+
+  void _showDayDetailsWithMemo(DateTime date, int day, List<Transaction> transactions, DailyMemo? memo) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return MemoDialog(
+          date: date,
+          existingMemo: memo,
+          userId: userId,
+        );
+      },
+    ).then((result) {
+      if (result != null || result == null && memo != null) {
+        // 메모가 저장되거나 삭제되면 데이터 다시 로드
+        loadMemos();
+      }
+    });
   }
 
   void _showDayDetails(DateTime date, int day, List<Transaction> transactions) {
@@ -613,14 +729,16 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   }
 
   Widget _buildDailyView() {
-    return const Center(
-      child: Text('일일 보기', style: AppTypography.body1),
+    return DailyView(
+      selectedDate: selectedDate,
+      userId: userId,
     );
   }
 
   Widget _buildMonthlyView() {
-    return const Center(
-      child: Text('월별 보기', style: AppTypography.body1),
+    return MonthlyView(
+      selectedDate: selectedDate,
+      userId: userId,
     );
   }
 
@@ -631,8 +749,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   }
 
   Widget _buildMemoView() {
-    return const Center(
-      child: Text('메모', style: AppTypography.body1),
+    return MemoListView(
+      selectedDate: selectedDate,
+      userId: userId,
     );
   }
 

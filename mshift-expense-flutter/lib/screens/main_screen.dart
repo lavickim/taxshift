@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/bottom_navigation.dart';
 import '../widgets/dual_floating_buttons.dart';
+import '../utils/animations.dart';
 import 'home_screen.dart';
 import 'statistics_screen.dart';
 import 'assets_screen.dart';
@@ -28,8 +29,8 @@ class _MainScreenState extends State<MainScreen> {
   void _navigateToAddTransaction(bool isIncome) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => AddTransactionScreen(
+      ScalePageRoute(
+        page: AddTransactionScreen(
           isIncome: isIncome,
         ),
       ),
