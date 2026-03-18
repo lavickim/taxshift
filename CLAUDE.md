@@ -18,9 +18,9 @@
 
 | 모듈 | 위치 | 역할 | 완성도 |
 |------|------|------|--------|
-| **규칙 엔진 API** | `moneyshift_be/mshift-api/` | Spring Boot, 거래 자동 분류 | 90% |
-| **관리 패널** | `moneyshift_be/mshift-admin/` | Next.js, 규칙 관리/편집 | 85% |
-| **데이터 수집** | `Moneyshift_data_processing/` | Python, 공공데이터 수집 | 70% |
+| **규칙 엔진 API** | `moneyshift_be/mshift-api/` | Spring Boot, 거래 자동 분류 | ~70% (실사용 미검증) |
+| **관리 패널** | `moneyshift_be/mshift-admin/` | Next.js, 규칙 관리/편집 | ~65% (실사용 미검증) |
+| **데이터 수집** | `Moneyshift_data_processing/` | Python, 공공데이터 수집 | ~50% (구조 개편 중) |
 
 ## 아카이브 모듈 (현재 방향에서 제외)
 
