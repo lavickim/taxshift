@@ -21,7 +21,6 @@ import java.util.concurrent.CompletableFuture;
  */
 @RestController
 @RequestMapping("/v2/test-data")
-@CrossOrigin(origins = {"http://localhost:3000", "http://127.0.0.1:3000"})
 public class TransactionTestDataController {
     
     private static final Logger logger = LoggerFactory.getLogger(TransactionTestDataController.class);

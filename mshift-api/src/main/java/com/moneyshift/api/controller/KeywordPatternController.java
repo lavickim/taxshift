@@ -20,7 +20,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/v2/keyword-patterns")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class KeywordPatternController {
 
     private final KeywordPatternService keywordPatternService;

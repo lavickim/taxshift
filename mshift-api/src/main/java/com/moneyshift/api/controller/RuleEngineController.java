@@ -9,7 +9,6 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/rule-engine")
-@CrossOrigin(origins = "*")
 public class RuleEngineController {
     
     public RuleEngineController() {

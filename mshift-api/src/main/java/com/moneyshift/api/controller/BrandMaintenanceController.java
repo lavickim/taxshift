@@ -20,7 +20,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/v2/maintenance")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class BrandMaintenanceController {
     
     private final DynamicBrandService dynamicBrandService;

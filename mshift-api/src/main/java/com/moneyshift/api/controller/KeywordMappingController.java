@@ -16,7 +16,6 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/v2/keyword-mapping")
-@CrossOrigin(origins = "*")
 public class KeywordMappingController {
     
     private static final Logger logger = LoggerFactory.getLogger(KeywordMappingController.class);

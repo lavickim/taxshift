@@ -19,7 +19,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/v2/segmented-keywords")
 @Tag(name = "Segmented Keywords", description = "세그먼트 기반 키워드 분석 API")
-@CrossOrigin(origins = "*")
 public class SegmentedKeywordController {
 
     private static final Logger logger = LoggerFactory.getLogger(SegmentedKeywordController.class);

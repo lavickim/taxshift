@@ -22,7 +22,6 @@ import java.util.*;
 @RestController
 @RequestMapping("/v2/keyword-test")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 // @AdminOnly("키워드 테스트는 어드민 전용입니다") // 임시로 비활성화
 public class KeywordTestController {
 

@@ -16,7 +16,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/v2/test")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class IntegratedTestController {
 
     private final IntegratedTestService integratedTestService;

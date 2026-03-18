@@ -30,7 +30,6 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/api/v2/accounting")
-@CrossOrigin(origins = "http://localhost:3000")
 @Validated
 @Tag(name = "Accounting API", description = "복식부기 회계 시스템 API - 분개 생성, 재무제표 생성")
 public class AccountingController {

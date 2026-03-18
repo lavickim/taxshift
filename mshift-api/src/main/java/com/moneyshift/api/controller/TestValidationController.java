@@ -19,7 +19,6 @@ import java.util.concurrent.CompletableFuture;
 @RestController
 @RequestMapping("/api/v2/test")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class TestValidationController {
 
     private final TestValidationService testValidationService;

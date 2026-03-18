@@ -18,7 +18,6 @@ import java.util.concurrent.CompletableFuture;
 @RestController
 @RequestMapping("/v2/confidence")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class ConfidenceManagementController {
     
     private final ConfidenceManagementService confidenceManagementService;

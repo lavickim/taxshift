@@ -28,7 +28,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/v2")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 // @AdminOnly("키워드 시스템 관리는 어드민 전용입니다") // 임시로 비활성화
 public class KeywordSystemController {
 

@@ -20,7 +20,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/v2/tag-mapping-mgmt")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 // @AdminOnly("태그 매핑 관리는 어드민 전용입니다") // TODO: 임시 비활성화
 public class TagMappingController {
     

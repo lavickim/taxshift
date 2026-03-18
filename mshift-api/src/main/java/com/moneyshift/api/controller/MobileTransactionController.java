@@ -10,7 +10,6 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/transactions")
-@CrossOrigin(origins = "*")
 public class MobileTransactionController {
 
     @GetMapping("/bank-a")

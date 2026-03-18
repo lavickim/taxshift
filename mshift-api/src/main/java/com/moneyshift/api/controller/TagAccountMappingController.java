@@ -18,7 +18,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/v2/tag-account-mappings")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class TagAccountMappingController {
 
     private final TagAccountMappingService tagAccountMappingService;

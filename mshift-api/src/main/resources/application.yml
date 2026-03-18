@@ -47,10 +47,10 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,metrics,mappings,prometheus,httptrace
+        include: health,info,metrics,prometheus
   endpoint:
     health:
-      show-details: always
+      show-details: when-authorized
     mappings:
       enabled: true
     metrics:

@@ -19,7 +19,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/v2/tag-management")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class TagManagementController {
 
     private final TagManagementService tagManagementService;

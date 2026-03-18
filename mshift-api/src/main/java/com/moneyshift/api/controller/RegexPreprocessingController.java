@@ -15,7 +15,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/v2/regex-preprocessing")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class RegexPreprocessingController {
 
     private final RegexPreprocessingEngine regexPreprocessingEngine;

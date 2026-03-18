@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 @RestController
 @RequestMapping("/api/v2/transaction-tagging")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class TransactionTaggingController {
     
     private final TransactionTaggingService transactionTaggingService;
