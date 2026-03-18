@@ -8,8 +8,9 @@ import { NextRequest, NextResponse } from 'next/server';
 async function getSystemMetrics() {
   try {
     // 1. 실제 백엔드 API 호출 시도
+    const apiBase = process.env.JAVA_API_BASE_URL || 'http://localhost:8080/mshift-api';
     const backendResponse = await fetch(
-      'http://localhost:8080/mshift-api/actuator/health',
+      `${apiBase}/actuator/health`,
       {
         method: 'GET',
         headers: {
