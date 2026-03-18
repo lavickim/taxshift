@@ -1,19 +1,17 @@
 import { LLMInferenceService } from '../../../lib/services/llm-inference';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenAI } from '@google/genai';
 
-// Mock Google Generative AI
-jest.mock('@google/generative-ai', () => {
+// Mock Google GenAI SDK
+jest.mock('@google/genai', () => {
   const mockGenerateContent = jest.fn();
-  const mockGetGenerativeModel = jest.fn(() => ({
-    generateContent: mockGenerateContent
-  }));
-  
+
   return {
-    GoogleGenerativeAI: jest.fn(() => ({
-      getGenerativeModel: mockGetGenerativeModel
+    GoogleGenAI: jest.fn(() => ({
+      models: {
+        generateContent: mockGenerateContent
+      }
     })),
     mockGenerateContent,
-    mockGetGenerativeModel
   };
 });
 
@@ -24,8 +22,8 @@ describe('LLMInferenceService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     llmService = new LLMInferenceService();
-    
-    const { mockGenerateContent: mockGenerate } = require('@google/generative-ai');
+
+    const { mockGenerateContent: mockGenerate } = require('@google/genai');
     mockGenerateContent = mockGenerate;
   });
 
@@ -38,18 +36,16 @@ describe('LLMInferenceService', () => {
 
     it('should classify Korean convenience store transaction', async () => {
       const geminiResponse = {
-        response: {
-          text: () => JSON.stringify({
-            businessType: '편의점',
-            confidence: 92,
-            reasoning: 'GS25는 대표적인 편의점 브랜드입니다.',
-            tags: ['convenience_store', 'gs25', 'retail'],
-            suggestedAccountCodes: {
-              debit: '1120', // 카드매출채권
-              credit: '4100' // 매출
-            }
-          })
-        }
+        text: JSON.stringify({
+          businessType: '편의점',
+          confidence: 92,
+          reasoning: 'GS25는 대표적인 편의점 브랜드입니다.',
+          tags: ['convenience_store', 'gs25', 'retail'],
+          suggestedAccountCodes: {
+            debit: '1120', // 카드매출채권
+            credit: '4100' // 매출
+          }
+        })
       };
 
       mockGenerateContent.mockResolvedValue(geminiResponse);
@@ -69,7 +65,10 @@ describe('LLMInferenceService', () => {
       });
 
       expect(mockGenerateContent).toHaveBeenCalledWith(
-        expect.stringContaining('거래 설명: GS25 강남점 결제')
+        expect.objectContaining({
+          model: 'gemini-2.0-flash',
+          contents: expect.stringContaining('거래 설명: GS25 강남점 결제')
+        })
       );
     });
 
@@ -81,14 +80,12 @@ describe('LLMInferenceService', () => {
       };
 
       const geminiResponse = {
-        response: {
-          text: () => JSON.stringify({
-            businessType: '주유소',
-            confidence: 95,
-            reasoning: '고액 결제와 SK주유소라는 명칭으로 보아 주유 구매로 판단됩니다.',
-            tags: ['gas_station', 'sk', 'fuel']
-          })
-        }
+        text: JSON.stringify({
+          businessType: '주유소',
+          confidence: 95,
+          reasoning: '고액 결제와 SK주유소라는 명칭으로 보아 주유 구매로 판단됩니다.',
+          tags: ['gas_station', 'sk', 'fuel']
+        })
       };
 
       mockGenerateContent.mockResolvedValue(geminiResponse);
@@ -108,14 +105,12 @@ describe('LLMInferenceService', () => {
       };
 
       const geminiResponse = {
-        response: {
-          text: () => JSON.stringify({
-            businessType: '금융서비스',
-            confidence: 65,
-            reasoning: '앱카드 대금지급은 금융 서비스로 분류되나 정확한 비즈니스 타입 판단이 어렵습니다.',
-            tags: ['financial_service', 'card_payment', 'uncertain']
-          })
-        }
+        text: JSON.stringify({
+          businessType: '금융서비스',
+          confidence: 65,
+          reasoning: '앱카드 대금지급은 금융 서비스로 분류되나 정확한 비즈니스 타입 판단이 어렵습니다.',
+          tags: ['financial_service', 'card_payment', 'uncertain']
+        })
       };
 
       mockGenerateContent.mockResolvedValue(geminiResponse);
@@ -128,14 +123,18 @@ describe('LLMInferenceService', () => {
     });
 
     it('should provide Korean context-aware prompt engineering', async () => {
+      mockGenerateContent.mockResolvedValue({
+        text: JSON.stringify({ businessType: '편의점', confidence: 90, tags: [] })
+      });
+
       await llmService.infer(mockTransaction);
 
       const promptCall = mockGenerateContent.mock.calls[0][0];
-      
-      expect(promptCall).toContain('한국어 거래 내역 분석');
-      expect(promptCall).toContain('비즈니스 유형');
-      expect(promptCall).toContain('신뢰도');
-      expect(promptCall).toContain('JSON 형식으로 반환');
+
+      expect(promptCall.contents).toContain('한국어 거래 내역 분석');
+      expect(promptCall.contents).toContain('비즈니스 유형');
+      expect(promptCall.contents).toContain('신뢰도');
+      expect(promptCall.contents).toContain('JSON 형식으로 반환');
     });
 
     it('should include business context for better accuracy', async () => {
@@ -151,14 +150,12 @@ describe('LLMInferenceService', () => {
       };
 
       const geminiResponse = {
-        response: {
-          text: () => JSON.stringify({
-            businessType: '음식배달',
-            confidence: 90,
-            reasoning: '점심시간대, 배달 앱 이름, 금액대를 고려할 때 음식 배달 서비스로 판단됩니다.',
-            tags: ['food_delivery', 'ubereats', 'restaurant']
-          })
-        }
+        text: JSON.stringify({
+          businessType: '음식배달',
+          confidence: 90,
+          reasoning: '점심시간대, 배달 앱 이름, 금액대를 고려할 때 음식 배달 서비스로 판단됩니다.',
+          tags: ['food_delivery', 'ubereats', 'restaurant']
+        })
       };
 
       mockGenerateContent.mockResolvedValue(geminiResponse);
@@ -166,8 +163,8 @@ describe('LLMInferenceService', () => {
       await llmService.infer(contextTransaction);
 
       const promptCall = mockGenerateContent.mock.calls[0][0];
-      expect(promptCall).toContain('시간: 12:30');
-      expect(promptCall).toContain('지역: 강남구');
+      expect(promptCall.contents).toContain('시간: 12:30');
+      expect(promptCall.contents).toContain('지역: 강남구');
     });
   });
 
@@ -188,9 +185,7 @@ describe('LLMInferenceService', () => {
 
     it('should handle malformed JSON response', async () => {
       const malformedResponse = {
-        response: {
-          text: () => 'This is not valid JSON { incomplete...'
-        }
+        text: 'This is not valid JSON { incomplete...'
       };
 
       mockGenerateContent.mockResolvedValue(malformedResponse);
@@ -211,13 +206,11 @@ describe('LLMInferenceService', () => {
         .mockRejectedValueOnce(new Error('Network timeout'))
         .mockRejectedValueOnce(new Error('Service temporarily unavailable'))
         .mockResolvedValueOnce({
-          response: {
-            text: () => JSON.stringify({
-              businessType: '편의점',
-              confidence: 85,
-              tags: ['convenience_store']
-            })
-          }
+          text: JSON.stringify({
+            businessType: '편의점',
+            confidence: 85,
+            tags: ['convenience_store']
+          })
         });
 
       const result = await llmService.inferWithRetry(mockTransaction, { maxRetries: 3 });
@@ -228,17 +221,17 @@ describe('LLMInferenceService', () => {
 
     it('should timeout long-running requests', async () => {
       jest.useFakeTimers();
-      
-      mockGenerateContent.mockImplementation(() => 
+
+      mockGenerateContent.mockImplementation(() =>
         new Promise(resolve => setTimeout(resolve, 30000))
       );
 
       const inferencePromise = llmService.infer(mockTransaction, { timeout: 10000 });
-      
+
       jest.advanceTimersByTime(10000);
-      
+
       const result = await inferencePromise;
-      
+
       expect(result).toEqual({
         businessType: '기타',
         confidence: 10,
@@ -246,7 +239,7 @@ describe('LLMInferenceService', () => {
         error: 'Request timeout',
         tags: ['timeout_error']
       });
-      
+
       jest.useRealTimers();
     });
   });
@@ -260,13 +253,11 @@ describe('LLMInferenceService', () => {
       ];
 
       const batchResponse = {
-        response: {
-          text: () => JSON.stringify([
-            { businessType: '편의점', confidence: 92, tags: ['convenience_store'] },
-            { businessType: '음식점', confidence: 95, tags: ['fast_food', 'mcdonalds'] },
-            { businessType: '주유소', confidence: 96, tags: ['gas_station', 'sk'] }
-          ])
-        }
+        text: JSON.stringify([
+          { businessType: '편의점', confidence: 92, tags: ['convenience_store'] },
+          { businessType: '음식점', confidence: 95, tags: ['fast_food', 'mcdonalds'] },
+          { businessType: '주유소', confidence: 96, tags: ['gas_station', 'sk'] }
+        ])
       };
 
       mockGenerateContent.mockResolvedValue(batchResponse);
@@ -288,13 +279,11 @@ describe('LLMInferenceService', () => {
 
       // 첫 번째 호출
       mockGenerateContent.mockResolvedValueOnce({
-        response: {
-          text: () => JSON.stringify({
-            businessType: '편의점',
-            confidence: 92,
-            tags: ['convenience_store']
-          })
-        }
+        text: JSON.stringify({
+          businessType: '편의점',
+          confidence: 92,
+          tags: ['convenience_store']
+        })
       });
 
       const result1 = await llmService.infer(frequentTransaction);
@@ -333,13 +322,11 @@ describe('LLMInferenceService', () => {
       'should correctly classify Korean business: $description -> $expected',
       async ({ description, expected, expectedTags }) => {
         const geminiResponse = {
-          response: {
-            text: () => JSON.stringify({
-              businessType: expected,
-              confidence: 90,
-              tags: expectedTags
-            })
-          }
+          text: JSON.stringify({
+            businessType: expected,
+            confidence: 90,
+            tags: expectedTags
+          })
         };
 
         mockGenerateContent.mockResolvedValue(geminiResponse);
@@ -358,18 +345,16 @@ describe('LLMInferenceService', () => {
       };
 
       const geminiResponse = {
-        response: {
-          text: () => JSON.stringify({
-            businessType: '음식점',
-            confidence: 94,
-            tags: ['restaurant', 'korean_food', 'employee_meal'],
-            suggestedAccountCodes: {
-              debit: '6200', // 복리후생비
-              credit: '1100', // 현금
-              description: '직원 식대비 (복리후생비 처리)'
-            }
-          })
-        }
+        text: JSON.stringify({
+          businessType: '음식점',
+          confidence: 94,
+          tags: ['restaurant', 'korean_food', 'employee_meal'],
+          suggestedAccountCodes: {
+            debit: '6200', // 복리후생비
+            credit: '1100', // 현금
+            description: '직원 식대비 (복리후생비 처리)'
+          }
+        })
       };
 
       mockGenerateContent.mockResolvedValue(geminiResponse);
@@ -387,11 +372,11 @@ describe('LLMInferenceService', () => {
 
 // Mock implementation
 class LLMInferenceService {
-  private genAI: GoogleGenerativeAI;
+  private genAI: GoogleGenAI;
   private cache: Map<string, any> = new Map();
 
   constructor() {
-    this.genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || 'test-key');
+    this.genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || 'test-key' });
   }
 
   async infer(transaction: any, options?: { timeout?: number }) {
@@ -401,26 +386,24 @@ class LLMInferenceService {
     }
 
     try {
-      const model = this.genAI.getGenerativeModel({ model: 'gemini-pro' });
-      
       const prompt = this.buildPrompt(transaction);
-      
+
       let response;
       if (options?.timeout) {
         response = await Promise.race([
-          model.generateContent(prompt),
-          new Promise((_, reject) => 
+          this.genAI.models.generateContent({ model: 'gemini-2.0-flash', contents: prompt }),
+          new Promise((_, reject) =>
             setTimeout(() => reject(new Error('Request timeout')), options.timeout)
           )
         ]);
       } else {
-        response = await model.generateContent(prompt);
+        response = await this.genAI.models.generateContent({ model: 'gemini-2.0-flash', contents: prompt });
       }
 
       const result = this.parseResponse(response);
       this.cache.set(cacheKey, result);
       return result;
-      
+
     } catch (error: any) {
       return this.handleError(error);
     }
@@ -428,7 +411,7 @@ class LLMInferenceService {
 
   async inferWithRetry(transaction: any, options: { maxRetries: number }) {
     let lastError;
-    
+
     for (let i = 0; i < options.maxRetries; i++) {
       try {
         return await this.infer(transaction);
@@ -437,18 +420,17 @@ class LLMInferenceService {
         await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1))); // exponential backoff
       }
     }
-    
+
     return this.handleError(lastError);
   }
 
   async inferBatch(transactions: any[]) {
     const batchPrompt = this.buildBatchPrompt(transactions);
-    
+
     try {
-      const model = this.genAI.getGenerativeModel({ model: 'gemini-pro' });
-      const response = await model.generateContent(batchPrompt);
-      
-      const batchResult = JSON.parse(response.response.text());
+      const response = await this.genAI.models.generateContent({ model: 'gemini-2.0-flash', contents: batchPrompt });
+
+      const batchResult = JSON.parse(response.text);
       return batchResult.map((result: any, index: number) => ({
         ...result,
         layer: 'LLM'
@@ -485,7 +467,7 @@ ${transaction.metadata ? `- 추가 정보: 시간: ${transaction.metadata.timeOf
   }
 
   private buildBatchPrompt(transactions: any[]): string {
-    const transactionList = transactions.map((tx, i) => 
+    const transactionList = transactions.map((tx, i) =>
       `${i + 1}. ${tx.description} (${tx.amount?.toLocaleString()}원)`
     ).join('\n');
 
@@ -505,7 +487,7 @@ JSON 배열로 반환:
 
   private parseResponse(response: any) {
     try {
-      const text = response.response.text();
+      const text = response.text;
       const parsed = JSON.parse(text);
       return {
         ...parsed,
@@ -532,7 +514,7 @@ JSON 배열로 반환:
         tags: ['api_error', 'rate_limited']
       };
     }
-    
+
     if (error.message.includes('timeout')) {
       return {
         businessType: '기타',
