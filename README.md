@@ -1,376 +1,299 @@
-# MoneyShift 
+# TaxShift (MoneyShift)
 
-AI 기반 거래 내역 분석 및 정규화 시스템
+TaxShift is an open-source transaction normalization and bookkeeping automation
+project for Korean bank and card transaction data. The codebase is currently
+organized under the internal MoneyShift module name (`mshift-*`) and combines a
+Spring Boot API, a Next.js admin console, PostgreSQL, Redis, and rule-based
+classification tools.
 
-## 📋 목차
+The project focuses on turning noisy transaction strings into structured data
+that can support bookkeeping, account mapping, journal entries, ledgers,
+month-end closing workflows, and operator review.
 
-- [프로젝트 개요](#프로젝트-개요)
-- [아키텍처](#아키텍처)
-- [설치 및 실행](#설치-및-실행)
-- [테스트](#테스트)
-- [API 문서](#api-문서)
-- [개발 가이드](#개발-가이드)
+## Why This Project Exists
 
-## 🎯 프로젝트 개요
+Korean financial transaction descriptions are often short, inconsistent, and
+merchant-specific. A bookkeeping system needs to normalize those strings before
+it can reliably classify spending, map transactions to accounts, or prepare
+journal entries.
 
-MoneyShift는 은행 거래 내역을 AI와 정규식 규칙을 사용해 자동으로 분석하고 정규화하는 시스템입니다.
+TaxShift explores a practical workflow for that problem:
 
-### 주요 기능
+- preprocess transaction text with curated regular-expression rules
+- map normalized keywords and tags to accounting categories
+- maintain chart-of-accounts and journal-entry workflows
+- expose admin tools for rule editing, testing, and review
+- cache active rules for faster matching
+- keep test data and rule-design documents available for maintainers
 
-- **규칙 기반 텍스트 정규화**: 정규식 패턴을 사용한 거래 내역 분류
-- **실시간 규칙 관리**: 웹 UI를 통한 CRUD 작업
-- **고성능 캐싱**: Redis를 활용한 규칙 캐싱
-- **마이크로서비스 아키텍처**: NextJS + Spring Boot 분리
+## Main Components
 
-### 기술 스택
+```text
+.
++-- mshift-api/       # Spring Boot API and accounting/rule services
++-- mshift-admin/     # Next.js admin console
++-- mshift-manager/   # Desktop/manager shell experiments
++-- scripts/          # Database, backup, setup, and test scripts
++-- data/             # Rule and application data
++-- project-design/   # Design notes, accounting docs, and rule-engine plans
+`-- _deprecated/      # Archived prototypes and older experiments
+```
 
-**백엔드 (Java)**
+## Core Capabilities
+
+- Rule-based transaction text normalization
+- Regex preprocessing rule management
+- Keyword extraction, grouping, and mapping
+- Tag-to-account mapping
+- Chart of accounts expansion
+- Transaction-to-journal-entry workflows
+- General ledger and month-end closing support
+- Voucher template and voucher generation services
+- Redis-backed rule caching
+- PostgreSQL persistence through MyBatis and Prisma-backed admin tooling
+- Next.js admin pages for data analysis, LLM workflows, and rule operations
+
+## Architecture
+
+```text
+Next.js Admin Console
+        |
+        v
+Spring Boot API
+        |
+        +--> PostgreSQL
+        |
+        +--> Redis
+```
+
+Default local ports:
+
+- Admin console: `http://localhost:3000`
+- API server: `http://localhost:8080`
+- PostgreSQL: `localhost:5432`
+- Redis: `localhost:6379`
+
+## Technology Stack
+
+Backend:
+
+- Java 17
 - Spring Boot 3.2.7
-- Java 17 LTS
 - MyBatis 3.0.3
 - PostgreSQL 15
-- Redis 7.2
+- Redis 7
 - Maven
+- SpringDoc OpenAPI
+- SpotBugs
 
-**프론트엔드 (NextJS)**
-- Next.js 15.3.3
+Frontend/admin:
+
+- Next.js
 - TypeScript
+- React
 - Tailwind CSS
-- React 18
-- Shadcn/ui
+- Prisma
+- Jest
+- Radix UI components
 
-**테스팅**
-- Puppeteer E2E 테스트
-- JUnit (백엔드)
-- Jest (프론트엔드)
+Testing and tooling:
 
-## 🏗️ 아키텍처
+- JUnit and Spring Boot tests
+- Jest admin tests
+- Puppeteer scripts
+- Docker Compose for PostgreSQL and Redis
 
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   NextJS Admin  │───▶│   Spring Boot   │───▶│   PostgreSQL    │
-│   (Port 3000)   │    │   (Port 8080)   │    │   (Port 5432)   │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-                                │
-                                ▼
-                       ┌─────────────────┐
-                       │      Redis      │
-                       │   (Port 6379)   │
-                       └─────────────────┘
-```
+## Quick Start
 
-### 컴포넌트 구조
+Requirements:
 
-```
-moneyshift_be/
-├── mshift-api/          # Spring Boot API 서버
-│   ├── src/main/java/
-│   │   └── com/moneyshift/api/
-│   │       ├── controller/    # REST API 컨트롤러
-│   │       ├── service/       # 비즈니스 로직
-│   │       ├── model/         # 데이터 모델
-│   │       ├── mapper/        # MyBatis 매퍼
-│   │       └── config/        # 설정 클래스
-│   └── src/main/resources/
-│       ├── mapper/            # MyBatis XML 매퍼
-│       └── application.yml    # 애플리케이션 설정
-├── mshift-admin/        # NextJS 관리자 패널
-│   ├── app/             # Next.js 13+ App Router
-│   ├── components/      # React 컴포넌트
-│   ├── lib/            # 유틸리티 및 서비스
-│   └── public/         # 정적 파일
-├── tests/              # 테스트 스크립트
-│   └── e2e/           # Puppeteer E2E 테스트
-├── scripts/           # 빌드 및 테스트 스크립트
-└── docker-compose.yml # 개발 환경 컨테이너
-```
+- Java 17 or later
+- Node.js 18 or later
+- Yarn or npm
+- Maven 3.8 or later
+- Docker and Docker Compose
 
-## 🚀 설치 및 실행
-
-### 사전 요구사항
-
-- Java 17 이상
-- Node.js 18 이상
-- Docker 및 Docker Compose
-- Maven 3.8 이상
-
-### 🎯 빠른 시작 (권장)
+Clone the repository:
 
 ```bash
-git clone <repository-url>
-cd moneyshift_be
-
-# 전체 시스템 한 번에 시작
-./start-all.sh
-
-# 또는 개별 실행
-./start-db.sh      # 데이터베이스만
-./start-backend.sh # Java API 서버만  
-./start-frontend.sh # NextJS 프론트엔드만
-
-# 테스트 실행
-./test.sh
-
-# 전체 시스템 중지
-./stop-all.sh
+git clone https://github.com/lavickim/taxshift.git
+cd taxshift
 ```
 
-### 📋 개별 실행 방법
-
-#### 1. 데이터베이스 서비스 시작
+Start PostgreSQL and Redis:
 
 ```bash
 ./start-db.sh
-# 또는: docker-compose up -d postgres redis
 ```
 
-#### 2. 백엔드 API 서버 실행
+Start the Spring Boot API:
 
 ```bash
 ./start-backend.sh
-# 또는: cd mshift-api && mvn spring-boot:run
 ```
 
-서버가 `http://localhost:8080`에서 실행됩니다.
-
-#### 3. 프론트엔드 관리자 패널 실행
+Start the Next.js admin console:
 
 ```bash
-./start-frontend.sh  
-# 또는: cd mshift-admin && yarn dev
+./start-admin.sh
 ```
 
-관리자 패널이 `http://localhost:3000`에서 실행됩니다.
-
-### 5. 초기 데이터 로드 (선택사항)
+To start the coordinated local stack:
 
 ```bash
-# 샘플 정규식 규칙 로드
-psql -h localhost -U postgres -d moneyshift -f scripts/migrate-csv-to-db.sql
+./start-all.sh
 ```
 
-## 🧪 테스트
+Note: `start-all.sh` starts the database, backend, and admin console, then asks
+whether to start the mobile app flow. Use the individual scripts above when you
+want tighter control.
 
-### 전체 통합 테스트 실행
+## Environment
+
+Copy the example environment file when needed:
 
 ```bash
-# 모든 서비스가 실행 중인 상태에서
-./scripts/test-integrated.sh
+cp .env.example .env
 ```
 
-### 개별 테스트 실행
+The default development settings use:
+
+```text
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=moneyshift
+DB_USER=postgres
+DB_PASSWORD=postgres
+REDIS_HOST=localhost
+REDIS_PORT=6379
+API_BASE_URL=http://localhost:8080/api
+```
+
+The admin app may also need local environment values inside `mshift-admin/`,
+depending on which workflow you run.
+
+## Backend Development
+
+Run the API from the backend directory:
 
 ```bash
-# 기본 API 테스트
+cd mshift-api
+mvn spring-boot:run
+```
+
+Run backend tests:
+
+```bash
+cd mshift-api
+mvn test
+```
+
+The backend exposes controllers for rule matching, regex preprocessing,
+transactions, chart of accounts, journal entries, general ledger, voucher
+generation, keyword systems, and related accounting workflows.
+
+## Admin Development
+
+Install dependencies and run the admin console:
+
+```bash
+cd mshift-admin
+yarn install
+yarn db:generate
+yarn dev
+```
+
+Run admin tests:
+
+```bash
+cd mshift-admin
+yarn test
+```
+
+Build the admin app:
+
+```bash
+cd mshift-admin
+yarn build
+```
+
+## Useful Scripts
+
+```bash
+./start-db.sh                    # Start PostgreSQL and Redis
+./start-backend.sh               # Run backend checks, then start the API
+./start-backend-no-tdd.sh        # Start the API without the TDD startup gate
+./start-admin.sh                 # Start the Next.js admin console
+./start-all.sh                   # Start the coordinated local stack
+./stop-all.sh                    # Stop local services
+./scripts/test-integrated.sh     # Run integrated service checks
 ./scripts/test-rule-management.sh
-
-# Puppeteer E2E 테스트 (규칙 관리)
-npm install puppeteer
-node tests/e2e/puppeteer-rule-management.test.js
-
-# Puppeteer API 테스트
-node tests/e2e/puppeteer-api-test.js
+./scripts/backup-database.sh
 ```
 
-### 테스트 결과
+## API Examples
 
-테스트 결과는 `test-results/` 디렉토리에 저장됩니다:
-- `integrated-test-report.log`: 통합 테스트 상세 로그
-- `test_summary.csv`: 테스트 결과 요약
-- `rule-management-test.log`: 규칙 관리 테스트 로그
+Rule matching:
 
-## 📚 API 문서
-
-### 주요 엔드포인트
-
-#### 규칙 엔진 API
-
-```bash
-# 모든 활성 규칙 조회
-GET /api/rule-engine/rules
-
-# 카테고리별 규칙 조회
-GET /api/rule-engine/rules/category/{category}
-
-# 텍스트 매칭
+```http
 POST /api/rule-engine/match
+Content-Type: application/json
+
 {
-  "inputText": "GS25에서 결제",
-  "category": "편의점",
+  "inputText": "GS25 card payment",
+  "category": "convenience_store",
   "returnAllMatches": true
 }
-
-# 캐시 새로고침
-POST /api/rule-engine/refresh-cache
 ```
 
-#### 관리자 API
+Admin rule creation:
 
-```bash
-# 새 규칙 생성
+```http
 POST /api/admin/rules
+Content-Type: application/json
+
 {
-  "pattern": "(GS25|편의점)",
-  "description": "편의점 결제",
-  "category": "편의점",
+  "pattern": "(GS25|CU|7-ELEVEN)",
+  "description": "Convenience store transaction",
+  "category": "convenience_store",
   "enabled": true,
   "priority": 50,
   "confidence": 0.8
 }
-
-# 규칙 수정
-PUT /api/admin/rules/{id}
-
-# 규칙 삭제
-DELETE /api/admin/rules/{id}
-
-# 규칙 활성화/비활성화
-PATCH /api/admin/rules/{id}/enable
-PATCH /api/admin/rules/{id}/disable
 ```
 
-#### NextJS 프록시 API
+## Maintenance Notes
 
-```bash
-# 규칙 조회 (프록시)
-GET /api/regex-rules
+This repository includes active modules and older prototypes. Treat
+`mshift-api`, `mshift-admin`, `scripts`, `data`, and `project-design` as the
+main project areas. Content under `_deprecated` is kept for historical context
+and should not be used as the source of truth for new work.
 
-# 텍스트 매칭 (프록시)
-POST /api/regex/match
-{
-  "text": "GS25에서 결제",
-  "category": "편의점"
-}
-```
+Because the project touches financial transaction parsing and accounting
+automation, maintainers should review changes with extra care around:
 
-## 🛠️ 개발 가이드
+- rule-matching false positives
+- account mapping correctness
+- journal-entry generation
+- data import/export behavior
+- authentication and admin-only paths
+- secrets in environment files or logs
+- generated test data and sample financial records
 
-### 새 정규식 규칙 추가
+## Contributing
 
-1. **관리자 패널 사용**:
-   - `http://localhost:3000`에서 규칙 관리 탭 이용
-   - 실시간 테스트 기능으로 검증
+Issues and pull requests are welcome. Useful contributions include:
 
-2. **API 직접 호출**:
-   ```bash
-   curl -X POST http://localhost:8080/api/admin/rules \
-     -H "Content-Type: application/json" \
-     -d '{
-       "pattern": "새로운패턴",
-       "description": "설명",
-       "category": "카테고리",
-       "enabled": true,
-       "priority": 50
-     }'
-   ```
+- new transaction normalization rules
+- safer rule-matching tests
+- accounting workflow fixes
+- admin UX improvements
+- documentation cleanup
+- security review and static-analysis improvements
 
-### 새 카테고리 추가
+When contributing, prefer small focused pull requests and include the relevant
+test command or manual verification notes.
 
-1. 프론트엔드 `CATEGORIES` 배열에 추가:
-   ```typescript
-   // mshift-admin/components/regex-rules-management.tsx
-   const CATEGORIES = [
-     '주유소', '편의점', '카센터', '온라인서비스',
-     '새로운카테고리' // 추가
-   ];
-   ```
+## License
 
-2. 백엔드 매퍼에서 카테고리 확인 (선택사항)
-
-### 성능 최적화
-
-- **Redis 캐싱**: 규칙이 시작시 Redis에 로드되어 빠른 조회 가능
-- **우선순위 기반 매칭**: 높은 우선순위 규칙부터 매칭 수행
-- **배치 처리**: 대량 텍스트 처리시 배치 API 사용 권장
-
-### 로깅
-
-- **백엔드**: `application.yml`에서 로깅 레벨 설정
-- **프론트엔드**: 브라우저 개발자 도구에서 네트워크 탭 확인
-- **테스트**: `test-results/` 디렉토리의 로그 파일 확인
-
-### 데이터베이스 스키마
-
-```sql
--- 정규식 규칙 테이블
-CREATE TABLE regex_rules (
-    id SERIAL PRIMARY KEY,
-    pattern VARCHAR(500) NOT NULL,
-    replacement VARCHAR(200),
-    description TEXT NOT NULL,
-    category VARCHAR(50) NOT NULL,
-    enabled BOOLEAN DEFAULT true,
-    priority INTEGER DEFAULT 50,
-    confidence DECIMAL(3,2) DEFAULT 0.8,
-    normalizer_type VARCHAR(50),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- 인덱스
-CREATE INDEX idx_regex_rules_category ON regex_rules(category);
-CREATE INDEX idx_regex_rules_enabled ON regex_rules(enabled);
-CREATE INDEX idx_regex_rules_priority ON regex_rules(priority DESC);
-```
-
-## 🐛 문제 해결
-
-### 일반적인 문제
-
-1. **서버 연결 실패**:
-   ```bash
-   # 포트 사용 확인
-   lsof -i :3000  # NextJS
-   lsof -i :8080  # Spring Boot
-   lsof -i :5432  # PostgreSQL
-   lsof -i :6379  # Redis
-   ```
-
-2. **데이터베이스 연결 오류**:
-   ```bash
-   # PostgreSQL 컨테이너 상태 확인
-   docker-compose logs postgres
-   
-   # 데이터베이스 연결 테스트
-   psql -h localhost -U postgres -d moneyshift
-   ```
-
-3. **Redis 연결 오류**:
-   ```bash
-   # Redis 컨테이너 상태 확인
-   docker-compose logs redis
-   
-   # Redis 연결 테스트
-   redis-cli -h localhost ping
-   ```
-
-4. **테스트 실패**:
-   ```bash
-   # 상세 로그 확인
-   cat test-results/integrated-test-report.log
-   
-   # 개별 테스트 실행
-   ./scripts/test-rule-management.sh -v
-   ```
-
-### 개발 팁
-
-- **핫 리로드**: NextJS는 자동 새로고침, Spring Boot는 `spring-boot-devtools` 사용
-- **API 테스트**: Postman 컬렉션 또는 curl 스크립트 활용
-- **성능 모니터링**: Spring Boot Actuator 엔드포인트 (`/actuator/health`, `/actuator/metrics`)
-
-## 📝 라이센스
-
-이 프로젝트는 [MIT 라이센스](LICENSE)를 따릅니다.
-
-## 🤝 기여
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📞 지원
-
-문제가 있거나 질문이 있으시면 이슈를 생성하세요.
+This project is licensed under the MIT License. See [LICENSE](LICENSE).
